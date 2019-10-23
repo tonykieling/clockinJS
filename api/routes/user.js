@@ -24,6 +24,10 @@ router.post("/login", userController.login);
 // it modifies user's data
 router.patch("/:userId", checkAuth, userController.modify_user);
 
+// // change password
+// router.patch("password")
+
+
 // it deletes a user account
 router.delete("/:userId", checkAuth, userController.delete_user);
 

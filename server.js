@@ -5,13 +5,13 @@ const morgan      = require("morgan");
 const bodyParser  = require("body-parser");
 const mongoose    = require("mongoose");
 
-const productRoutes   = require("./api/routes/products.js");
-const orderRoutes     = require("./api/routes/orders.js");
+// const productRoutes   = require("./api/routes/products.js");
+// const orderRoutes     = require("./api/routes/orders.js");
 const userRoutes      = require("./api/routes/user.js");
 
 
 // connection to the database regarding the environment variable URI
-mongoose.connect(process.env.URI, { 
+mongoose.connect(process.env.URI_DB, { 
   useNewUrlParser: true,
   useUnifiedTopology: true });
 
@@ -49,12 +49,6 @@ app.get("/", (req, res) => {
 });
 
 
-// it calls products routes - there the HTTP verb is gonna be checked and proceed accordingly
-app.use("/products", productRoutes);
-
-// it calls orders routes - there the HTTP verb is gonna be checked and proceed accordingly
-app.use("/orders", orderRoutes);
-
 // it calls user routes - there the HTTP verb is gonna be checked and proceed accordingly
 app.use("/user", userRoutes);
 
@@ -63,14 +57,8 @@ app.use("/user", userRoutes);
 // the first one will be called only if the server could not handle the request by /products. /orders or /user middlewares
 // the second one is just to practice how to call a next function
 //   p.s. when dealing error message, it has to have 4 parameters (error, req, res, next)
-app.use((req, res, next) => {
-  const error = new Error("Route NOT found!!");
-  error.status = 400;
-  next(error);
-});
-
-app.use((error, req, res, next) => {
-  res.status(error.status || 500).send(error.message);
+app.use((req, res) => {
+  res.status(400).send("Route NOT found!!");
 });
 
 

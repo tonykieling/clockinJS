@@ -8,7 +8,7 @@ const User      = require("../models/user.js");
 get_all = async (req, res) => {
   const allUsers = await User
     .find()
-    .select(" email ");
+    .select(" name email admin ");
 
   if (allUsers.length < 1)
     return res.json({
@@ -25,7 +25,7 @@ get_one = async (req, res) => {
   try {
     const user = await User
       .findById(userId)
-      .select(" email ");
+      .select(" name email admin ");
 
     if (!user || user.length < 1)
       return res.status(409).json({
@@ -46,8 +46,10 @@ get_one = async (req, res) => {
 
 // it creates an user account
 signup = async (req, res) => {
+  const name      = req.body.name;
   const email     = req.body.email;
   const password  = req.body.password;
+  const admin     = req.body.admin;
 
   // it checks whether the email is already been used by an user account
   // if so, it returns an error message
@@ -66,22 +68,26 @@ signup = async (req, res) => {
 
   bcrypt.hash(password, 10, async (err, hash) => {
     if (err)
-      return res.json({
+      return res.status(400).json({
         error: "Something bad at the password process."
       });
     else {
       try{
         const user = new User({
           _id: new mongoose.Types.ObjectId(),
+          name,
           email,
-          password: hash
+          password: hash,
+          admin
         });
 
         await user.save();
 
         const token = jwt.sign({
           email,
-          userId: user._id
+          userId: user._id,
+          name,
+          admin
         },
         process.env.JWT_KEY,
         {
@@ -106,10 +112,13 @@ signup = async (req, res) => {
 
 
 // it logs the user
+// TODO:
+// 1- need to check what to send as within token and user - for instance, password
+// 2- need to create a function to change only password
 login = async (req, res) => {
   const email     = req.body.email;
   const password  = req.body.password;
-console.log(email, password);
+
   try {
     const user = await User
       .findOne({ email });
@@ -124,7 +133,9 @@ console.log(email, password);
         if (result){
           const token = jwt.sign({
             email,
-            userId: user._id
+            userId: user._id,
+            name: user.name,
+            admin: user.admin
           },
           process.env.JWT_KEY,
           {
@@ -148,8 +159,20 @@ console.log(email, password);
 }
 
 
+// change user data
+// input: token, which should be admin
+// TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
+// for now, only ADMIN is able to change any user's data
 modify_user = async (req, res) => {
-  const user = req.params.userId;
+  if (!req.userData.admin)
+    return res.status(401).json({
+      error: `User <${req.userData.email} is not an Admin.`
+    });
+
+  const user  = req.params.userId;
+  const name  = req.body.name,
+        email = req.body.email,
+        admin = req.body.admin;
 
   try {
     const checkUser = await User
@@ -160,9 +183,7 @@ modify_user = async (req, res) => {
         error: `User <${user}> NOT found.`
       });
 
-    const email = req.body.email;
     if (!email) {
-      console.trace("Error: ", email);
       return res.status(409).json({
         error: `Email <${email}> is invalid.`
       });
@@ -173,7 +194,9 @@ modify_user = async (req, res) => {
         _id: checkUser._id
       }, {
         $set: {
-          email: req.body.email
+          email,
+          name,
+          admin
         }
       }, {
         runValidators: true
@@ -182,7 +205,7 @@ modify_user = async (req, res) => {
     if (changeUser.nModified) {
       const modifiedUser = await User
         .findById({ _id: user})
-        .select(" email ");
+        .select(" name email admin");
 
       res.json({
         message: `User <${modifiedUser.email}> has been modified.`
@@ -201,8 +224,14 @@ modify_user = async (req, res) => {
 }
 
 
+// FIRST it needs to check whether the user is admin
 // it deletes an user account
 delete_user = async (req, res) => {
+  if (!req.userData.admin)
+    return res.status(401).json({
+      error: `User <${req.userData.email} is not an Admin.`
+    });
+
   const userId = req.params.userId;
 
   try {

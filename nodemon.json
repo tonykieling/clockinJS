@@ -1,7 +1,7 @@
 {
   "env": {
-    "URI_DB": "mongodb://localhost:27017/shop",
-    "JWT_KEY": "SecretKey789",
-    "JWT_expiration": "10h"
+    "URI_DB": "mongodb://localhost:27017/clockin",
+    "JWT_KEY": "#BigSecretKey789",
+    "JWT_expiration": "12h"
   }
 }

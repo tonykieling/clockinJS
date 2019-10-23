@@ -1,0 +1,52 @@
+User
+  _id
+  name: String
+  email: String
+  password: String
+  admin: Boolean
+
+Client
+  _id
+  name
+  nickname
+  birthday
+  mother
+  mphone
+  memail
+  father
+  fphone
+  femail
+  consultant
+  cphone
+  cemail
+  default_rate
+  user_id
+
+place
+  _id
+  address
+  city
+  name
+  client_id
+
+clockin
+  _id
+  date
+  time_start
+  time_end
+  rate
+  notes
+  invoice_id (can be null)
+  client_id
+  place_id
+
+# when the invoice is generated, should contain the day, period of dates, possibles notes, and the status.
+# the generation of it will write in the clockin registers, flagin them as belong to that invoice
+invoice
+  _id
+  date
+  date_start
+  date_end
+  notes
+  status (null, created, sent, paid)
+
