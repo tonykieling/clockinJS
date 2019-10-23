@@ -1,12 +1,8 @@
 // this is the definition/shape of products should like in the application
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema({
+const clientSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  admin: {
-    type: Boolean,
-    default: false
-  },
   name: {
     type: String
   },
@@ -20,4 +16,4 @@ const userSchema = mongoose.Schema({
     required: true }
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Client", clientSchema);
