@@ -6,8 +6,8 @@ const bodyParser  = require("body-parser");
 const mongoose    = require("mongoose");
 
 // const productRoutes   = require("./api/routes/products.js");
-// const orderRoutes     = require("./api/routes/orders.js");
 const userRoutes      = require("./api/routes/user.js");
+const clientRoutes     = require("./api/routes/client.js");
 
 
 // connection to the database regarding the environment variable URI
@@ -25,6 +25,16 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(bodyParser.json());
+
+// here, it checks JSON malformatted messages
+app.use((err, req, res, next) => {
+  if (err)
+    res.status(409).json({
+      error: err.message
+    });
+  else
+    next()
+})
 
 
 // settings related to CORS
@@ -52,6 +62,9 @@ app.get("/", (req, res) => {
 // it calls user routes - there the HTTP verb is gonna be checked and proceed accordingly
 app.use("/user", userRoutes);
 
+
+// it calls client routes
+app.use("/client", clientRoutes);
 
 // the two below functions are designed to handle error
 // the first one will be called only if the server could not handle the request by /products. /orders or /user middlewares

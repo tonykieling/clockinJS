@@ -1,22 +1,20 @@
 const mongoose  = require("mongoose");
 const bcrypt    = require("bcrypt");
 const jwt       = require("jsonwebtoken");
-
-const User      = require("../models/user.js");
-const helper    = require("./helper-user.js");
+const Client    = require("../models/client.js");
 
 
 // it gets all users from the system - on purpose with no auth
 get_all = async (req, res) => {
-  const allUsers = await User
+  const allClients = await Client
     .find()
-    .select(" name email admin ");
+    .select(" name nickname mother consultant ");
 
-  if (allUsers.length < 1)
+  if (allClients.length < 1)
     return res.json({
-      message: "No users at all"
+      message: "No clients at all"
     });
-  res.json(allUsers);
+  res.json(allClients);
 }
 
 
@@ -48,7 +46,6 @@ get_one = async (req, res) => {
 
 // it creates an user account
 signup = async (req, res) => {
-// console.log("--> req.body", req.body)  ;
   const name      = req.body.name;
   const email     = req.body.email;
   const password  = req.body.password;
@@ -86,17 +83,16 @@ signup = async (req, res) => {
 
         await user.save();
 
-        const token = await helper(user.email, user._id, user.name, user.admin);
-        // const token = jwt.sign({
-        //   email,
-        //   userId: user._id,
-        //   name,
-        //   admin
-        // },
-        // process.env.JWT_KEY,
-        // {
-        //   expiresIn: process.env.JWT_expiration,
-        // });
+        const token = jwt.sign({
+          email,
+          userId: user._id,
+          name,
+          admin
+        },
+        process.env.JWT_KEY,
+        {
+          expiresIn: process.env.JWT_expiration,
+        });
 
         res.json({
           message: `User ${user.email} has been created.`, 
@@ -130,12 +126,21 @@ login = async (req, res) => {
     if (!user || user.length < 1)
       return res.status(401).json({ error: "Authentication has failed"});
     else {
-      bcrypt.compare(password, user.password, async (err, result) => {
+      bcrypt.compare(password, user.password, (err, result) => {
         if (err)
           return res.status(401).json({ error: "Authentication has failed"});
 
         if (result){
-          const token = await helper.token(user.email, user._id, user.name, user.admin);
+          const token = jwt.sign({
+            email,
+            userId: user._id,
+            name: user.name,
+            admin: user.admin
+          },
+          process.env.JWT_KEY,
+          {
+            expiresIn: process.env.JWT_expiration,
+          });
 
           res.json({
             message: "success", 
@@ -220,7 +225,6 @@ modify_user = async (req, res) => {
 
 
 // FIRST it needs to check whether the user is admin
-// it is checked in the token admin field
 // it deletes an user account
 delete_user = async (req, res) => {
   if (!req.userData.admin)
