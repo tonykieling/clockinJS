@@ -1,0 +1,24 @@
+
+mongoose OR and AND
+https://stackoverflow.com/questions/33627238/mongoose-find-with-multiple-conditions
+
+= not admin
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZW1haWwuY29tIiwidXNlcklkIjoiNWRiMDkzNDNkMTY0YjQxZTJkMjc4MTBkIiwibmFtZSI6InVzZXIiLCJhZG1pbiI6ZmFsc2UsImlhdCI6MTU3MTkzMTQ1NCwiZXhwIjoxNTgwNDg1MDU0fQ.Frvc7jDKfuAvybj4UxBjPRWxHy1TuF4zX7mxpO6AofQ
+
+= admin
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRvbnkua2llbGluZ0BnbWFpbC5jb20iLCJ1c2VySWQiOiI1ZGIwZDEzYzM1ZDdjNTQ3NWJlYjE3ZmQiLCJuYW1lIjoiYWRtaW4iLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNTcxOTMxNjAxLCJleHAiOjE1ODA0ODUyMDF9.5RSkUJ2K-DrwMSfq-FhqMxo7nWfVQd45NrbyyeonhAU
+
+  name
+  nickname
+  birthday
+  mother
+  mphone
+  memail
+  father
+  fphone
+  femail
+  consultant
+  cphone
+  cemail
+  default_rate
+  user_id

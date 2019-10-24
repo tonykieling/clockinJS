@@ -23,7 +23,8 @@ const clientSchema = mongoose.Schema({
     required: true
   },
   memail: {
-    type: String
+    type: String,
+    match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
   },
   father: {
     type: String,
@@ -33,7 +34,8 @@ const clientSchema = mongoose.Schema({
     type: String
   },
   femail: {
-    type: String
+    type: String,
+    match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
   },
   consultant: {
     type: String,
@@ -45,7 +47,8 @@ const clientSchema = mongoose.Schema({
   },
   cemail: {
     type: String,
-    required: true
+    required: true,
+    match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
   },
   default_rate: {
     type: Number,

@@ -15,6 +15,8 @@ get_all = async (req, res) => {
       allClients = await Client
         .find()
         .select(" name nickname mother consultant user_id ");
+        // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
+
     else
       client = await Client
         .find({ user_id: userId})      // it has to be for only that user
@@ -47,7 +49,7 @@ get_one = async (req, res) => {
   try {
     const client = await Client
       .findById(clientId)
-      .select(" name nickname mother consultant user_id ");
+      .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
 
     if (!client || client.length < 1)
       return res.status(409).json({
@@ -146,66 +148,97 @@ client_add = async (req, res) => {
 // input: token, which should be admin
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
-modify_user = async (req, res) => {
-  const userID = req.userData.userID;
-  const clientId = "asd";
-  const userFromClient = Client.
-    findById
-  if (!req.userData.admin)
-    return res.status(401).json({
-      error: `User <${req.userData.email} is not an Admin.`
-    });
+client_modify = async (req, res) => {
+  const clientId  = req.params.clientId;
+  const userAdmin = req.userData.admin;
+  const userId    = req.userData.userId;  
+  
+  // this try is for check is the clientId passed from the frontend is alright (exists in database), plus
+  //  check whether either the client to be changed belongs for the user or the user is admin - if not, not allowed to change client's data
+  try {
+    const client = await Client
+      .findById(clientId);
 
-  const user  = req.params.userId;
-  const name  = req.body.name,
-        email = req.body.email,
-        admin = req.body.admin;
+    if (!client || client.length < 1)
+      return res.status(409).json({
+        error: `Client <id: ${clientId}> does not exist.`
+      });
+    if (userId !== client.user_id && !userAdmin)
+      return res.status(409).json({
+        error: `Client <id: ${clientId}> belongs to another user.`
+      });
+
+  } catch(err) {
+    console.log("Error => ", err.message);
+    if (clientId.length !== 24)
+      return res.status(422).json({
+        error: "ClientId mystyped."
+      });  
+    res.status(422).json({
+      error: "ECM01: Something got wrong."
+    });
+  }
+
+
+  const {
+    name,
+    nickname, 
+    birthday, 
+    mother, 
+    mphone, 
+    memail, 
+    father, 
+    fphone, 
+    femail, 
+    consultant, 
+    cphone, 
+    cemail, 
+    defaultRate
+ } = req.body;
 
   try {
-    const checkUser = await User
-      .findById(user);
-    
-    if (!checkUser)
-      return res.status(404).json({
-        error: `User <${user}> NOT found.`
-      });
-
-    if (!email) {
-      return res.status(409).json({
-        error: `Email <${email}> is invalid.`
-      });
-    }
-    
-    const changeUser = await User
+    const clientToBeChanged = await Client
       .updateOne({
-        _id: checkUser._id
+        _id: clientId
       }, {
         $set: {
-          email,
-          name,
-          admin
+            name,
+            nickname, 
+            birthday, 
+            mother, 
+            mphone, 
+            memail, 
+            father, 
+            fphone, 
+            femail, 
+            consultant, 
+            cphone, 
+            cemail, 
+            default_rate: defaultRate,
+            user_id: userId
         }
       }, {
         runValidators: true
       });
     
-    if (changeUser.nModified) {
-      const modifiedUser = await User
-        .findById({ _id: user})
-        .select(" name email admin");
+    if (clientToBeChanged.nModified) {
+      const clientModified = await Client
+        .findById({ _id: clientId})
+        .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
+        // .select(" name nickname mother consultant default_rate");
 
-      res.json({
-        message: `User <${modifiedUser.email}> has been modified.`
+      return res.json({
+        message: `Client <${clientModified}> has been modified.`
       });
     } else
       res.status(409).json({
-        error: `User <${user}> not changed.`
+        error: `Client <${clientId}> not changed.`
       });
 
   } catch(err) {
     console.trace("Error: ", err.message);
     res.status(409).json({
-      error: "Something bad"
+      error: "ECM02: Something bad"
     });
   }
 }
@@ -228,7 +261,7 @@ client_delete = async (req, res) => {
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `Client <${clientId} NOT found.`
+      error: `ECD01: Client <${clientId} NOT found.`
     });
   }
 
@@ -244,7 +277,7 @@ client_delete = async (req, res) => {
   } catch (err) {
     console.trace("Error => ", err.message);
     res.status(404).json({
-      error: `Something bad with Client id <${clientId}>`
+      error: `ECD02: Something bad with Client id <${clientId}>`
     })
   }
 }
@@ -254,6 +287,6 @@ module.exports = {
   get_all,
   get_one,
   client_add,
-  modify_user,
+  client_modify,
   client_delete
 }

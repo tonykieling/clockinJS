@@ -22,8 +22,8 @@ router.post("/", checkAuth, clientController.client_add);
 // router.post("/login", clientController.login);
 
 
-// // it modifies user's data
-// router.patch("/:userId", checkAuth, clientController.modify_user);
+// it modifies user's data
+router.patch("/:clientId", checkAuth, clientController.client_modify);
 
 // // // change password
 // // router.patch("password")
