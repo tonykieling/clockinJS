@@ -6,15 +6,16 @@ const clientController  = require("../controllers/client.js");
 
 
 // it returns all users
-router.get("/", clientController.get_all);
+router.get("/", checkAuth, clientController.get_all);
 
 
 // it returns info about a particular user
-router.get("/:userId", clientController.get_one);
+router.get("/:clientId", checkAuth, clientController.get_one);
 
 
-// // it creates an user account
-// router.post("/add", checkAuth, clientController.client_add);
+// it creates an user account
+router.post("/", checkAuth, clientController.client_add);
+// router.post("/", checkAuth, clientController.client_add);
 
 
 // // it logs the user into the system
@@ -28,8 +29,8 @@ router.get("/:userId", clientController.get_one);
 // // router.patch("password")
 
 
-// // it deletes a user account
-// router.delete("/:userId", checkAuth, clientController.delete_user);
+// it deletes a client account
+router.delete("/:clientId", checkAuth, clientController.client_delete);
 
 
 module.exports = router;

@@ -6,34 +6,28 @@ const Client    = require("../models/client.js");
 
 // it gets all users from the system - on purpose with no auth
 get_all = async (req, res) => {
-  const allClients = await Client
-    .find()
-    .select(" name nickname mother consultant ");
-
-  if (allClients.length < 1)
-    return res.json({
-      message: "No clients at all"
-    });
-  res.json(allClients);
-}
-
-
-// it gets one user - on purpose with no auth
-get_one = async (req, res) => {
-  const userId = req.params.userId;
-
+  const userAdmin = req.userData.admin;
+  const userId    = req.userData.userID;
+  
   try {
-    const user = await User
-      .findById(userId)
-      .select(" name email admin ");
+    let allClients = null;
+    if (userAdmin)
+      allClients = await Client
+        .find()
+        .select(" name nickname mother consultant user_id ");
+    else
+      client = await Client
+        .find({ user_id: userId})      // it has to be for only that user
+        .select(" name nickname mother consultant ")
 
-    if (!user || user.length < 1)
+
+    if (!allClients || allClients.length < 1)
       return res.status(409).json({
-        error: `User <id: ${userId}> does not exist.`
+        error: `No clients at all.`
       });
     
     res.status(200).json({
-      message: user
+      message: allClients
     });
   } catch(err) {
     console.log("Error => ", err.message);
@@ -44,118 +38,107 @@ get_one = async (req, res) => {
 }
 
 
-// it creates an user account
-signup = async (req, res) => {
-  const name      = req.body.name;
-  const email     = req.body.email;
-  const password  = req.body.password;
-  const admin     = req.body.admin;
+// it gets one user - on purpose with no auth
+get_one = async (req, res) => {
+  const clientId  = req.params.clientId;
+  const userAdmin = req.userData.admin;
+  const userId    = req.userData.userId;  
+  
+  try {
+    const client = await Client
+      .findById(clientId)
+      .select(" name nickname mother consultant user_id ");
+
+    if (!client || client.length < 1)
+      return res.status(409).json({
+        error: `User <id: ${clientId}> does not exist.`
+      });
+    if (userId !== client.user_id && !userAdmin)
+      return res.status(409).json({
+        error: `User <id: ${clientId}> belongs to another user.`
+      });
+
+    res.status(200).json({
+      message: client
+    });
+  } catch(err) {
+    console.log("Error => ", err.message);
+    if (clientId.length !== 24)
+      return res.status(422).json({
+        error: "ClientId mystyped."
+      });  
+    res.status(422).json({
+      error: "Something got wrong."
+    });
+  }
+}
+
+
+// it creates a client register
+client_add = async (req, res) => {
+  const {
+        name,
+        nickname, 
+        birthday, 
+        mother, 
+        mphone, 
+        memail, 
+        father, 
+        fphone, 
+        femail, 
+        consultant, 
+        cphone, 
+        cemail, 
+        defaultRate
+     } = req.body;
+  const userId = req.userData.userId
 
   // it checks whether the email is already been used by an user account
   // if so, it returns an error message
   try {
-    const userExist = await User
-      .find({ email });
+    const clientExist = await Client
+      .find({ name, nickname });
   
-    if (userExist.length > 0)
-      return res.status(409).json({ error: `User <email: ${email}> alread exists.`});
+    if (clientExist.length > 0)
+      return res.status(409).json({ error: `User <name: ${name} nickname: ${nickname}> alread exists.`});
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `Email <${email}> is invalid`
+      error: `Error CLIENTADD01`
     });
   }
 
-  bcrypt.hash(password, 10, async (err, hash) => {
-    if (err)
-      return res.status(400).json({
-        error: "Something bad at the password process."
-      });
-    else {
-      try{
-        const user = new User({
-          _id: new mongoose.Types.ObjectId(),
-          name,
-          email,
-          password: hash,
-          admin
-        });
-
-        await user.save();
-
-        const token = jwt.sign({
-          email,
-          userId: user._id,
-          name,
-          admin
-        },
-        process.env.JWT_KEY,
-        {
-          expiresIn: process.env.JWT_expiration,
-        });
-
-        res.json({
-          message: `User ${user.email} has been created.`, 
-          user, 
-          token
-        });
-
-      } catch(err) {
-        console.trace("Error: ", err.message);
-        res.status(422).json({
-          error: "Something wrong with email."
-        });
-      };
-    }
-  });
-}
-
-
-// it logs the user
-// TODO:
-// 1- need to check what to send as within token and user - for instance, password
-// 2- need to create a function to change only password
-login = async (req, res) => {
-  const email     = req.body.email;
-  const password  = req.body.password;
-
   try {
-    const user = await User
-      .findOne({ email });
+    const client = new Client({
+      _id: new mongoose.Types.ObjectId(),
+      name,
+      nickname, 
+      birthday, 
+      mother, 
+      mphone, 
+      memail, 
+      father, 
+      fphone, 
+      femail, 
+      consultant, 
+      cphone, 
+      cemail, 
+      default_rate: defaultRate,
+      user_id: userId
+    });
 
-    if (!user || user.length < 1)
-      return res.status(401).json({ error: "Authentication has failed"});
-    else {
-      bcrypt.compare(password, user.password, (err, result) => {
-        if (err)
-          return res.status(401).json({ error: "Authentication has failed"});
+    await client.save();
 
-        if (result){
-          const token = jwt.sign({
-            email,
-            userId: user._id,
-            name: user.name,
-            admin: user.admin
-          },
-          process.env.JWT_KEY,
-          {
-            expiresIn: process.env.JWT_expiration,
-          });
+    res.json({
+      message: `Client ${client.name} has been created.`
+    });
 
-          res.json({
-            message: "success", 
-            user, 
-            token
-          });
-        }
-        else
-          res.status(401).json({ error: "Authentication has failed"});
-      });
-    }
   } catch(err) {
     console.trace("Error: ", err.message);
-    res.status(401).json({ error: "Authentication has failed"});
-  }
+    res.status(422).json({
+      error: "Something wrong with client's data."
+    });
+  };
 }
 
 
@@ -164,6 +147,10 @@ login = async (req, res) => {
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
 modify_user = async (req, res) => {
+  const userID = req.userData.userID;
+  const clientId = "asd";
+  const userFromClient = Client.
+    findById
   if (!req.userData.admin)
     return res.status(401).json({
       error: `User <${req.userData.email} is not an Admin.`
@@ -226,38 +213,38 @@ modify_user = async (req, res) => {
 
 // FIRST it needs to check whether the user is admin
 // it deletes an user account
-delete_user = async (req, res) => {
+client_delete = async (req, res) => {
   if (!req.userData.admin)
     return res.status(401).json({
       error: `User <${req.userData.email} is not an Admin.`
     });
 
-  const userId = req.params.userId;
+  const clientId = req.params.clientId;
 
   try {
-    const userToBeDeleted = await User.findById(userId);
-    if (!userToBeDeleted || userToBeDeleted.length < 1)
+    const clientToBeDeleted = await Client.findById(clientId);
+    if (!clientToBeDeleted || clientToBeDeleted.length < 1)
       throw Error;
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `User <${userId} NOT found.`
+      error: `Client <${clientId} NOT found.`
     });
   }
 
   try {
-    const userDeleted = await User.deleteOne({ _id: userId});
+    const clientDeleted = await Client.deleteOne({ _id: clientId});
 
-    if (userDeleted.deletedCount)
+    if (clientDeleted.deletedCount)
       return res.status(200).json({
-        message: `User <${userId}> has been deleted`
+        message: `User <${clientId}> has been deleted`
       });
     else
       throw Error;
   } catch (err) {
     console.trace("Error => ", err.message);
     res.status(404).json({
-      error: `Something bad with User id <${userId}>`
+      error: `Something bad with Client id <${clientId}>`
     })
   }
 }
@@ -266,8 +253,7 @@ delete_user = async (req, res) => {
 module.exports = {
   get_all,
   get_one,
-  signup,
-  login,
+  client_add,
   modify_user,
-  delete_user
+  client_delete
 }
