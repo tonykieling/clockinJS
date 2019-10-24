@@ -1,5 +1,5 @@
 const mongoose  = require("mongoose");
-const Client    = require("../models/client.js");
+const Clockin   = require("../models/clockin.js");
 
 
 // it gets all users from the system - on purpose with no auth
@@ -8,31 +8,28 @@ get_all = async (req, res) => {
   const userId    = req.userData.userId;
   
   try {
-    let allClients = null;
+    let allClockins = null;
     if (userAdmin)
-      allClients = await Client
+      allClients = await Clockin
         .find()
-        .select(" name nickname mother consultant user_id ");
-        // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
-
+        .select(" date time_start time_end rate notes invoice_id client_id user_id ");
     else
-      client = await Client
+      client = await Clockin
         .find({ user_id: userId})      // it has to be for only that user
-        .select(" name nickname mother consultant ")
+        .select(" date time_start time_end rate notes invoice_id client_id user_id ");
 
-
-    if (!allClients || allClients.length < 1)
+    if (!allClockins || allClockins.length < 1)
       return res.status(200).json({
-        message: `No clients at all.`
+        message: `No clockins at all.`
       });
     
     res.status(200).json({
-      message: allClients
+      message: allClockins
     });
   } catch(err) {
     console.log("Error => ", err.message);
     res.status(422).json({
-      error: "ECGO01: Something got wrong."
+      error: "EACK02: Something got wrong."
     });
   }
 }
@@ -40,22 +37,22 @@ get_all = async (req, res) => {
 
 // it gets one user - on purpose with no auth
 get_one = async (req, res) => {
-  const clientId  = req.params.clientId;
-  const userAdmin = req.userData.admin;
-  const userId    = req.userData.userId;  
+  const clockinId  = req.params.clockinId;
+  const userAdmin  = req.userData.admin;
+  const userId     = req.userData.userId;  
   
   try {
-    const client = await Client
-      .findById(clientId)
-      .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
+    const clockin = await Clockin
+      .findById(clockinId)
+      .select(" date time_start time_end rate notes invoice_id client_id user_id ");
 
-    if (!client || client.length < 1)
+    if (!clockin || clockin.length < 1)
       return res.status(409).json({
-        error: `ECGO02: Client <id: ${clientId}> does not exist.`
+        error: `ECKGO01: Clockin <id: ${clockinId}> does not exist.`
       });
     if (userId !== client.user_id && !userAdmin)
       return res.status(409).json({
-        error: `ECGO03: Client <id: ${clientId}> belongs to another user.`
+        error: `ECKGO02: Clockin <id: ${clockinId}> belongs to another user.`
       });
 
     res.status(200).json({
@@ -63,36 +60,30 @@ get_one = async (req, res) => {
     });
   } catch(err) {
     console.log("Error => ", err.message);
-    if (clientId.length !== 24)
+    if (clockinId.length !== 24)
       return res.status(422).json({
-        error: "ECGO04: ClientId mystyped."
+        error: "ECKGO02: clockinId mystyped."
       });  
     res.status(422).json({
-      error: "ECGO05: Something got wrong."
+      error: "ECKGO03: Something got wrong."
     });
   }
 }
 
 
 // it creates a client register
-client_add = async (req, res) => {
+clockin_add = async (req, res) => {
+console.log("--> req.body", req.body);
   const {
-        name,
-        nickname, 
-        birthday, 
-        mother, 
-        mphone, 
-        memail, 
-        father, 
-        fphone, 
-        femail, 
-        consultant, 
-        cphone, 
-        cemail, 
-        defaultRate
+    date,
+    time_start,
+    time_end,
+    rate,
+    notes,
+    client_id
      } = req.body;
   const userId = req.userData.userId
-
+return res.json({ date, time_start, time_end, rate, notes, client_id, userId});
   // it checks whether the email is already been used by an user account
   // if so, it returns an error message
   try {
@@ -104,7 +95,7 @@ client_add = async (req, res) => {
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `ECAD01: Error CLIENTADD01`
+      error: `Error CLIENTADD01`
     });
   }
 
@@ -136,7 +127,7 @@ client_add = async (req, res) => {
   } catch(err) {
     console.trace("Error: ", err.message);
     res.status(422).json({
-      error: "ECAD02: Something wrong with client's data."
+      error: "Something wrong with client's data."
     });
   };
 }
@@ -147,28 +138,28 @@ client_add = async (req, res) => {
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
 client_modify = async (req, res) => {
-  const clientId  = req.params.clientId;
+  const clockinId  = req.params.clockinId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;  
   
-  // this try is for check is the clientId passed from the frontend is alright (exists in database), plus
+  // this try is for check is the clockinId passed from the frontend is alright (exists in database), plus
   //  check whether either the client to be changed belongs for the user or the user is admin - if not, not allowed to change client's data
   try {
     const client = await Client
-      .findById(clientId);
+      .findById(clockinId);
 
     if (!client || client.length < 1)
       return res.status(409).json({
-        error: `Client <id: ${clientId}> does not exist.`
+        error: `Client <id: ${clockinId}> does not exist.`
       });
     if (userId !== client.user_id && !userAdmin)
       return res.status(409).json({
-        error: `Client <id: ${clientId}> belongs to another user.`
+        error: `Client <id: ${clockinId}> belongs to another user.`
       });
 
   } catch(err) {
     console.log("Error => ", err.message);
-    if (clientId.length !== 24)
+    if (clockinId.length !== 24)
       return res.status(422).json({
         error: "ClientId mystyped."
       });  
@@ -197,7 +188,7 @@ client_modify = async (req, res) => {
   try {
     const clientToBeChanged = await Client
       .updateOne({
-        _id: clientId
+        _id: clockinId
       }, {
         $set: {
             name,
@@ -221,7 +212,7 @@ client_modify = async (req, res) => {
     
     if (clientToBeChanged.nModified) {
       const clientModified = await Client
-        .findById({ _id: clientId})
+        .findById({ _id: clockinId})
         .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
         // .select(" name nickname mother consultant default_rate");
 
@@ -230,7 +221,7 @@ client_modify = async (req, res) => {
       });
     } else
       res.status(409).json({
-        error: `Client <${clientId}> not changed.`
+        error: `Client <${clockinId}> not changed.`
       });
 
   } catch(err) {
@@ -250,32 +241,32 @@ client_delete = async (req, res) => {
       error: `User <${req.userData.email} is not an Admin.`
     });
 
-  const clientId = req.params.clientId;
+  const clockinId = req.params.clockinId;
 
   try {
-    const clientToBeDeleted = await Client.findById(clientId);
+    const clientToBeDeleted = await Client.findById(clockinId);
     if (!clientToBeDeleted || clientToBeDeleted.length < 1)
       throw Error;
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `ECD01: Client <${clientId} NOT found.`
+      error: `ECD01: Client <${clockinId} NOT found.`
     });
   }
 
   try {
-    const clientDeleted = await Client.deleteOne({ _id: clientId});
+    const clientDeleted = await Client.deleteOne({ _id: clockinId});
 
     if (clientDeleted.deletedCount)
       return res.status(200).json({
-        message: `User <${clientId}> has been deleted`
+        message: `User <${clockinId}> has been deleted`
       });
     else
       throw Error;
   } catch (err) {
     console.trace("Error => ", err.message);
     res.status(404).json({
-      error: `ECD02: Something bad with Client id <${clientId}>`
+      error: `ECD02: Something bad with Client id <${clockinId}>`
     })
   }
 }
@@ -284,7 +275,7 @@ client_delete = async (req, res) => {
 module.exports = {
   get_all,
   get_one,
-  client_add,
+  clockin_add,
   client_modify,
   client_delete
 }

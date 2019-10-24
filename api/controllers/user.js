@@ -20,7 +20,7 @@ get_all = async (req, res) => {
       .select(" name email admin ")
 
     if (!allUsers || allUsers.length < 1)
-      return res.status(409).json({
+      return res.status(200).json({
         message: `No users at all.`
       });
     

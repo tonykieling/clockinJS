@@ -38,7 +38,7 @@ clockin
   notes
   invoice_id (can be null)
   client_id
-  place_id
+  user_id
 
 # when the invoice is generated, should contain the day, period of dates, possibles notes, and the status.
 # the generation of it will write in the clockin registers, flagin them as belong to that invoice

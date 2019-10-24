@@ -7,7 +7,8 @@ const mongoose    = require("mongoose");
 
 // const productRoutes   = require("./api/routes/products.js");
 const userRoutes      = require("./api/routes/user.js");
-const clientRoutes     = require("./api/routes/client.js");
+const clientRoutes    = require("./api/routes/client.js");
+const clockinRoutes   = require("./api/routes/clockin.js");
 
 
 // connection to the database regarding the environment variable URI
@@ -65,6 +66,10 @@ app.use("/user", userRoutes);
 
 // it calls client routes
 app.use("/client", clientRoutes);
+
+
+// it calls invoices routes
+app.use("/clockin", clockinRoutes);
 
 // the two below functions are designed to handle error
 // the first one will be called only if the server could not handle the request by /products. /orders or /user middlewares
