@@ -1,37 +1,60 @@
-const mongoose  = require("mongoose");
-const bcrypt    = require("bcrypt");
-const jwt       = require("jsonwebtoken");
+const mongoose      = require("mongoose");
+const bcrypt        = require("bcrypt");
 
-const User      = require("../models/user.js");
-const helper    = require("./helper-user.js");
+const User          = require("../models/user.js");
+const tokenCreation = require("../helpers/token.js").token_creation;
 
 
 // it gets all users from the system - on purpose with no auth
 get_all = async (req, res) => {
-  const allUsers = await User
-    .find()
-    .select(" name email admin ");
-
-  if (allUsers.length < 1)
-    return res.json({
-      message: "No users at all"
+  const userAdmin = req.userData.admin;
+  const userId    = req.userData.userId;
+  if (!userAdmin)
+    return res.status(403).json({
+      error: `EUGA01: User <${userId}> is not Admin`
     });
-  res.json(allUsers);
+  
+  try {
+    const allUsers = await User
+      .find()
+      .select(" name email admin ")
+
+    if (!allUsers || allUsers.length < 1)
+      return res.status(409).json({
+        message: `No users at all.`
+      });
+    
+    res.status(200).json({
+      message: allUsers
+    });
+  } catch(err) {
+    console.log("Error => ", err.message);
+    res.status(422).json({
+      error: "EUGA02: Something got wrong."
+    });
+  }
 }
 
 
 // it gets one user - on purpose with no auth
 get_one = async (req, res) => {
-  const userId = req.params.userId;
+  const userAdmin       = req.userData.admin;
+  const userId          = req.userData.userId;
+  const userToBeChecked = req.params.userId;
+
+  if (!userAdmin || userToBeChecked !== userId)
+    return res.status(403).json({
+      error: `EUG01: User <${userId}> with no permission`
+    });
 
   try {
     const user = await User
-      .findById(userId)
+      .findById(userToBeChecked)
       .select(" name email admin ");
 
     if (!user || user.length < 1)
       return res.status(409).json({
-        error: `User <id: ${userId}> does not exist.`
+        error: `EUGO02: User <id: ${userId}> does not exist.`
       });
     
     res.status(200).json({
@@ -40,7 +63,7 @@ get_one = async (req, res) => {
   } catch(err) {
     console.log("Error => ", err.message);
     res.status(422).json({
-      error: "Something got wrong."
+      error: "EUGO03: Something got wrong."
     });
   }
 }
@@ -48,7 +71,6 @@ get_one = async (req, res) => {
 
 // it creates an user account
 signup = async (req, res) => {
-// console.log("--> req.body", req.body)  ;
   const name      = req.body.name;
   const email     = req.body.email;
   const password  = req.body.password;
@@ -65,14 +87,14 @@ signup = async (req, res) => {
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `Email <${email}> is invalid`
+      error: `ESUP01: Email <${email}> is invalid`
     });
   }
 
   bcrypt.hash(password, 10, async (err, hash) => {
     if (err)
       return res.status(400).json({
-        error: "Something bad at the password process."
+        error: "ESUP02: Something bad at the password process."
       });
     else {
       try{
@@ -86,17 +108,7 @@ signup = async (req, res) => {
 
         await user.save();
 
-        const token = await helper(user.email, user._id, user.name, user.admin);
-        // const token = jwt.sign({
-        //   email,
-        //   userId: user._id,
-        //   name,
-        //   admin
-        // },
-        // process.env.JWT_KEY,
-        // {
-        //   expiresIn: process.env.JWT_expiration,
-        // });
+        const token = await tokenCreation(user.email, user._id, user.name, user.admin);
 
         res.json({
           message: `User ${user.email} has been created.`, 
@@ -107,7 +119,7 @@ signup = async (req, res) => {
       } catch(err) {
         console.trace("Error: ", err.message);
         res.status(422).json({
-          error: "Something wrong with email."
+          error: "ESUP03: Something wrong with email."
         });
       };
     }
@@ -128,14 +140,18 @@ login = async (req, res) => {
       .findOne({ email });
 
     if (!user || user.length < 1)
-      return res.status(401).json({ error: "Authentication has failed"});
+      return res.status(401).json({ 
+        error: "ELIN01: Authentication has failed"
+      });
     else {
       bcrypt.compare(password, user.password, async (err, result) => {
         if (err)
-          return res.status(401).json({ error: "Authentication has failed"});
+          return res.status(401).json({ 
+            error: "ELIN02: Authentication has failed"
+          });
 
         if (result){
-          const token = await helper.token(user.email, user._id, user.name, user.admin);
+          const token = await tokenCreation(user.email, user._id, user.name, user.admin);
 
           res.json({
             message: "success", 
@@ -144,12 +160,16 @@ login = async (req, res) => {
           });
         }
         else
-          res.status(401).json({ error: "Authentication has failed"});
+          res.status(401).json({ 
+            error: "ELIN03: Authentication has failed"
+          });
       });
     }
   } catch(err) {
     console.trace("Error: ", err.message);
-    res.status(401).json({ error: "Authentication has failed"});
+    res.status(401).json({ 
+      error: "ELIN04: Authentication has failed"
+    });
   }
 }
 
@@ -161,7 +181,7 @@ login = async (req, res) => {
 modify_user = async (req, res) => {
   if (!req.userData.admin)
     return res.status(401).json({
-      error: `User <${req.userData.email} is not an Admin.`
+      error: `EMU01: User <${req.userData.email} is not an Admin.`
     });
 
   const user  = req.params.userId;
@@ -175,12 +195,12 @@ modify_user = async (req, res) => {
     
     if (!checkUser)
       return res.status(404).json({
-        error: `User <${user}> NOT found.`
+        error: `EMU02: User <${user}> NOT found.`
       });
 
     if (!email) {
       return res.status(409).json({
-        error: `Email <${email}> is invalid.`
+        error: `EMU03: Email <${email}> is invalid.`
       });
     }
     
@@ -207,13 +227,13 @@ modify_user = async (req, res) => {
       });
     } else
       res.status(409).json({
-        error: `User <${user}> not changed.`
+        error: `EMU04: User <${user}> not changed.`
       });
 
   } catch(err) {
     console.trace("Error: ", err.message);
     res.status(409).json({
-      error: "Something bad"
+      error: "EMU05: Something bad"
     });
   }
 }
@@ -225,7 +245,7 @@ modify_user = async (req, res) => {
 delete_user = async (req, res) => {
   if (!req.userData.admin)
     return res.status(401).json({
-      error: `User <${req.userData.email} is not an Admin.`
+      error: `EDU01: User <${req.userData.email} is not an Admin.`
     });
 
   const userId = req.params.userId;
@@ -237,7 +257,7 @@ delete_user = async (req, res) => {
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `User <${userId} NOT found.`
+      error: `EDU02: User <${userId} NOT found.`
     });
   }
 
@@ -253,7 +273,7 @@ delete_user = async (req, res) => {
   } catch (err) {
     console.trace("Error => ", err.message);
     res.status(404).json({
-      error: `Something bad with User id <${userId}>`
+      error: `EDU03: Something bad with User id <${userId}>`
     })
   }
 }

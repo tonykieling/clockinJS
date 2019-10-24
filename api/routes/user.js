@@ -6,11 +6,11 @@ const userController  = require("../controllers/user.js");
 
 
 // it returns all users
-router.get("/", userController.get_all);
+router.get("/", checkAuth, userController.get_all);
 
 
 // it returns info about a particular user
-router.get("/:userId", userController.get_one);
+router.get("/:userId", checkAuth, userController.get_one);
 
 
 // it creates an user account
