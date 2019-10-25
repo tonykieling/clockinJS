@@ -28,8 +28,8 @@ router.post("/", checkAuth, clockinController.clockin_add);
 // // router.patch("password")
 
 
-// // it deletes a user account
-// router.delete("/:userId", checkAuth, clockinController.delete_user);
+// it deletes a user account
+router.delete("/:clockinId", checkAuth, clockinController.clockin_delete);
 
 
 module.exports = router;

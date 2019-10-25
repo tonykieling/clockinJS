@@ -1,20 +1,22 @@
 const mongoose  = require("mongoose");
-const Clockin   = require("../models/clockin.js");
 
+const Clockin   = require("../models/clockin.js");
+const User      = require("../models/user.js");
+const Client    = require("../models/client.js");
 
 // it gets all users from the system - on purpose with no auth
 get_all = async (req, res) => {
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
-  
+
   try {
     let allClockins = null;
     if (userAdmin)
-      allClients = await Clockin
+      allClockins = await Clockin
         .find()
         .select(" date time_start time_end rate notes invoice_id client_id user_id ");
     else
-      client = await Clockin
+      allClockins = await Clockin
         .find({ user_id: userId})      // it has to be for only that user
         .select(" date time_start time_end rate notes invoice_id client_id user_id ");
 
@@ -73,7 +75,6 @@ get_one = async (req, res) => {
 
 // it creates a client register
 clockin_add = async (req, res) => {
-console.log("--> req.body", req.body);
   const {
     date,
     time_start,
@@ -83,51 +84,60 @@ console.log("--> req.body", req.body);
     client_id
      } = req.body;
   const userId = req.userData.userId
-return res.json({ date, time_start, time_end, rate, notes, client_id, userId});
-  // it checks whether the email is already been used by an user account
-  // if so, it returns an error message
-  try {
-    const clientExist = await Client
-      .find({ name, nickname });
   
-    if (clientExist.length > 0)
-      return res.status(409).json({ error: `User <name: ${name} nickname: ${nickname}> alread exists.`});
+  // check for the User
+  try {
+    const userExist = await User
+      .findOne({ _id: userId });
+    if (!userExist)
+      return res.status(403).json({
+        error: `ECKA01: User <${userId}> does not exist`
+      });
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `Error CLIENTADD01`
+      error: `ECKA02: Something got wrong`
     });
   }
 
+  // check for the Client
   try {
-    const client = new Client({
+    const clientExist = await Client
+      .findOne({ _id: client_id });
+    if (!clientExist)
+      return res.status(403).json({
+        error: `ECKA03: Client <${client_id}> does not exist`
+      });
+  } catch(err) {
+    console.trace("Error: ", err.message);
+    return res.status(409).json({
+      error: `ECKA04: Something got wrong`
+    });
+  }
+
+  // lets record clockin after User and Cleint validation
+  try {
+    const newClockin = new Clockin({
       _id: new mongoose.Types.ObjectId(),
-      name,
-      nickname, 
-      birthday, 
-      mother, 
-      mphone, 
-      memail, 
-      father, 
-      fphone, 
-      femail, 
-      consultant, 
-      cphone, 
-      cemail, 
-      default_rate: defaultRate,
+      date,
+      time_start,
+      time_end,
+      rate,
+      notes,
+      client_id,
       user_id: userId
     });
 
-    await client.save();
+    await newClockin.save();
 
     res.json({
-      message: `Client ${client.name} has been created.`
+      message: `Clockin ${newClockin._id} has been created.`
     });
 
   } catch(err) {
     console.trace("Error: ", err.message);
     res.status(422).json({
-      error: "Something wrong with client's data."
+      error: "ECKA05: Something wrong with clockin's data."
     });
   };
 }
@@ -233,40 +243,42 @@ client_modify = async (req, res) => {
 }
 
 
-// FIRST it needs to check whether the user is admin
-// it deletes an user account
-client_delete = async (req, res) => {
-  if (!req.userData.admin)
-    return res.status(401).json({
-      error: `User <${req.userData.email} is not an Admin.`
-    });
-
+// FIRST it needs to check whether the user is admin or the clockin belongs to the user which is proceeding
+clockin_delete = async (req, res) => {
   const clockinId = req.params.clockinId;
+  const userId    = req.userData.userId;
+  const userAdmin = req.userData.admin;
 
   try {
-    const clientToBeDeleted = await Client.findById(clockinId);
-    if (!clientToBeDeleted || clientToBeDeleted.length < 1)
-      throw Error;
+    const clockinToBeDeleted = await Clockin
+      .findById(clockinId);
+    if (!clockinToBeDeleted || clockinToBeDeleted.length < 1)
+      return res.status(409).json({
+        error: `ECKD01: Clockin <${clockinId} NOT found.`
+      });
+
+    if ((userId != clockinToBeDeleted.user_id) || (!userAdmin))
+      return res.status(409).json({
+        error: `ECKD02: Clockin <${clockinId}> does not belong to User <${userId}>.`
+      });
   } catch(err) {
-    console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `ECD01: Client <${clockinId} NOT found.`
+      error: `ECKD03: Something went wrong.`
     });
   }
 
   try {
-    const clientDeleted = await Client.deleteOne({ _id: clockinId});
+    const clockinDeleted = await Clockin.deleteOne({ _id: clockinId});
 
-    if (clientDeleted.deletedCount)
+    if (clockinDeleted.deletedCount)
       return res.status(200).json({
-        message: `User <${clockinId}> has been deleted`
+        message: `Clockin <${clockinId}> has been deleted`
       });
     else
       throw Error;
   } catch (err) {
-    console.trace("Error => ", err.message);
     res.status(404).json({
-      error: `ECD02: Something bad with Client id <${clockinId}>`
+      error: `ECKD04: Something bad with Clockin id <${clockinId}>`
     })
   }
 }
@@ -276,6 +288,5 @@ module.exports = {
   get_all,
   get_one,
   clockin_add,
-  client_modify,
-  client_delete
+  clockin_delete
 }

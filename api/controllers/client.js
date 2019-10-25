@@ -6,7 +6,7 @@ const Client    = require("../models/client.js");
 get_all = async (req, res) => {
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
-  
+
   try {
     let allClients = null;
     if (userAdmin)
@@ -247,7 +247,7 @@ client_modify = async (req, res) => {
 client_delete = async (req, res) => {
   if (!req.userData.admin)
     return res.status(401).json({
-      error: `User <${req.userData.email} is not an Admin.`
+      error: `Client <${req.userData.email} is not an Admin.`
     });
 
   const clientId = req.params.clientId;
