@@ -49,4 +49,7 @@ invoice
   date_end
   notes
   status (null, created, sent, paid)
+  total_cad
+  user_id
+  client_id
 

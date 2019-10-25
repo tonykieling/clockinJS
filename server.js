@@ -9,6 +9,7 @@ const mongoose    = require("mongoose");
 const userRoutes      = require("./api/routes/user.js");
 const clientRoutes    = require("./api/routes/client.js");
 const clockinRoutes   = require("./api/routes/clockin.js");
+const invoiceRoutes   = require("./api/routes/invoice.js");
 
 
 // connection to the database regarding the environment variable URI
@@ -19,6 +20,7 @@ mongoose.connect(process.env.URI_DB, {
 
 // it logs the actions on the screen
 app.use(morgan("dev"));
+
 
 
 // settings related to boy-parser, which allows extended urlencoder and enables to receive json format
@@ -68,8 +70,13 @@ app.use("/user", userRoutes);
 app.use("/client", clientRoutes);
 
 
-// it calls invoices routes
+// it calls clockin routes
 app.use("/clockin", clockinRoutes);
+
+
+// it calls invoice routes
+app.use("/invoice", invoiceRoutes);
+
 
 // the two below functions are designed to handle error
 // the first one will be called only if the server could not handle the request by /products. /orders or /user middlewares

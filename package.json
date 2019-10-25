@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node others/cleanPort.js && nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,10 +17,10 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.5",
     "morgan": "^1.9.1",
-    "nan": "^2.14.0",
-    "shelljs": "^0.8.3"
+    "nan": "^2.14.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4"
+    "nodemon": "^1.19.4",
+    "shelljs": "^0.8.3"
   }
 }

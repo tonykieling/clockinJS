@@ -1,5 +1,6 @@
 const mongoose  = require("mongoose");
 
+const Invoice   = require("../models/invoice.js");
 const Clockin   = require("../models/clockin.js");
 const User      = require("../models/user.js");
 const Client    = require("../models/client.js");
@@ -10,28 +11,28 @@ get_all = async (req, res) => {
   const userId    = req.userData.userId;
 
   try {
-    let allClockins = null;
+    let allInvoices = null;
     if (userAdmin)
-      allClockins = await Clockin
+      allInvoices = await Invoice
         .find()
-        .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+        .select(" date date_start date_end notes total_cad ");
     else
-      allClockins = await Clockin
-        .find({ user_id: userId})      // it has to be for only that user
-        .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+      allInvoices = await Clockin
+        .find({ user_id: userId})
+        .select(" date date_start date_end notes total_cad ");        
 
-    if (!allClockins || allClockins.length < 1)
+    if (!allInvoices || allInvoices.length < 1)
       return res.status(200).json({
-        message: `No clockins at all.`
+        message: `No Invoices at all.`
       });
     
     res.status(200).json({
-      message: allClockins
+      message: allInvoices
     });
   } catch(err) {
     console.log("Error => ", err.message);
     res.status(422).json({
-      error: "EACK02: Something got wrong."
+      error: "EIGA01: Something got wrong."
     });
   }
 }
@@ -39,50 +40,51 @@ get_all = async (req, res) => {
 
 // it gets one user - on purpose with no auth
 get_one = async (req, res) => {
-  const clockinId  = req.params.clockinId;
+  const invoiceId  = req.params.invoiceId;
   const userAdmin  = req.userData.admin;
   const userId     = req.userData.userId;  
   
   try {
-    const clockin = await Clockin
-      .findById(clockinId)
-      .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+    const invoice = await Invoice
+      .findById(invoiceId)
+      .select(" date date_start date_end notes total_cad ");
 
     if (!clockin || clockin.length < 1)
       return res.status(409).json({
-        error: `ECKGO01: Clockin <id: ${clockinId}> does not exist.`
+        error: `EIGO01: Invoice <id: ${invoiceId}> does not exist.`
       });
     if (userId !== client.user_id && !userAdmin)
       return res.status(409).json({
-        error: `ECKGO02: Clockin <id: ${clockinId}> belongs to another user.`
+        error: `EIGO02: Invoice <id: ${invoiceId}> belongs to another user.`
       });
 
     res.status(200).json({
-      message: clockin
+      message: invoice
     });
   } catch(err) {
     console.log("Error => ", err.message);
-    if (clockinId.length !== 24)
+    if (invoiceId.length !== 24)
       return res.status(422).json({
-        error: "ECKGO02: clockinId mystyped."
+        error: "EIGO02: invoiceId mystyped."
       });  
     res.status(422).json({
-      error: "ECKGO03: Something got wrong."
+      error: "EIGO03: Something got wrong."
     });
   }
 }
 
 
-// it creates a client register
-clockin_add = async (req, res) => {
+// it creates a invoice document on mongoDB
+invoice_add = async (req, res) => {
   const {
     date,
-    time_start,
-    time_end,
-    rate,
+    dateStart,
+    dateEnd,
     notes,
-    client_id
-     } = req.body;
+    status, // (null, created, sent, paid)
+    totalCad,
+    clientId
+  } = req.body;
   const userId = req.userData.userId
   
   // check for the User
@@ -91,12 +93,12 @@ clockin_add = async (req, res) => {
       .findOne({ _id: userId });
     if (!userExist)
       return res.status(403).json({
-        error: `ECKA01: User <${userId}> does not exist`
+        error: `EIADD01: User <${userId}> does not exist`
       });
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `ECKA02: Something got wrong`
+      error: `EIADD02: Something got wrong`
     });
   }
 
@@ -106,38 +108,39 @@ clockin_add = async (req, res) => {
       .findOne({ _id: client_id });
     if (!clientExist)
       return res.status(403).json({
-        error: `ECKA03: Client <${client_id}> does not exist`
+        error: `EIADD03: Client <${client_id}> does not exist`
       });
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `ECKA04: Something got wrong`
+      error: `EIADD04: Something got wrong`
     });
   }
 
-  // lets record clockin after User and Cleint validation
+  // lets record invoice after User and Client validation
   try {
-    const newClockin = new Clockin({
+    const newInvoice = new Invoice({
       _id: new mongoose.Types.ObjectId(),
       date,
-      time_start,
-      time_end,
-      rate,
+      date_start: dateStart,
+      date_end: dateEnd,
       notes,
-      client_id,
+      status,
+      total_cad: totalCad,
+      client_id: clientId,
       user_id: userId
     });
 
-    await newClockin.save();
+    await newInvoice.save();
 
     res.json({
-      message: `Clockin ${newClockin._id} has been created.`
+      message: `Invoice ${newInvoice._id} has been created.`
     });
 
   } catch(err) {
     console.trace("Error: ", err.message);
     res.status(422).json({
-      error: "ECKA05: Something wrong with clockin's data."
+      error: "EIADD05: Something wrong with invoice's data."
     });
   };
 }
@@ -148,28 +151,28 @@ clockin_add = async (req, res) => {
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
 client_modify = async (req, res) => {
-  const clockinId  = req.params.clockinId;
+  const invoiceId  = req.params.invoiceId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;  
   
-  // this try is for check is the clockinId passed from the frontend is alright (exists in database), plus
+  // this try is for check is the invoiceId passed from the frontend is alright (exists in database), plus
   //  check whether either the client to be changed belongs for the user or the user is admin - if not, not allowed to change client's data
   try {
     const client = await Client
-      .findById(clockinId);
+      .findById(invoiceId);
 
     if (!client || client.length < 1)
       return res.status(409).json({
-        error: `Client <id: ${clockinId}> does not exist.`
+        error: `Client <id: ${invoiceId}> does not exist.`
       });
     if (userId !== client.user_id && !userAdmin)
       return res.status(409).json({
-        error: `Client <id: ${clockinId}> belongs to another user.`
+        error: `Client <id: ${invoiceId}> belongs to another user.`
       });
 
   } catch(err) {
     console.log("Error => ", err.message);
-    if (clockinId.length !== 24)
+    if (invoiceId.length !== 24)
       return res.status(422).json({
         error: "ClientId mystyped."
       });  
@@ -198,7 +201,7 @@ client_modify = async (req, res) => {
   try {
     const clientToBeChanged = await Client
       .updateOne({
-        _id: clockinId
+        _id: invoiceId
       }, {
         $set: {
             name,
@@ -222,7 +225,7 @@ client_modify = async (req, res) => {
     
     if (clientToBeChanged.nModified) {
       const clientModified = await Client
-        .findById({ _id: clockinId})
+        .findById({ _id: invoiceId})
         .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
         // .select(" name nickname mother consultant default_rate");
 
@@ -231,7 +234,7 @@ client_modify = async (req, res) => {
       });
     } else
       res.status(409).json({
-        error: `Client <${clockinId}> not changed.`
+        error: `Client <${invoiceId}> not changed.`
       });
 
   } catch(err) {
@@ -244,41 +247,41 @@ client_modify = async (req, res) => {
 
 
 // FIRST it needs to check whether the user is admin or the clockin belongs to the user which is proceeding
-clockin_delete = async (req, res) => {
-  const clockinId = req.params.clockinId;
+invoice_delete = async (req, res) => {
+  const invoiceId = req.params.invoiceId;
   const userId    = req.userData.userId;
   const userAdmin = req.userData.admin;
 
   try {
-    const clockinToBeDeleted = await Clockin
-      .findById(clockinId);
-    if (!clockinToBeDeleted || clockinToBeDeleted.length < 1)
+    const invoiceToBeDeleted = await Invoice
+      .findById(invoiceId);
+    if (!invoiceToBeDeleted || invoiceToBeDeleted.length < 1)
       return res.status(409).json({
-        error: `ECKD01: Clockin <${clockinId} NOT found.`
+        error: `EIDE01: Invoice <${invoiceId} NOT found.`
       });
 
-    if ((userId != clockinToBeDeleted.user_id) || (!userAdmin))
+    if ((userId != invoiceToBeDeleted.user_id) || (!userAdmin))
       return res.status(409).json({
-        error: `ECKD02: Clockin <${clockinId}> does not belong to User <${userId}>.`
+        error: `EIDE02: Invoice <${invoiceId}> does not belong to User <${userId}>.`
       });
   } catch(err) {
     return res.status(409).json({
-      error: `ECKD03: Something went wrong.`
+      error: `EIDE03: Something went wrong.`
     });
   }
 
   try {
-    const clockinDeleted = await Clockin.deleteOne({ _id: clockinId});
+    const clockinDeleted = await Invoice.deleteOne({ _id: invoiceId});
 
     if (clockinDeleted.deletedCount)
       return res.status(200).json({
-        message: `Clockin <${clockinId}> has been deleted`
+        message: `Invoice <${invoiceId}> has been deleted`
       });
     else
       throw Error;
   } catch (err) {
     res.status(404).json({
-      error: `ECKD04: Something bad with Clockin id <${clockinId}>`
+      error: `EIDE04: Something bad with Invoice id <${invoiceId}>`
     })
   }
 }
@@ -287,6 +290,6 @@ clockin_delete = async (req, res) => {
 module.exports = {
   get_all,
   get_one,
-  clockin_add,
-  clockin_delete
+  invoice_add,
+  invoice_delete
 }
