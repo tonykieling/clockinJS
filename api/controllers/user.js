@@ -111,7 +111,7 @@ signup = async (req, res) => {
         const token = await tokenCreation(user.email, user._id, user.name, user.admin);
 
         res.json({
-          message: `User ${user.email} has been created.`, 
+          message: `User <${user.email}> has been created.`, 
           user, 
           token
         });
@@ -239,9 +239,14 @@ modify_user = async (req, res) => {
 }
 
 
+
 // FIRST it needs to check whether the user is admin
 // it is checked in the token admin field
 // it deletes an user account
+
+// need to check whether there is clockin for that invoice to be deleted
+// implement soft deletion
+
 delete_user = async (req, res) => {
   if (!req.userData.admin)
     return res.status(401).json({

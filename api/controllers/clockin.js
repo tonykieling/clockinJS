@@ -243,7 +243,12 @@ client_modify = async (req, res) => {
 }
 
 
+
 // FIRST it needs to check whether the user is admin or the clockin belongs to the user which is proceeding
+
+// need to check whether there is clockin for that invoice to be deleted
+// implement soft deletion
+
 clockin_delete = async (req, res) => {
   const clockinId = req.params.clockinId;
   const userId    = req.userData.userId;

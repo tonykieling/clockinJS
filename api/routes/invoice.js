@@ -13,8 +13,8 @@ router.get("/", checkAuth, invoiceController.get_all);
 router.get("/:invoiceId", checkAuth, invoiceController.get_one);
 
 
-// // it creates an user account
-// router.post("/", checkAuth, invoiceController.invoice_add);
+// it creates an user account
+router.post("/", checkAuth, invoiceController.invoice_add);
 
 
 // // it logs the user into the system

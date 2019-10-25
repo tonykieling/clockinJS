@@ -76,6 +76,8 @@ get_one = async (req, res) => {
 
 // it creates a invoice document on mongoDB
 invoice_add = async (req, res) => {
+console.log("req.body", req.body);
+console.log("req.userData", req.userData);
   const {
     date,
     dateStart,
@@ -86,7 +88,17 @@ invoice_add = async (req, res) => {
     clientId
   } = req.body;
   const userId = req.userData.userId
+
   
+  try {
+    const clockins = await Clockin
+      .find({ client_id: clientId});
+    return res.status(208).json(clockins);
+  } catch(err) {
+    return res.send(err.message);
+  }
+return res.send("Anyways");
+
   // check for the User
   try {
     const userExist = await User
@@ -105,10 +117,10 @@ invoice_add = async (req, res) => {
   // check for the Client
   try {
     const clientExist = await Client
-      .findOne({ _id: client_id });
+      .findOne({ _id: clientId });
     if (!clientExist)
       return res.status(403).json({
-        error: `EIADD03: Client <${client_id}> does not exist`
+        error: `EIADD03: Client <${clientId}> does not exist`
       });
   } catch(err) {
     console.trace("Error: ", err.message);

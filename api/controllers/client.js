@@ -16,7 +16,7 @@ get_all = async (req, res) => {
         // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
 
     else
-      client = await Client
+      allClients = await Client
         .find({ user_id: userId})      // it has to be for only that user
         .select(" name nickname mother consultant ")
 
@@ -93,7 +93,7 @@ client_add = async (req, res) => {
      } = req.body;
   const userId = req.userData.userId
 
-  // it checks whether the email is already been used by an user account
+  // it checks whether the name and nickname are already been used by an user account
   // if so, it returns an error message
   try {
     const clientExist = await Client
@@ -130,7 +130,7 @@ client_add = async (req, res) => {
     await client.save();
 
     res.json({
-      message: `Client ${client.name} has been created.`
+      message: `Client <${client.name}> has been created.`
     });
 
   } catch(err) {
@@ -244,6 +244,8 @@ client_modify = async (req, res) => {
 
 // FIRST it needs to check whether the user is admin
 // it deletes an user account
+// need to check whether there is clockin for that invoice to be deleted
+// implement soft deletion
 client_delete = async (req, res) => {
   if (!req.userData.admin)
     return res.status(401).json({
