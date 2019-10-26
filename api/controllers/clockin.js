@@ -149,7 +149,7 @@ clockin_add = async (req, res) => {
       notes,
       client_id,
       user_id: userId,
-      invoice_id: undefined
+      invoice_id: "5db4d78621fe29470a3dd36a"  // FAKE and TEMP invoice
     });
 
     await newClockin.save();

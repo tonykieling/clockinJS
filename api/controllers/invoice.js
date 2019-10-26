@@ -140,10 +140,13 @@ console.log("req.userData", req.userData);
           $lte: dateEnd
         }
       });
-    return res.status(208).json({
-      count: clockins.length,
-      clockins
-    });
+
+    if (clockins.length < 1)
+      return res.status(208).json({
+        message: "No clockins at all",
+        user: userExist.name,
+        client: clientExist.name
+      });
   } catch(err) {
     return res.json({
       message: "No clockins at all",
@@ -151,7 +154,8 @@ console.log("req.userData", req.userData);
       client: clientExist.name
     });
   }
-return res.send("Anyways");
+  
+return res.json({ clockins });
 
 
   // lets record invoice after User and Client validation
@@ -168,10 +172,11 @@ return res.send("Anyways");
       user_id: userId
     });
 
+
     await newInvoice.save();
 
     res.json({
-      message: `Invoice ${newInvoice._id} has been created.`,
+      message: `Invoice <${newInvoice._id}> has been created.`,
       user: userExist.name,
       client: clientExist.name
     });
