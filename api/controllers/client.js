@@ -254,14 +254,15 @@ client_delete = async (req, res) => {
 
   const clientId = req.params.clientId;
 
+  let clientToBeDeleted = ""
   try {
-    const clientToBeDeleted = await Client.findById(clientId);
+    clientToBeDeleted = await Client.findById(clientId);
     if (!clientToBeDeleted || clientToBeDeleted.length < 1)
       throw Error;
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `ECD01: Client <${clientId} NOT found.`
+      error: `ECD01: Client <${clientId}> NOT found.`
     });
   }
 
@@ -270,7 +271,8 @@ client_delete = async (req, res) => {
 
     if (clientDeleted.deletedCount)
       return res.status(200).json({
-        message: `User <${clientId}> has been deleted`
+        message: `User <${clientId}> has been deleted`,
+        name: clientToBeDeleted.name
       });
     else
       throw Error;

@@ -24,7 +24,8 @@ const clockinSchema = mongoose.Schema({
   },
   invoice_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Invoice"
+    ref: "Invoice",
+    required: true
   },
   client_id: {
     type: mongoose.Schema.Types.ObjectId,

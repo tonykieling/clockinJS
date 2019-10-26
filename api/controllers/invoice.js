@@ -15,7 +15,7 @@ get_all = async (req, res) => {
     if (userAdmin)
       allInvoices = await Invoice
         .find()
-        .select(" date date_start date_end notes total_cad ");
+        .select(" date date_start date_end notes total_cad user_id ");
     else
       allInvoices = await Clockin
         .find({ user_id: userId})
@@ -27,7 +27,8 @@ get_all = async (req, res) => {
       });
     
     res.status(200).json({
-      message: allInvoices
+      count: allInvoices.length,
+      allInvoices
     });
   } catch(err) {
     console.log("Error => ", err.message);
@@ -47,13 +48,13 @@ get_one = async (req, res) => {
   try {
     const invoice = await Invoice
       .findById(invoiceId)
-      .select(" date date_start date_end notes total_cad ");
+      .select(" date date_start date_end notes total_cad user_id ");
 
-    if (!clockin || clockin.length < 1)
+    if (!invoice || invoice.length < 1)
       return res.status(409).json({
         error: `EIGO01: Invoice <id: ${invoiceId}> does not exist.`
       });
-    if (userId !== client.user_id && !userAdmin)
+    if (userId !== invoice.user_id && !userAdmin)
       return res.status(409).json({
         error: `EIGO02: Invoice <id: ${invoiceId}> belongs to another user.`
       });
@@ -89,19 +90,10 @@ console.log("req.userData", req.userData);
   } = req.body;
   const userId = req.userData.userId
 
-  
-  try {
-    const clockins = await Clockin
-      .find({ client_id: clientId});
-    return res.status(208).json(clockins);
-  } catch(err) {
-    return res.send(err.message);
-  }
-return res.send("Anyways");
-
   // check for the User
+  let userExist = "";
   try {
-    const userExist = await User
+    userExist = await User
       .findOne({ _id: userId });
     if (!userExist)
       return res.status(403).json({
@@ -115,19 +107,52 @@ return res.send("Anyways");
   }
 
   // check for the Client
+  // admin is able to insert a INVOICE for another user
+  let clientExist = "";
   try {
-    const clientExist = await Client
+    clientExist = await Client
       .findOne({ _id: clientId });
     if (!clientExist)
       return res.status(403).json({
         error: `EIADD03: Client <${clientId}> does not exist`
       });
+
+    // check whether the Client belongs to the User
+    if (clientExist.user_id != userId)
+      return res.status(403).json({
+        error: `EIADD04: Client <${clientExist.name}> does not belong to User <${userExist.name}>.`
+      });
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `EIADD04: Something got wrong`
+      error: `EIADD05: Something got wrong`
     });
   }
+
+  let clockins = [];
+  try {
+    clockins = await Clockin
+      .find({
+        client_id: clientId,
+        user_id: userId,
+        date: {
+          $gte: dateStart,
+          $lte: dateEnd
+        }
+      });
+    return res.status(208).json({
+      count: clockins.length,
+      clockins
+    });
+  } catch(err) {
+    return res.json({
+      message: "No clockins at all",
+      user: userExist.name,
+      client: clientExist.name
+    });
+  }
+return res.send("Anyways");
+
 
   // lets record invoice after User and Client validation
   try {
@@ -146,7 +171,9 @@ return res.send("Anyways");
     await newInvoice.save();
 
     res.json({
-      message: `Invoice ${newInvoice._id} has been created.`
+      message: `Invoice ${newInvoice._id} has been created.`,
+      user: userExist.name,
+      client: clientExist.name
     });
 
   } catch(err) {
@@ -267,15 +294,16 @@ invoice_delete = async (req, res) => {
   try {
     const invoiceToBeDeleted = await Invoice
       .findById(invoiceId);
+
     if (!invoiceToBeDeleted || invoiceToBeDeleted.length < 1)
       return res.status(409).json({
         error: `EIDE01: Invoice <${invoiceId} NOT found.`
       });
 
-    if ((userId != invoiceToBeDeleted.user_id) || (!userAdmin))
-      return res.status(409).json({
-        error: `EIDE02: Invoice <${invoiceId}> does not belong to User <${userId}>.`
-      });
+    if ((userId != invoiceToBeDeleted.user_id) && (!userAdmin))
+        return res.status(409).json({
+          error: `EIDE02: Invoice <${invoiceId}> does not belong to User <${userId}>.`
+        });
   } catch(err) {
     return res.status(409).json({
       error: `EIDE03: Something went wrong.`
@@ -283,7 +311,8 @@ invoice_delete = async (req, res) => {
   }
 
   try {
-    const clockinDeleted = await Invoice.deleteOne({ _id: invoiceId});
+    const clockinDeleted = await Invoice
+      .deleteOne({ _id: invoiceId});
 
     if (clockinDeleted.deletedCount)
       return res.status(200).json({

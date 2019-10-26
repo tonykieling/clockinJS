@@ -26,7 +26,8 @@ get_all = async (req, res) => {
       });
     
     res.status(200).json({
-      message: allClockins
+      count: allClockins.length,
+      allClockins
     });
   } catch(err) {
     console.log("Error => ", err.message);
@@ -98,8 +99,9 @@ clockin_add = async (req, res) => {
   const userId = req.userData.userId
   
   // check for the User
+  let userExist = "";
   try {
-    const userExist = await User
+    userExist = await User
       .findOne({ _id: userId });
     if (!userExist)
       return res.status(403).json({
@@ -113,8 +115,10 @@ clockin_add = async (req, res) => {
   }
 
   // check for the Client
+  // admin is able to insert a clockin for another user
+  let clientExist = "";
   try {
-    const clientExist = await Client
+    clientExist = await Client
       .findOne({ _id: client_id });
     if (!clientExist)
       return res.status(403).json({
@@ -122,9 +126,10 @@ clockin_add = async (req, res) => {
       });
 
     // check whether the Client belongs to the User
+    // later on allow the admin create a clockin for another user
     if (clientExist.user_id != userId)
       return res.status(403).json({
-        error: `ECKA04: Client <${client_id}> does not belong to User <${userId}>.`
+        error: `ECKA04: Client <${clientExist.name}> does not belong to User <${userExist.name}>.`
       });    
   } catch(err) {
     console.trace("Error: ", err.message);
@@ -143,13 +148,16 @@ clockin_add = async (req, res) => {
       rate,
       notes,
       client_id,
-      user_id: userId
+      user_id: userId,
+      invoice_id: undefined
     });
 
     await newClockin.save();
 
     res.json({
-      message: `Clockin ${newClockin._id} has been created.`
+      message: `Clockin ${newClockin._id} has been created.`,
+      user: userExist.name,
+      client: clientExist.name
     });
 
   } catch(err) {

@@ -12,8 +12,9 @@ const x = shell.exec("lsof -i :3333 | grep 3333").split(" ").join("");
 if (x != "") {
   let portNumber = "";
   for (let c = 0; c < 12; c += 1) {
-    if (Number(x[c])) {
+    if (Number(x[c]) || x[c] == "0") {
       portNumber += x[c];
+      // console.log("portNumber", x[c]);
     }
   }
   // console.log("x-->", x.split(" ").join(""));
