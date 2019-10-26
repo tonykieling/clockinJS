@@ -74,6 +74,18 @@ get_one = async (req, res) => {
 
 
 // it creates a client register
+// Need:
+// 1- Check userId and clientId
+// 2- find clockin where
+//   user_id && client_id
+//   date >= date_start && date <= date_end
+//   !invoice_id
+// it will gice an array of clockins
+// foreach:
+//   1- Sum up total time (time_end-time_start) * rate
+//   2- flag invoice_id to it
+// and
+//   write down invoice (it needs to be before 2)
 clockin_add = async (req, res) => {
   const {
     date,
@@ -108,10 +120,16 @@ clockin_add = async (req, res) => {
       return res.status(403).json({
         error: `ECKA03: Client <${client_id}> does not exist`
       });
+
+    // check whether the Client belongs to the User
+    if (clientExist.user_id != userId)
+      return res.status(403).json({
+        error: `ECKA04: Client <${client_id}> does not belong to User <${userId}>.`
+      });    
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `ECKA04: Something got wrong`
+      error: `ECKA05: Something got wrong`
     });
   }
 
@@ -137,7 +155,7 @@ clockin_add = async (req, res) => {
   } catch(err) {
     console.trace("Error: ", err.message);
     res.status(422).json({
-      error: "ECKA05: Something wrong with clockin's data."
+      error: "ECKA06: Something wrong with clockin's data."
     });
   };
 }
