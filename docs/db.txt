@@ -3,7 +3,8 @@ User
   name: String
   email: String
   password: String
-  admin: Boolean
+  admin: Boolean,
+  deleted: Boolean
 
 Client
   _id
@@ -21,6 +22,7 @@ Client
   cemail
   default_rate
   user_id
+  deleted
 
 place
   _id

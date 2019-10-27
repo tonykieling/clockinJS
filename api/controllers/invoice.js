@@ -5,6 +5,7 @@ const Clockin   = require("../models/clockin.js");
 const User      = require("../models/user.js");
 const Client    = require("../models/client.js");
 
+
 // it gets all users from the system - on purpose with no auth
 get_all = async (req, res) => {
   const userAdmin = req.userData.admin;
@@ -76,8 +77,19 @@ get_one = async (req, res) => {
 
 
 // it creates a invoice document on mongoDB
+/* 
+list of actions:
+ 1- validate User
+ 2- validate Client
+ - list of clockins for the data range
+ - grab the total_cad
+ - generate invoice_id
+ - write down the total_cad in the invoice
+ - write down the invoice_id in each clockin
+*/
 invoice_add = async (req, res) => {
-console.log("req.body", req.body);
+const date1 = new Date();
+console.log("date1 =", date1);
 // console.log("req.userData", req.userData);
   const {
     date,
@@ -126,6 +138,7 @@ console.log("req.body", req.body);
       error: `EIADD05: Something got wrong.`
     });
   }
+
 
   let clockins = [];
   try {
@@ -189,7 +202,9 @@ console.log("req.body", req.body);
           total_cad: totalCadTmp
         }
       });
-
+const date2 = new Date()
+console.log("date2 =", date2);
+console.log("total time = ", (date2 - date1) / 1000);
     res.json({
       message: `Invoice <${newInvoice._id}> has been created.`,
       user: userExist.name,

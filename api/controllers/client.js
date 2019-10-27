@@ -3,6 +3,8 @@ const Client    = require("../models/client.js");
 
 
 // it gets all users from the system - on purpose with no auth
+// it is an Admin action
+// TODO: apply the Authorization method
 get_all = async (req, res) => {
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
@@ -38,7 +40,7 @@ get_all = async (req, res) => {
 }
 
 
-// it gets one user - on purpose with no auth
+// it gets one user
 get_one = async (req, res) => {
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;

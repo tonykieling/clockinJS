@@ -5,8 +5,12 @@ const User          = require("../models/user.js");
 const tokenCreation = require("../helpers/token.js").token_creation;
 
 
-// it gets all users from the system - on purpose with no auth
-get_all = async (req, res) => {
+/**
+ * It gets all users from the system.
+ * P.S.: It is an ADMIN ACTION!
+ * @return {User} List of all Users.
+ */
+async function get_all (req, res) {
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
   if (!userAdmin)
@@ -36,8 +40,12 @@ get_all = async (req, res) => {
 }
 
 
-// it gets one user - on purpose with no auth
-get_one = async (req, res) => {
+/**
+ * It gets one user - on purpose with no auth
+ * @param {number} req.params.userData.userId it's asd,
+ * @return {number} Data about one specific User.
+ */
+async function get_one(req, res) {
   const userAdmin       = req.userData.admin;
   const userId          = req.userData.userId;
   const userToBeChecked = req.params.userId;
