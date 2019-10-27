@@ -15,11 +15,11 @@ get_all = async (req, res) => {
     if (userAdmin)
       allInvoices = await Invoice
         .find()
-        .select(" date date_start date_end notes total_cad user_id ");
+        .select(" date date_start date_end notes total_cad user_id status ");
     else
       allInvoices = await Clockin
         .find({ user_id: userId})
-        .select(" date date_start date_end notes total_cad ");        
+        .select(" date date_start date_end notes total_cad status");        
 
     if (!allInvoices || allInvoices.length < 1)
       return res.status(200).json({
@@ -78,14 +78,12 @@ get_one = async (req, res) => {
 // it creates a invoice document on mongoDB
 invoice_add = async (req, res) => {
 console.log("req.body", req.body);
-console.log("req.userData", req.userData);
+// console.log("req.userData", req.userData);
   const {
     date,
     dateStart,
     dateEnd,
     notes,
-    status, // (null, created, sent, paid)
-    totalCad,
     clientId
   } = req.body;
   const userId = req.userData.userId
@@ -125,7 +123,7 @@ console.log("req.userData", req.userData);
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
-      error: `EIADD05: Something got wrong`
+      error: `EIADD05: Something got wrong.`
     });
   }
 
@@ -143,19 +141,15 @@ console.log("req.userData", req.userData);
 
     if (clockins.length < 1)
       return res.status(208).json({
-        message: "No clockins at all",
+        message: "No clockins at all.",
         user: userExist.name,
         client: clientExist.name
       });
   } catch(err) {
-    return res.json({
-      message: "No clockins at all",
-      user: userExist.name,
-      client: clientExist.name
+    return res.status(409).json({
+      error: `EIADD06: Something got wrong.`
     });
   }
-  
-return res.json({ clockins });
 
 
   // lets record invoice after User and Client validation
@@ -166,14 +160,35 @@ return res.json({ clockins });
       date_start: dateStart,
       date_end: dateEnd,
       notes,
-      status,
-      total_cad: totalCad,
+      status: "generated",
+      total_cad: 0,
       client_id: clientId,
       user_id: userId
     });
 
-
     await newInvoice.save();
+
+    let totalCadTmp = 0;
+    clockins.forEach(async clockin => {
+      totalCadTmp += ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
+      await Clockin
+        .updateOne({
+          _id: clockin._id
+        }, {
+          $set: {
+            invoice_id: newInvoice._id
+          }
+        });
+    })
+
+    await Invoice
+      .updateOne({
+        _id: newInvoice._id
+      }, {
+        $set: {
+          total_cad: totalCadTmp
+        }
+      });
 
     res.json({
       message: `Invoice <${newInvoice._id}> has been created.`,
@@ -184,7 +199,7 @@ return res.json({ clockins });
   } catch(err) {
     console.trace("Error: ", err.message);
     res.status(422).json({
-      error: "EIADD05: Something wrong with invoice's data."
+      error: "EIADD07: Something wrong with invoice's data."
     });
   };
 }

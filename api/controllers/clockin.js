@@ -149,7 +149,7 @@ clockin_add = async (req, res) => {
       notes,
       client_id,
       user_id: userId,
-      invoice_id: "5db4d78621fe29470a3dd36a"  // FAKE and TEMP invoice
+      invoice_id: null
     });
 
     await newClockin.save();
@@ -288,7 +288,7 @@ clockin_delete = async (req, res) => {
         error: `ECKD01: Clockin <${clockinId} NOT found.`
       });
 
-    if ((userId != clockinToBeDeleted.user_id) || (!userAdmin))
+    if ((userId != clockinToBeDeleted.user_id) && (!userAdmin))
       return res.status(409).json({
         error: `ECKD02: Clockin <${clockinId}> does not belong to User <${userId}>.`
       });
