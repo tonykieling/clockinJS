@@ -5,7 +5,7 @@ const Client    = require("../models/client.js");
 // it gets all users from the system - on purpose with no auth
 // it is an Admin action
 // TODO: apply the Authorization method
-get_all = async (req, res) => {
+const get_all = async (req, res) => {
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
 
@@ -41,7 +41,7 @@ get_all = async (req, res) => {
 
 
 // it gets one user
-get_one = async (req, res) => {
+const get_one = async (req, res) => {
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;  
@@ -77,7 +77,7 @@ get_one = async (req, res) => {
 
 
 // it creates a client register
-client_add = async (req, res) => {
+const client_add = async (req, res) => {
   const {
         name,
         nickname, 
@@ -148,7 +148,7 @@ client_add = async (req, res) => {
 // input: token, which should be admin
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
-client_modify = async (req, res) => {
+const client_modify = async (req, res) => {
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;  
@@ -248,7 +248,7 @@ client_modify = async (req, res) => {
 // it deletes an user account
 // need to check whether there is clockin for that invoice to be deleted
 // implement soft deletion
-client_delete = async (req, res) => {
+const client_delete = async (req, res) => {
   if (!req.userData.admin)
     return res.status(401).json({
       error: `Client <${req.userData.email} is not an Admin.`

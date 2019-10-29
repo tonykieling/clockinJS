@@ -10,7 +10,7 @@ const tokenCreation = require("../helpers/token.js").token_creation;
  * P.S.: It is an ADMIN ACTION!
  * @return {User} List of all Users.
  */
-async function get_all (req, res) {
+const get_all = async (req, res) => {
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
   if (!userAdmin)
@@ -21,7 +21,7 @@ async function get_all (req, res) {
   try {
     const allUsers = await User
       .find()
-      .select(" name email admin ")
+      .select(" name email admin ");
 
     if (!allUsers || allUsers.length < 1)
       return res.status(200).json({
@@ -45,7 +45,8 @@ async function get_all (req, res) {
  * @param {number} req.params.userData.userId it's asd,
  * @return {number} Data about one specific User.
  */
-async function get_one(req, res) {
+// async function get_one(req, res) {
+const get_one = async (req, res) => {
   const userAdmin       = req.userData.admin;
   const userId          = req.userData.userId;
   const userToBeChecked = req.params.userId;
@@ -78,7 +79,7 @@ async function get_one(req, res) {
 
 
 // it creates an user account
-signup = async (req, res) => {
+const signup = async (req, res) => {
   const name      = req.body.name;
   const email     = req.body.email;
   const password  = req.body.password;
@@ -139,7 +140,7 @@ signup = async (req, res) => {
 // TODO:
 // 1- need to check what to send as within token and user - for instance, password
 // 2- need to create a function to change only password
-login = async (req, res) => {
+const login = async (req, res) => {
   const email     = req.body.email;
   const password  = req.body.password;
 
@@ -186,7 +187,7 @@ login = async (req, res) => {
 // input: token, which should be admin
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
-modify_user = async (req, res) => {
+const modify_user = async (req, res) => {
   if (!req.userData.admin)
     return res.status(401).json({
       error: `EMU01: User <${req.userData.email} is not an Admin.`
@@ -255,7 +256,7 @@ modify_user = async (req, res) => {
 // need to check whether there is clockin for that invoice to be deleted
 // implement soft deletion
 
-delete_user = async (req, res) => {
+const delete_user = async (req, res) => {
   if (!req.userData.admin)
     return res.status(401).json({
       error: `EDU01: User <${req.userData.email} is not an Admin.`

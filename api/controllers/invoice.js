@@ -7,7 +7,7 @@ const Client    = require("../models/client.js");
 
 
 // it gets all users from the system - on purpose with no auth
-get_all = async (req, res) => {
+const get_all = async (req, res) => {
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
 
@@ -41,7 +41,7 @@ get_all = async (req, res) => {
 
 
 // it gets one user - on purpose with no auth
-get_one = async (req, res) => {
+const get_one = async (req, res) => {
   const invoiceId  = req.params.invoiceId;
   const userAdmin  = req.userData.admin;
   const userId     = req.userData.userId;  
@@ -87,7 +87,7 @@ list of actions:
  - write down the total_cad in the invoice
  - write down the invoice_id in each clockin
 */
-invoice_add = async (req, res) => {
+const invoice_add = async (req, res) => {
 const date1 = new Date();
 console.log("date1 =", date1);
 // console.log("req.userData", req.userData);
@@ -224,7 +224,7 @@ console.log("total time = ", (date2 - date1) / 1000);
 // input: token, which should be admin
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
-client_modify = async (req, res) => {
+const client_modify = async (req, res) => {
   const invoiceId  = req.params.invoiceId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;  
@@ -321,7 +321,7 @@ client_modify = async (req, res) => {
 
 
 // FIRST it needs to check whether the user is admin or the clockin belongs to the user which is proceeding
-invoice_delete = async (req, res) => {
+const invoice_delete = async (req, res) => {
   const invoiceId = req.params.invoiceId;
   const userId    = req.userData.userId;
   const userAdmin = req.userData.admin;

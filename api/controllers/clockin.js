@@ -5,7 +5,7 @@ const User      = require("../models/user.js");
 const Client    = require("../models/client.js");
 
 // it gets all users from the system - on purpose with no auth
-get_all = async (req, res) => {
+const get_all = async (req, res) => {
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
 
@@ -39,7 +39,7 @@ get_all = async (req, res) => {
 
 
 // it gets one user - on purpose with no auth
-get_one = async (req, res) => {
+const get_one = async (req, res) => {
   const clockinId  = req.params.clockinId;
   const userAdmin  = req.userData.admin;
   const userId     = req.userData.userId;  
@@ -87,7 +87,7 @@ get_one = async (req, res) => {
 //   2- flag invoice_id to it
 // and
 //   write down invoice (it needs to be before 2)
-clockin_add = async (req, res) => {
+const clockin_add = async (req, res) => {
   const {
     date,
     time_start,
@@ -275,7 +275,7 @@ client_modify = async (req, res) => {
 // need to check whether there is clockin for that invoice to be deleted
 // implement soft deletion
 
-clockin_delete = async (req, res) => {
+const clockin_delete = async (req, res) => {
   const clockinId = req.params.clockinId;
   const userId    = req.userData.userId;
   const userAdmin = req.userData.admin;

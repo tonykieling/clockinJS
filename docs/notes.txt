@@ -23,3 +23,6 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRvbnkua2llbGluZ0BnbWFpbC5jb20
   default_rate
   user_id
 
+https://timonweb.com/tutorials/how-to-enable-ecmascript-6-imports-in-nodejs/
+How To Enable ECMAScript 6 Imports in Node.JS
+
