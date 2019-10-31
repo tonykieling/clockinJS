@@ -29,6 +29,7 @@ const get_all = async (req, res) => {
       });
     
     res.status(200).json({
+      count: allUsers.length,
       message: allUsers
     });
   } catch(err) {
@@ -80,10 +81,17 @@ const get_one = async (req, res) => {
 
 // it creates an user account
 const signup = async (req, res) => {
-  const name      = req.body.name;
-  const email     = req.body.email;
-  const password  = req.body.password;
-  const admin     = req.body.admin;
+  // const name      = req.body.name;
+  // const email     = req.body.email;
+  // const password  = req.body.password;
+  // const admin     = req.body.admin;
+  const {
+    name,
+    email,
+    password,
+    admin
+  } = req.body;
+  console.log(`received user: ${name}, ${email}, ${password}, ${admin}`);
 
   // it checks whether the email is already been used by an user account
   // if so, it returns an error message
@@ -118,7 +126,6 @@ const signup = async (req, res) => {
         await user.save();
 
         const token = await tokenCreation(user.email, user._id, user.name, user.admin);
-
         res.json({
           message: `User <${user.email}> has been created.`, 
           user, 

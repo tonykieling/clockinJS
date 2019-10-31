@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Land       from "./component/Land.js";
 import NoPage     from "./component/Error.js";
 import SysHeader  from "./component/SysHeader.js";
+import Register from './component/Register.js';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
         <SysHeader />
         <Switch>
           <Route exact path = "/" component = { Land } />
-
+          <Route exact path = "/register" component = { Register } />
           <Route component = { NoPage } />
         </Switch>
       </div>

@@ -6,6 +6,7 @@ export default function Land() {
       <h1>
         This is Land page
       </h1>
+      <p>Fill this part with some text</p>
     </div>
   )
 }

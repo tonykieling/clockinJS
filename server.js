@@ -43,12 +43,14 @@ app.use((err, req, res, next) => {
 // settings related to CORS
 // it allows other clients (other than the SPA provided for this app) access these APIs
 app.use((req, res, next) => {
+console.log(" checking headers")  
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Autorization"
   );
   if (req.method === "OPTIONS") {
+console.log("    OPTIONS");
     res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
     return res.status(200).json({});
   }
@@ -83,6 +85,7 @@ app.use("/invoice", invoiceRoutes);
 // the second one is just to practice how to call a next function
 //   p.s. when dealing error message, it has to have 4 parameters (error, req, res, next)
 app.use((req, res) => {
+  console.log(" == no route has been found");
   res.status(400).send("Route NOT found!!");
 });
 

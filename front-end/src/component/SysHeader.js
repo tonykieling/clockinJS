@@ -45,16 +45,6 @@ class SysHeader extends Component {
             this.loggedHeader() :
             this.notLoggedHeader()
           );
-    // return (
-    //   <Navbar bg="dark" variant="dark">
-    //     <Navbar.Brand href="/">ClockinJS</Navbar.Brand>
-    //     <Nav>
-    //       <Link to="/login" className="nav-link">Login</Link>
-    //       <Link to="/user/logged" className="nav-link">Check all users</Link>
-    //       <Link to="/register" className="nav-link">Register</Link>
-    //     </Nav>
-    //   </Navbar>
-    // );
   }
 }
 
