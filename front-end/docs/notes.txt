@@ -7,4 +7,4 @@
 # npm i redux react-redux
   need to set the redux to the top level (index.js)
   create store, reducer and localStorage js files
-  
+# npm i axios

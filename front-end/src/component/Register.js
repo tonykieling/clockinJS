@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Form, Card, Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import axios from "axios";
 
 class Register extends Component {
 
@@ -42,7 +43,7 @@ class Register extends Component {
       });
   }
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
 
     if (this.state.name.length > 60) {
@@ -61,41 +62,33 @@ class Register extends Component {
         this.textInput4.focus();
       } else {
         // const url = "/user/signup";
-        const url = "http://localhost:3333/user/signup";    // this is dev setting
-        fetch( url, {  
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-                name      : this.state.name,
-                email     : this.state.email,
-                password  : this.state.password
-              })
-        })
-          .then(response => response.json())
-          .then((resJSON) => {
-            if ("message" in resJSON){
-              const user = {
-                id      : resJSON.user._id,
-                name    : resJSON.user.name,
-                email   : resJSON.user.email,
-                token   : resJSON.token
-              }; 
-              this.props.dispatchLogin({ user });
-              this.setState({
-                redirectFlag: true
-              });
-            }
-            else if ("error" in resJSON){
-              this.setState({
-                errorMsg: resJSON.error });  
-              this.clearMessage();
-            }
-          })
-          .catch((error) => {
-            console.error(error);
+        const url         = "http://localhost:3333/user/signup";    // this is dev setting
+        const createUser  = {
+          name: this.state.name,
+          email: this.state.email,
+          password: this.state.password
+        }
+        try {
+          const addUser = await axios.post(url, createUser);
+          if (addUser.data.message) {
+            const user = {
+              id      : addUser.data.user._id,
+              name    : addUser.data.user.name,
+              email   : addUser.data.user.email,
+              token   : addUser.data.token
+            }; 
+            this.props.dispatchLogin({ user });
             this.setState({
-              errorMsg: error.message });
-          })
+              redirectFlag: true
+            });
+          } else if (addUser.data.error)
+            throw Error(addUser.data.error);
+
+        } catch(err) {
+          console.error(err);
+          this.setState({
+            errorMsg: err.message });
+        }
       }
     }
   }
