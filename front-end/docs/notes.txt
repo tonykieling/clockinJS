@@ -1,0 +1,5 @@
+# create-react-app
+# npm i react-router-dom
+# npm i react-bootstrap bootstrap
+  need to include <link ref="stylesheet" ... at index.html
+  check at https://react-bootstrap.github.io/getting-started/introduction/
