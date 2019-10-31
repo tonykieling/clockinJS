@@ -81,13 +81,16 @@ class Register extends Component {
             this.setState({
               redirectFlag: true
             });
-          } else if (addUser.data.error)
-            throw Error(addUser.data.error);
+          } else if (addUser.data.error) {
+            this.setState({
+              errorMsg: addUser.data.error });
+            this.clearMessage();
+          }
 
         } catch(err) {
-          console.error(err);
           this.setState({
             errorMsg: err.message });
+          this.clearMessage();
         }
       }
     }
@@ -157,6 +160,10 @@ class Register extends Component {
                 ref         = {input => this.textInput4 = input }
               />
             </Form.Group>
+
+
+            {/* textInput4 would be phone, but not using it in this app */}
+
 
             <Form.Group controlId="formConfirmPassword">
               <Form.Label>Confirm Password</Form.Label>

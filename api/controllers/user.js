@@ -81,17 +81,12 @@ const get_one = async (req, res) => {
 
 // it creates an user account
 const signup = async (req, res) => {
-  // const name      = req.body.name;
-  // const email     = req.body.email;
-  // const password  = req.body.password;
-  // const admin     = req.body.admin;
   const {
     name,
     email,
     password,
     admin
   } = req.body;
-  console.log(`received user: ${name}, ${email}, ${password}, ${admin}`);
 
   // it checks whether the email is already been used by an user account
   // if so, it returns an error message
@@ -134,7 +129,7 @@ const signup = async (req, res) => {
 
       } catch(err) {
         console.trace("Error: ", err.message);
-        res.status(422).json({
+        res.status(200).json({
           error: "ESUP03: Something wrong with email."
         });
       };
@@ -171,7 +166,12 @@ const login = async (req, res) => {
 
           res.json({
             message: "success", 
-            user, 
+            user: {
+              _id: user._id,
+              name: user.name,
+              email: user.email,
+              admin: user.admin
+            },
             token
           });
         }

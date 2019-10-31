@@ -8,3 +8,4 @@
   need to set the redux to the top level (index.js)
   create store, reducer and localStorage js files
 # npm i axios
+# npm i jwt-decode // it only decode, do not validade, which should be done by the server side
