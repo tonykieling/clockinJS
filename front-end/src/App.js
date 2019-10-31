@@ -1,14 +1,18 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Land from "./component/Land.js";
-import NoPage from "./component/Error.js";
+// import './App.css';
+
+import Land       from "./component/Land.js";
+import NoPage     from "./component/Error.js";
+import SysHeader  from "./component/SysHeader.js";
 
 function App() {
   return (
     <Router>
       <div>
+        <SysHeader />
         <Switch>
           <Route exact path = "/" component = { Land } />
 

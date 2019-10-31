@@ -2,4 +2,9 @@
 # npm i react-router-dom
 # npm i react-bootstrap bootstrap
   need to include <link ref="stylesheet" ... at index.html
+   OR include import 'bootstrap/dist/css/bootstrap.min.css'; on App.js
   check at https://react-bootstrap.github.io/getting-started/introduction/
+# npm i redux react-redux
+  need to set the redux to the top level (index.js)
+  create store, reducer and localStorage js files
+  
