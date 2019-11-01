@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Navbar, Nav, Button } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -16,13 +16,34 @@ class SysHeader extends Component {
     return (
       <Navbar bg="primary" >
         <Navbar.Brand href="/">ClockinJS</Navbar.Brand>
-        <Nav>
-          <Link to="/" className="nav-link">{this.props.storeEmail} is logged</Link>
-          <Link to="/user/logged" className="nav-link">Clients</Link>
-          <Link to="/user/logged" className="nav-link">Clockins</Link>
-          <Link to="/user/logged" className="nav-link">Invoices</Link>
+
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mr-auto">
+            <Link to="/" className="nav-link">{this.props.storeEmail} is logged</Link>
+            <NavDropdown title="Clients" id="basic-nav-dropdown">
+              <NavDropdown.Item href="#action/3.1">Add New One</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item href="#action/3.2">List them all</NavDropdown.Item>
+            </NavDropdown>
+
+            <NavDropdown title="Clockins" id="basic-nav-dropdown">
+              <NavDropdown.Item href="#action/3.1">Punch in</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item href="#action/3.2">List them all</NavDropdown.Item>
+            </NavDropdown>
+
+            <NavDropdown title="Invoices" id="basic-nav-dropdown">
+              <NavDropdown.Item href="#action/3.1">Generate a brand new one</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item href="#action/3.2">List them all</NavDropdown.Item>
+            </NavDropdown>            
+          </Nav>
+
           <Button onClick={this.logout} className="logoutBtn">Logout</Button>
-        </Nav>
+
+        </Navbar.Collapse>
+
       </Navbar>
     );
   }

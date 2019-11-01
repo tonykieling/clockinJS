@@ -10,7 +10,7 @@ import NoPage     from "./component/Error.js";
 import SysHeader  from "./component/SysHeader.js";
 import Register   from './component/Register.js';
 import Login      from "./component/Login.js";
-import decodeToken from "./component/aux/decodeToken.js";
+// import decodeToken from "./component/aux/decodeToken.js";
 import Home       from "./component/Home.js";
 
 class App extends Component {
@@ -22,24 +22,38 @@ class App extends Component {
           <Switch>
             <Route exact path = "/" 
               render = {() => {
-                const token = decodeToken(this.props.storeToken);
-                if(!token) {
-                  return <Land />
+                // const token = decodeToken(this.props.storeToken);
+                if(!this.props.storeEmail) {
+                  return <Redirect to = "/land" />
                 }
                 else
                   return <Home />
               }} />
 
-            <Route exact path = "/register" component = { Register } />
+            <Route exact path = "/land" 
+              render = {() => {
+                if (!this.props.storeEmail)
+                  return <Land />
+                else
+                  return <Redirect to = "/" />
+              }} />
+
+            <Route exact path = "/register" 
+              render = {() => {
+                if (!this.props.storeEmail)
+                  return <Register />
+                else
+                  return <Redirect to = "/" />
+              }} />
             
             <Route exact path = "/login" 
               render = {() => {
-                const token = decodeToken(this.props.storeToken);
-                if(!token) {
+                // const token = decodeToken(this.props.storeToken);
+                // if(!token) {
+                if (!this.props.storeEmail)
                   return <Login />
-                }
                 else
-                  return <Home />
+                  return <Redirect to = "/" />
               }} />
             
             <Route component = { NoPage } />
@@ -52,7 +66,7 @@ class App extends Component {
 
 const mapStateToProps = store => {
   return({
-    storeToken: store.token
+    storeEmail: store.email
   });
 }
 

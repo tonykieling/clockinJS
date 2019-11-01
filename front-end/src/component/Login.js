@@ -39,7 +39,6 @@ class Login extends Component {
         })
         .then(response => response.json())
         .then((resJSON) => {
-console.log("====> resJSON", resJSON);
           if ('message' in resJSON){
             const user = resJSON.user;
             user.id    = user._id;
