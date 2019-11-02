@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import NavLink from 'react-bootstrap/NavLink';
 
 class SysHeader extends Component {
 
@@ -15,25 +16,31 @@ class SysHeader extends Component {
   loggedHeader = () => {
     return (
       <Navbar bg="primary" >
-        <Navbar.Brand href="/">ClockinJS</Navbar.Brand>
+        {/* <Navbar.Brand href="/">ClockinJS</Navbar.Brand> */}
+        <Navbar.Brand>
+          <Link to = "/" className="navbar-brand"> ClockinJS </Link>
+        </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <Link to="/" className="nav-link">{this.props.storeEmail} is logged</Link>
-            <NavDropdown title="Clients" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Add New One</NavDropdown.Item>
+            <NavDropdown title="Clients" id="basic-nav-dropdown1">
+              <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item>
+              {/* <NavDropdown.Item>
+                  <Link to = "/clientNew"> Add New One </Link>
+              </NavDropdown.Item> */}
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.2">List them all</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.2" >List them all</NavDropdown.Item>
             </NavDropdown>
 
-            <NavDropdown title="Clockins" id="basic-nav-dropdown">
+            <NavDropdown title="Clockins" id="basic-nav-dropdown2">
               <NavDropdown.Item href="#action/3.1">Punch in</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.2">List them all</NavDropdown.Item>
             </NavDropdown>
 
-            <NavDropdown title="Invoices" id="basic-nav-dropdown">
+            <NavDropdown title="Invoices" id="basic-nav-dropdown3">
               <NavDropdown.Item href="#action/3.1">Generate a brand new one</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.2">List them all</NavDropdown.Item>

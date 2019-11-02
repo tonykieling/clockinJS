@@ -12,6 +12,7 @@ import Register   from './component/Register.js';
 import Login      from "./component/Login.js";
 // import decodeToken from "./component/aux/decodeToken.js";
 import Home       from "./component/Home.js";
+import ClientNew  from "./component/ClientNew.js";
 
 class App extends Component {
   render() {
@@ -56,6 +57,16 @@ class App extends Component {
                   return <Redirect to = "/" />
               }} />
             
+            <Route exact path = "/clientNew" 
+              render = {() => {
+                // const token = decodeToken(this.props.storeToken);
+                // if(!token) {
+                if (!this.props.storeEmail)
+                  return <Login />
+                else
+                  return <ClientNew />
+              }} />
+
             <Route component = { NoPage } />
           </Switch>
         </div>
