@@ -13,14 +13,14 @@ const get_all = async (req, res) => {
     let allClients = null;
     if (userAdmin)
       allClients = await Client
-        .find()
-        .select(" name nickname mother consultant user_id ");
+        .find();
+        // .select(" name nickname mother consultant user_id ");
         // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
 
     else
       allClients = await Client
-        .find({ user_id: userId})      // it has to be for only that user
-        .select(" name nickname mother consultant ")
+        .find({ user_id: userId});      // it has to be for only that user
+        // .select(" name nickname mother consultant ")
 
 
     if (!allClients || allClients.length < 1)
@@ -29,6 +29,7 @@ const get_all = async (req, res) => {
       });
     
     res.status(200).json({
+      count: allClients.length,
       message: allClients
     });
   } catch(err) {
@@ -80,29 +81,34 @@ const get_one = async (req, res) => {
 const client_add = async (req, res) => {
   const {
         name,
-        nickname, 
+        nickName, 
         birthday, 
         mother, 
-        mphone, 
-        memail, 
+        mPhone, 
+        mEmail, 
         father, 
-        fphone, 
-        femail, 
+        fPhone, 
+        fEmail, 
         consultant, 
-        cphone, 
-        cemail, 
+        cPhone, 
+        cEmail, 
         defaultRate
      } = req.body;
   const userId = req.userData.userId
+console.log("req.body", req.body, "userId", userId);
+//   return res.json({
+//     body: req.body,
+//     userId
+//   })
 
   // it checks whether the name and nickname are already been used by an user account
   // if so, it returns an error message
   try {
     const clientExist = await Client
-      .find({ name, nickname });
+      .find({ name, nickname: nickName });
   
     if (clientExist.length > 0)
-      return res.status(409).json({ error: `User <name: ${name} nickname: ${nickname}> alread exists.`});
+      return res.status(409).json({ error: `User <name: ${name} nickname: ${nickName}> alread exists.`});
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
@@ -114,25 +120,27 @@ const client_add = async (req, res) => {
     const client = new Client({
       _id: new mongoose.Types.ObjectId(),
       name,
-      nickname, 
+      nickname: nickName, 
       birthday, 
       mother, 
-      mphone, 
-      memail, 
+      mphone: mPhone, 
+      memail: mEmail, 
       father, 
-      fphone, 
-      femail, 
+      fphone: fPhone, 
+      femail: fEmail, 
       consultant, 
-      cphone, 
-      cemail, 
+      cphone: cPhone, 
+      cemail: cEmail, 
       default_rate: defaultRate,
       user_id: userId
     });
 
     await client.save();
 
+    client.id = client._id;
     res.json({
-      message: `Client <${client.name}> has been created.`
+      message: `Client <${client.name}> has been created.`,
+      client
     });
 
   } catch(err) {
@@ -182,17 +190,17 @@ const client_modify = async (req, res) => {
 
   const {
     name,
-    nickname, 
+    nickName, 
     birthday, 
     mother, 
-    mphone, 
-    memail, 
+    mPhone, 
+    mEmail, 
     father, 
-    fphone, 
-    femail, 
+    fPhone, 
+    fEmail, 
     consultant, 
-    cphone, 
-    cemail, 
+    cPhone, 
+    cEmail, 
     defaultRate
  } = req.body;
 
@@ -203,17 +211,17 @@ const client_modify = async (req, res) => {
       }, {
         $set: {
             name,
-            nickname, 
+            nickname: nickName, 
             birthday, 
             mother, 
-            mphone, 
-            memail, 
+            mphone: mPhone, 
+            memail: mEmail, 
             father, 
-            fphone, 
-            femail, 
+            fphone: fPhone, 
+            femail: fEmail, 
             consultant, 
-            cphone, 
-            cemail, 
+            cphone: cPhone, 
+            cemail: cEmail, 
             default_rate: defaultRate,
             user_id: userId
         }
