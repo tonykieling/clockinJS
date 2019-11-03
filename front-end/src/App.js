@@ -5,14 +5,20 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // import './App.css';
 import { connect } from "react-redux";
 
-import Land       from "./component/Land.js";
-import NoPage     from "./component/Error.js";
-import SysHeader  from "./component/SysHeader.js";
-import Register   from './component/Register.js';
-import Login      from "./component/Login.js";
+import Land         from "./component/Land.js";
+import NoPage       from "./component/Error.js";
+import SysHeader    from "./component/SysHeader.js";
+import Register     from './component/Register.js';
+import Login        from "./component/Login.js";
 // import decodeToken from "./component/aux/decodeToken.js";
-import Home       from "./component/Home.js";
-import ClientNew  from "./component/ClientNew.js";
+import Home         from "./component/Home.js";
+import ClientNew    from "./component/ClientNew.js";
+import ClientList   from "./component/ClientsList.js";
+import PunchInNew   from "./component/PunchInNew.js";
+import PunchInsList from "./component/PunchInsList.js";
+import InvoiceNew   from "./component/InvoiceNew.js";
+import InvoicesList from "./component/InvoicesList.js";
+
 
 class App extends Component {
   render() {
@@ -65,6 +71,46 @@ class App extends Component {
                   return <Login />
                 else
                   return <ClientNew />
+              }} />
+
+            <Route exact path = "/clientList" 
+              render = {() => {
+                if (!this.props.storeEmail)
+                  return <Login />
+                else
+                  return <ClientList />
+              }} />
+
+            <Route exact path = "/punchInNew" 
+              render = {() => {
+                if (!this.props.storeEmail)
+                  return <Login />
+                else
+                  return <PunchInNew />
+              }} />
+
+            <Route exact path = "/punchInsList" 
+              render = {() => {
+                if (!this.props.storeEmail)
+                  return <Login />
+                else
+                  return <PunchInsList />
+              }} />
+            
+            <Route exact path = "/invoiceNew" 
+              render = {() => {
+                if (!this.props.storeEmail)
+                  return <Login />
+                else
+                  return <InvoiceNew />
+              }} />
+            
+            <Route exact path = "/invoicesList" 
+              render = {() => {
+                if (!this.props.storeEmail)
+                  return <Login />
+                else
+                  return <InvoicesList />
               }} />
 
             <Route component = { NoPage } />

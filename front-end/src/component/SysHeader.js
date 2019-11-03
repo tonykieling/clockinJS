@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import NavLink from 'react-bootstrap/NavLink';
 
 class SysHeader extends Component {
 
@@ -10,6 +9,14 @@ class SysHeader extends Component {
   logout = () => {
     if (window.confirm("Are you sure you wanna leave?"))
       this.props.noUser()
+  }
+
+  x = e => {
+    console.log("eee: ", e);
+    return(<Redirect to = "/land" />);
+    // this.props.history.push("/land");
+    // return(<a href="land"></a>)
+    // return <Link to = "/punchInNew" className="dropdown-item"> Punch In </Link>
   }
 
   // when a user is logged
@@ -26,24 +33,25 @@ class SysHeader extends Component {
           <Nav className="mr-auto">
             <Link to="/" className="nav-link">{this.props.storeEmail} is logged</Link>
             <NavDropdown title="Clients" id="basic-nav-dropdown1">
-              <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item>
-              {/* <NavDropdown.Item>
-                  <Link to = "/clientNew"> Add New One </Link>
-              </NavDropdown.Item> */}
+              {/* <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item> */}
+              {/* <NavDropdown.Item> */}
+              <Link to = "/clientNew" className="dropdown-item"> Add New One </Link>
+              {/* </NavDropdown.Item> */}
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.2" >List them all</NavDropdown.Item>
+              <Link to = "/clientList" className="dropdown-item"> List them all </Link>
             </NavDropdown>
 
             <NavDropdown title="Clockins" id="basic-nav-dropdown2">
-              <NavDropdown.Item href="#action/3.1">Punch in</NavDropdown.Item>
+              {/* <NavDropdown.Item href="punchInNew" onClick={this.x}>Punch in</NavDropdown.Item> */}
+              <NavDropdown.Item onClick={this.x}>Punch in</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.2">List them all</NavDropdown.Item>
+              <NavDropdown.Item href="punchInsList">List them all</NavDropdown.Item>
             </NavDropdown>
 
             <NavDropdown title="Invoices" id="basic-nav-dropdown3">
-              <NavDropdown.Item href="#action/3.1">Generate a brand new one</NavDropdown.Item>
+              <NavDropdown.Item href="invoiceNew">Generate a brand new one</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.2">List them all</NavDropdown.Item>
+              <NavDropdown.Item href="invoicesList">List them all</NavDropdown.Item>
             </NavDropdown>            
           </Nav>
 

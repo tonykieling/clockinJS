@@ -10,3 +10,5 @@
 # npm i axios
 # npm i jwt-decode // it only decode, do not validade, which should be done by the server side
 # npm i react-text-mask
+menu and routes are working
+TODO: set the links to be <Link ..> instead of >Dropdown.Item due to reload the whole page.

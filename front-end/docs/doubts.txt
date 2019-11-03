@@ -1,2 +1,4 @@
 - What's the better approach to css/styling file strucutre?
 - How to get the json answer using axios, in the case of status !== 2xx?
+- Why should use Promise.all?
+  await returning Pending Promise
