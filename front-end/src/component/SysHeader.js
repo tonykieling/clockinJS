@@ -42,8 +42,8 @@ class SysHeader extends Component {
             </NavDropdown>
 
             <NavDropdown title="Clockins" id="basic-nav-dropdown2">
-              {/* <NavDropdown.Item href="punchInNew" onClick={this.x}>Punch in</NavDropdown.Item> */}
-              <NavDropdown.Item onClick={this.x}>Punch in</NavDropdown.Item>
+              <NavDropdown.Item href="punchInNew"> Punch in </NavDropdown.Item>
+              {/* <NavDropdown.Item onClick={this.x}>Punch in</NavDropdown.Item> */}
               <NavDropdown.Divider />
               <NavDropdown.Item href="punchInsList">List them all</NavDropdown.Item>
             </NavDropdown>
