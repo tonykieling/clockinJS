@@ -86,7 +86,7 @@ class SysHeader extends Component {
 
 const mapStateToProps = store => {
   return {
-    storeEmail: store.email
+    storeEmail      : store.email
   }
 };
 

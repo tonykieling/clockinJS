@@ -1,75 +1,67 @@
 import React, { Component } from 'react'
-import axios from "axios";
+// import axios from "axios";
 import { connect } from "react-redux";
-import { Dropdown, Card, Button, Form } from "react-bootstrap";
+import {  Card, Button, Form } from "react-bootstrap";
 // import PunchInsList from './PunchInsList';
+import GetClients from "./aux/GetClients.js";
 
 class PunchInNew extends Component {
 
   state = {
-    clients       : null,
-    dropDownLabel : "Select the client"
+    clients       : null
+    // dropDownLabel : "Select the client"
   }
 
-  async componentDidMount() {
-    const url         = "http://localhost:3333/client";    // this is dev setting
-    try {
-      const getClients = await axios.get( 
-        url, 
-        {  
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization" : `Bearer ${this.props.storeToken}` }
-      });
-console.log("getClients", getClients);
-      if (getClients.data.message.length > 0) {
-        this.setState({
-          clients: getClients.data.message
-        });
-      }
-//         const id = addClient.data.client._id;
-//         const client = { id, name, nickName, mother };
-// console.log("NEWclient", addClient);
-//         this.props.dispatchLogin({ client });
+  // async componentDidMount() {
+  //   getClients();
+//     const clients = await getClients();
+
+//     const url         = "http://localhost:3333/client";    // this is dev setting
+//     try {
+//       const getClients = await axios.get( 
+//         url, 
+//         {  
+//         headers: { 
+//           "Content-Type": "application/json",
+//           "Authorization" : `Bearer ${this.props.storeToken}` }
+//       });
+// console.log("getClients", getClients);
+//       if (getClients.data.message.length > 0) {
 //         this.setState({
-//           redirectFlag: true
+//           clients: getClients.data.message
 //         });
-//       } else if (addClient.data.error) {
-//         this.setState({
-//           errorMsg: addClient.data.error });
-//         this.clearMessage();
 //       }
 
-    } catch(err) {
-      this.setState({
-        errorMsg: err.message });
-      // this.clearMessage();
-    }
-  }
+//     } catch(err) {
+//       this.setState({
+//         errorMsg: err.message });
+//       // this.clearMessage();
+//     }
+  // }
 
-  populateDropbox = () => {
-    // const clients = this.state.clients;
+  // populateDropbox = () => {
+  //   // const clients = this.state.clients;
 
-    return(
-      <Dropdown>
-        <Dropdown.Toggle variant="success" id="dropdown-basic">
-          {this.state.dropDownLabel}
-        </Dropdown.Toggle>
+  //   return(
+  //     <Dropdown>
+  //       <Dropdown.Toggle variant="success" id="dropdown-basic">
+  //         {this.state.dropDownLabel}
+  //       </Dropdown.Toggle>
 
-        <Dropdown.Menu>
-          {this.state.clients.map( (client, id) => 
-            <Dropdown.Item key = { id } onClick = { this.changes } name = {client.name}> { client.name }</Dropdown.Item>            
-          )}
-        </Dropdown.Menu>
-      </Dropdown>
-    );
-  }
+  //       <Dropdown.Menu>
+  //         {this.state.clients.map( (client, id) => 
+  //           <Dropdown.Item key = { id } onClick = { this.changes } name = {client.name}> { client.name }</Dropdown.Item>            
+  //         )}
+  //       </Dropdown.Menu>
+  //     </Dropdown>
+  //   );
+  // }
 
-  changes = e => {
-    this.setState({
-      dropDownLabel: e.target.name
-    });
-  }
+  // changes = e => {
+  //   this.setState({
+  //     dropDownLabel: e.target.name
+  //   });
+  // }
 
   render() {
     return (
@@ -82,9 +74,10 @@ console.log("getClients", getClients);
         <Card style={{ width: '18rem' }}>
         <Card.Body>
           <Card.Title>Punch in</Card.Title>
-          { this.state.clients
+          {/* { this.state.clients
          ? this.populateDropbox()
-         : null }
+         : null } */}
+         <GetClients />
           <Form>
   <Form.Group controlId="formBasicEmail">
     <Form.Label>Date</Form.Label>
@@ -139,4 +132,4 @@ const mapStateToProps = store => {
 // };
 
 
-export default connect(mapStateToProps, null)(PunchInNew)
+export default connect(mapStateToProps, null)(PunchInNew);

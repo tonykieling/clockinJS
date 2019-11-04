@@ -6,7 +6,11 @@ export const getUser = () => {
       id          : localStorage.getItem('id'),
       name        : localStorage.getItem('name'),
       email       : localStorage.getItem('email'),
-      token       : localStorage.getItem("token")
+      token       : localStorage.getItem("token"),
+
+      // client_id   : localStorage.getItem("client_id"),
+      // client_name : localStorage.getItem("client_name"),
+      // client_dr   : localStorage.getItem("client_dr"),
     }
     return(user ? user : undefined);
 
@@ -20,16 +24,33 @@ export const saveState = user => {
     localStorage.setItem('id', user.id);
     localStorage.setItem('email', user.email);
     localStorage.setItem('name', user.name);
-    localStorage.setItem('token', user.token);
-
+    localStorage.setItem("token", user.token);
   } catch (err) {
     return err.message;
   }
 }
 
+
+export const saveStateClient = client => {
+console.log("client LSTG: ", client);
+  try {
+    localStorage.setItem("client_id", client.client_id);
+    localStorage.setItem("client_nickname", client.client_nickname);
+    localStorage.setItem("client_dr", client.client_dr)
+  } catch (err) {
+    return err.message;
+  }
+}
+
+
 export const clearUserLS = () => {
   localStorage.removeItem('id');
   localStorage.removeItem('name');
   localStorage.removeItem('email');
-  localStorage.removeItem('token');
+  localStorage.removeItem("token");
+
+  localStorage.removeItem("client_id");
+  localStorage.removeItem("client_nickname");
+  localStorage.removeItem("client_dr");
+
 }

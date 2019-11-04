@@ -1,9 +1,9 @@
-import { saveState, clearUserLS } from './localStorage.js'
+import { saveState, clearUserLS, saveStateClient } from './localStorage.js'
 
 const initialState = {}
 
 const reducer = (state = initialState, action) => {
-console.log("action", action);
+// console.log("action", action);
   let newState = {...state};
   if (action.type === "LOGIN") {
     newState = {...state,
@@ -16,12 +16,23 @@ console.log("action", action);
 
   } else if (action.type === "LOGOUT") {
     newState = {
-      id          : undefined,
-      email       : undefined,
-      name        : undefined,
-      token       : undefined
+      id              : undefined,
+      email           : undefined,
+      name            : undefined,
+      token           : undefined,
+      client_id       : undefined,
+      client_nickname : undefined,
+      client_dr       : undefined
     };
     clearUserLS();
+
+  } else if (action.type === "SETCLIENT") {
+    newState = {...state,
+      client_id       : action.data.client._id,
+      client_nickname : action.data.client.nickname,
+      client_dr       : action.data.client.default_rate
+    };
+    saveStateClient(newState)
   }
   
   return newState;

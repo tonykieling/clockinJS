@@ -2,3 +2,5 @@
 - How to get the json answer using axios, in the case of status !== 2xx?
 - Why should use Promise.all?
   await returning Pending Promise
+- GetClients.js
+  Why am I not able to use value in order to pass value at Dropdown.Item?
