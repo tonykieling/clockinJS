@@ -7,10 +7,6 @@ export const getUser = () => {
       name        : localStorage.getItem('name'),
       email       : localStorage.getItem('email'),
       token       : localStorage.getItem("token"),
-
-      // client_id   : localStorage.getItem("client_id"),
-      // client_name : localStorage.getItem("client_name"),
-      // client_dr   : localStorage.getItem("client_dr"),
     }
     return(user ? user : undefined);
 
@@ -32,7 +28,6 @@ export const saveState = user => {
 
 
 export const saveStateClient = client => {
-console.log("client LSTG: ", client);
   try {
     localStorage.setItem("client_id", client.client_id);
     localStorage.setItem("client_nickname", client.client_nickname);

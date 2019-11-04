@@ -3,6 +3,7 @@ import axios from "axios";
 import { connect } from "react-redux";
 import { Dropdown } from "react-bootstrap";
 
+
 class GetClients extends Component {
 
   state = {
@@ -12,22 +13,20 @@ class GetClients extends Component {
   }
 
   async componentDidMount() {
-    const url         = "http://localhost:3333/client";    // this is dev setting
+    // const url         = "http://localhost:3333/client";    // this is dev setting
     try {
       const getClients = await axios.get( 
-        url, 
+        "/client", 
         {  
         headers: { 
           "Content-Type": "application/json",
           "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-console.log("==> getClients", getClients);
       if (getClients.data.message.length > 0) {
         this.setState({
           clients: getClients.data.message
         });
       }
-console.log("this.state--", this.state);
     } catch(err) {
       this.setState({
         errorMsg: err.message });

@@ -29,7 +29,6 @@ class App extends Component {
           <Switch>
             <Route exact path = "/" 
               render = {() => {
-                // const token = decodeToken(this.props.storeToken);
                 if(!this.props.storeEmail) {
                   return <Redirect to = "/land" />
                 }
@@ -55,8 +54,6 @@ class App extends Component {
             
             <Route exact path = "/login" 
               render = {() => {
-                // const token = decodeToken(this.props.storeToken);
-                // if(!token) {
                 if (!this.props.storeEmail)
                   return <Login />
                 else

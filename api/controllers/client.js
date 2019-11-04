@@ -209,7 +209,7 @@ const client_modify = async (req, res) => {
       .updateOne({
         _id: clientId
       }, {
-        $set: {
+        // $set: {
             name,
             nickname: nickName, 
             birthday, 
@@ -224,7 +224,7 @@ const client_modify = async (req, res) => {
             cemail: cEmail, 
             default_rate: defaultRate,
             user_id: userId
-        }
+        // }
       }, {
         runValidators: true
       });

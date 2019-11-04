@@ -2,66 +2,15 @@ import React, { Component } from 'react'
 // import axios from "axios";
 import { connect } from "react-redux";
 import {  Card, Button, Form } from "react-bootstrap";
-// import PunchInsList from './PunchInsList';
+
 import GetClients from "./aux/GetClients.js";
+
 
 class PunchInNew extends Component {
 
   state = {
     clients       : null
-    // dropDownLabel : "Select the client"
   }
-
-  // async componentDidMount() {
-  //   getClients();
-//     const clients = await getClients();
-
-//     const url         = "http://localhost:3333/client";    // this is dev setting
-//     try {
-//       const getClients = await axios.get( 
-//         url, 
-//         {  
-//         headers: { 
-//           "Content-Type": "application/json",
-//           "Authorization" : `Bearer ${this.props.storeToken}` }
-//       });
-// console.log("getClients", getClients);
-//       if (getClients.data.message.length > 0) {
-//         this.setState({
-//           clients: getClients.data.message
-//         });
-//       }
-
-//     } catch(err) {
-//       this.setState({
-//         errorMsg: err.message });
-//       // this.clearMessage();
-//     }
-  // }
-
-  // populateDropbox = () => {
-  //   // const clients = this.state.clients;
-
-  //   return(
-  //     <Dropdown>
-  //       <Dropdown.Toggle variant="success" id="dropdown-basic">
-  //         {this.state.dropDownLabel}
-  //       </Dropdown.Toggle>
-
-  //       <Dropdown.Menu>
-  //         {this.state.clients.map( (client, id) => 
-  //           <Dropdown.Item key = { id } onClick = { this.changes } name = {client.name}> { client.name }</Dropdown.Item>            
-  //         )}
-  //       </Dropdown.Menu>
-  //     </Dropdown>
-  //   );
-  // }
-
-  // changes = e => {
-  //   this.setState({
-  //     dropDownLabel: e.target.name
-  //   });
-  // }
 
   render() {
     return (
@@ -74,10 +23,9 @@ class PunchInNew extends Component {
         <Card style={{ width: '18rem' }}>
         <Card.Body>
           <Card.Title>Punch in</Card.Title>
-          {/* { this.state.clients
-         ? this.populateDropbox()
-         : null } */}
-         <GetClients />
+
+         <GetClients />     { /* mount the Dropbox Button with all clients for the user */ }
+
           <Form>
   <Form.Group controlId="formBasicEmail">
     <Form.Label>Date</Form.Label>
@@ -96,7 +44,7 @@ class PunchInNew extends Component {
 
   <Form.Group controlId="formBasicPassword">
     <Form.Label>Rate</Form.Label>
-    <Form.Control type="text" placeholder="Rate" />
+    <Form.Control type="text" placeholder={ this.props.storeRate ? this.props.storeRate : "Default Rate"} />
   </Form.Group>
 
   <Form.Group controlId="formBasicPassword">
@@ -118,7 +66,8 @@ class PunchInNew extends Component {
 
 const mapStateToProps = store => {
   return {
-    storeToken: store.token
+    storeToken: store.token,
+    storeRate : store.client_dr
   };
 };
 
