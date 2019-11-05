@@ -14,6 +14,7 @@ router.get("/:clockinId", checkAuth, clockinController.get_one);
 
 
 // it creates an user account
+// router.post("/", clockinController.clockin_add);
 router.post("/", checkAuth, clockinController.clockin_add);
 
 

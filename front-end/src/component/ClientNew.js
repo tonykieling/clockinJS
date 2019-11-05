@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import axios from "axios";
 
+// import CurrencyInput from "./aux/CurrencyInput.js";
+import PhoneInput from "./aux/PhoneInput.js";
+
 class ClientNew extends Component {
 
   state = {
@@ -207,7 +210,7 @@ console.log("NEWclient", addClient);
 
             <Form.Group controlId="formMPhone">
               <Form.Label>Mother's Phone</Form.Label>
-              <Form.Control
+              {/* <Form.Control
                 type        = "text"
                 placeholder = "Type the mother's phone number"
                 name        = "mPhone"
@@ -215,7 +218,17 @@ console.log("NEWclient", addClient);
                 value       = {this.state.mPhone}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput5 = input }
-              />
+              /> */}
+                <PhoneInput
+                  placeholder = "Type the mother's phone number" 
+                  type        = "text" 
+                  className   = "form-control"
+                  name        = "mPhone"
+                  onChange    = {this.handleChange}
+                  value       = {this.state.defaultRate}
+                  onKeyPress  = {this.handleChange}
+                  // ref         = {input => this.textInput4 = input}
+                />
             </Form.Group>
 
             <Form.Group controlId="formMEmail">
@@ -313,13 +326,23 @@ console.log("NEWclient", addClient);
               <Form.Label>Rate</Form.Label>
               <Form.Control
                 type        = "text"
-                placeholder = "Type the hourly rate"
+                placeholder = "Type the hourly rate - CAD$"
                 name        = "defaultRate"
                 onChange    = {this.handleChange}
                 value       = {this.state.defaultRate}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput13 = input }
               />
+              {/* <CurrencyInput 
+                placeholder = "CAD$ 0.00" 
+                type        = "text" 
+                className   = "form-control"
+                name        = "defaultRate"
+                onChange    = {this.handleChange}
+                value       = {this.state.defaultRate}
+                onKeyPress  = {this.handleChange}
+                // ref         = {input => this.textInput13 = input}
+                /> */}
             </Form.Group>
 
 

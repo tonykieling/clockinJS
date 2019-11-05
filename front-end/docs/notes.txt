@@ -14,3 +14,8 @@ menu and routes are working
 TODO: set the links to be <Link ..> instead of >Dropdown.Item due to reload the whole page.
 
 304 messages: https://airbrake.io/blog/http-errors/304-not-modified
+
+npm i
+    "prop-types"
+    "react-text-mask"
+    "text-mask-addons"

@@ -88,28 +88,34 @@ const get_one = async (req, res) => {
 // and
 //   write down invoice (it needs to be before 2)
 const clockin_add = async (req, res) => {
+console.log("req.body", req.body);
   const {
     date,
-    time_start,
-    time_end,
+    // time_start,
+    // time_end,
     rate,
-    notes,
-    client_id
+    notes
+    // client_id
      } = req.body;
+  const 
+    time_start  = req.body.timeStart;
+    time_end    = req.body.timeEnd;
+    client_id   = req.body.clientId;
   const userId = req.userData.userId
-  
+console.log("userId", userId);
   // check for the User
   let userExist = "";
   try {
     userExist = await User
       .findOne({ _id: userId });
+
     if (!userExist)
-      return res.status(403).json({
+      return res.status(200).json({
         error: `ECKA01: User <${userId}> does not exist`
       });
   } catch(err) {
     console.trace("Error: ", err.message);
-    return res.status(409).json({
+    return res.status(200).json({
       error: `ECKA02: Something got wrong`
     });
   }
@@ -121,24 +127,24 @@ const clockin_add = async (req, res) => {
     clientExist = await Client
       .findOne({ _id: client_id });
     if (!clientExist)
-      return res.status(403).json({
+      return res.status(200).json({
         error: `ECKA03: Client <${client_id}> does not exist`
       });
 
     // check whether the Client belongs to the User
     // later on allow the admin create a clockin for another user
     if (clientExist.user_id != userId)
-      return res.status(403).json({
+      return res.status(200).json({
         error: `ECKA04: Client <${clientExist.name}> does not belong to User <${userExist.name}>.`
       });    
   } catch(err) {
     console.trace("Error: ", err.message);
-    return res.status(409).json({
+    return res.status(200).json({
       error: `ECKA05: Something got wrong`
     });
   }
 
-  // lets record clockin after User and Cleint validation
+  // lets record clockin after User and Client validation
   try {
     const newClockin = new Clockin({
       _id: new mongoose.Types.ObjectId(),
@@ -162,7 +168,7 @@ const clockin_add = async (req, res) => {
 
   } catch(err) {
     console.trace("Error: ", err.message);
-    res.status(422).json({
+    res.status(200).json({
       error: "ECKA06: Something wrong with clockin's data."
     });
   };
