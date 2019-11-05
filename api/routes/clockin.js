@@ -6,6 +6,7 @@ const clockinController   = require("../controllers/clockin.js");
 
 
 // it returns all users
+// router.get("/", clockinController.get_all);
 router.get("/", checkAuth, clockinController.get_all);
 
 

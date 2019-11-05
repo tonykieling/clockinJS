@@ -8,6 +8,13 @@ const Client    = require("../models/client.js");
 const get_all = async (req, res) => {
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
+  const {
+    clientId,
+    dateStart,
+    dateEnd
+  } = req.query;
+console.log("***req.query", req.query);
+console.log("==>", clientId, dateStart, dateEnd);
 
   try {
     let allClockins = null;
@@ -17,9 +24,16 @@ const get_all = async (req, res) => {
         .select(" date time_start time_end rate notes invoice_id client_id user_id ");
     else
       allClockins = await Clockin
-        .find({ user_id: userId})      // it has to be for only that user
+        .find({ 
+          user_id: userId,
+          date: {
+            $gt: dateStart,
+            $lt: dateEnd
+          },
+          client_id: clientId
+        })
         .select(" date time_start time_end rate notes invoice_id client_id user_id ");
-
+console.log("+++ allClockins:", allClockins);
     if (!allClockins || allClockins.length < 1)
       return res.status(200).json({
         message: `No clockins at all.`

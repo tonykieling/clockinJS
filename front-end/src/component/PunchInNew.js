@@ -12,13 +12,12 @@ import GetClients from "./aux/GetClients.js";
 class PunchInNew extends Component {
 
   state = {
-    date          : undefined,
-    startingTime  : undefined,
-    endingTime    : undefined,
-    // rate          : this.props.storeRate ? this.props.storeRate : "yyy",
-    rate          : "",
-    notes         : undefined,
-    message       : undefined
+    date          : "",
+    startingTime  : "",
+    endingTime    : "",
+    rate          : this.props.storeRate ? this.props.storeRate : "",
+    notes         : "",
+    message       : ""
   }
 
 
@@ -45,7 +44,7 @@ console.log("inside onSubmit");
     const url = "/clockin";
 
     try {
-      const getClients = await axios.post( 
+      const addClockin = await axios.post( 
         url,
         data,
         {  
@@ -53,15 +52,15 @@ console.log("inside onSubmit");
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-console.log("getClientsXXX", getClients);
+console.log("addClockin", addClockin);
 
-      if (getClients.data.message) {
+      if (addClockin.data.message) {
         this.setState({
-          message: `${getClients.data.message} -client: ${getClients.data.client}`
+          message: `${addClockin.data.message} -client: ${addClockin.data.client}`
         });
-      } else if (getClients.data.error)
+      } else if (addClockin.data.error)
         this.setState({
-          message: getClients.data.error
+          message: addClockin.data.error
         });
 
       this.cleanForm();
@@ -177,10 +176,13 @@ console.log("getClientsXXX", getClients);
               <Col sm="3">
                 <Form.Control
                   type        = "text"
-                  placeholder = { this.props.storeRate ? this.props.storeRate : "Default Rate"}
+                  // placeholder = { this.props.storeRate ? this.props.storeRate : "Default Rate"}
+                  placeholder = { this.state.storeRate ? this.state.storeRate : "Default Rate"}
                   name        = "rate"
                   onChange    = {this.handleChange}
                   onKeyPress  = {this.handleChange}
+                  value       = {this.state.rate}
+                  defaultValue= {this.props.storeRate}
                   // ref         = {input => this.textInput4 = input } 
                   />
               </Col>
