@@ -98,8 +98,8 @@ console.log("req.body", req.body);
     // client_id
      } = req.body;
   const 
-    time_start  = req.body.timeStart;
-    time_end    = req.body.timeEnd;
+    time_start  = date + " " + req.body.timeStart;
+    time_end    = date + " " + req.body.timeEnd;
     client_id   = req.body.clientId;
   const userId = req.userData.userId
 console.log("userId", userId);
@@ -161,7 +161,8 @@ console.log("userId", userId);
     await newClockin.save();
 
     res.json({
-      message: `Clockin ${newClockin._id} has been created.`,
+      // message: `Clockin ${newClockin._id} has been created.`,
+      message: "Clockin has been created.",
       user: userExist.name,
       client: clientExist.name
     });

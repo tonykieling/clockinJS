@@ -18,7 +18,6 @@ class PunchInNew extends Component {
     // rate          : this.props.storeRate ? this.props.storeRate : "yyy",
     rate          : "",
     notes         : undefined,
-    errorMsg      : undefined,
     message       : undefined
   }
 
@@ -35,37 +34,70 @@ class PunchInNew extends Component {
     event.preventDefault();
 console.log("inside onSubmit");
 
-  const data = { 
-    date      : this.state.date,
-    timeStart : this.state.startingTime,
-    timeEnd   : this.state.endingTime,
-    rate      : this.state.rate || this.props.storeRate,
-    notes     : this.state.notes,
-    clientId  : this.props.storeClientId };
+    const data = { 
+      date      : this.state.date,
+      timeStart : this.state.startingTime,
+      timeEnd   : this.state.endingTime,
+      rate      : this.state.rate || this.props.storeRate,
+      notes     : this.state.notes,
+      clientId  : this.props.storeClientId };
 
     const url = "/clockin";
-      try {
-        const getClients = await axios.post( 
-          url,
-          data,
-          {  
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization" : `Bearer ${this.props.storeToken}` }
-        });
+
+    try {
+      const getClients = await axios.post( 
+        url,
+        data,
+        {  
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization" : `Bearer ${this.props.storeToken}` }
+      });
 console.log("getClientsXXX", getClients);
 
-        if (getClients.data.message.length > 0) {
-          this.setState({
-            message: `${getClients.data.message} -client: ${getClients.data.client}`
-          });
-        }
-      } catch(err) {
+      if (getClients.data.message) {
         this.setState({
-          errorMsg: err.message });
-      }
-}
+          message: `${getClients.data.message} -client: ${getClients.data.client}`
+        });
+      } else if (getClients.data.error)
+        this.setState({
+          message: getClients.data.error
+        });
 
+      this.cleanForm();
+      
+    } catch(err) {
+      this.setState({
+        message: err.message });
+      
+    }
+  }
+
+
+  cleanForm = () => {
+    setTimeout(() => {
+      this.setState({
+        date      : undefined,
+        timeStart : undefined,
+        timeEnd   : undefined,
+        rate      : undefined,
+        notes     : undefined,
+        message   : undefined
+      });
+    }, 3000);
+  }
+
+
+  showTotalTime = () => {
+    const time1 = Date.parse(`01 Jan 1970 ${(this.state.startingTime)}:00 GMT`);
+    const time2 = Date.parse(`01 Jan 1970 ${this.state.endingTime}:00 GMT`);
+
+    return(
+      <Form.Group as={Row} controlId="formTotal">
+        <Form.Label column sm="9" >Total time: {((time2 - time1) / (60 * 60 * 1000))} hr</Form.Label>
+      </Form.Group>
+    )
+  }
 
   render() {
     return (
@@ -75,17 +107,18 @@ console.log("getClientsXXX", getClients);
         </h1>
         <p>changing state after componentDidMount and working on looping of a list of items</p>
 
-        <Card style={{ width: '30rem' }}>
+        <Card style={{ width: '40rem' }}>
         <Card.Body>
           <Card.Title>Punch in</Card.Title>
 
          <GetClients />     { /* mount the Dropbox Button with all clients for the user */ }
 
-<br></br>
+          <br></br>
           <Form onSubmit={this.handleSubmit} >
+
             <Form.Group as={Row} controlId="formDate">
-              <Form.Label column sm="3" >Date</Form.Label>
-              <Col sm="15">
+              <Form.Label column sm="3">Date:</Form.Label>
+              <Col sm="6">
                 <Form.Control 
                   // autoFocus   = {true}
                   type        = "date"
@@ -97,43 +130,28 @@ console.log("getClientsXXX", getClients);
                   // ref         = {input => this.textInput1 = input } 
                 />
               </Col>
-            {/* <DatePicker
-              name="dates"
-              placeholderText = "Click to select"
-              // selected = {this.state.time_start}
-              // onChange = {this.handleChangeStartDate}
-              // selectsStart
-              // minDate={this.state.time_start || new Date()}
-              // dateFormat="dd/MM/YYYY"
-              // startDate={this.state.time_start}
-              // endDate={this.state.time_end}
-              // className = "form-control"
-              // required
-
-              selected={startDate}
-              onChange={date => setStartDate(date)}
-              fixedHeight
-            /> */}
-
             </Form.Group>
 
             <Form.Group as={Row} controlId="formST">
-              <Form.Label column sm="3" >Time Start</Form.Label>
-              <Col sm="15">
+              <Form.Label column sm="3" >Time Start:</Form.Label>
+              <Col sm="3">
                 <Form.Control
-                    type        = "time"
-                    placeholder = "Starting Time"
-                    name        = "startingTime"
-                    onChange    = {this.handleChange}
-                    value       = {this.state.startingTime}
-                    onKeyPress  = {this.handleChange}
-                    ref         = {input => this.textInput2 = input } />
+                  type        = "text"
+                  placeholder = "Starting Time"
+                  name        = "startingTime"
+                  onChange    = {this.handleChange}
+                  value       = {this.state.startingTime}
+                  onKeyPress  = {this.handleChange}
+                  // ref         = {input => this.textInput2 = input } 
+                  />
               </Col>
-              </Form.Group>
+            </Form.Group>
 
             <Form.Group as={Row} controlId="formET">
-              <Form.Label column sm="3" >Time End</Form.Label>
-              <Col sm="15">
+              <Col sm="3">
+                <Form.Label>Time End:</Form.Label>
+              </Col>
+              <Col sm="3">
                 <Form.Control                
                   type        = "text"
                   placeholder = "Ending Time"
@@ -141,24 +159,30 @@ console.log("getClientsXXX", getClients);
                   onChange    = {this.handleChange}
                   value       = {this.state.endingTime}
                   onKeyPress  = {this.handleChange}
-                  ref         = {input => this.textInput3 = input } />
+                  // ref         = {input => this.textInput3 = input } 
+                  />
               </Col>
+
+              <Col sm="6">
+                { (this.state.endingTime && this.state.startingTime)
+                  ? this.showTotalTime()
+                  : null }
+              </Col>
+
+              
             </Form.Group>
 
             <Form.Group as={Row} controlId="formRate">
               <Form.Label column sm="3" >Rate</Form.Label>
-              <Col sm="15">
+              <Col sm="3">
                 <Form.Control
                   type        = "text"
                   placeholder = { this.props.storeRate ? this.props.storeRate : "Default Rate"}
-                  // defaultValue = { this.props.storeRate ? this.props.storeRate : "Default Rate"}
-                  // value = { this.props.storeRate ? this.props.storeRate : "xx" }
-                  // defaultValue     = { this.props.storeRate}
                   name        = "rate"
                   onChange    = {this.handleChange}
-                  // value       = {this.state.rate}
                   onKeyPress  = {this.handleChange}
-                  ref         = {input => this.textInput4 = input } />
+                  // ref         = {input => this.textInput4 = input } 
+                  />
               </Col>
             </Form.Group>
 
@@ -166,8 +190,8 @@ console.log("getClientsXXX", getClients);
               <Form.Label>Notes</Form.Label>
               <Form.Control
                 as          = "textarea"
-                rows        = "4"
-                type        = "text"
+                rows        = "3"
+                // type        = "text"
                 placeholder = "Session's Notes"
                 name        = "notes"
                 onChange    = {this.handleChange}
@@ -178,7 +202,12 @@ console.log("getClientsXXX", getClients);
 
             <Button variant="primary" type= "submit" onClick = { this.handleSubmit }>
               Submit
-            </Button>
+            </Button>            
+            
+            <span>
+              { this.state.message ? this.state.message : "" }
+            </span>
+
           </Form>
         </Card.Body>
       </Card>
