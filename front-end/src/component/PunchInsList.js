@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
 import {  Card, Button, Form, Row, Col, Table } from "react-bootstrap";
@@ -14,7 +14,8 @@ class PunchInNew extends Component {
     clientId          : this.props.storeClientId,
     clockinList       : [],
     client            : "",
-    clockInListTable  : ""
+    clockInListTable  : "",
+    tableVisibility   : "hiddenTable"
   }
 
 
@@ -51,7 +52,8 @@ console.log("alrigth");
           clockinList       : getClockins.data.allClockins,
           client            : getClockins.data.client,
           clockInListTable  : this.renderDataTable(getClockins.data.allClockins, getClockins.data.client),
-          clientId
+          clientId,
+          tableVisibility   : "showTable"
         });
       }
 console.log("--- this.state", this.state);
@@ -68,14 +70,17 @@ console.log("errorrrrr");
   renderDataTable = (clockins, client) => {
 console.log("inside rednderDataTable", clockins);
     return clockins.map((clockin, index) => {
+      const dt = new Date(clockin.date);
+      const ts = new Date(clockin.time_start);
+      const te = new Date(clockin.time_end);
       const clockinsToSend = {
         num         : index + 1,
-        date        : clockin.date,
-        timeStart   : clockin.time_start,
-        timeEnd     : clockin.time_end,
+        date        : dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate(),
+        timeStart   : ts.getHours() + ":" + (ts.getMinutes() < 10 ? ("0" + ts.getMinutes()) : ts.getMinutes()),
+        timeEnd     : te.getHours() + ":" + (te.getMinutes() < 10 ? ("0" + te.getMinutes()) : te.getMinutes()),
         rate        : clockin.rate,
-        total       : "999",
-        // total       : (clockin.time_end - clockin.time_start) * clockin.rate,
+        totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
+        total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)),
         invoice     : clockin.invoice_id ? clockin.invoice_id : "not yet"
       }
 console.log("clockinsToSend", clockinsToSend);
@@ -87,6 +92,7 @@ console.log("clockinsToSend", clockinsToSend);
           <td>{clockinsToSend.date}</td>
           <td>{clockinsToSend.timeStart}</td>
           <td>{clockinsToSend.timeEnd}</td>
+          <td>{clockinsToSend.totalTime}</td>
           <td>{clockinsToSend.rate}</td>
           <td>{clockinsToSend.total}</td>
           <td>{clockinsToSend.invoice}</td>
@@ -106,12 +112,13 @@ console.log("clockinsToSend", clockinsToSend);
   cleanForm = () => {
     setTimeout(() => {
       this.setState({
-        date      : "",
-        timeStart : "",
-        timeEnd   : "",
-        rate      : "",
-        notes     : "",
-        message   : ""
+        date            : "",
+        timeStart       : "",
+        timeEnd         : "",
+        rate            : "",
+        notes           : "",
+        message         : "",
+        tableVisibility : "hiddenTable"
       });
     }, 3000);
   }
@@ -119,7 +126,8 @@ console.log("clockinsToSend", clockinsToSend);
 
   render() {
     return (
-      <div>
+      // <div>
+      <Fragment>
         <h1>
           List of Punch ins
         </h1>
@@ -174,11 +182,9 @@ console.log("clockinsToSend", clockinsToSend);
       </Card>
 
 
-
-
       <Card 
         id="clockinListResult" 
-        className={this.state.userTableHideClassName}
+        className={this.tableVisibility }
         >
           {(this.state.clockinList.length > 0) 
             ? <Table striped bordered hover size="sm" responsive>
@@ -189,6 +195,7 @@ console.log("clockinsToSend", clockinsToSend);
                     <th>Date</th>
                     <th>Time Start</th>
                     <th>Time End</th>
+                    <th>Total Time</th>
                     <th>Rate</th>
                     <th>Total CAD$</th>
                     <th>Invoice</th>
@@ -212,8 +219,8 @@ console.log("clockinsToSend", clockinsToSend);
           </CSVLink>             */}
         </Card>
 
-
-      </div>
+          </Fragment>
+      // </div>
     )
   }
 }

@@ -39,16 +39,23 @@ console.log("==>", clientId, dateStart, dateEnd);
         message: `No clockins at all.`
       });
     
-    const client = await Client
-      .findById( clientId )
-      .select(" nickname ");
-console.log("+++ client:", client);
+    if (clientId) {
+      const client = await Client
+        .findById( clientId )
+        .select(" nickname ");
+  console.log("+++ client:", client);
+
+      return res.status(200).json({
+        count: allClockins.length,
+        allClockins,
+        client: client.nickname });
+      }
+
     res.status(200).json({
       count: allClockins.length,
-      allClockins,
-      client: client.nickname
+      allClockins
     });
-
+  
   } catch(err) {
     console.log("Error => ", err.message);
     res.status(422).json({

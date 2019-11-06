@@ -1,3 +1,14 @@
+.hiddenTable{
+  visibility: hidden;
+}
+
+.showTable{
+  visibility: visible;
+}
+
+
+
+
 .App {
   text-align: center;
 }
