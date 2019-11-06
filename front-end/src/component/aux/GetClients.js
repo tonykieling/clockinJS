@@ -85,7 +85,7 @@ const mapStateToProps = store => {
 
 
 const mapDispatchToProps = dispatch => {
-  return {
+  return {    
     dispatchSetClient: client => dispatch({
       type:"SETCLIENT",
       data: client })
