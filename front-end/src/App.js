@@ -17,8 +17,9 @@ import ClientList   from "./component/ClientsList.js";
 import PunchInNew   from "./component/PunchInNew.js";
 import PunchInsList from "./component/PunchInsList.js";
 import InvoiceNew   from "./component/InvoiceNew.js";
-import InvoicesList from "./component/InvoicesList.js";
+// import InvoicesList from "./component/InvoicesList.js";
 
+import PdfTemplate from "./component/PdfTemplate.js";
 
 class App extends Component {
   render() {
@@ -102,12 +103,12 @@ class App extends Component {
                   return <InvoiceNew />
               }} />
             
-            <Route exact path = "/invoicesList" 
+            <Route exact path = "/pdfTemplate" 
               render = {() => {
                 if (!this.props.storeEmail)
                   return <Login />
                 else
-                  return <InvoicesList />
+                  return <PdfTemplate />
               }} />
 
             <Route component = { NoPage } />

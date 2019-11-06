@@ -19,6 +19,7 @@ class SysHeader extends Component {
     // return <Link to = "/punchInNew" className="dropdown-item"> Punch In </Link>
   }
 
+
   // when a user is logged
   loggedHeader = () => {
     return (
@@ -38,7 +39,8 @@ class SysHeader extends Component {
               <Link to = "/clientNew" className="dropdown-item"> Add New One </Link>
               {/* </NavDropdown.Item> */}
               <NavDropdown.Divider />
-              <Link to = "/clientList" className="dropdown-item"> List them all </Link>
+              {/* <Link to = "/clientList" className="dropdown-item"> List them all </Link> */}
+              <NavDropdown.Item href="/clientList"> List </NavDropdown.Item>
             </NavDropdown>
 
             <NavDropdown title="Clockins" id="basic-nav-dropdown2">
@@ -51,7 +53,8 @@ class SysHeader extends Component {
             <NavDropdown title="Invoices" id="basic-nav-dropdown3">
               <NavDropdown.Item href="invoiceNew">Generate a brand new one</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="invoicesList">List them all</NavDropdown.Item>
+              {/* <NavDropdown.Item href="invoicesList">List them all</NavDropdown.Item> */}
+              <NavDropdown.Item href="pdfTemplate">List them all</NavDropdown.Item>
             </NavDropdown>            
           </Nav>
 

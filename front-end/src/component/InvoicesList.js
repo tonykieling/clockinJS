@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { Link } from "react-router-dom";
 
-export default function InvoicesList() {
-  return (
-    <div>
-      <h1>
-        Invoices List
-      </h1>
-      <p>Fill this part with some text</p>
-    </div>
-  )
+export default class InvoicesList extends Component {
+
+  render() {
+    return (
+      <div>
+        
+      </div>
+    )
+  }
 }
