@@ -33,16 +33,22 @@ console.log("==>", clientId, dateStart, dateEnd);
           client_id: clientId
         })
         .select(" date time_start time_end rate notes invoice_id client_id user_id ");
-console.log("+++ allClockins:", allClockins);
+
     if (!allClockins || allClockins.length < 1)
       return res.status(200).json({
         message: `No clockins at all.`
       });
     
+    const client = await Client
+      .findById( clientId )
+      .select(" nickname ");
+console.log("+++ client:", client);
     res.status(200).json({
       count: allClockins.length,
-      allClockins
+      allClockins,
+      client: client.nickname
     });
+
   } catch(err) {
     console.log("Error => ", err.message);
     res.status(422).json({
@@ -269,7 +275,7 @@ client_modify = async (req, res) => {
     
     if (clientToBeChanged.nModified) {
       const clientModified = await Client
-        .findById({ _id: clockinId})
+        .findById( clockinId )
         .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
         // .select(" name nickname mother consultant default_rate");
 

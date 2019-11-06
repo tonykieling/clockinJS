@@ -1,27 +1,24 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import {  Card, Button, Form, Row, Col } from "react-bootstrap";
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
+import {  Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 
 import GetClients from "./aux/GetClients.js";
-// import DateRangePicker from "./aux/DateRangePicker.js";
 
 
 class PunchInNew extends Component {
 
   state = {
-    dateStart     : "",
-    dateEnd       : "",
-    clientId      : this.props.storeClientId,
-    clockins      : []
-
+    dateStart         : "",
+    dateEnd           : "",
+    clientId          : this.props.storeClientId,
+    clockinList       : [],
+    client            : "",
+    clockInListTable  : ""
   }
 
 
   handleChange = event => {
-console.log("event", event.target.name, event.target.value);
     this.setState({
       [event.target.name]: event.target.value
     });
@@ -30,7 +27,6 @@ console.log("event", event.target.name, event.target.value);
 
   handleSubmit = async event => {
     event.preventDefault();
-console.log("inside onSubmit");
 
     const
       dateStart = this.state.dateStart,
@@ -38,7 +34,7 @@ console.log("inside onSubmit");
       clientId  = this.props.storeClientId ;
 
     const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-console.log("url= ", url);
+
     try {
       const getClockins = await axios.get( 
         url,
@@ -47,36 +43,75 @@ console.log("url= ", url);
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-console.log("getClockins", getClockins);
+console.log("getClockins", getClockins.data.allClockins);
 
-      if (getClockins.data.message) {
+      if (getClockins.data.allClockins){
+console.log("alrigth");
         this.setState({
-          message: `${getClockins.data.message} -client: ${getClockins.data.client}`
+          clockinList       : getClockins.data.allClockins,
+          client            : getClockins.data.client,
+          clockInListTable  : this.renderDataTable(getClockins.data.allClockins, getClockins.data.client),
+          clientId
         });
-      } else if (getClockins.data.error)
-        this.setState({
-          message: getClockins.data.error
-        });
-
-      this.cleanForm();
-      
+      }
+console.log("--- this.state", this.state);
     } catch(err) {
+console.log("errorrrrr");
       this.setState({
         message: err.message });
       
+      this.cleanForm();
     }
   }
+
+
+  renderDataTable = (clockins, client) => {
+console.log("inside rednderDataTable", clockins);
+    return clockins.map((clockin, index) => {
+      const clockinsToSend = {
+        num         : index + 1,
+        date        : clockin.date,
+        timeStart   : clockin.time_start,
+        timeEnd     : clockin.time_end,
+        rate        : clockin.rate,
+        total       : "999",
+        // total       : (clockin.time_end - clockin.time_start) * clockin.rate,
+        invoice     : clockin.invoice_id ? clockin.invoice_id : "not yet"
+      }
+console.log("clockinsToSend", clockinsToSend);
+
+      return (
+        <tr key={clockinsToSend.num}>
+          <td>{clockinsToSend.num}</td>
+          <td>{client}</td>
+          <td>{clockinsToSend.date}</td>
+          <td>{clockinsToSend.timeStart}</td>
+          <td>{clockinsToSend.timeEnd}</td>
+          <td>{clockinsToSend.rate}</td>
+          <td>{clockinsToSend.total}</td>
+          <td>{clockinsToSend.invoice}</td>
+          <td>
+            <Button
+              variant   = "info"
+              // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the clockin without invoice related to
+              // data-user = {JSON.stringify(userToSend)}
+            > Edit</Button>
+          </td>
+        </tr>
+      )
+    })
+  }  
 
 
   cleanForm = () => {
     setTimeout(() => {
       this.setState({
-        date      : undefined,
-        timeStart : undefined,
-        timeEnd   : undefined,
-        rate      : undefined,
-        notes     : undefined,
-        message   : undefined
+        date      : "",
+        timeStart : "",
+        timeEnd   : "",
+        rate      : "",
+        notes     : "",
+        message   : ""
       });
     }, 3000);
   }
@@ -137,6 +172,47 @@ console.log("getClockins", getClockins);
           </Form>
         </Card.Body>
       </Card>
+
+
+
+
+      <Card 
+        id="clockinListResult" 
+        className={this.state.userTableHideClassName}
+        >
+          {(this.state.clockinList.length > 0) 
+            ? <Table striped bordered hover size="sm" responsive>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Client</th>
+                    <th>Date</th>
+                    <th>Time Start</th>
+                    <th>Time End</th>
+                    <th>Rate</th>
+                    <th>Total CAD$</th>
+                    <th>Invoice</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.clockInListTable}
+                </tbody>
+              </Table> 
+            : null }
+          {/* <CSVLink
+              data      = {this.state.dataTableCSVFile}
+              headers   = {fileHeaders}
+              separator = {";"}
+              filename  = {(this.state.dropDownBtnName === "Wanna consider user's type?") ?
+                                        "userList.csv" :
+                                        `${this.state.dropDownBtnName}.csv`}
+              className = "btn btn-primary"
+              target    = "blank" >
+              Download me
+          </CSVLink>             */}
+        </Card>
+
+
       </div>
     )
   }
