@@ -15,10 +15,9 @@ class PunchInNew extends Component {
     date          : "",
     startingTime  : "",
     endingTime    : "",
-    rate          : this.props.storeRate ? this.props.storeRate : "",
+    rate          : "",
     notes         : "",
     message       : "",
-
     clientId      : ""
   }
 
@@ -77,12 +76,12 @@ console.log("inside onSubmit");
   cleanForm = () => {
     setTimeout(() => {
       this.setState({
-        date      : undefined,
-        timeStart : undefined,
-        timeEnd   : undefined,
-        rate      : undefined,
-        notes     : undefined,
-        message   : undefined
+        date          : "",
+        startingTime  : "",
+        endingTime    : "",
+        rate          : "",
+        notes         : "",
+        message       : ""
       });
     }, 3000);
   }

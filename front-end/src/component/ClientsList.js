@@ -26,6 +26,20 @@ class ClientsList extends Component {
       cphone          : "",
       cemail          : "",
       default_rate    : "",
+
+      tmp_name            : "",
+      tmp_nickname        : "",
+      tmp_birthday        : "",
+      tmp_mother          : "",
+      tmp_mphone          : "",
+      tmp_memail          : "",
+      tmp_father          : "",
+      tmp_fphone          : "",
+      tmp_femail          : "",
+      tmp_consultant      : "",
+      tmp_cphone          : "",
+      tmp_cemail          : "",
+      tmp_default_rate    : "",
     }
   }
 
@@ -150,10 +164,44 @@ console.log("newClientData:::", newClientData);
 
   editForm = () => {
     this.setState({
-      disableEditForm: false
+      disableEditForm: false,
+
+      tmp_name            : this.state.name,
+      tmp_nickname        : this.state.nickname,
+      tmp_birthday        : this.state.birthday,
+      tmp_mother          : this.state.mother,
+      tmp_mphone          : this.state.mphone,
+      tmp_memail          : this.state.memail,
+      tmp_father          : this.state.father,
+      tmp_fphone          : this.state.fphone,
+      tmp_femail          : this.state.femail,
+      tmp_consultant      : this.state.consultant,
+      tmp_cphone          : this.state.cphone,
+      tmp_cemail          : this.state.cemail,
+      tmp_default_rate    : this.state.default_rate
     });
   }
 
+
+  BtnCancel = () => {
+    this.setState({
+      disableEditForm: true,
+
+      name            : this.state.tmp_name,
+      nickname        : this.state.tmp_nickname,
+      birthday        : this.state.tmp_birthday,
+      mother          : this.state.tmp_mother,
+      mphone          : this.state.tmp_mphone,
+      memail          : this.state.tmp_memail,
+      father          : this.state.tmp_father,
+      fphone          : this.state.tmp_fphone,
+      femail          : this.state.tmp_femail,
+      consultant      : this.state.tmp_consultant,
+      cphone          : this.state.tmp_cphone,
+      cemail          : this.state.tmp_cemail,
+      default_rate    : this.state.tmp_default_rate      
+    });
+  }
 
 
   render() {
@@ -365,17 +413,27 @@ console.log("newClientData:::", newClientData);
                 </Form.Group>
 
 
-                <Button 
-                  variant="primary" 
-                  type="submit"
-                  disabled={this.state.disableEditForm} >
-                  Save
-                </Button>
+                { !this.state.disableEditForm
+                  ?
+                    <div>
+                      <Button 
+                        variant="success" 
+                        type="submit" >
+                        Save
+                      </Button>
 
-                <Button 
-                  onClick = { this.editForm } >
-                  Edit
-                </Button>
+                      <Button 
+                        variant="warning" 
+                        onClick={ this.BtnCancel } >
+                        Cancel
+                      </Button>
+                    </div>
+                  :
+                    <Button 
+                      onClick = { this.editForm } >
+                      Edit
+                    </Button>
+                }
 
                 <Container className="msgcolor">
                   {this.state.errorMsg}

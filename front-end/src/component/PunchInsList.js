@@ -16,7 +16,7 @@ class PunchInNew extends Component {
     clockinList       : [],
     client            : "",
     clockInListTable  : "",
-    tableVisibility   : "hiddenTable"
+    tableVisibility   : false
   }
 
 
@@ -53,8 +53,8 @@ console.log("alrigth");
           clockinList       : getClockins.data.allClockins,
           client            : getClockins.data.client,
           clockInListTable  : this.renderDataTable(getClockins.data.allClockins, getClockins.data.client),
-          clientId,
-          tableVisibility   : "showTable"
+          // clientId,
+          tableVisibility   : true
         });
       }
 console.log("--- this.state", this.state);
@@ -118,16 +118,16 @@ console.log("clockinsToSend", clockinsToSend);
         timeEnd         : "",
         rate            : "",
         notes           : "",
-        message         : "",
-        tableVisibility : "hiddenTable"
+        message         : ""
+        // tableVisibility : "hiddenTable"
       });
     }, 3000);
   }
 
 
-  getClientInfo = client => {
+  getClientInfo = client => {    
     this.setState({
-      clientId: client.client_id
+      clientId: client._id
     });
   }
 
@@ -188,7 +188,7 @@ console.log("clockinsToSend", clockinsToSend);
         </Card>
 
 
-        { this.tableVisibility
+        { this.state.tableVisibility
           ?
             <Card id="clockinListResult" >
               {(this.state.clockinList.length > 0) 
