@@ -64,7 +64,8 @@ const clientSchema = mongoose.Schema({
   },
   
   default_rate: {
-    type: Number
+    // type: Number
+    type: String
     // required: true
   },
   

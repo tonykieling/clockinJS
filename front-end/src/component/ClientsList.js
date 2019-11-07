@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import axios from "axios";
-// import { connect } from "react-redux";
+import { connect } from "react-redux";
 import {  Card, Button, Form, Container } from "react-bootstrap";
 
 import GetClients from "./aux/GetClients.js";
-// import DateRangePicker from "./aux/DateRangePicker.js";
-// import PhoneInput from "./aux/PhoneInput.js";
 
 
 class ClientsList extends Component {
@@ -13,8 +11,21 @@ class ClientsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message       : "",
-      disableEditForm : true
+      message         : "",
+      disableEditForm : true,
+      name            : "",
+      nickname        : "",
+      birthday        : "",
+      mother          : "",
+      mphone          : "",
+      memail          : "",
+      father          : "",
+      fphone          : "",
+      femail          : "",
+      consultant      : "",
+      cphone          : "",
+      cemail          : "",
+      default_rate    : "",
     }
   }
 
@@ -22,7 +33,7 @@ class ClientsList extends Component {
   handleChange = event => {
 // console.log("inside changes", event.target.value);
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value || ""
     });
   }
 
@@ -32,6 +43,7 @@ class ClientsList extends Component {
 console.log("inside onSubmit");
 
     const data = { 
+      clientId      : this.state.clientId,
       name          : this.state.name,
       nickname      : this.state.nickname,
       birthday      : this.state.birthday,
@@ -47,10 +59,10 @@ console.log("inside onSubmit");
       default_rate  : this.state.default_rate
     };
 
-    const url = "/client";
+    const url = `/client/${data.clientId}`;
 
     try {
-      const addClockin = await axios.post( 
+      const newClientData = await axios.patch( 
         url,
         data,
         {  
@@ -58,15 +70,28 @@ console.log("inside onSubmit");
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-console.log("addClockin", addClockin);
+console.log("newClientData:::", newClientData);
 
-      if (addClockin.data.message) {
+      if (newClientData.data.message) {
         this.setState({
-          message: `${addClockin.data.message} -client: ${addClockin.data.client}`
+          message: `${newClientData.data.message.nickname} has been changed`,
+          name          : newClientData.data.newData.name,
+          nickname      : newClientData.data.newData.nickname,
+          birthday      : newClientData.data.newData.birthday,
+          mother        : newClientData.data.newData.mother,
+          mphone        : newClientData.data.newData.mphone,
+          memail        : newClientData.data.newData.memail,
+          father        : newClientData.data.newData.father,
+          fphone        : newClientData.data.newData.fphone,
+          femail        : newClientData.data.newData.femail,
+          cphone        : newClientData.data.newData.cphone,
+          cemail        : newClientData.data.newData.cemail,
+          consultant    : newClientData.data.newData.consultant,
+          default_rate  : newClientData.data.newData.default_rate
         });
-      } else if (addClockin.data.error)
+      } else if (newClientData.data.error)
         this.setState({
-          message: addClockin.data.error
+          message: newClientData.data.error
         });
 
       this.cleanForm();
@@ -86,7 +111,7 @@ console.log("addClockin", addClockin);
 
     setTimeout(() => {
       this.setState({
-        message: undefined
+        message: ""
       });
     }, 3000);
   }
@@ -94,10 +119,11 @@ console.log("addClockin", addClockin);
 
   populateForm = client => {
     const {
-      name, nickname, birthday, mother, mphone, memail, father, fphone, femail, 
+      _id, name, nickname, birthday, mother, mphone, memail, father, fphone, femail, 
       consultant, cphone, cemail, default_rate } = client;
 
     this.setState({
+      clientId: _id,
       name,
       nickname,
       birthday,
@@ -187,7 +213,8 @@ console.log("addClockin", addClockin);
                     value       = {this.state.birthday}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
-                    ref         = {input => this.textInput3 = input } />
+                    // ref         = {input => this.textInput3 = input }
+                     />
                 </Form.Group>
 
                 <Form.Group controlId="formMother">
@@ -335,7 +362,7 @@ console.log("addClockin", addClockin);
 
                 <Button 
                   variant="primary" 
-                  // type={this.state.btnType}
+                  type="submit"
                   disabled={this.state.disableEditForm} >
                   Save
                 </Button>
@@ -360,26 +387,26 @@ console.log("addClockin", addClockin);
 }
 
 
-// const mapStateToProps = store => {
-//   return {
-//     storeToken    : store.token,
-//     storeRate     : store.client_dr,
-//     storeClientId : store.client_id,
+const mapStateToProps = store => {
+  return {
+    storeToken    : store.token,
+    storeRate     : store.client_dr,
+    storeClientId : store.client_id,
 
-//     storeClientName : store.client_name,
-//     storeClientNickName : store.client_nickname,
-//     storeClientBirthday : store.client_birthday,
-//     storeClientMother : store.client_mother,
-//     storeClientMphone : store.client_mphone,
-//     storeClientMemail : store.client_memail,
-//     storeClientFather : store.client_father,
-//     storeClientFphone : store.client_fphone,
-//     storeClientFemail : store.client_femail,
-//     storeClientConsultant : store.client_consultant,
-//     storeClientCphone : store.client_cphone,
-//     storeClientCemail : store.client_cemail
-//   };
-// };
+    // storeClientName : store.client_name,
+    // storeClientNickName : store.client_nickname,
+    // storeClientBirthday : store.client_birthday,
+    // storeClientMother : store.client_mother,
+    // storeClientMphone : store.client_mphone,
+    // storeClientMemail : store.client_memail,
+    // storeClientFather : store.client_father,
+    // storeClientFphone : store.client_fphone,
+    // storeClientFemail : store.client_femail,
+    // storeClientConsultant : store.client_consultant,
+    // storeClientCphone : store.client_cphone,
+    // storeClientCemail : store.client_cemail
+  };
+};
 
 
 // const mapDispatchToProps = dispatch => {
@@ -391,5 +418,4 @@ console.log("addClockin", addClockin);
 // };
 
 
-// export default connect(mapStateToProps, null)(ClientsList);
-export default ClientsList;
+export default connect(mapStateToProps, null)(ClientsList);

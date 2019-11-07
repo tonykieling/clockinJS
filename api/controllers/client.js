@@ -119,19 +119,19 @@ console.log("req.body", req.body, "userId", userId);
   try {
     const client = new Client({
       _id: new mongoose.Types.ObjectId(),
-      name,
-      nickname: nickName, 
-      birthday, 
-      mother, 
-      mphone: mPhone, 
-      memail: mEmail, 
-      father, 
-      fphone: fPhone, 
-      femail: fEmail, 
-      consultant, 
-      cphone: cPhone, 
-      cemail: cEmail, 
-      default_rate: defaultRate,
+      name: name || "",
+      nickname: nickName || "", 
+      birthday: birthday || "", 
+      mother: mother || "", 
+      mphone: mPhone || "", 
+      memail: mEmail || "", 
+      father: father || "", 
+      fphone: fPhone || "", 
+      femail: fEmail || "", 
+      consultant: consultant || "", 
+      cphone: cPhone || "", 
+      cemail: cEmail || "", 
+      default_rate: defaultRate || "",
       user_id: userId
     });
 
@@ -159,7 +159,8 @@ console.log("req.body", req.body, "userId", userId);
 const client_modify = async (req, res) => {
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
-  const userId    = req.userData.userId;  
+  const userId    = req.userData.userId;
+
   
   // this try is for check is the clientId passed from the frontend is alright (exists in database), plus
   //  check whether either the client to be changed belongs for the user or the user is admin - if not, not allowed to change client's data
@@ -168,21 +169,21 @@ const client_modify = async (req, res) => {
       .findById(clientId);
 
     if (!client || client.length < 1)
-      return res.status(409).json({
+      return res.status(200).json({
         error: `Client <id: ${clientId}> does not exist.`
       });
-    if (userId !== client.user_id && !userAdmin)
-      return res.status(409).json({
+    if (userId.toString() !== client.user_id.toString() && !userAdmin)
+      return res.status(200).json({
         error: `Client <id: ${clientId}> belongs to another user.`
       });
 
   } catch(err) {
     console.log("Error => ", err.message);
     if (clientId.length !== 24)
-      return res.status(422).json({
+      return res.status(200).json({
         error: "ClientId mystyped."
       });  
-    res.status(422).json({
+    res.status(200).json({
       error: "ECM01: Something got wrong."
     });
   }
@@ -190,18 +191,18 @@ const client_modify = async (req, res) => {
 
   const {
     name,
-    nickName, 
+    nickname, 
     birthday, 
     mother, 
-    mPhone, 
-    mEmail, 
+    mphone, 
+    memail, 
     father, 
-    fPhone, 
-    fEmail, 
+    fphone, 
+    femail, 
     consultant, 
-    cPhone, 
-    cEmail, 
-    defaultRate
+    cphone, 
+    cemail, 
+    default_rate
  } = req.body;
 
   try {
@@ -209,22 +210,22 @@ const client_modify = async (req, res) => {
       .updateOne({
         _id: clientId
       }, {
-        // $set: {
-            name,
-            nickname: nickName, 
-            birthday, 
-            mother, 
-            mphone: mPhone, 
-            memail: mEmail, 
-            father, 
-            fphone: fPhone, 
-            femail: fEmail, 
-            consultant, 
-            cphone: cPhone, 
-            cemail: cEmail, 
-            default_rate: defaultRate,
+        $set: {
+            name: name || "", 
+            nickname: nickname || "", 
+            birthday: birthday || "", 
+            mother: mother || "", 
+            mphone: mphone || "", 
+            memail: memail || "", 
+            father: father || "", 
+            fphone: fphone || "", 
+            femail: femail || "", 
+            consultant: consultant || "", 
+            cphone: cphone || "", 
+            cemail: cemail || "", 
+            default_rate: default_rate || "", 
             user_id: userId
-        // }
+        }
       }, {
         runValidators: true
       });
@@ -233,19 +234,19 @@ const client_modify = async (req, res) => {
       const clientModified = await Client
         .findById({ _id: clientId})
         .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
-        // .select(" name nickname mother consultant default_rate");
 
       return res.json({
-        message: `Client <${clientModified}> has been modified.`
+        message: `Client <${clientModified.nickname}> has been modified.`,
+        newData: clientModified
       });
     } else
-      res.status(409).json({
+      res.status(200).json({
         error: `Client <${clientId}> not changed.`
       });
 
   } catch(err) {
     console.trace("Error: ", err.message);
-    res.status(409).json({
+    res.status(200).json({
       error: "ECM02: Something bad"
     });
   }

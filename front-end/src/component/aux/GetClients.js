@@ -9,17 +9,17 @@ class GetClients extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      clients       : null,
+      clients       : undefined,
       dropDownLabel : "Select the client",
-      errorMsg      : null
+      errorMsg      : undefined
     }
   }
 
   async componentDidMount() {
-    // const url         = "http://localhost:3333/client";    // this is dev setting
+    const url         = "/client";    // this is dev setting
     try {
       const getClients = await axios.get( 
-        "/client", 
+        url, 
         {  
         headers: { 
           "Content-Type": "application/json",
@@ -66,7 +66,6 @@ class GetClients extends Component {
     });
     const client = JSON.parse(event.target.dataset.client);
     // this.props.dispatchSetClient({ client });
-console.log("changing props from child");
     this.props.populateForm(client);
   }
 
