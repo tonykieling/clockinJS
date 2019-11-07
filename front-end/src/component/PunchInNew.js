@@ -17,7 +17,9 @@ class PunchInNew extends Component {
     endingTime    : "",
     rate          : this.props.storeRate ? this.props.storeRate : "",
     notes         : "",
-    message       : ""
+    message       : "",
+
+    clientId      : ""
   }
 
 
@@ -37,9 +39,9 @@ console.log("inside onSubmit");
       date      : this.state.date,
       timeStart : this.state.startingTime,
       timeEnd   : this.state.endingTime,
-      rate      : this.state.rate || this.props.storeRate,
+      rate      : this.state.rate,
       notes     : this.state.notes,
-      clientId  : this.props.storeClientId };
+      clientId  : this.state.clientId };
 
     const url = "/clockin";
 
@@ -52,7 +54,6 @@ console.log("inside onSubmit");
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-console.log("addClockin", addClockin);
 
       if (addClockin.data.message) {
         this.setState({
@@ -98,6 +99,13 @@ console.log("addClockin", addClockin);
     )
   }
 
+  getClientInfo = client => {
+    this.setState({
+      clientId  : client._id,
+      rate      : client.default_rate
+    });
+  }
+
   render() {
     return (
       <div>
@@ -110,7 +118,7 @@ console.log("addClockin", addClockin);
         <Card.Body>
           <Card.Title>Punch in</Card.Title>
 
-         <GetClients />     { /* mount the Dropbox Button with all clients for the user */ }
+         <GetClients getClientInfo = { this.getClientInfo } />     { /* mount the Dropbox Button with all clients for the user */ }
 
           <br></br>
           <Form onSubmit={this.handleSubmit} >
@@ -119,7 +127,6 @@ console.log("addClockin", addClockin);
               <Form.Label column sm="3">Date:</Form.Label>
               <Col sm="6">
                 <Form.Control 
-                  // autoFocus   = {true}
                   type        = "date"
                   // placeholder = "Session's Date"
                   name        = "date"
@@ -176,13 +183,11 @@ console.log("addClockin", addClockin);
               <Col sm="3">
                 <Form.Control
                   type        = "text"
-                  // placeholder = { this.props.storeRate ? this.props.storeRate : "Default Rate"}
-                  placeholder = { this.state.storeRate ? this.state.storeRate : "Default Rate"}
+                  placeholder = { this.state.rate || "Default Rate"}
                   name        = "rate"
                   onChange    = {this.handleChange}
                   onKeyPress  = {this.handleChange}
                   value       = {this.state.rate}
-                  defaultValue= {this.props.storeRate}
                   // ref         = {input => this.textInput4 = input } 
                   />
               </Col>
@@ -202,7 +207,10 @@ console.log("addClockin", addClockin);
                 ref         = {input => this.textInput5 = input } />
             </Form.Group>
 
-            <Button variant="primary" type= "submit" onClick = { this.handleSubmit }>
+            <Button 
+              variant="primary" 
+              type= "submit" 
+              onClick = { this.handleSubmit } >
               Submit
             </Button>            
             
@@ -222,9 +230,9 @@ console.log("addClockin", addClockin);
 
 const mapStateToProps = store => {
   return {
-    storeToken    : store.token,
-    storeRate     : store.client_dr,
-    storeClientId : store.client_id
+    storeToken    : store.token
+    // storeRate     : store.client_dr,
+    // storeClientId : store.client_id
   };
 };
 

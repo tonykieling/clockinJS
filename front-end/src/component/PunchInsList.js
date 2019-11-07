@@ -11,7 +11,8 @@ class PunchInNew extends Component {
   state = {
     dateStart         : "",
     dateEnd           : "",
-    clientId          : this.props.storeClientId,
+    // clientId          : this.props.storeClientId,
+    clientId          : "",
     clockinList       : [],
     client            : "",
     clockInListTable  : "",
@@ -32,7 +33,7 @@ class PunchInNew extends Component {
     const
       dateStart = this.state.dateStart,
       dateEnd   = this.state.dateEnd,
-      clientId  = this.props.storeClientId ;
+      clientId  = this.state.clientId;
 
     const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
@@ -124,9 +125,14 @@ console.log("clockinsToSend", clockinsToSend);
   }
 
 
+  getClientInfo = client => {
+    this.setState({
+      clientId: client.client_id
+    });
+  }
+
   render() {
     return (
-      // <div>
       <Fragment>
         <h1>
           List of Punch ins
@@ -134,93 +140,81 @@ console.log("clockinsToSend", clockinsToSend);
         <p>some random text</p>
 
         <Card style={{ width: '40rem' }}>
-        <Card.Body>
+          <Card.Body>
 
-         <GetClients />     { /* mount the Dropbox Button with all clients for the user */ }
+          <GetClients getClientInfo = { this.getClientInfo } />     { /* mount the Dropbox Button with all clients for the user */ }
 
-          <br></br>
-          <Form onSubmit={this.handleSubmit} >
+            <br></br>
+            <Form onSubmit={this.handleSubmit} >
 
-            <Form.Group as={Row} controlId="formST">
-              <Form.Label column sm="3" >Date Start:</Form.Label>
-              <Col sm="5">
-                <Form.Control
-                  type        = "date"
-                  // placeholder = "Starting Time"
-                  name        = "dateStart"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.dateStart}
-                  // onKeyPress  = {this.handleChange}
-                  // ref         = {input => this.textInput2 = input } 
-                  />
-              </Col>
-            </Form.Group>
+              <Form.Group as={Row} controlId="formST">
+                <Form.Label column sm="3" >Date Start:</Form.Label>
+                <Col sm="5">
+                  <Form.Control
+                    type        = "date"
+                    // placeholder = "Starting Time"
+                    name        = "dateStart"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.dateStart}
+                    // onKeyPress  = {this.handleChange}
+                    // ref         = {input => this.textInput2 = input } 
+                    />
+                </Col>
+              </Form.Group>
 
-            <Form.Group as={Row} controlId="formET">
-              <Col sm="3">
-                <Form.Label>Date End:</Form.Label>
-              </Col>
-              <Col sm="5">
-                <Form.Control                
-                  type        = "date"
-                  // placeholder = "Ending Time"
-                  name        = "dateEnd"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.dateEnd}
-                  // onKeyPress  = {this.handleChange}
-                  // ref         = {input => this.textInput3 = input } 
-                  />
-              </Col>
-            </Form.Group>
+              <Form.Group as={Row} controlId="formET">
+                <Col sm="3">
+                  <Form.Label>Date End:</Form.Label>
+                </Col>
+                <Col sm="5">
+                  <Form.Control                
+                    type        = "date"
+                    // placeholder = "Ending Time"
+                    name        = "dateEnd"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.dateEnd}
+                    // onKeyPress  = {this.handleChange}
+                    // ref         = {input => this.textInput3 = input } 
+                    />
+                </Col>
+              </Form.Group>
 
-          <Button variant="primary" type= "submit" onClick = { this.handleSubmit }>
-            Get List
-          </Button>            
-            
-          </Form>
-        </Card.Body>
-      </Card>
-
-
-      <Card 
-        id="clockinListResult" 
-        className={this.tableVisibility }
-        >
-          {(this.state.clockinList.length > 0) 
-            ? <Table striped bordered hover size="sm" responsive>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Client</th>
-                    <th>Date</th>
-                    <th>Time Start</th>
-                    <th>Time End</th>
-                    <th>Total Time</th>
-                    <th>Rate</th>
-                    <th>Total CAD$</th>
-                    <th>Invoice</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.clockInListTable}
-                </tbody>
-              </Table> 
-            : null }
-          {/* <CSVLink
-              data      = {this.state.dataTableCSVFile}
-              headers   = {fileHeaders}
-              separator = {";"}
-              filename  = {(this.state.dropDownBtnName === "Wanna consider user's type?") ?
-                                        "userList.csv" :
-                                        `${this.state.dropDownBtnName}.csv`}
-              className = "btn btn-primary"
-              target    = "blank" >
-              Download me
-          </CSVLink>             */}
+              <Button variant="primary" type= "submit" onClick = { this.handleSubmit }>
+                Get List
+              </Button>            
+              
+            </Form>
+          </Card.Body>
         </Card>
 
-          </Fragment>
-      // </div>
+
+        { this.tableVisibility
+          ?
+            <Card id="clockinListResult" >
+              {(this.state.clockinList.length > 0) 
+                ? <Table striped bordered hover size="sm" responsive>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Client</th>
+                        <th>Date</th>
+                        <th>Time Start</th>
+                        <th>Time End</th>
+                        <th>Total Time</th>
+                        <th>Rate</th>
+                        <th>Total CAD$</th>
+                        <th>Invoice</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.clockInListTable}
+                    </tbody>
+                  </Table> 
+                : null }
+            </Card>
+          : null }
+
+        </Fragment>
     )
   }
 }

@@ -66,7 +66,8 @@ class GetClients extends Component {
     });
     const client = JSON.parse(event.target.dataset.client);
     // this.props.dispatchSetClient({ client });
-    this.props.populateForm(client);
+    // this.props.populateForm(client);
+    this.props.getClientInfo(client);
   }
 
   render() {
@@ -88,13 +89,13 @@ const mapStateToProps = store => {
 };
 
 
-const mapDispatchToProps = dispatch => {
-  return {    
-    dispatchSetClient: client => dispatch({
-      type:"SETCLIENT",
-      data: client })
-  };
-};
+// const mapDispatchToProps = dispatch => {
+//   return {    
+//     dispatchSetClient: client => dispatch({
+//       type:"SETCLIENT",
+//       data: client })
+//   };
+// };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(GetClients);
+export default connect(mapStateToProps, null)(GetClients);

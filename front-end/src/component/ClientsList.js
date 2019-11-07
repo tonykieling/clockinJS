@@ -117,6 +117,11 @@ console.log("newClientData:::", newClientData);
   }
 
 
+  getClientInfo = client => {
+    this.populateForm(client);
+  }
+
+
   populateForm = client => {
     const {
       _id, name, nickname, birthday, mother, mphone, memail, father, fphone, femail, 
@@ -163,7 +168,7 @@ console.log("newClientData:::", newClientData);
         <Card.Body>
           <Card.Title>Clients:</Card.Title>
 
-         <GetClients populateForm = { this.populateForm } />     { /* mount the Dropbox Button with all clients for the user */ }
+         <GetClients getClientInfo = { this.getClientInfo } />     { /* mount the Dropbox Button with all clients for the user */ }
 
         </Card.Body>
       </Card>        
