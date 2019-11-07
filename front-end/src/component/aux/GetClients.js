@@ -6,10 +6,13 @@ import { Dropdown } from "react-bootstrap";
 
 class GetClients extends Component {
 
-  state = {
-    clients       : null,
-    dropDownLabel : "Select the client",
-    errorMsg      : null
+  constructor(props) {
+    super(props);
+    this.state = {
+      clients       : null,
+      dropDownLabel : "Select the client",
+      errorMsg      : null
+    }
   }
 
   async componentDidMount() {
@@ -62,7 +65,9 @@ class GetClients extends Component {
       dropDownLabel: event.target.name
     });
     const client = JSON.parse(event.target.dataset.client);
-    this.props.dispatchSetClient({ client });
+    // this.props.dispatchSetClient({ client });
+console.log("changing props from child");
+    this.props.populateForm(client);
   }
 
   render() {
