@@ -6,6 +6,13 @@
   visibility: visible;
 }
 
+.gridClientBtContainer {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  color: red;
+  font-weight: bold;
+}
+
 
 
 

@@ -11,12 +11,12 @@ class PunchInNew extends Component {
   state = {
     dateStart         : "",
     dateEnd           : "",
-    // clientId          : this.props.storeClientId,
     clientId          : "",
     clockinList       : [],
     client            : "",
     clockInListTable  : "",
-    tableVisibility   : false
+    tableVisibility   : false,
+    message           : ""
   }
 
 
@@ -37,34 +37,37 @@ class PunchInNew extends Component {
 
     const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
-    try {
-      const getClockins = await axios.get( 
-        url,
-        {  
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization" : `Bearer ${this.props.storeToken}` }
-      });
-console.log("getClockins", getClockins.data.allClockins);
-
-      if (getClockins.data.allClockins){
-console.log("alrigth");
-        this.setState({
-          clockinList       : getClockins.data.allClockins,
-          client            : getClockins.data.client,
-          clockInListTable  : this.renderDataTable(getClockins.data.allClockins, getClockins.data.client),
-          // clientId,
-          tableVisibility   : true
+    if (clientId) {
+      try {
+        const getClockins = await axios.get( 
+          url,
+          {  
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization" : `Bearer ${this.props.storeToken}` }
         });
+  console.log("getClockins", getClockins.data.allClockins);
+
+        if (getClockins.data.allClockins){
+  console.log("alrigth");
+          this.setState({
+            clockinList       : getClockins.data.allClockins,
+            client            : getClockins.data.client,
+            clockInListTable  : this.renderDataTable(getClockins.data.allClockins, getClockins.data.client),
+            tableVisibility   : true
+          });
+        }
+  console.log("--- this.state", this.state);
+      } catch(err) {
+  console.log("errorrrrr");
+        this.setState({
+          message: err.message
+        });
+        
+        this.cleanForm();
       }
-console.log("--- this.state", this.state);
-    } catch(err) {
-console.log("errorrrrr");
-      this.setState({
-        message: err.message });
-      
-      this.cleanForm();
-    }
+    } else
+      this.messageValidationMethod();
   }
 
 
@@ -119,7 +122,6 @@ console.log("clockinsToSend", clockinsToSend);
         rate            : "",
         notes           : "",
         message         : ""
-        // tableVisibility : "hiddenTable"
       });
     }, 3000);
   }
@@ -130,6 +132,24 @@ console.log("clockinsToSend", clockinsToSend);
       clientId: client._id
     });
   }
+
+
+  messageValidationMethod = () => {
+    this.setState({
+      message: "Please select the client."
+    });
+
+    setTimeout(() => {
+      this.cleanMessage();
+    }, 3000);
+  }
+
+  cleanMessage = () => {
+      this.setState({
+        message: ""
+      });
+  }
+
 
   render() {
     return (
@@ -142,7 +162,15 @@ console.log("clockinsToSend", clockinsToSend);
         <Card style={{ width: '40rem' }}>
           <Card.Body>
 
-          <GetClients getClientInfo = { this.getClientInfo } />     { /* mount the Dropbox Button with all clients for the user */ }
+
+          { /* mount the Dropbox Button with all clients for the user */ }
+          <div className="gridClientBtContainer">
+            <GetClients getClientInfo = { this.getClientInfo } />
+            <span>
+              { this.state.message ? this.state.message : "" }
+            </span>
+          </div>
+
 
             <br></br>
             <Form onSubmit={this.handleSubmit} >

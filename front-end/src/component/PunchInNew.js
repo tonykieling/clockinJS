@@ -8,6 +8,8 @@ import {  Card, Button, Form, Row, Col } from "react-bootstrap";
 import GetClients from "./aux/GetClients.js";
 // import DateRangePicker from "./aux/DateRangePicker.js";
 
+import "../App.css";
+
 
 class PunchInNew extends Component {
 
@@ -18,7 +20,8 @@ class PunchInNew extends Component {
     rate          : "",
     notes         : "",
     message       : "",
-    clientId      : ""
+    clientId      : "",
+    // flagToRenderDB: false
   }
 
 
@@ -27,6 +30,8 @@ class PunchInNew extends Component {
     this.setState({
       [event.target.name]: event.target.value
     });
+
+    this.cleanMessage();
   }
 
 
@@ -42,34 +47,65 @@ console.log("inside onSubmit");
       notes     : this.state.notes,
       clientId  : this.state.clientId };
 
-    const url = "/clockin";
-
-    try {
-      const addClockin = await axios.post( 
-        url,
-        data,
-        {  
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization" : `Bearer ${this.props.storeToken}` }
-      });
-
-      if (addClockin.data.message) {
-        this.setState({
-          message: `${addClockin.data.message} -client: ${addClockin.data.client}`
-        });
-      } else if (addClockin.data.error)
-        this.setState({
-          message: addClockin.data.error
-        });
-
-      this.cleanForm();
-      
-    } catch(err) {
-      this.setState({
-        message: err.message });
-      
+    if ( !data.date || !data.timeStart || !data.timeEnd || !data.rate){
+console.log(`  
+               date = ${data.date}
+                ts  = ${data.timeStart}
+                te  = ${data.timeEnd}
+               rate = ${data.rate} `);
+      this.messageValidationMethod();
     }
+      
+    else {
+      const url = "/clockin";
+      try {
+        const addClockin = await axios.post( 
+          url,
+          data,
+          {  
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization" : `Bearer ${this.props.storeToken}` }
+        });
+
+        if (addClockin.data.message) {
+          this.setState({
+            message: `Punched in!`,
+            // flagToRenderDB: true
+          });
+        } else if (addClockin.data.error)
+          this.setState({
+            message: addClockin.data.error
+          });
+
+        // this.setState({
+        //   flagToRenderDB: false
+        // })
+        this.cleanForm();
+        
+      } catch(err) {
+        this.setState({
+          message: err.message });
+        this.cleanForm();
+      }
+    }
+  }
+
+
+  messageValidationMethod = () => {
+    this.setState({
+      message: !this.state.clientId ? "Please, select client." : "Please fill the fields."
+    });
+
+    setTimeout(() => {
+      this.cleanMessage();
+    }, 3000);
+  }
+
+  cleanMessage = () => {
+      this.setState({
+        message: ""
+      });
   }
 
 
@@ -106,6 +142,14 @@ console.log("inside onSubmit");
   }
 
   render() {
+
+    // return (
+    //   !this.state.date
+    //     ?
+    //       <h1>YES</h1>
+    //     : <h1>NO</h1>
+    // )
+
     return (
       <div>
         <h1>
@@ -117,7 +161,14 @@ console.log("inside onSubmit");
         <Card.Body>
           <Card.Title>Punch in</Card.Title>
 
-         <GetClients getClientInfo = { this.getClientInfo } />     { /* mount the Dropbox Button with all clients for the user */ }
+          { /* mount the Dropbox Button with all clients for the user */ }
+          <div className="gridClientBtContainer">
+            <GetClients getClientInfo = { this.getClientInfo } />
+            <span>
+              { this.state.message ? this.state.message : "" }
+            </span>
+          </div>
+
 
           <br></br>
           <Form onSubmit={this.handleSubmit} >
@@ -213,9 +264,9 @@ console.log("inside onSubmit");
               Submit
             </Button>            
             
-            <span>
+            {/* <span>
               { this.state.message ? this.state.message : "" }
-            </span>
+            </span> */}
 
           </Form>
         </Card.Body>

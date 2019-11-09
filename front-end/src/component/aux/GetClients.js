@@ -25,6 +25,7 @@ class GetClients extends Component {
           "Content-Type": "application/json",
           "Authorization" : `Bearer ${this.props.storeToken}` }
       });
+console.log("getClients", getClients.data.message);
       if (getClients.data.message.length > 0) {
         this.setState({
           clients: getClients.data.message
@@ -70,12 +71,21 @@ class GetClients extends Component {
     this.props.getClientInfo(client);
   }
 
+  selectLabel = () => {
+    this.setState({
+      dropDownLabel: "SELECT"
+    });
+  }
+
   render() {
+    console.log("rendering GetList!!");
+    console.log("this.state.clients", this.state.clients);
     return (
       <div>
         { this.state.clients
         ? this.populateDropbox()
         : null }
+        {/* : this.selectLabel() } */}
       </div>
     )
   }

@@ -8,13 +8,17 @@ const Client    = require("../models/client.js");
 const get_all = async (req, res) => {
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
-  const {
-    clientId,
-    dateStart,
-    dateEnd
-  } = req.query;
-console.log("***req.query", req.query);
-console.log("==>", clientId, dateStart, dateEnd);
+  // const {
+  //   clientId,
+  //   dateStart,
+  //   dateEnd
+  // } = req.query;
+
+  const 
+    clientId  = req.query.clientId,
+    dateStart = new Date(req.query.dateStart || "2000-03-01T09:00:00.000Z"),
+    dateEnd   = new Date(req.query.dateEnd || "2100-03-01T09:00:00.000Z");
+    
 
   try {
     let allClockins = null;
@@ -43,8 +47,7 @@ console.log("==>", clientId, dateStart, dateEnd);
       const client = await Client
         .findById( clientId )
         .select(" nickname ");
-  console.log("+++ client:", client);
-
+        
       return res.status(200).json({
         count: allClockins.length,
         allClockins,
