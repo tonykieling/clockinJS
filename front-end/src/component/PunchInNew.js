@@ -8,8 +8,6 @@ import {  Card, Button, Form, Row, Col } from "react-bootstrap";
 import GetClients from "./aux/GetClients.js";
 // import DateRangePicker from "./aux/DateRangePicker.js";
 
-import "../App.css";
-
 
 class PunchInNew extends Component {
 

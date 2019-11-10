@@ -130,6 +130,7 @@ console.log("req.body = signup", req.body);
         await user.save();
 
         const token = await tokenCreation(user.email, user._id, user.name, user.admin);
+        user.postalCode = postalCode;
         res.json({
           message: `User <${user.email}> has been created.`, 
           user, 
@@ -160,7 +161,7 @@ const login = async (req, res) => {
       .findOne({ email });
 
     if (!user || user.length < 1)
-      return res.status(401).json({ 
+      return res.status(200).json({ 
         error: "ELIN01: Authentication has failed"
       });
     else {
@@ -176,23 +177,27 @@ const login = async (req, res) => {
           res.json({
             message: "success", 
             user: {
-              _id: user._id,
-              name: user.name,
-              email: user.email,
-              admin: user.admin
+              _id         : user._id,
+              name        : user.name,
+              email       : user.email,
+              admin       : user.admin,
+              address     : user.address,
+              city        : user.city,
+              postalCode  : user.postal_code,
+              phone       : user.phone
             },
             token
           });
         }
         else
-          res.status(401).json({ 
+          res.status(200).json({ 
             error: "ELIN03: Authentication has failed"
           });
       });
     }
   } catch(err) {
     console.trace("Error: ", err.message);
-    res.status(401).json({ 
+    res.status(200).json({ 
       error: "ELIN04: Authentication has failed"
     });
   }

@@ -7,6 +7,11 @@ export const getUser = () => {
       name        : localStorage.getItem('name'),
       email       : localStorage.getItem('email'),
       token       : localStorage.getItem("token"),
+
+      address     : localStorage.getItem("address"),
+      city        : localStorage.getItem("city"),
+      postalCode  : localStorage.getItem("postalCode"),
+      phone       : localStorage.getItem("phone")
     }
     return(user ? user : undefined);
 
@@ -21,6 +26,12 @@ export const saveState = user => {
     localStorage.setItem('email', user.email);
     localStorage.setItem('name', user.name);
     localStorage.setItem("token", user.token);
+
+    localStorage.setItem("city", user.city);
+    localStorage.setItem("address", user.address);
+    localStorage.setItem("postalCode", user.postalCode);
+    localStorage.setItem("phone", user.phone);
+
   } catch (err) {
     return err.message;
   }
@@ -29,21 +40,22 @@ export const saveState = user => {
 
 export const saveStateClient = client => {
   try {
-    localStorage.setItem("client_id", client.client_id);
-    localStorage.setItem("client_nickname", client.client_nickname);
-    localStorage.setItem("client_dr", client.client_dr);
+console.log("error on saveStateClient at localStorage.js");
+    // localStorage.setItem("client_id", client.client_id);
+    // localStorage.setItem("client_nickname", client.client_nickname);
+    // localStorage.setItem("client_dr", client.client_dr);
 
-    localStorage.setItem("client_birthday", client.client_birthday);
-    localStorage.setItem("client_name", client.client_name);
-    localStorage.setItem("client_mother", client.client_mother);
-    localStorage.setItem("client_mphone", client.client_mphone);
-    localStorage.setItem("client_memail", client.client_memail);
-    localStorage.setItem("client_father", client.client_father);
-    localStorage.setItem("client_fphone", client.client_fphone);
-    localStorage.setItem("client_femail", client.client_femail);
-    localStorage.setItem("client_consultant", client.client_consultant);
-    localStorage.setItem("client_cphone", client.client_cphone);
-    localStorage.setItem("client_cemail", client.client_cemail)
+    // localStorage.setItem("client_birthday", client.client_birthday);
+    // localStorage.setItem("client_name", client.client_name);
+    // localStorage.setItem("client_mother", client.client_mother);
+    // localStorage.setItem("client_mphone", client.client_mphone);
+    // localStorage.setItem("client_memail", client.client_memail);
+    // localStorage.setItem("client_father", client.client_father);
+    // localStorage.setItem("client_fphone", client.client_fphone);
+    // localStorage.setItem("client_femail", client.client_femail);
+    // localStorage.setItem("client_consultant", client.client_consultant);
+    // localStorage.setItem("client_cphone", client.client_cphone);
+    // localStorage.setItem("client_cemail", client.client_cemail)
   } catch (err) {
     return err.message;
   }
@@ -56,19 +68,25 @@ export const clearUserLS = () => {
   localStorage.removeItem('email');
   localStorage.removeItem("token");
 
-  localStorage.removeItem("client_id");
-  localStorage.removeItem("client_nickname");
-  localStorage.removeItem("client_dr");
+  localStorage.removeItem("address");
+  localStorage.removeItem("city");
+  localStorage.removeItem("postalCode");
+  localStorage.removeItem("phone");
+  
 
-  localStorage.removeItem("client_birthday");
-  localStorage.removeItem("client_name");
-  localStorage.removeItem("client_mother");
-  localStorage.removeItem("client_mphone");  
-  localStorage.removeItem("client_memail");
-  localStorage.removeItem("client_father");
-  localStorage.removeItem("client_fphone");
-  localStorage.removeItem("client_femail");
-  localStorage.removeItem("client_consultant");
-  localStorage.removeItem("client_cphone");
-  localStorage.removeItem("client_cemail");
+  // localStorage.removeItem("client_id");
+  // localStorage.removeItem("client_nickname");
+  // localStorage.removeItem("client_dr");
+
+  // localStorage.removeItem("client_birthday");
+  // localStorage.removeItem("client_name");
+  // localStorage.removeItem("client_mother");
+  // localStorage.removeItem("client_mphone");  
+  // localStorage.removeItem("client_memail");
+  // localStorage.removeItem("client_father");
+  // localStorage.removeItem("client_fphone");
+  // localStorage.removeItem("client_femail");
+  // localStorage.removeItem("client_consultant");
+  // localStorage.removeItem("client_cphone");
+  // localStorage.removeItem("client_cemail");
 }

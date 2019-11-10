@@ -79,12 +79,10 @@ class Register extends Component {
           postalCode  : this.state.postalCode,
           phone       : this.state.phone
         }
-console.log("createUser", createUser);
+
         try {
           const addUser = await axios.post(url, createUser);
-console.log("addUser", addUser);
           if (addUser.data.message) {
-console.log("inside ok")            
             const user = {
               id      : addUser.data.user._id,
               name    : addUser.data.user.name,
@@ -93,7 +91,7 @@ console.log("inside ok")
 
               address     : addUser.data.user.address,
               city        : addUser.data.user.city,
-              postalCode  : addUser.data.user.postalCode,
+              postalCode  : addUser.data.user.postal_code,
               phone       : addUser.data.user.phone
             }; 
             this.props.dispatchLogin({ user });
@@ -101,14 +99,12 @@ console.log("inside ok")
               redirectFlag: true
             });
           } else if (addUser.data.error) {
-console.log("inside NOKKKKK")
             this.setState({
               message : addUser.data.error });
             this.clearMessage();
           }
 
         } catch(err) {
-console.log("inside catcherror")
           this.setState({
             message : err.message });
           this.clearMessage();
