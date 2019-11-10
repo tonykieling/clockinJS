@@ -85,7 +85,11 @@ const signup = async (req, res) => {
     name,
     email,
     password,
-    admin
+    admin,
+    address,
+    city,
+    phone,
+    postalCode
   } = req.body;
 
   // it checks whether the email is already been used by an user account
@@ -115,7 +119,11 @@ const signup = async (req, res) => {
           name,
           email,
           password: hash,
-          admin
+          admin,
+          address,
+          city,
+          postal_code: postalCode,
+          phone
         });
 
         await user.save();
@@ -201,9 +209,13 @@ const modify_user = async (req, res) => {
     });
 
   const user  = req.params.userId;
-  const name  = req.body.name,
-        email = req.body.email,
-        admin = req.body.admin;
+  const { name,
+          email,
+          admin,
+          address,
+          city,
+          postalCode,
+          phone } = req.body;
 
   try {
     const checkUser = await User
@@ -227,7 +239,11 @@ const modify_user = async (req, res) => {
         $set: {
           email,
           name,
-          admin
+          admin,
+          address,
+          city,
+          postal_code: postalCode,
+          phone
         }
       }, {
         runValidators: true

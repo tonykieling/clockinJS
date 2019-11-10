@@ -11,6 +11,12 @@ class Register extends Component {
       email           : "",
       password        : "",
       confirmPassword : "",
+
+      address         : "",
+      city            : "",
+      postalCode      : "",
+      phone           : "",
+
       redirectFlag    : false,
       errorMsg        : "",
       btnType         : undefined
@@ -64,9 +70,14 @@ class Register extends Component {
         // const url = "/user/signup";
         const url         = "http://localhost:3333/user/signup";    // this is dev setting
         const createUser  = {
-          name: this.state.name,
-          email: this.state.email,
-          password: this.state.password
+          name        : this.state.name,
+          email       : this.state.email,
+          password    : this.state.password,
+
+          address     : this.state.address,
+          city        : this.state.city,
+          postalCode  : this.state.postalCode,
+          phone       : this.state.phone
         }
         try {
           const addUser = await axios.post(url, createUser);
@@ -75,7 +86,12 @@ class Register extends Component {
               id      : addUser.data.user._id,
               name    : addUser.data.user.name,
               email   : addUser.data.user.email,
-              token   : addUser.data.token
+              token   : addUser.data.token,
+
+              address     : addUser.data.user.address,
+              city        : addUser.data.user.city,
+              postalCode  : addUser.data.user.postalCode,
+              phone       : addUser.data.user.phone
             }; 
             this.props.dispatchLogin({ user });
             this.setState({
@@ -148,6 +164,60 @@ class Register extends Component {
               />
             </Form.Group>
 
+
+            <Form.Group controlId="formCity">
+              <Form.Label>City</Form.Label>
+              <Form.Control
+                type        = "text"
+                placeholder = "Type the user's city"
+                name        = "city"
+                onChange    = {this.handleChange}
+                value       = {this.state.city}
+                onKeyPress  = {this.handleChange}
+                ref         = {input => this.textInput3 = input }
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formAddress">
+              <Form.Label>Address</Form.Label>
+              <Form.Control
+                type        = "text"
+                placeholder = "Type the user's address"
+                name        = "address"
+                onChange    = {this.handleChange}
+                value       = {this.state.address}
+                onKeyPress  = {this.handleChange}
+                ref         = {input => this.textInput4 = input }
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formPostalCode">
+              <Form.Label>Postal Code</Form.Label>
+              <Form.Control
+                type        = "text"
+                placeholder = "Type the user's Postal Code"
+                name        = "postalCode"
+                onChange    = {this.handleChange}
+                value       = {this.state.postalCode}
+                onKeyPress  = {this.handleChange}
+                ref         = {input => this.textInput5 = input }
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formPhone">
+              <Form.Label>Phone</Form.Label>
+              <Form.Control
+                type        = "text"
+                placeholder = "Type the user's phone"
+                name        = "phone"
+                onChange    = {this.handleChange}
+                value       = {this.state.phone}
+                onKeyPress  = {this.handleChange}
+                ref         = {input => this.textInput6 = input }
+              />
+            </Form.Group>            
+
+
             <Form.Group controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control
@@ -157,7 +227,7 @@ class Register extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.password}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput4 = input }
+                ref         = {input => this.textInput7 = input }
               />
             </Form.Group>
 
@@ -174,7 +244,7 @@ class Register extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.confirmPassword}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput5 = input }
+                ref         = {input => this.textInput8 = input }
                 />
             </Form.Group>
 

@@ -29,7 +29,25 @@ const userSchema = mongoose.Schema({
   
   deleted: {
     type: Boolean
-  }
+  },
+
+  address: {
+    type: String,
+    // required: true
+  },
+  city: {
+    type: String,
+    // required: true
+  },
+  postal_code: {
+    type: String,
+    // required: true
+  },
+  phone: {
+    type: String,
+    // required: true
+  },      
+
   
 });
 
