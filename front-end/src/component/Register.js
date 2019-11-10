@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Card, Container } from 'react-bootstrap';
+import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import axios from "axios";
@@ -18,7 +18,7 @@ class Register extends Component {
       phone           : "",
 
       redirectFlag    : false,
-      errorMsg        : "",
+      message         : "",
       btnType         : undefined
     }
 
@@ -58,9 +58,9 @@ class Register extends Component {
     } else if (this.state.email.length > 60) {
       alert("Email's maximun length is 60 characters.");
       this.textInput2.focus();
-    } else if (this.state.email !== "" && this.state.name !== "" && this.state.password !== "" && this.state.confirmPassword !== "") {
-      if (this.state.password !== this.state.confirmPassword) {
-        alert("Password and \nConfirm Password fields\n\nMUST be the same.");
+    } else if (this.state.email !== "" && this.state.name !== "") { // && this.state.password !== "" && this.state.confirmPassword !== "") {
+      if ((this.state.password !== this.state.confirmPassword) || (this.state.password === "")) {
+        alert("Password and \nConfirm Password fields\n\nMUST be the same\n and NOT empty.");
         this.setState({
           password        : "",
           confirmPassword : ""
@@ -79,9 +79,12 @@ class Register extends Component {
           postalCode  : this.state.postalCode,
           phone       : this.state.phone
         }
+console.log("createUser", createUser);
         try {
           const addUser = await axios.post(url, createUser);
+console.log("addUser", addUser);
           if (addUser.data.message) {
+console.log("inside ok")            
             const user = {
               id      : addUser.data.user._id,
               name    : addUser.data.user.name,
@@ -98,14 +101,16 @@ class Register extends Component {
               redirectFlag: true
             });
           } else if (addUser.data.error) {
+console.log("inside NOKKKKK")
             this.setState({
-              errorMsg: addUser.data.error });
+              message : addUser.data.error });
             this.clearMessage();
           }
 
         } catch(err) {
+console.log("inside catcherror")
           this.setState({
-            errorMsg: err.message });
+            message : err.message });
           this.clearMessage();
         }
       }
@@ -117,7 +122,7 @@ class Register extends Component {
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        errorMsg        : "",
+        message         : "",
         password        : "",
         confirmPassword : ""
       })
@@ -248,12 +253,24 @@ class Register extends Component {
                 />
             </Form.Group>
 
-            <Button variant="primary" type={this.state.btnType}>
+
+            { /* mount the Dropbox Button with all clients for the user */ }
+          <div className="gridClientBtContainer">
+            <span></span>
+            <Button 
+              variant = "primary" 
+              type    = {this.state.btnType}
+              onClick = {this.handleSubmit}>
               Submit
             </Button>
-            <Container className="msgcolor">
-              {this.state.errorMsg}
-            </Container>
+
+            <span className="messageSettings">
+              {this.state.message }
+            </span>
+          </div>
+<br></br>
+<br></br>
+
           </Form>
           </Card>
       </div>

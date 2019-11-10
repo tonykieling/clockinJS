@@ -21,7 +21,7 @@ const get_all = async (req, res) => {
   try {
     const allUsers = await User
       .find()
-      .select(" name email admin ");
+      .select(" name email admin address city postal_code phone");
 
     if (!allUsers || allUsers.length < 1)
       return res.status(200).json({
@@ -91,7 +91,7 @@ const signup = async (req, res) => {
     phone,
     postalCode
   } = req.body;
-
+console.log("req.body = signup", req.body);
   // it checks whether the email is already been used by an user account
   // if so, it returns an error message
   try {
@@ -99,17 +99,18 @@ const signup = async (req, res) => {
       .find({ email });
   
     if (userExist.length > 0)
-      return res.status(409).json({ error: `User <email: ${email}> alread exists.`});
+      return res.status(200).json({ 
+        error: `User <email: ${email}> alread exists.` });
   } catch(err) {
     console.trace("Error: ", err.message);
-    return res.status(409).json({
+    return res.status(200).json({
       error: `ESUP01: Email <${email}> is invalid`
     });
   }
 
   bcrypt.hash(password, 10, async (err, hash) => {
     if (err)
-      return res.status(400).json({
+      return res.status(200).json({
         error: "ESUP02: Something bad at the password process."
       });
     else {

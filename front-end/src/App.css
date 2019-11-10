@@ -8,9 +8,13 @@
 
 .gridClientBtContainer {
   display: grid;
-  grid-template-columns: auto auto auto auto;
+  grid-template-columns: auto auto auto auto auto auto;
   color: red;
   font-weight: bold;
+}
+
+.messageSettings {
+  margin-left: 20px;
 }
 
 
