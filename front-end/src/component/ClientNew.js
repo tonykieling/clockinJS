@@ -5,7 +5,8 @@ import { Redirect } from 'react-router-dom';
 import axios from "axios";
 
 // import CurrencyInput from "./aux/CurrencyInput.js";
-import PhoneInput from "./aux/PhoneInput.js";
+// import PhoneInput from "./aux/PhoneInput.js";
+import MaskedInput from 'react-text-mask';
 
 class ClientNew extends Component {
 
@@ -49,7 +50,7 @@ class ClientNew extends Component {
     //       break;
     //     default:                     
     //   }
-
+// console.log("e.target.name", e.target.name, "e.target.value", e.target.value);
       this.setState({
         [e.target.name]: e.target.value,
 
@@ -91,6 +92,8 @@ class ClientNew extends Component {
           cEmail      : this.state.cEmail,
           defaultRate : this.state.defaultRate
         }
+console.log("createClient", createClient);
+
         try {
           const addClient = await axios.post( 
             url, 
@@ -141,7 +144,13 @@ console.log("NEWclient", addClient);
       })
       this.textInput1.focus();
     }, 3500);
+  }
 
+
+  afterChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
   }
 
   render() {
@@ -205,30 +214,24 @@ console.log("NEWclient", addClient);
                 value       = {this.state.mother}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput4 = input }
+                // onBlur      = {() => console.log("leaving from Mohter")}
               />
             </Form.Group>
 
             <Form.Group controlId="formMPhone">
               <Form.Label>Mother's Phone</Form.Label>
-              {/* <Form.Control
-                type        = "text"
-                placeholder = "Type the mother's phone number"
+              <MaskedInput
+                mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                className   = "form-control"
+                placeholder = "Enter mother's phone number"
                 name        = "mPhone"
-                onChange    = {this.handleChange}
+                // guide={false}
+                id="mPhone"
+                onBlur={e => this.afterChange(e)}
                 value       = {this.state.mPhone}
-                onKeyPress  = {this.handleChange}
+                onKeyPress  = {() => this.handleChange}
                 ref         = {input => this.textInput5 = input }
-              /> */}
-                <PhoneInput
-                  placeholder = "Type the mother's phone number" 
-                  type        = "text" 
-                  className   = "form-control"
-                  name        = "mPhone"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.defaultRate}
-                  onKeyPress  = {this.handleChange}
-                  // ref         = {input => this.textInput4 = input}
-                />
+              />
             </Form.Group>
 
             <Form.Group controlId="formMEmail">
@@ -259,7 +262,19 @@ console.log("NEWclient", addClient);
 
             <Form.Group controlId="formFPhone">
               <Form.Label>Father's Phone</Form.Label>
-              <Form.Control
+              <MaskedInput
+                mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                className   = "form-control"
+                placeholder = "Enter father's phone number"
+                name        = "fPhone"
+                // guide={false}
+                id          = "fPhone"
+                onBlur      = {e => this.afterChange(e)}
+                value       = {this.state.fPhone}
+                onKeyPress  = {() => this.handleChange}
+                ref         = {input => this.textInput8 = input }
+              />
+              {/* <Form.Control
                 type        = "text"
                 placeholder = "Type the father's phone number"
                 name        = "fPhone"
@@ -267,7 +282,7 @@ console.log("NEWclient", addClient);
                 value       = {this.state.fPhone}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput8 = input }
-              />
+              /> */}
             </Form.Group>
 
             <Form.Group controlId="formFEmail">
@@ -298,7 +313,19 @@ console.log("NEWclient", addClient);
 
             <Form.Group controlId="formCPhone">
               <Form.Label>Consultant's Phone</Form.Label>
-              <Form.Control
+              <MaskedInput
+                mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                className   = "form-control"
+                placeholder = "Enter consultant's phone number"
+                name        = "cPhone"
+                // guide={false}
+                id          = "cPhone"
+                onBlur      = {e => this.afterChange(e)}
+                value       = {this.state.cPhone}
+                onKeyPress  = {() => this.handleChange}
+                ref         = {input => this.textInput11 = input }
+              />
+              {/* <Form.Control
                 type        = "text"
                 placeholder = "Type the consultant's phone number"
                 name        = "cPhone"
@@ -306,7 +333,7 @@ console.log("NEWclient", addClient);
                 value       = {this.state.cPhone}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput11 = input }
-              />
+              /> */}
             </Form.Group>
 
             <Form.Group controlId="formCEmail">
@@ -345,13 +372,17 @@ console.log("NEWclient", addClient);
                 /> */}
             </Form.Group>
 
-
-            <Button variant="primary" type={this.state.btnType}>
-              Save
-            </Button>
-            <Container className="msgcolor">
-              {this.state.errorMsg}
-            </Container>
+            <div className="gridClientBtContainer">
+              <span></span>
+              <Button variant="primary" type={this.state.btnType}>
+                Save
+              </Button>
+              <Container className="msgcolor">
+                {this.state.errorMsg}
+              </Container>
+            </div>
+            <br></br>
+            <br></br>
           </Form>
           </Card>
       </div>

@@ -3,6 +3,7 @@ import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import axios from "axios";
+import MaskedInput from 'react-text-mask';
 
 class Register extends Component {
 
@@ -31,11 +32,27 @@ class Register extends Component {
           break;
         case "email":
           if (this.state.email !== "")
+            this.textInput3.focus();
+          break;
+        case "city":
+          if (this.state.city !== "")
             this.textInput4.focus();
           break;
+        case "address":
+          if (this.state.address !== "")
+            this.textInput5.focus();
+          break;
+        case "postalCode":
+          if (this.state.postalCode !== "")
+            this.textInput.focus();
+          break;
+        case "phone":
+          if (this.state.phone !== "")
+            this.textInput7.focus();
+          break;          
         case "password":
           if (this.state.password !== "")
-            this.textInput5.focus();
+            this.textInput8.focus();
           break;
         case "confirmPassword":
           if (this.state.confirmPassword !== "")
@@ -124,8 +141,15 @@ class Register extends Component {
       })
       this.textInput1.focus();
     }, 3500);
-
   }
+
+
+  afterChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  }
+
 
   render() {
 
@@ -207,7 +231,7 @@ class Register extends Component {
 
             <Form.Group controlId="formPhone">
               <Form.Label>Phone</Form.Label>
-              <Form.Control
+              {/* <Form.Control
                 type        = "text"
                 placeholder = "Type the user's phone"
                 name        = "phone"
@@ -215,8 +239,22 @@ class Register extends Component {
                 value       = {this.state.phone}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput6 = input }
+              /> */}
+
+              <MaskedInput
+                mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                className   = "form-control"
+                placeholder = "Enter your phone number"
+                name        = "phone"
+                // guide={false}
+                // id          = "fPhone"
+                onBlur      = {e => this.afterChange(e)}
+                value       = {this.state.phone}
+                onKeyPress  = {() => this.handleChange}
+                // ref         = {input => this.textInput6 = input }
+                ref         = {(input) => { this.textInput = input; }}
               />
-            </Form.Group>            
+            </Form.Group>
 
 
             <Form.Group controlId="formBasicPassword">
