@@ -43,8 +43,8 @@ class Register extends Component {
             this.textInput5.focus();
           break;
         case "postalCode":
-          if (this.state.postalCode !== "")
-            this.textInput.focus();
+          // if (this.state.postalCode !== "")
+            // this.textInput6.focus();
           break;
         case "phone":
           if (this.state.phone !== "")
@@ -69,13 +69,14 @@ class Register extends Component {
   handleSubmit = async e => {
     e.preventDefault();
 
-    if (this.state.name.length > 60) {
-      alert("Name's maximun length is 60 characters.");
-      this.textInput1.focus();
-    } else if (this.state.email.length > 60) {
-      alert("Email's maximun length is 60 characters.");
-      this.textInput2.focus();
-    } else if (this.state.email !== "" && this.state.name !== "") { // && this.state.password !== "" && this.state.confirmPassword !== "") {
+    // if (this.state.name.length > 60) {
+    //   alert("Name's maximun length is 60 characters.");
+    //   this.textInput1.focus();
+    // } else if (this.state.email.length > 60) {
+    //   alert("Email's maximun length is 60 characters.");
+    //   this.textInput2.focus();
+    // } else 
+    if (this.state.email !== "" && this.state.name !== "") { // && this.state.password !== "" && this.state.confirmPassword !== "") {
       if ((this.state.password !== this.state.confirmPassword) || (this.state.password === "")) {
         alert("Password and \nConfirm Password fields\n\nMUST be the same\n and NOT empty.");
         this.setState({
@@ -189,7 +190,6 @@ class Register extends Component {
               />
             </Form.Group>
 
-
             <Form.Group controlId="formCity">
               <Form.Label>City</Form.Label>
               <Form.Control
@@ -251,11 +251,10 @@ class Register extends Component {
                 onBlur      = {e => this.afterChange(e)}
                 value       = {this.state.phone}
                 onKeyPress  = {() => this.handleChange}
-                // ref         = {input => this.textInput6 = input }
-                ref         = {(input) => { this.textInput = input; }}
+                ref         = {input => this.textInput6 = input }
+                // alwaysShowMask = {true}
               />
             </Form.Group>
-
 
             <Form.Group controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
@@ -269,10 +268,6 @@ class Register extends Component {
                 ref         = {input => this.textInput7 = input }
               />
             </Form.Group>
-
-
-            {/* textInput4 would be phone, but not using it in this app */}
-
 
             <Form.Group controlId="formConfirmPassword">
               <Form.Label>Confirm Password</Form.Label>
@@ -302,8 +297,9 @@ class Register extends Component {
               {this.state.message }
             </span>
           </div>
-<br></br>
-<br></br>
+
+        <br></br>
+        <br></br>
 
           </Form>
           </Card>
