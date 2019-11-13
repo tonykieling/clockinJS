@@ -17,6 +17,30 @@
   margin-left: 20px;
 }
 
+.message {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
+
+.noMessage {
+  color: transparent;
+}
+
+.gridBtnEdit {
+  display: grid;
+  grid-template-columns: auto;
+  margin-left: 35%;
+  margin-right: 35%;
+}
+
+.gridBtnSC {
+  display: grid;
+  grid-template-columns: auto auto;
+  margin-left: 30%;
+  margin-right: 30%;
+}
+
 
 
 

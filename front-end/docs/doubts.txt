@@ -6,4 +6,7 @@
  database: record in a raw way and convert it in the controllers (to show the right way)
  front-end: use datepicker..
 
- 
+ - in Home I cannot return to previous values as in ClientList
+  btnCancel
+  Why? (tried with assync/await, but nothing), even though cleaning this.state variables and reassigning them
+

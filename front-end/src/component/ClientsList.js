@@ -54,7 +54,6 @@ class ClientsList extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
-console.log("inside onSubmit");
 
     const data = { 
       clientId      : this.state.clientId,
