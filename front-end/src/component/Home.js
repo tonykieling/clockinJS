@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Form, Col, Row, Button} from 'react-bootstrap';
 import { connect } from 'react-redux'
+import axios from "axios";
 
 
 class Home extends Component {
@@ -10,6 +11,7 @@ class Home extends Component {
 
     this.state = {
       disableEdit : true,
+      userId      : this.props.storeId,
       name        : this.props.storeName,
       email       : this.props.storeEmail,
       city        : this.props.storeCity,
@@ -28,7 +30,7 @@ class Home extends Component {
 
 
   // need to implement it
-  handleSubmit = () => {
+  handleSubmit = async () => {
     if (this.state.name && this.state.email) {
       // asd
     } else {
@@ -56,6 +58,44 @@ class Home extends Component {
     }
 
     // handle submit itself
+
+    const url         = `http://localhost:3333/user/${this.state.userId}`;    // this is dev setting
+    const changeUser  = {
+      name        : this.state.name,
+      email       : this.state.email,
+      address     : this.state.address,
+      city        : this.state.city,
+      postalCode  : this.state.postalCode,
+      phone       : this.state.phone
+    }
+
+    try {
+      // const modUser = await axios.patch(url, changeUser);
+      console.log("this.props.storeToken", this.props.storeToken);
+      const modUser = await axios.patch( 
+        url,
+        changeUser,
+        {  
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization" : `Bearer ${this.props.storeToken}` }
+      });
+      console.log("modUser", modUser);
+
+      if (modUser.data.message) {
+        const user = {
+          name        : modUser.data.name,
+          email       : modUser.data.email,
+          city        : modUser.data.city,
+          address     : modUser.data.address,
+          postMessage : modUser.data.postalCode,
+          phone       : modUser.data.phone };
+      }
+    } catch(error) {
+      console.log("catch error: ", error.message);
+    }
+
+
   }
 
 
@@ -88,7 +128,7 @@ class Home extends Component {
       // tmp_phone       : phone,
       // tmp_postalCode  : postalCode
     });
-    console.log("editBtn = this.state: ", this.state);
+    // console.log("editBtn = this.state: ", this.state);
 
   }
 
@@ -138,7 +178,7 @@ class Home extends Component {
             <Form.Group as={Row} controlId="formId">
               <Form.Label column sm={2} className="card-label">Id:</Form.Label>
               <Col sm={10} >
-                <Form.Label column sm={10} >{this.props.storeId}</Form.Label>
+                <Form.Label column sm={10} >{this.state.userId}</Form.Label>
               </Col>
             </Form.Group>
           </Form>
@@ -292,6 +332,7 @@ class Home extends Component {
 
 const mapStateToProps = store => {
   return {
+    storeToken  : store.token,
     storeId     : store.id,
     storeEmail  : store.email,
     storeName   : store.name,

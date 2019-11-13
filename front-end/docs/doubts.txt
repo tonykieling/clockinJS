@@ -10,3 +10,4 @@
   btnCancel
   Why? (tried with assync/await, but nothing), even though cleaning this.state variables and reassigning them
 
+- GetClient component, how to set there the dropdownitem label?

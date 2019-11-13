@@ -209,10 +209,11 @@ const login = async (req, res) => {
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
 const modify_user = async (req, res) => {
-  if (!req.userData.admin)
-    return res.status(401).json({
-      error: `EMU01: User <${req.userData.email} is not an Admin.`
-    });
+console.log("inside modify_user");
+  // if (!req.userData.admin)
+  //   return res.status(200).json({
+  //     error: `EMU01: User <${req.userData.email} is not an Admin.`
+  //   });
 
   const user  = req.params.userId;
   const { name,
@@ -228,16 +229,19 @@ const modify_user = async (req, res) => {
       .findById(user);
     
     if (!checkUser)
-      return res.status(404).json({
+      return res.status(200).json({
         error: `EMU02: User <${user}> NOT found.`
       });
 
     if (!email) {
-      return res.status(409).json({
+      return res.status(200).json({
         error: `EMU03: Email <${email}> is invalid.`
       });
     }
-    
+// return res.json({ 
+//   message: "OK", 
+//   data: req.body });
+
     const changeUser = await User
       .updateOne({
         _id: checkUser._id
@@ -260,17 +264,23 @@ const modify_user = async (req, res) => {
         .findById({ _id: user})
         .select(" name email admin");
 
+      const returnUser = {
+        name, email, city, address, postalCode, phone
+      }
+
       res.json({
-        message: `User <${modifiedUser.email}> has been modified.`
+        message : `User <${modifiedUser.email}> has been modified.`,
+        data    : returnUser
       });
+
     } else
-      res.status(409).json({
+      res.status(200).json({
         error: `EMU04: User <${user}> not changed.`
       });
 
   } catch(err) {
     console.trace("Error: ", err.message);
-    res.status(409).json({
+    res.status(200).json({
       error: "EMU05: Something bad"
     });
   }
