@@ -12,6 +12,7 @@ import Register     from './component/Register.js';
 import Login        from "./component/Login.js";
 // import decodeToken from "./component/aux/decodeToken.js";
 import Home         from "./component/Home.js";
+import User         from "./component/User.js";
 import ClientNew    from "./component/ClientNew.js";
 import ClientList   from "./component/ClientsList.js";
 import PunchInNew   from "./component/PunchInNew.js";
@@ -35,6 +36,15 @@ class App extends Component {
                 }
                 else
                   return <Home />
+              }} />
+
+          <Route exact path = "/user" 
+              render = {() => {
+                if(!this.props.storeEmail) {
+                  return <Redirect to = "/land" />
+                }
+                else
+                  return <User />
               }} />
 
             <Route exact path = "/land" 

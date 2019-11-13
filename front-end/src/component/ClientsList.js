@@ -10,6 +10,7 @@ class ClientsList extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       message         : "",
       disableEditForm : true,
@@ -182,7 +183,7 @@ console.log("newClientData:::", newClientData);
   }
 
 
-  BtnCancel = () => {
+  btnCancel = () => {
     this.setState({
       disableEditForm: true,
 
@@ -423,7 +424,7 @@ console.log("newClientData:::", newClientData);
 
                       <Button 
                         variant="warning" 
-                        onClick={ this.BtnCancel } >
+                        onClick={ this.btnCancel } >
                         Cancel
                       </Button>
                     </div>

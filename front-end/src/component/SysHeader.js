@@ -12,7 +12,6 @@ class SysHeader extends Component {
   }
 
   x = e => {
-    console.log("eee: ", e);
     return(<Redirect to = "/land" />);
     // this.props.history.push("/land");
     // return(<a href="land"></a>)
@@ -32,7 +31,7 @@ class SysHeader extends Component {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Link to="/" className="nav-link">{this.props.storeEmail} is logged</Link>
+            <Link to="/user" className="nav-link">{this.props.storeEmail} is logged</Link>
             <NavDropdown title="Clients" id="basic-nav-dropdown1">
               {/* <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item> */}
               {/* <NavDropdown.Item> */}
