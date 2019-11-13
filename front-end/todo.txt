@@ -3,7 +3,7 @@ TODO
   X1.1- A user Home page clicked through ClockinJS instead user data
   X1.2- in Home cancel is not working, - ClientList it's working
     solved by onChange instead of onBlur method on the bootstrap component
-  1.3- record data after changing user data
+  X1.3- record data after changing user data
   1.4- forget password
   1.5- change password
 

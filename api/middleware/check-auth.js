@@ -16,7 +16,7 @@ module.exports = ((req, res, next) => {
     // console.trace("Error: ", err.message);   // too big message. It's better without it due to avoid polluting the screen.
     // return res.status(401).json({
     return res.status(200).json({
-      err: "ECA01: Auth has failed. Middleware"
+      error: "ECA01: Auth has failed. Middleware"
     }) ;
   }
 });

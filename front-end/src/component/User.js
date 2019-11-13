@@ -14,10 +14,10 @@ class Home extends Component {
       userId      : this.props.storeId,
       name        : this.props.storeName,
       email       : this.props.storeEmail,
-      city        : (this.props.storeCity === "undefined") ? "<it's empty>" : this.props.storeCity,
-      address     : (this.props.storeAddress === "undefined") ? "<it's empty>" : this.props.storeAddress,
-      phone       : (this.props.storePhone === "undefined") ? "<it's empty>" : this.props.storePhone,
-      postalCode  : (this.props.storePostalCode === "undefined") ? "<it's empty>" : this.props.storePostalCode,
+      city        : (this.props.storeCity === "undefined") ? "-" : this.props.storeCity,
+      address     : (this.props.storeAddress === "undefined") ? "-" : this.props.storeAddress,
+      phone       : (this.props.storePhone === "undefined") ? "-" : this.props.storePhone,
+      postalCode  : (this.props.storePostalCode === "undefined") ? "-" : this.props.storePostalCode,
       message     : "",
       tmp_name        : "",
       tmp_email       : "",
@@ -54,7 +54,7 @@ class Home extends Component {
         this.textInput1.focus();
       }
 
-      this.cleanMessage();
+      this.clearMessage();
     }
 
     // handle submit itself
@@ -70,8 +70,6 @@ class Home extends Component {
     }
 
     try {
-      // const modUser = await axios.patch(url, changeUser);
-      console.log("this.props.storeToken", this.props.storeToken);
       const modUser = await axios.patch( 
         url,
         changeUser,
@@ -80,27 +78,25 @@ class Home extends Component {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-      console.log("modUser", modUser);
 
       if (modUser.data.message) {
         const user = {
-          name        : modUser.data.name,
-          email       : modUser.data.email,
-          city        : modUser.data.city,
-          address     : modUser.data.address,
-          postalCode  : modUser.data.postalCode,
-          phone       : modUser.data.phone };
-        
+          id          : this.props.storeId,
+          name        : modUser.data.data.name,
+          email       : modUser.data.data.email,
+          city        : modUser.data.data.city,
+          address     : modUser.data.data.address,
+          postalCode  : modUser.data.data.postalCode,
+          phone       : modUser.data.data.phone,
+          token       : this.props.storeToken };
+
+        this.setState({
+          message     : modUser.data.message,
+          disableEdit : true
+        });
+
         this.props.dispatchLogin({ user });
-        // this.setState({
-        //   name,
-        //   email,
-        //   city,
-        //   address,
-        //   postalCode,
-        //   phone,
-        //   message: modUser.data.message
-        // });
+
       } else if (modUser.data.error) {
         this.setState({
           disableEdit : true,
@@ -108,7 +104,7 @@ class Home extends Component {
         });
       }
 
-      this.cleanMessage();
+      this.clearMessage();
     } catch(error) {
       console.log("catch error: ", error.message);
     }
@@ -145,7 +141,7 @@ class Home extends Component {
   }
 
 
-  cleanMessage = () => {
+  clearMessage = () => {
     setTimeout(() => {
       this.setState({
         message: ""
@@ -163,58 +159,49 @@ class Home extends Component {
         <Card>
           <Card.Header className="cardTitle">User Information</Card.Header>
 
-          <Form>
+          <Form className="formPosition">
             <Form.Group as={Row} controlId="formId">
-              <Form.Label column sm={2} className="card-label">Id:</Form.Label>
-              <Col sm={10} >
-                <Form.Label column sm={10} >{this.state.userId}</Form.Label>
+              <Form.Label column sm={2} className="card-label">Id</Form.Label>
+              <Col sm={7} >
+                <Form.Label column sm={8} >{this.state.userId}</Form.Label>
               </Col>
             </Form.Group>
-          </Form>
 
-          <Form>
             <Form.Group as={Row} controlId="formName">
-              <Form.Label column sm={2} className="card-label">Name:</Form.Label>
+              <Form.Label column sm={2} className="card-label">Name</Form.Label>
               <Col sm={8}>
-                {/* <Form.Label column sm={10} >{this.props.storeName}</Form.Label> */}
                 <Form.Control
                   disabled      = {this.state.disableEdit}
                   type          = "text"
                   name          = "name"
                   onChange      = {this.updateState}
-                  placeholder   = {!!this.state.name ? "<empty>" : this.state.name}
+                  placeholder   = {this.state.name}
                   value         = {this.state.name}
                   onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput1 = input }
                 />
               </Col>
             </Form.Group>
-          </Form>
 
-          <Form>
             <Form.Group as={Row} controlId="formEmail">
-              <Form.Label column sm={2} className="card-label">Email:</Form.Label>
+              <Form.Label column sm={2} className="card-label">Email</Form.Label>
               <Col sm={8}>
-                {/* <Form.Label column sm={10} >{this.props.storeEmail}</Form.Label> */}
                 <Form.Control
                   disabled      = {this.state.disableEdit}
                   type          = "text"
                   name          = "email"
                   onChange      = {this.updateState}
-                  placeholder   = {!!this.state.email ? "<empty>" : this.state.email}
+                  placeholder   = {this.state.email}
                   value         = {this.state.email}
                   onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput2 = input }
                 />
               </Col>
             </Form.Group>
-          </Form>
 
-          <Form>
             <Form.Group as={Row} controlId="formAddress">
-              <Form.Label column sm={2} className="card-label">Address:</Form.Label>
+              <Form.Label column sm={2} className="card-label">Address</Form.Label>
               <Col sm={8}>
-                {/* <Form.Label column sm={10} >{this.props.storeAddress}</Form.Label> */}
                 <Form.Control
                   disabled      = {this.state.disableEdit}
                   placeholder   = {this.state.address}
@@ -227,13 +214,10 @@ class Home extends Component {
                 />
               </Col>
             </Form.Group>
-          </Form>
 
-          <Form>
             <Form.Group as={Row} controlId="formCity">
               <Form.Label column sm={2} className="card-label">City:</Form.Label>
               <Col sm={8}>
-                {/* <Form.Label column sm={10} >{this.props.storeCity}</Form.Label> */}
                 <Form.Control
                   disabled      = {this.state.disableEdit}
                   type          = "text"
@@ -246,13 +230,10 @@ class Home extends Component {
                 />
               </Col>
             </Form.Group>
-          </Form>
 
-          <Form>
             <Form.Group as={Row} controlId="formPostalCode">
-              <Form.Label column sm={2} className="card-label">Postal Code:</Form.Label>
+              <Form.Label column sm={2} className="card-label">Postal Code</Form.Label>
               <Col sm={4}>
-                {/* <Form.Label column sm={10} >{this.props.storePostalCode}</Form.Label> */}
                 <Form.Control
                   disabled      = {this.state.disableEdit}
                   type          = "text"
@@ -265,19 +246,16 @@ class Home extends Component {
                 />
               </Col>
             </Form.Group>
-          </Form>
 
-          <Form>
             <Form.Group as={Row} controlId="formPhone">
-              <Form.Label column sm={2} className="card-label">Phone:</Form.Label>
+              <Form.Label column sm={2} className="card-label">Phone</Form.Label>
               <Col sm={4}>
-                {/* <Form.Label column sm={10} >{this.props.storePhone}</Form.Label> */}
                 <Form.Control
                   disabled      = {this.state.disableEdit}
                   type          = "text"
                   name          = "phone"
                   onChange      = {this.updateState}
-                  // value         = {this.state.phone}
+                  value         = {this.state.phone}
                   placeholder   = {this.state.phone}
                   onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput6 = input }
@@ -288,11 +266,9 @@ class Home extends Component {
 
           
           <Card.Header className="cardTitle message">          
-            {/* <h5 className="message"> */}
             { this.state.message
               ? this.state.message
               : <span className="noMessage">.</span> }
-            {/* </h5> */}
           </Card.Header>
 
           { !this.state.disableEdit
