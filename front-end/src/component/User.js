@@ -162,7 +162,7 @@ class Home extends Component {
           <Form className="formPosition">
             <Form.Group as={Row} controlId="formId">
               <Form.Label column sm={2} className="card-label">Id</Form.Label>
-              <Col sm={7} >
+              <Col >
                 <Form.Label column sm={8} >{this.state.userId}</Form.Label>
               </Col>
             </Form.Group>
@@ -287,7 +287,8 @@ class Home extends Component {
                 </Button>
               </div>
             :
-              <Button className="gridBtnEdit"
+              <Button 
+                className="gridBtnEdit"
                 onClick = { this.editForm } >
                 Edit
               </Button>

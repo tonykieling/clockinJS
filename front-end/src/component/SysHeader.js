@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 class SysHeader extends Component {
@@ -9,13 +9,6 @@ class SysHeader extends Component {
   logout = () => {
     if (window.confirm("Are you sure you wanna leave?"))
       this.props.noUser()
-  }
-
-  x = e => {
-    return(<Redirect to = "/land" />);
-    // this.props.history.push("/land");
-    // return(<a href="land"></a>)
-    // return <Link to = "/punchInNew" className="dropdown-item"> Punch In </Link>
   }
 
 
@@ -33,18 +26,14 @@ class SysHeader extends Component {
           <Nav className="mr-auto">
             <Link to="/user" className="nav-link">{this.props.storeEmail} is logged</Link>
             <NavDropdown title="Clients" id="basic-nav-dropdown1">
-              {/* <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item> */}
-              {/* <NavDropdown.Item> */}
-              <Link to = "/clientNew" className="dropdown-item"> Add New One </Link>
-              {/* </NavDropdown.Item> */}
+              <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item>
+              {/* <Link to = "/clientNew" className="dropdown-item"> Add New Client</Link> */}
               <NavDropdown.Divider />
-              {/* <Link to = "/clientList" className="dropdown-item"> List them all </Link> */}
               <NavDropdown.Item href="/clientList"> List </NavDropdown.Item>
             </NavDropdown>
 
             <NavDropdown title="Clockins" id="basic-nav-dropdown2">
               <NavDropdown.Item href="punchInNew"> Punch in </NavDropdown.Item>
-              {/* <NavDropdown.Item onClick={this.x}>Punch in</NavDropdown.Item> */}
               <NavDropdown.Divider />
               <NavDropdown.Item href="punchInsList">List them all</NavDropdown.Item>
             </NavDropdown>
@@ -52,7 +41,6 @@ class SysHeader extends Component {
             <NavDropdown title="Invoices" id="basic-nav-dropdown3">
               <NavDropdown.Item href="invoiceNew">Generate a brand new one</NavDropdown.Item>
               <NavDropdown.Divider />
-              {/* <NavDropdown.Item href="invoicesList">List them all</NavDropdown.Item> */}
               <NavDropdown.Item href="pdfTemplate">List them all</NavDropdown.Item>
             </NavDropdown>            
           </Nav>

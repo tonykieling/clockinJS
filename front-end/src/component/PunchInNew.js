@@ -18,13 +18,11 @@ class PunchInNew extends Component {
     rate          : "",
     notes         : "",
     message       : "",
-    clientId      : "",
-    // flagToRenderDB: false
+    client        : {}
   }
 
 
   handleChange = event => {
-// console.log("inside changes");
     this.setState({
       [event.target.name]: event.target.value
     });
@@ -43,7 +41,7 @@ console.log("inside onSubmit");
       timeEnd   : this.state.endingTime,
       rate      : this.state.rate,
       notes     : this.state.notes,
-      clientId  : this.state.clientId };
+      clientId  : this.state.client._id };
 
     if ( !data.date || !data.timeStart || !data.timeEnd || !data.rate){
 console.log(`  
@@ -64,21 +62,17 @@ console.log(`
             headers: { 
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
-        });
+        })
 
         if (addClockin.data.message) {
           this.setState({
-            message: `Punched in!`,
-            // flagToRenderDB: true
+            message: `Punched in!`
           });
         } else if (addClockin.data.error)
           this.setState({
             message: addClockin.data.error
           });
 
-        // this.setState({
-        //   flagToRenderDB: false
-        // })
         this.cleanForm();
         
       } catch(err) {
@@ -92,13 +86,14 @@ console.log(`
 
   messageValidationMethod = () => {
     this.setState({
-      message: !this.state.clientId ? "Please, select client." : "Please fill the fields."
+      message: !this.state.client ? "Please, select client." : "Please fill the fields."
     });
 
     setTimeout(() => {
       this.cleanMessage();
     }, 3000);
   }
+
 
   cleanMessage = () => {
       this.setState({
@@ -115,7 +110,8 @@ console.log(`
         endingTime    : "",
         rate          : "",
         notes         : "",
-        message       : ""
+        message       : "",
+        client        : {}
       });
     }, 3000);
   }
@@ -134,20 +130,12 @@ console.log(`
 
   getClientInfo = client => {
     this.setState({
-      clientId  : client._id,
-      rate      : client.default_rate
+      client  : client,
+      rate    : client.default_rate
     });
   }
 
   render() {
-
-    // return (
-    //   !this.state.date
-    //     ?
-    //       <h1>YES</h1>
-    //     : <h1>NO</h1>
-    // )
-
     return (
       <div>
         <h1>
@@ -161,7 +149,10 @@ console.log(`
 
           { /* mount the Dropbox Button with all clients for the user */ }
           <div className="gridClientBtContainer">
-            <GetClients getClientInfo = { this.getClientInfo } />
+            <GetClients 
+              client        = { this.state.client }
+              getClientInfo = { this.getClientInfo } />
+              
             <span>
               { this.state.message ? this.state.message : "" }
             </span>
@@ -176,7 +167,6 @@ console.log(`
               <Col sm="6">
                 <Form.Control 
                   type        = "date"
-                  // placeholder = "Session's Date"
                   name        = "date"
                   onChange    = {this.handleChange}
                   value       = {this.state.date}
@@ -230,8 +220,8 @@ console.log(`
               <Form.Label column sm="3" >Rate</Form.Label>
               <Col sm="3">
                 <Form.Control
-                  type        = "text"
-                  placeholder = { this.state.rate || "Default Rate"}
+                  type        = "number"
+                  placeholder = { this.state.rate || "Rate ($)"}
                   name        = "rate"
                   onChange    = {this.handleChange}
                   onKeyPress  = {this.handleChange}

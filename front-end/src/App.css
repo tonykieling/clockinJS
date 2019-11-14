@@ -31,7 +31,7 @@
   display: grid;
   grid-template-columns: auto;
   margin-left: 35%;
-  margin-right: 35%;
+  margin-right: 35px;
 }
 
 .gridBtnSC {

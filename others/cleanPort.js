@@ -6,7 +6,7 @@ const shell = require("shelljs");
 //   // shell.echo(`output => ${output}`);
 //   // return output;
 // }).output;
-const x = shell.exec("lsof -i :3333 | grep 3333").split(" ").join("");
+const x = shell.exec("lsof -i :3333 | grep -i *:3333").split(" ").join("");
 // const x = shell.exec("lsof -i :3333 | grep 3333");
 // console.log(`x = '${x}'`);
 if (x != "") {

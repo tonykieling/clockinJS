@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import {  Card, Button, Form, Container } from "react-bootstrap";
+import {  Card, Button, Form } from "react-bootstrap";
 
 import GetClients from "./aux/GetClients.js";
 
@@ -14,6 +14,8 @@ class ClientsList extends Component {
     this.state = {
       message         : "",
       disableEditForm : true,
+
+      clientId        : "",
       name            : "",
       nickname        : "",
       birthday        : "",
@@ -221,11 +223,13 @@ console.log("newClientData:::", newClientData);
         </Card.Body>
       </Card>        
 
-      { this.state.name
+      { this.state.clientId
         ? 
           <div>
             <Card>
-              <Form onSubmit={this.handleSubmit}>
+              <Form 
+                onSubmit  = {this.handleSubmit}
+                className = "formPosition" >
 
                 <Form.Group controlId="formName">
                   <Form.Label>Name</Form.Label>
@@ -239,7 +243,7 @@ console.log("newClientData:::", newClientData);
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     // ref         = {input => this.textInput1 = input }
-                     />
+                    />
                 </Form.Group>
 
                 <Form.Group controlId="formNickName">
@@ -413,7 +417,41 @@ console.log("newClientData:::", newClientData);
                 </Form.Group>
 
 
-                { !this.state.disableEditForm
+
+
+
+          <Card.Header className="cardTitle message">          
+            { this.state.message
+              ? this.state.message
+              : <span className="noMessage">.</span> }
+          </Card.Header>
+
+          { !this.state.disableEditForm
+            ?
+              <div className="gridBtnSC">
+                <Button 
+                  variant = "success" 
+                  onClick = {this.handleSubmit} >
+                  Save
+                </Button>
+
+                <Button 
+                  variant="warning" 
+                  onClick={ this.btnCancel } >
+                  Cancel
+                </Button>
+              </div>
+            :
+              <Button 
+                className="gridBtnEdit"
+                onClick = { this.editForm } >
+                Edit
+              </Button>
+          }
+          <br></br>
+          <br></br>
+
+                {/* { !this.state.disableEditForm
                   ?
                     <div>
                       <Button 
@@ -437,7 +475,7 @@ console.log("newClientData:::", newClientData);
 
                 <Container className="msgcolor">
                   {this.state.errorMsg}
-                </Container>
+                </Container> */}
               </Form>
             </Card>
 

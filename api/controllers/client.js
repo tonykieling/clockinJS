@@ -22,7 +22,6 @@ console.log("---> userId", userId);
         .find({ user_id: userId});      // it has to be for only that user
         // .select(" name nickname mother consultant ")
 
-
     if (!allClients || allClients.length < 1)
       return res.status(200).json({
         message: `No clients at all.`

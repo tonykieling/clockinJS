@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Card, Container } from 'react-bootstrap';
+import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import axios from "axios";
@@ -25,7 +25,7 @@ class ClientNew extends Component {
       cEmail          : "",
       defaultRate     : "",
       redirectFlag    : false,
-      errorMsg        : "",
+      message         : "",
       btnType         : undefined
     }
 
@@ -92,7 +92,6 @@ class ClientNew extends Component {
           cEmail      : this.state.cEmail,
           defaultRate : this.state.defaultRate
         }
-console.log("createClient", createClient);
 
         try {
           const addClient = await axios.post( 
@@ -113,20 +112,20 @@ console.log("createClient", createClient);
 
             const id = addClient.data.client._id;
             const client = { id, name, nickName, mother };
-console.log("NEWclient", addClient);
+
             this.props.dispatchLogin({ client });
             this.setState({
               redirectFlag: true
             });
           } else if (addClient.data.error) {
             this.setState({
-              errorMsg: addClient.data.error });
+              message : addClient.data.error });
             this.clearMessage();
           }
 
         } catch(err) {
           this.setState({
-            errorMsg: err.message });
+            message : err.message });
           this.clearMessage();
         }
       // }
@@ -138,7 +137,7 @@ console.log("NEWclient", addClient);
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        errorMsg        : "",
+        message         : "",
         password        : "",
         confirmPassword : ""
       })
@@ -162,7 +161,9 @@ console.log("NEWclient", addClient);
       <div>
         <h2>Add New Client Page</h2>
         <Card>
-          <Form onSubmit={this.handleSubmit}>
+          <Form 
+            onSubmit  = {this.handleSubmit}
+            className = "formPosition"  >
 
             <Form.Group controlId="formName">
               <Form.Label>Name</Form.Label>
@@ -372,19 +373,25 @@ console.log("NEWclient", addClient);
                 /> */}
             </Form.Group>
 
-            <div className="gridClientBtContainer">
-              <span></span>
-              <Button variant="primary" type={this.state.btnType}>
-                Save
-              </Button>
-              <Container className="msgcolor">
-                {this.state.errorMsg}
-              </Container>
-            </div>
+            <Card.Header className="cardTitle message">          
+              { this.state.message
+                ? this.state.message
+                : <span className="noMessage">.</span> }
+            </Card.Header>
+
+            <Button 
+              variant = "primary" 
+              type    = {this.state.btnType}
+              className="gridBtnEdit" 
+              >
+              Save
+            </Button>
+
             <br></br>
             <br></br>
+
           </Form>
-          </Card>
+        </Card>
       </div>
     )
   }

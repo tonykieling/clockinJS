@@ -10,13 +10,13 @@ class GetClients extends Component {
     super(props);
     this.state = {
       clients       : undefined,
-      dropDownLabel : "Select the client",
+      // dropDownLabel : "Select the client",
       errorMsg      : undefined
     }
   }
 
   async componentDidMount() {
-    const url         = "/client";    // this is dev setting
+    const url = "/client";    // this is dev setting
     try {
       const getClients = await axios.get( 
         url, 
@@ -41,7 +41,8 @@ console.log("getClients", getClients.data.message);
     return(
       <Dropdown>
         <Dropdown.Toggle variant="success" id="dropdown-basic">
-          {this.state.dropDownLabel}
+          {/* {this.state.dropDownLabel} */}
+          {(this.props.client && this.props.client.nickname) || `Select Client` }
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
@@ -49,8 +50,8 @@ console.log("getClients", getClients.data.message);
             <Dropdown.Item 
               key = { id } 
               // onClick = { () => this.changes(client) } 
-              onClick = { this.changes }
-              data-client = { JSON.stringify(client) }
+              onClick = { (e) => this.changes(e, client) }
+              // data-client = { JSON.stringify(client) }
               name = { client.nickname }
             > { client.nickname } </Dropdown.Item>
           )}
@@ -59,23 +60,18 @@ console.log("getClients", getClients.data.message);
     );
   }
 
-  changes = event => {
+  changes = (event, incommingClient) => {
     event.preventDefault();
 
-    this.setState({
-      dropDownLabel: event.target.name
-    });
-    const client = JSON.parse(event.target.dataset.client);
+    // this.setState({
+    //   dropDownLabel: event.target.name
+    // });
+    // const client = JSON.parse(event.target.dataset.client);
     // this.props.dispatchSetClient({ client });
     // this.props.populateForm(client);
-    this.props.getClientInfo(client);
+    this.props.getClientInfo(incommingClient);
   }
 
-  selectLabel = () => {
-    this.setState({
-      dropDownLabel: "SELECT"
-    });
-  }
 
   render() {
     console.log("rendering GetList!!");
@@ -85,7 +81,6 @@ console.log("getClients", getClients.data.message);
         { this.state.clients
         ? this.populateDropbox()
         : null }
-        {/* : this.selectLabel() } */}
       </div>
     )
   }
