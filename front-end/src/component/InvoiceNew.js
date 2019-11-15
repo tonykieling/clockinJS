@@ -16,7 +16,7 @@ class InvoiceNew extends Component {
     clockinList       : [],
     client            : "",
     clockInListTable  : "",
-    tableVisibility   : "hiddenTable",
+    tableVisibility   : false,
     showPreview       : false
   }
 
@@ -66,7 +66,8 @@ console.log("alrigth");
           client            : getClockins.data.client,
           clockInListTable  : this.renderDataTable(getClockins.data.allClockins, getClockins.data.client),
           clientId,
-          tableVisibility   : "showTable",
+          // tableVisibility   : "showTable",
+          tableVisibility   : true,
           showPreview       : true
         });
       }
@@ -120,7 +121,7 @@ console.log("clockinsToSend", clockinsToSend);
         rate            : "",
         notes           : "",
         message         : "",
-        tableVisibility : "hiddenTable"
+        tableVisibility : false
       });
     }, 3000);
   }
@@ -204,38 +205,38 @@ console.log("clockinsToSend", clockinsToSend);
       </Card>
 
 
-      <Card 
-        id="clockinListResult" 
-        className={this.tableVisibility }
-        >
-          {(this.state.clockinList.length > 0) 
-            ? <Table striped bordered hover size="sm" responsive>
-                <thead>
-                  <tr>
-                    <th>Type of Service</th>
-                    <th>Dates</th>
-                    <th># of Hours</th>
-                    <th>Rate Per Hour - inclusive of PST if applicable</th>
-                    <th>Total Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.clockInListTable}
-                </tbody>
-              </Table> 
-            : null }
-          {/* <CSVLink
-              data      = {this.state.dataTableCSVFile}
-              headers   = {fileHeaders}
-              separator = {";"}
-              filename  = {(this.state.dropDownBtnName === "Wanna consider user's type?") ?
-                                        "userList.csv" :
-                                        `${this.state.dropDownBtnName}.csv`}
-              className = "btn btn-primary"
-              target    = "blank" >
-              Download me
-          </CSVLink>             */}
-        </Card>
+      { this.state.tableVisibility
+        ?
+          <Card id="clockinListResult"  >
+            {(this.state.clockinList.length > 0) 
+              ? <Table striped bordered hover size="sm" responsive>
+                  <thead>
+                    <tr>
+                      <th>Type of Service</th>
+                      <th>Dates</th>
+                      <th># of Hours</th>
+                      <th>Rate Per Hour - inclusive of PST if applicable</th>
+                      <th>Total Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.clockInListTable}
+                  </tbody>
+                </Table> 
+              : null }
+            {/* <CSVLink
+                data      = {this.state.dataTableCSVFile}
+                headers   = {fileHeaders}
+                separator = {";"}
+                filename  = {(this.state.dropDownBtnName === "Wanna consider user's type?") ?
+                                          "userList.csv" :
+                                          `${this.state.dropDownBtnName}.csv`}
+                className = "btn btn-primary"
+                target    = "blank" >
+                Download me
+            </CSVLink>             */}
+          </Card>
+        : null }
 
           </Fragment>
         }
@@ -247,19 +248,10 @@ console.log("clockinsToSend", clockinsToSend);
 
 const mapStateToProps = store => {
   return {
-    storeToken    : store.token,
-    storeClientId : store.client_id
+    storeToken    : store.token
   };
 };
 
-
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     dispatchLogin: user => dispatch({
-//       type:"LOGIN",
-//       data: user })
-//   };
-// };
 
 
 export default connect(mapStateToProps, null)(InvoiceNew);

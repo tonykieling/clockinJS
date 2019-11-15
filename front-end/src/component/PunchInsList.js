@@ -6,18 +6,23 @@ import {  Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 import GetClients from "./aux/GetClients.js";
 
 
-class PunchInNew extends Component {
+class PunchInsList extends Component {
 
-  state = {
+  constructor(props) {
+    super(props);
+
+  this.state = {
     dateStart         : "",
     dateEnd           : "",
     clientId          : "",
     clockinList       : [],
-    client            : "",
     clockInListTable  : "",
     tableVisibility   : false,
-    message           : ""
+    message           : "",
+    client            : {},
+    cleanButton       : false
   }
+}
 
 
   handleChange = event => {
@@ -46,25 +51,27 @@ class PunchInNew extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-  console.log("getClockins", getClockins.data.allClockins);
 
         if (getClockins.data.allClockins){
-  console.log("alrigth");
           this.setState({
             clockinList       : getClockins.data.allClockins,
-            client            : getClockins.data.client,
+            // client            : getClockins.data.client,
             clockInListTable  : this.renderDataTable(getClockins.data.allClockins, getClockins.data.client),
-            tableVisibility   : true
+            tableVisibility   : true,
+            cleanButton       : true
           });
+        } else {
+          this.setState({
+            message: getClockins.data.message
+          });
+
+          this.cleanMessage();
         }
-  console.log("--- this.state", this.state);
       } catch(err) {
-  console.log("errorrrrr");
         this.setState({
           message: err.message
         });
         
-        this.cleanForm();
       }
     } else
       this.messageValidationMethod();
@@ -72,7 +79,6 @@ class PunchInNew extends Component {
 
 
   renderDataTable = (clockins, client) => {
-console.log("inside rednderDataTable", clockins);
     return clockins.map((clockin, index) => {
       const dt = new Date(clockin.date);
       const ts = new Date(clockin.time_start);
@@ -87,7 +93,6 @@ console.log("inside rednderDataTable", clockins);
         total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)),
         invoice     : clockin.invoice_id ? clockin.invoice_id : "not yet"
       }
-console.log("clockinsToSend", clockinsToSend);
 
       return (
         <tr key={clockinsToSend.num}>
@@ -114,29 +119,23 @@ console.log("clockinsToSend", clockinsToSend);
 
 
   cleanForm = () => {
-    setTimeout(() => {
-      this.setState({
-        date            : "",
-        timeStart       : "",
-        timeEnd         : "",
-        rate            : "",
-        notes           : "",
-        message         : ""
-      });
-    }, 3000);
-  }
-
-
-  getClientInfo = client => {    
     this.setState({
-      clientId: client._id
+      date            : "",
+      timeStart       : "",
+      timeEnd         : "",
+      rate            : "",
+      clientId        : "",
+      message         : "",
+      client          : {},
+      tableVisibility : false,
+      cleanButton     : false
     });
   }
 
 
   messageValidationMethod = () => {
     this.setState({
-      message: "Please select the client."
+      message: "Please, select client."
     });
 
     setTimeout(() => {
@@ -144,12 +143,20 @@ console.log("clockinsToSend", clockinsToSend);
     }, 3000);
   }
 
+
   cleanMessage = () => {
       this.setState({
         message: ""
       });
   }
 
+
+  getClientInfo = client => {
+    this.setState({
+      client  : client,
+      clientId : client._id
+    });
+  }
 
   render() {
     return (
@@ -162,25 +169,26 @@ console.log("clockinsToSend", clockinsToSend);
         <Card style={{ width: '40rem' }}>
           <Card.Body>
 
-
           { /* mount the Dropbox Button with all clients for the user */ }
           <div className="gridClientBtContainer">
-            <GetClients getClientInfo = { this.getClientInfo } />
+            <GetClients
+              client        = { this.state.client }
+              getClientInfo = { this.getClientInfo } />
+
             <span>
-              { this.state.message ? this.state.message : "" }
+              { this.state.message || "" }
             </span>
           </div>
 
 
             <br></br>
-            <Form onSubmit={this.handleSubmit} >
+            <Form >
 
               <Form.Group as={Row} controlId="formST">
                 <Form.Label column sm="3" >Date Start:</Form.Label>
                 <Col sm="5">
                   <Form.Control
                     type        = "date"
-                    // placeholder = "Starting Time"
                     name        = "dateStart"
                     onChange    = {this.handleChange}
                     value       = {this.state.dateStart}
@@ -197,7 +205,6 @@ console.log("clockinsToSend", clockinsToSend);
                 <Col sm="5">
                   <Form.Control                
                     type        = "date"
-                    // placeholder = "Ending Time"
                     name        = "dateEnd"
                     onChange    = {this.handleChange}
                     value       = {this.state.dateEnd}
@@ -207,10 +214,18 @@ console.log("clockinsToSend", clockinsToSend);
                 </Col>
               </Form.Group>
 
-              <Button variant="primary" type= "submit" onClick = { this.handleSubmit }>
+              <Button 
+                variant="primary" 
+                onClick = { this.handleSubmit } >
                 Get List
-              </Button>            
-              
+              </Button>        
+
+              { this.state.cleanButton
+                ? 
+                  <Button variant="info" onClick = { this.cleanForm }>
+                    Clean
+                  </Button>
+                : null }
             </Form>
           </Card.Body>
         </Card>
@@ -251,7 +266,7 @@ console.log("clockinsToSend", clockinsToSend);
 const mapStateToProps = store => {
   return {
     storeToken    : store.token,
-    storeClientId : store.client_id
+    // storeClientId : store.client_id
   };
 };
 
@@ -265,4 +280,4 @@ const mapStateToProps = store => {
 // };
 
 
-export default connect(mapStateToProps, null)(PunchInNew);
+export default connect(mapStateToProps, null)(PunchInsList);

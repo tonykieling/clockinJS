@@ -41,7 +41,6 @@ console.log("getClients", getClients.data.message);
     return(
       <Dropdown>
         <Dropdown.Toggle variant="success" id="dropdown-basic">
-          {/* {this.state.dropDownLabel} */}
           {(this.props.client && this.props.client.nickname) || `Select Client` }
         </Dropdown.Toggle>
 
@@ -92,15 +91,6 @@ const mapStateToProps = store => {
     storeToken: store.token
   };
 };
-
-
-// const mapDispatchToProps = dispatch => {
-//   return {    
-//     dispatchSetClient: client => dispatch({
-//       type:"SETCLIENT",
-//       data: client })
-//   };
-// };
 
 
 export default connect(mapStateToProps, null)(GetClients);

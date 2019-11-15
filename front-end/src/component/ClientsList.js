@@ -86,7 +86,6 @@ class ClientsList extends Component {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-console.log("newClientData:::", newClientData);
 
       if (newClientData.data.message) {
         this.setState({

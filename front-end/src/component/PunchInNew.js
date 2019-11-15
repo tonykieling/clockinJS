@@ -44,11 +44,11 @@ console.log("inside onSubmit");
       clientId  : this.state.client._id };
 
     if ( !data.date || !data.timeStart || !data.timeEnd || !data.rate){
-console.log(`  
-               date = ${data.date}
-                ts  = ${data.timeStart}
-                te  = ${data.timeEnd}
-               rate = ${data.rate} `);
+// console.log(`  
+//               date = ${data.date}
+//                 ts  = ${data.timeStart}
+//                 te  = ${data.timeEnd}
+//               rate = ${data.rate} `);
       this.messageValidationMethod();
     }
       
