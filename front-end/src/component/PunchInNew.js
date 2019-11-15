@@ -43,12 +43,13 @@ console.log("inside onSubmit");
       notes     : this.state.notes,
       clientId  : this.state.client._id };
 
-    if ( !data.date || !data.timeStart || !data.timeEnd || !data.rate){
-// console.log(`  
-//               date = ${data.date}
-//                 ts  = ${data.timeStart}
-//                 te  = ${data.timeEnd}
-//               rate = ${data.rate} `);
+    if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate){
+console.log(`  
+              client = ${data.clientId}
+              date = ${data.date}
+                ts  = ${data.timeStart}
+                te  = ${data.timeEnd}
+              rate = ${data.rate} `);
       this.messageValidationMethod();
     }
       
@@ -89,9 +90,9 @@ console.log("inside onSubmit");
       message: !this.state.client ? "Please, select client." : "Please fill the fields."
     });
 
-    setTimeout(() => {
-      this.cleanMessage();
-    }, 3000);
+    // setTimeout(() => {
+    //   this.cleanMessage();
+    // }, 3000);
   }
 
 
@@ -171,8 +172,7 @@ console.log("inside onSubmit");
                   onChange    = {this.handleChange}
                   value       = {this.state.date}
                   onKeyPress  = {this.handleChange}
-                  // ref         = {input => this.textInput1 = input } 
-                />
+                  disabled    = {( this.rate === "" ) ? false : true } />
               </Col>
             </Form.Group>
 
@@ -186,8 +186,7 @@ console.log("inside onSubmit");
                   onChange    = {this.handleChange}
                   value       = {this.state.startingTime}
                   onKeyPress  = {this.handleChange}
-                  // ref         = {input => this.textInput2 = input } 
-                  />
+                  disabled    = {( this.rate === "" ) ? false : true } />
               </Col>
             </Form.Group>
 
@@ -203,8 +202,7 @@ console.log("inside onSubmit");
                   onChange    = {this.handleChange}
                   value       = {this.state.endingTime}
                   onKeyPress  = {this.handleChange}
-                  // ref         = {input => this.textInput3 = input } 
-                  />
+                  disabled    = {( this.rate === "" ) ? false : true } />
               </Col>
 
               <Col sm="6">
@@ -226,8 +224,7 @@ console.log("inside onSubmit");
                   onChange    = {this.handleChange}
                   onKeyPress  = {this.handleChange}
                   value       = {this.state.rate}
-                  // ref         = {input => this.textInput4 = input } 
-                  />
+                  disabled    = {( this.rate === "" ) ? false : true } />
               </Col>
             </Form.Group>
 
@@ -242,7 +239,7 @@ console.log("inside onSubmit");
                 onChange    = {this.handleChange}
                 value       = {this.state.notes}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput5 = input } />
+                disabled    = {( this.rate === "" ) ? false : true } />
             </Form.Group>
 
             <Button 

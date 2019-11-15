@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 import axios from "axios";
 
-// import CurrencyInput from "./aux/CurrencyInput.js";
-// import PhoneInput from "./aux/PhoneInput.js";
 import MaskedInput from 'react-text-mask';
 
 class ClientNew extends Component {
@@ -24,7 +21,6 @@ class ClientNew extends Component {
       cPhone          : "",
       cEmail          : "",
       defaultRate     : "",
-      redirectFlag    : false,
       message         : "",
       btnType         : undefined
     }
@@ -76,8 +72,8 @@ class ClientNew extends Component {
     //     })
     //     this.textInput4.focus();
       // } else {
-        // const url = "/user/signup";
-        const url         = "http://localhost:3333/client";    // this is dev setting
+        const url = "/client";
+        // const url         = "http://localhost:3333/client";    // this is dev setting
         const createClient  = {
           name        : this.state.name,
           nickName    : this.state.nickName,
@@ -104,42 +100,44 @@ class ClientNew extends Component {
           });
 
           if (addClient.data.message) {
-            const {
-              name,
-              nickName,
-              mother
-            } = addClient.data.client; 
-
-            const id = addClient.data.client._id;
-            const client = { id, name, nickName, mother };
-
-            this.props.dispatchLogin({ client });
             this.setState({
-              redirectFlag: true
+              message: addClient.data.message,
+
+              name        : "",
+              nickName    : "",
+              mother      : "",
+              mPhone      : "",
+              mEmail      : "",
+              father      : "",
+              fPhone      : "",
+              fEmail      : "",
+              consultant  : "",
+              cPhone      : "",
+              cEmail      : "",
+              defaultRate : ""
             });
+
           } else if (addClient.data.error) {
             this.setState({
               message : addClient.data.error });
-            this.clearMessage();
-          }
+            }
+            
+          this.clearMessage();
 
         } catch(err) {
           this.setState({
             message : err.message });
+
           this.clearMessage();
         }
-      // }
     }
-  // }
 
 
   //it clears the error message after 3.5s
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        message         : "",
-        password        : "",
-        confirmPassword : ""
+        message         : ""
       })
       this.textInput1.focus();
     }, 3500);
@@ -153,10 +151,6 @@ class ClientNew extends Component {
   }
 
   render() {
-
-    if (this.state.redirectFlag)
-      return(<Redirect to="/" />);
-
     return (
       <div>
         <h2>Add New Client Page</h2>
@@ -175,8 +169,7 @@ class ClientNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.name}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput1 = input }
-              />
+                ref         = {input => this.textInput1 = input } />
             </Form.Group>
 
             <Form.Group controlId="formNickName">
@@ -188,21 +181,19 @@ class ClientNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.nickName}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput2 = input }
-              />
+                ref         = {input => this.textInput2 = input } />
             </Form.Group>
 
             <Form.Group controlId="formBirthday">
               <Form.Label>Birthday</Form.Label>
               <Form.Control
-                type        = "text"
+                type        = "date"
                 placeholder = "Type the client's birthday"
                 name        = "birthday"
                 onChange    = {this.handleChange}
                 value       = {this.state.birthday}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput3 = input }
-              />
+                ref         = {input => this.textInput3 = input } />
             </Form.Group>
 
             <Form.Group controlId="formMother">
@@ -214,9 +205,7 @@ class ClientNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.mother}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput4 = input }
-                // onBlur      = {() => console.log("leaving from Mohter")}
-              />
+                ref         = {input => this.textInput4 = input } />
             </Form.Group>
 
             <Form.Group controlId="formMPhone">
@@ -231,8 +220,7 @@ class ClientNew extends Component {
                 onBlur={e => this.afterChange(e)}
                 value       = {this.state.mPhone}
                 onKeyPress  = {() => this.handleChange}
-                ref         = {input => this.textInput5 = input }
-              />
+                ref         = {input => this.textInput5 = input } />
             </Form.Group>
 
             <Form.Group controlId="formMEmail">
@@ -244,8 +232,7 @@ class ClientNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.mEmail}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput6 = input }
-              />
+                ref         = {input => this.textInput6 = input } />
             </Form.Group>
 
             <Form.Group controlId="formFather">
@@ -257,8 +244,7 @@ class ClientNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.father}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput7 = input }
-              />
+                ref         = {input => this.textInput7 = input }  />
             </Form.Group>
 
             <Form.Group controlId="formFPhone">
@@ -273,17 +259,7 @@ class ClientNew extends Component {
                 onBlur      = {e => this.afterChange(e)}
                 value       = {this.state.fPhone}
                 onKeyPress  = {() => this.handleChange}
-                ref         = {input => this.textInput8 = input }
-              />
-              {/* <Form.Control
-                type        = "text"
-                placeholder = "Type the father's phone number"
-                name        = "fPhone"
-                onChange    = {this.handleChange}
-                value       = {this.state.fPhone}
-                onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput8 = input }
-              /> */}
+                ref         = {input => this.textInput8 = input } />
             </Form.Group>
 
             <Form.Group controlId="formFEmail">
@@ -295,8 +271,7 @@ class ClientNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.fEmail}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput9 = input }
-              />
+                ref         = {input => this.textInput9 = input } />
             </Form.Group>
 
             <Form.Group controlId="formConsultant">
@@ -308,8 +283,7 @@ class ClientNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.consultant}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput10 = input }
-              />
+                ref         = {input => this.textInput10 = input }  />
             </Form.Group>
 
             <Form.Group controlId="formCPhone">
@@ -324,17 +298,7 @@ class ClientNew extends Component {
                 onBlur      = {e => this.afterChange(e)}
                 value       = {this.state.cPhone}
                 onKeyPress  = {() => this.handleChange}
-                ref         = {input => this.textInput11 = input }
-              />
-              {/* <Form.Control
-                type        = "text"
-                placeholder = "Type the consultant's phone number"
-                name        = "cPhone"
-                onChange    = {this.handleChange}
-                value       = {this.state.cPhone}
-                onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput11 = input }
-              /> */}
+                ref         = {input => this.textInput11 = input } />
             </Form.Group>
 
             <Form.Group controlId="formCEmail">
@@ -346,31 +310,19 @@ class ClientNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.cEmail}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput12 = input }
-              />
+                ref         = {input => this.textInput12 = input }  />
             </Form.Group>
 
             <Form.Group controlId="formDefaultRate">
               <Form.Label>Rate</Form.Label>
               <Form.Control
-                type        = "text"
+                type        = "number"
                 placeholder = "Type the hourly rate - CAD$"
                 name        = "defaultRate"
                 onChange    = {this.handleChange}
                 value       = {this.state.defaultRate}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput13 = input }
-              />
-              {/* <CurrencyInput 
-                placeholder = "CAD$ 0.00" 
-                type        = "text" 
-                className   = "form-control"
-                name        = "defaultRate"
-                onChange    = {this.handleChange}
-                value       = {this.state.defaultRate}
-                onKeyPress  = {this.handleChange}
-                // ref         = {input => this.textInput13 = input}
-                /> */}
+                ref         = {input => this.textInput13 = input }  />
             </Form.Group>
 
             <Card.Header className="cardTitle message">          
