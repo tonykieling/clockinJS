@@ -180,7 +180,7 @@ console.log("inside onSubmit");
               <Form.Label column sm="3" >Time Start:</Form.Label>
               <Col sm="3">
                 <Form.Control
-                  type        = "text"
+                  type        = "time"
                   placeholder = "Starting Time"
                   name        = "startingTime"
                   onChange    = {this.handleChange}
@@ -197,7 +197,7 @@ console.log("inside onSubmit");
               </Col>
               <Col sm="3">
                 <Form.Control                
-                  type        = "text"
+                  type        = "time"
                   placeholder = "Ending Time"
                   name        = "endingTime"
                   onChange    = {this.handleChange}

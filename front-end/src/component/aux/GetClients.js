@@ -10,7 +10,6 @@ class GetClients extends Component {
     super(props);
     this.state = {
       clients       : undefined,
-      // dropDownLabel : "Select the client",
       errorMsg      : undefined
     }
   }
@@ -25,8 +24,9 @@ class GetClients extends Component {
           "Content-Type": "application/json",
           "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-console.log("getClients", getClients.data.message);
-      if (getClients.data.message.length > 0) {
+// console.log("getClients", getClients.data.message);
+      // if (getClients.data.message.length > 0) {
+      if (getClients.data.count) {
         this.setState({
           clients: getClients.data.message
         });
@@ -79,7 +79,7 @@ console.log("getClients", getClients.data.message);
       <div>
         { this.state.clients
         ? this.populateDropbox()
-        : null }
+        : "No clients at all" }
       </div>
     )
   }

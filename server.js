@@ -4,6 +4,7 @@ const app         = express();
 const morgan      = require("morgan");
 const bodyParser  = require("body-parser");
 const mongoose    = require("mongoose");
+require('dotenv').config();
 
 // const productRoutes   = require("./api/routes/products.js");
 const userRoutes      = require("./api/routes/user.js");
@@ -11,9 +12,10 @@ const clientRoutes    = require("./api/routes/client.js");
 const clockinRoutes   = require("./api/routes/clockin.js");
 const invoiceRoutes   = require("./api/routes/invoice.js");
 
-
+console.log("+++process.env.DB", process.env.DB);
 // connection to the database regarding the environment variable URI
-mongoose.connect(process.env.URI_DB, { 
+// mongoose.connect(process.env.URI_DB, { 
+mongoose.connect(process.env.DB, { 
   useNewUrlParser: true,
   useUnifiedTopology: true });
 

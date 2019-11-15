@@ -8,7 +8,7 @@ const Client    = require("../models/client.js");
 const get_all = async (req, res) => {
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
-console.log("---> userId", userId);
+
   try {
     let allClients = null;
     if (userAdmin)

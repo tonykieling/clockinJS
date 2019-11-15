@@ -153,6 +153,7 @@ console.log("req.body = signup", req.body);
 // 1- need to check what to send as within token and user - for instance, password
 // 2- need to create a function to change only password
 const login = async (req, res) => {
+console.log("LOGINNNNN: ", req.body)  
   const email     = req.body.email;
   const password  = req.body.password;
 
@@ -170,7 +171,7 @@ const login = async (req, res) => {
           return res.status(401).json({ 
             error: "ELIN02: Authentication has failed"
           });
-
+console.log("user==", user)
         if (result){
           const token = await tokenCreation(user.email, user._id, user.name, user.admin);
 

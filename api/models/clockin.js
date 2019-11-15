@@ -1,6 +1,6 @@
 // this is the definition/shape of products should like in the application
 const mongoose = require("mongoose");
-
+// console.log("process.env", process.env);
 const clockinSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   date: {
