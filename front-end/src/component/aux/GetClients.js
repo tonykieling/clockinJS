@@ -25,7 +25,6 @@ class GetClients extends Component {
           "Authorization" : `Bearer ${this.props.storeToken}` }
       });
 // console.log("getClients", getClients.data.message);
-      // if (getClients.data.message.length > 0) {
       if (getClients.data.count) {
         this.setState({
           clients: getClients.data.message
@@ -73,8 +72,8 @@ class GetClients extends Component {
 
 
   render() {
-    console.log("rendering GetList!!");
-    console.log("this.state.clients", this.state.clients);
+    // console.log("rendering GetList!!");
+    // console.log("this.state.clients", this.state.clients);
     return (
       <div>
         { this.state.clients

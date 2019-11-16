@@ -9,7 +9,7 @@ class ClientNew extends Component {
 
   state = {
       name            : "",
-      nickName        : "",
+      nickname        : "",
       birthday        : "",
       mother          : "",
       mPhone          : "",
@@ -76,7 +76,8 @@ class ClientNew extends Component {
         // const url         = "http://localhost:3333/client";    // this is dev setting
         const createClient  = {
           name        : this.state.name,
-          nickName    : this.state.nickName,
+          nickname    : this.state.nickname,
+          birthday    : this.state.birthday,
           mother      : this.state.mother,
           mPhone      : this.state.mPhone,
           mEmail      : this.state.mEmail,
@@ -100,11 +101,13 @@ class ClientNew extends Component {
           });
 
           if (addClient.data.message) {
+console.log("client added:", addClient.data);  
             this.setState({
               message: addClient.data.message,
 
               name        : "",
-              nickName    : "",
+              nickname    : "",
+              birthday    : "",
               mother      : "",
               mPhone      : "",
               mEmail      : "",
@@ -155,9 +158,10 @@ class ClientNew extends Component {
       <div>
         <h2>Add New Client Page</h2>
         <Card>
-          <Form 
-            onSubmit  = {this.handleSubmit}
-            className = "formPosition"  >
+          <Form
+            autoComplete  = "off"
+            onSubmit      = {this.handleSubmit}
+            className     = "formPosition"  >
 
             <Form.Group controlId="formName">
               <Form.Label>Name</Form.Label>
@@ -172,14 +176,14 @@ class ClientNew extends Component {
                 ref         = {input => this.textInput1 = input } />
             </Form.Group>
 
-            <Form.Group controlId="formNickName">
+            <Form.Group controlId="formNickname">
               <Form.Label>Nickname</Form.Label>
               <Form.Control
                 type        = "text"
                 placeholder = "Type the client's nickname"
-                name        = "nickName"
+                name        = "nickname"
                 onChange    = {this.handleChange}
-                value       = {this.state.nickName}
+                value       = {this.state.nickname}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput2 = input } />
             </Form.Group>
@@ -357,13 +361,4 @@ const mapStateToProps = store => {
 };
 
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatchLogin: user => dispatch({
-      type:"LOGIN",
-      data: user })
-  };
-};
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(ClientNew)
+export default connect(mapStateToProps, null)(ClientNew)

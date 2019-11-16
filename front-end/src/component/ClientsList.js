@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
 import {  Card, Button, Form } from "react-bootstrap";
+import MaskedInput from 'react-text-mask';
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import GetClients from "./aux/GetClients.js";
 
@@ -20,40 +24,49 @@ class ClientsList extends Component {
       nickname        : "",
       birthday        : "",
       mother          : "",
-      mphone          : "",
-      memail          : "",
+      mPhone          : "",
+      mEmail          : "",
       father          : "",
-      fphone          : "",
-      femail          : "",
+      fPhone          : "",
+      fEmail          : "",
       consultant      : "",
-      cphone          : "",
-      cemail          : "",
+      cPhone          : "",
+      cEmail          : "",
       default_rate    : "",
 
       tmp_name            : "",
       tmp_nickname        : "",
       tmp_birthday        : "",
       tmp_mother          : "",
-      tmp_mphone          : "",
-      tmp_memail          : "",
+      tmp_mPhone          : "",
+      tmp_mEmail          : "",
       tmp_father          : "",
-      tmp_fphone          : "",
-      tmp_femail          : "",
+      tmp_fPhone          : "",
+      tmp_fEmail          : "",
       tmp_consultant      : "",
-      tmp_cphone          : "",
-      tmp_cemail          : "",
+      tmp_cPhone          : "",
+      tmp_cEmail          : "",
       tmp_default_rate    : "",
     }
   }
 
 
   handleChange = event => {
-// console.log("inside changes", event.target.value);
     this.setState({
       [event.target.name]: event.target.value || ""
     });
   }
 
+
+  handleChangeDate = incomingDate => {
+    // Im not able to grab e.targe.name and e.target.value
+    // console.log("e",e)
+    // console.log("e", e.target.name, e.target.selected);
+    // console.log("date", date);
+    this.setState({
+      birthday: incomingDate
+    });
+  }
 
   handleSubmit = async event => {
     event.preventDefault();
@@ -62,19 +75,19 @@ class ClientsList extends Component {
       clientId      : this.state.clientId,
       name          : this.state.name,
       nickname      : this.state.nickname,
-      birthday      : this.state.birthday,
+      birthday      : Date.parse(this.state.birthday),
       mother        : this.state.mother,
-      mphone        : this.state.mphone,
-      memail        : this.state.memail,
+      mPhone        : this.state.mPhone,
+      mEmail        : this.state.mEmail,
       father        : this.state.father,
-      fphone        : this.state.fphone,
-      femail        : this.state.femail,
+      fPhone        : this.state.fPhone,
+      fEmail        : this.state.fEmail,
       consultant    : this.state.consultant,
-      cphone        : this.state.cphone,
-      cemail        : this.state.cemail,
+      cPhone        : this.state.cPhone,
+      cEmail        : this.state.cEmail,
       default_rate  : this.state.default_rate
     };
-
+    
     const url = `/client/${data.clientId}`;
 
     try {
@@ -89,18 +102,18 @@ class ClientsList extends Component {
 
       if (newClientData.data.message) {
         this.setState({
-          message: `${newClientData.data.message.nickname} has been changed`,
+          message:      `${newClientData.data.newData.nickname} has been changed`,
           name          : newClientData.data.newData.name,
           nickname      : newClientData.data.newData.nickname,
-          birthday      : newClientData.data.newData.birthday,
+          birthday      : new Date(newClientData.data.newData.birthday),
           mother        : newClientData.data.newData.mother,
-          mphone        : newClientData.data.newData.mphone,
-          memail        : newClientData.data.newData.memail,
+          mPhone        : newClientData.data.newData.mPhone,
+          mEmail        : newClientData.data.newData.mEmail,
           father        : newClientData.data.newData.father,
-          fphone        : newClientData.data.newData.fphone,
-          femail        : newClientData.data.newData.femail,
-          cphone        : newClientData.data.newData.cphone,
-          cemail        : newClientData.data.newData.cemail,
+          fPhone        : newClientData.data.newData.fPhone,
+          fEmail        : newClientData.data.newData.fEmail,
+          cPhone        : newClientData.data.newData.cPhone,
+          cEmail        : newClientData.data.newData.cEmail,
           consultant    : newClientData.data.newData.consultant,
           default_rate  : newClientData.data.newData.default_rate
         });
@@ -139,23 +152,24 @@ class ClientsList extends Component {
 
   populateForm = client => {
     const {
-      _id, name, nickname, birthday, mother, mphone, memail, father, fphone, femail, 
-      consultant, cphone, cemail, default_rate } = client;
-
+      _id, name, nickname,  mother, mPhone, mEmail, father, fPhone, fEmail, 
+      consultant, cPhone, cEmail, default_rate } = client;
+    const birthday = client.birthday;
     this.setState({
       clientId: _id,
       name,
       nickname,
-      birthday,
+      birthday: Date(birthday),
+      // birthday,
       mother,
-      mphone,
-      memail,
+      mPhone,
+      mEmail,
       father,
-      fphone,
-      femail,
+      fPhone,
+      fEmail,
       consultant,
-      cphone,
-      cemail,
+      cPhone,
+      cEmail,
       default_rate,
 
       disableEditForm: true
@@ -171,14 +185,14 @@ class ClientsList extends Component {
       tmp_nickname        : this.state.nickname,
       tmp_birthday        : this.state.birthday,
       tmp_mother          : this.state.mother,
-      tmp_mphone          : this.state.mphone,
-      tmp_memail          : this.state.memail,
+      tmp_mPhone          : this.state.mPhone,
+      tmp_mEmail          : this.state.mEmail,
       tmp_father          : this.state.father,
-      tmp_fphone          : this.state.fphone,
-      tmp_femail          : this.state.femail,
+      tmp_fPhone          : this.state.fPhone,
+      tmp_fEmail          : this.state.fEmail,
       tmp_consultant      : this.state.consultant,
-      tmp_cphone          : this.state.cphone,
-      tmp_cemail          : this.state.cemail,
+      tmp_cPhone          : this.state.cPhone,
+      tmp_cEmail          : this.state.cEmail,
       tmp_default_rate    : this.state.default_rate
     });
   }
@@ -192,26 +206,34 @@ class ClientsList extends Component {
       nickname        : this.state.tmp_nickname,
       birthday        : this.state.tmp_birthday,
       mother          : this.state.tmp_mother,
-      mphone          : this.state.tmp_mphone,
-      memail          : this.state.tmp_memail,
+      mPhone          : this.state.tmp_mPhone,
+      mEmail          : this.state.tmp_mEmail,
       father          : this.state.tmp_father,
-      fphone          : this.state.tmp_fphone,
-      femail          : this.state.tmp_femail,
+      fPhone          : this.state.tmp_fPhone,
+      fEmail          : this.state.tmp_fEmail,
       consultant      : this.state.tmp_consultant,
-      cphone          : this.state.tmp_cphone,
-      cemail          : this.state.tmp_cemail,
+      cPhone          : this.state.tmp_cPhone,
+      cEmail          : this.state.tmp_cEmail,
       default_rate    : this.state.tmp_default_rate      
     });
   }
 
 
+  afterChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  }
+
+
   render() {
+console.log("this.state", this.state);
+// console.log("moment:", moment(this.state.birthday).format("D/M/YYYY"));
+
     return (
       <div>
-        <h1>
-          Your clients' list
-        </h1>
-        <p>Select the client in order to check or modify data</p>
+        <h1> Your clients' list </h1>
+        <p>Select the client in order to check or modify their data.</p>
 
         <Card style={{ width: '40rem' }}>
         <Card.Body>
@@ -226,7 +248,7 @@ class ClientsList extends Component {
         ? 
           <div>
             <Card>
-              <Form 
+              <Form autoComplete="off"
                 onSubmit  = {this.handleSubmit}
                 className = "formPosition" >
 
@@ -245,7 +267,7 @@ class ClientsList extends Component {
                     />
                 </Form.Group>
 
-                <Form.Group controlId="formNickName">
+                <Form.Group controlId="formNickname">
                   <Form.Label>Nickname</Form.Label>
                   <Form.Control
                     type        = "text"
@@ -261,16 +283,15 @@ class ClientsList extends Component {
 
                 <Form.Group controlId="formBirthday">
                   <Form.Label>Birthday</Form.Label>
-                  <Form.Control
-                    type        = "text"
-                    placeholder = {this.state.birthday || "Type the client's birthday"}
-                    name        = "birthday"
-                    onChange    = {this.handleChange}
-                    value       = {this.state.birthday}
-                    onKeyPress  = {this.handleChange}
-                    disabled    = {this.state.disableEditForm}
-                    // ref         = {input => this.textInput3 = input }
-                     />
+                  <br></br>
+                  <DatePicker
+                    selected = {this.state.birthday}
+                    onSelect={this.handleChangeDate}
+                    // onChange = {this.handleChangeDate}
+                    className = "form-control"
+                    disabled  = {this.state.disableEditForm}
+                  />
+                  <br></br>
                 </Form.Group>
 
                 <Form.Group controlId="formMother">
@@ -288,37 +309,27 @@ class ClientsList extends Component {
 
                 <Form.Group controlId="formMPhone">
                   <Form.Label>Mother's Phone</Form.Label>
-                  <Form.Control
-                    type        = "text"
-                    placeholder = {this.state.mphone || "Type the mother's phone number"}
-                    name        = "mphone"
-                    onChange    = {this.handleChange}
-                    value       = {this.state.mphone}
-                    onKeyPress  = {this.handleChange}
+                  <MaskedInput
+                    mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                    className   = "form-control"
+                    placeholder = "Enter mother's phone number"
+                    name        = "mPhone"
+                    id          = "mPhone"
+                    onBlur      = {e => this.afterChange(e)}
+                    value       = {this.state.mPhone}
+                    onKeyPress  = {() => this.handleChange}
                     disabled    = {this.state.disableEditForm}
-                    ref         = {input => this.textInput5 = input }
-                  />
-                    {/* <PhoneInput
-                      placeholder = {this.state.mphone || "Type the mother's phone number" }
-                      type        = "text" 
-                      className   = "form-control"
-                      name        = "mphone"
-                      onChange    = {this.handleChange}
-                      value       = {this.state.mphone}
-                      onKeyPress  = {this.handleChange}
-                      disabled    = {this.state.disableEditForm}
-                      // ref         = {input => this.textInput4 = input}
-                    /> */}
+                    ref         = {input => this.textInput5 = input } />
                 </Form.Group>
 
                 <Form.Group controlId="formMEmail">
                   <Form.Label>Mother's Email address</Form.Label>
                   <Form.Control
                     type        = "email"
-                    placeholder = {this.state.memail || "Type the mother's email"}
-                    name        = "memail"
+                    placeholder = {this.state.mEmail || "Type the mother's email"}
+                    name        = "mEmail"
                     onChange    = {this.handleChange}
-                    value       = {this.state.memail}
+                    value       = {this.state.mEmail}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput6 = input } />
@@ -339,25 +350,27 @@ class ClientsList extends Component {
 
                 <Form.Group controlId="formFPhone">
                   <Form.Label>Father's Phone</Form.Label>
-                  <Form.Control
-                    type        = "text"
-                    placeholder = {this.state.fphone || "Type the father's phone number"}
-                    name        = "fphone"
-                    onChange    = {this.handleChange}
-                    value       = {this.state.fphone}
-                    onKeyPress  = {this.handleChange}
+                  <MaskedInput
+                    mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                    className   = "form-control"
+                    placeholder = "Enter father's phone number"
+                    name        = "fPhone"
+                    id          = "fPhone"
+                    onBlur      = {e => this.afterChange(e)}
+                    value       = {this.state.fPhone}
+                    onKeyPress  = {() => this.handleChange}
                     disabled    = {this.state.disableEditForm}
-                    ref         = {input => this.textInput8 = input }  />
+                    ref         = {input => this.textInput8 = input } />
                 </Form.Group>
 
                 <Form.Group controlId="formFEmail">
                   <Form.Label>Father's Email address</Form.Label>
                   <Form.Control
                     type        = "email"
-                    placeholder = {this.state.femail || "Type the father's email"}
-                    name        = "femail"
+                    placeholder = {this.state.fEmail || "Type the father's email"}
+                    name        = "fEmail"
                     onChange    = {this.handleChange}
-                    value       = {this.state.femail}
+                    value       = {this.state.fEmail}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput9 = input } />
@@ -378,25 +391,28 @@ class ClientsList extends Component {
 
                 <Form.Group controlId="formCPhone">
                   <Form.Label>Consultant's Phone</Form.Label>
-                  <Form.Control
-                    type        = "text"
-                    placeholder = {this.state.cphone || "Type the consultant's phone number"}
-                    name        = "cphone"
-                    onChange    = {this.handleChange}
-                    value       = {this.state.cphone}
-                    onKeyPress  = {this.handleChange}
+                  <MaskedInput
+                    mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                    className   = "form-control"
+                    placeholder = "Enter consultant's phone number"
+                    name        = "cPhone"
+                    // guide={false}
+                    id          = "cPhone"
+                    onBlur      = {e => this.afterChange(e)}
+                    value       = {this.state.cPhone}
+                    onKeyPress  = {() => this.handleChange}
                     disabled    = {this.state.disableEditForm}
-                    ref         = {input => this.textInput11 = input }  />
+                    ref         = {input => this.textInput11 = input } />
                 </Form.Group>
 
                 <Form.Group controlId="formCEmail">
                   <Form.Label>Consultant's Email address</Form.Label>
                   <Form.Control
                     type        = "email"
-                    placeholder = {this.state.cemail || "Type the consultant's email"}
-                    name        = "cemail"
+                    placeholder = {this.state.cEmail || "Type the consultant's email"}
+                    name        = "cEmail"
                     onChange    = {this.handleChange}
-                    value       = {this.state.cemail}
+                    value       = {this.state.cEmail}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput12 = input }  />
@@ -450,31 +466,6 @@ class ClientsList extends Component {
           <br></br>
           <br></br>
 
-                {/* { !this.state.disableEditForm
-                  ?
-                    <div>
-                      <Button 
-                        variant="success" 
-                        type="submit" >
-                        Save
-                      </Button>
-
-                      <Button 
-                        variant="warning" 
-                        onClick={ this.btnCancel } >
-                        Cancel
-                      </Button>
-                    </div>
-                  :
-                    <Button 
-                      onClick = { this.editForm } >
-                      Edit
-                    </Button>
-                }
-
-                <Container className="msgcolor">
-                  {this.state.errorMsg}
-                </Container> */}
               </Form>
             </Card>
 
@@ -489,33 +480,10 @@ class ClientsList extends Component {
 
 const mapStateToProps = store => {
   return {
-    storeToken    : store.token,
-    storeRate     : store.client_dr,
-    storeClientId : store.client_id,
-
-    // storeClientName : store.client_name,
-    // storeClientNickName : store.client_nickname,
-    // storeClientBirthday : store.client_birthday,
-    // storeClientMother : store.client_mother,
-    // storeClientMphone : store.client_mphone,
-    // storeClientMemail : store.client_memail,
-    // storeClientFather : store.client_father,
-    // storeClientFphone : store.client_fphone,
-    // storeClientFemail : store.client_femail,
-    // storeClientConsultant : store.client_consultant,
-    // storeClientCphone : store.client_cphone,
-    // storeClientCemail : store.client_cemail
+    storeToken    : store.token
   };
 };
 
-
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     dispatchLogin: user => dispatch({
-//       type:"LOGIN",
-//       data: user })
-//   };
-// };
 
 
 export default connect(mapStateToProps, null)(ClientsList);
