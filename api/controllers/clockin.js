@@ -1,4 +1,4 @@
-// const mongoose  = require("mongoose");
+const mongoose  = require("mongoose");
 
 const Clockin   = require("../models/clockin.js");
 const User      = require("../models/user.js");
@@ -6,6 +6,7 @@ const Client    = require("../models/client.js");
 
 // it gets all users from the system - on purpose with no auth
 const get_all = async (req, res) => {
+console.log("req.query.clientId", req.query.clientId)
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
   // const {
@@ -22,7 +23,8 @@ const get_all = async (req, res) => {
 
   try {
     let allClockins = null;
-    if (userAdmin)
+    // if (!userAdmin)
+    if (userAdmin) /////////////// ----->>>>> this is the right one
       allClockins = await Clockin
         .find()
         .select(" date time_start time_end rate notes invoice_id client_id user_id ");
@@ -120,7 +122,7 @@ const get_one = async (req, res) => {
 const clockin_add = async (req, res) => {
 console.log("req.body", req.body);
   const {
-    date,
+    // date,
     // time_start,
     // time_end,
     rate,
@@ -128,11 +130,18 @@ console.log("req.body", req.body);
     // client_id
      } = req.body;
   const 
-    time_start  = date + " " + req.body.timeStart;
-    time_end    = date + " " + req.body.timeEnd;
+    // time_start  = date + " " + req.body.timeStart;
+    d   = req.body.date;
+    t1  = (Number(req.body.timeStart.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.timeStart.split(':')[1]) * 60 * 1000);
+    t2  = (Number(req.body.timeEnd.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.timeEnd.split(':')[1]) * 60 * 1000);
+    // time_end    = date + " " + req.body.timeEnd;
     client_id   = req.body.clientId;
-  const userId = req.userData.userId
-console.log("userId", userId);
+  const userId = req.userData.userId;
+
+  const time_start = new Date(d + t1);
+  const time_end   = new Date(d + t2);
+  const date = new Date(d);
+console.log("times", date, time_start, time_end);
   // check for the User
   let userExist = "";
   try {

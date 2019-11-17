@@ -36,24 +36,26 @@ class PunchInNew extends Component {
 console.log("inside onSubmit");
 
     const data = { 
-      date      : this.state.date,
+      // date      : new Date(this.state.date.toLocaleString('en-US', { timeZone: "UTC" })),
+      date      : (new Date(this.state.date).getTime()),
       timeStart : this.state.startingTime,
       timeEnd   : this.state.endingTime,
       rate      : this.state.rate,
       notes     : this.state.notes,
       clientId  : this.state.client._id };
 
-    if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate){
-console.log(`  
-              client = ${data.clientId}
-              date = ${data.date}
-                ts  = ${data.timeStart}
-                te  = ${data.timeEnd}
-              rate = ${data.rate} `);
-      this.messageValidationMethod();
-    }
-      
+      console.log(`  
+                    client = ${data.clientId}
+                    date = ${data.date}
+                      ts  = ${data.timeStart}
+                      te  = ${data.timeEnd}
+                    rate = ${data.rate} `);
+    // if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate){
+    //   this.messageValidationMethod();
+    // }
+    if (1===2){}
     else {
+console.log("xxxxxxxx")    
       const url = "/clockin";
       try {
         const addClockin = await axios.post( 
@@ -74,12 +76,12 @@ console.log(`
             message: addClockin.data.error
           });
 
-        this.cleanForm();
+        // this.cleanForm();
         
       } catch(err) {
         this.setState({
           message: err.message });
-        this.cleanForm();
+        // this.cleanForm();
       }
     }
   }
@@ -130,13 +132,19 @@ console.log(`
   }
 
   getClientInfo = client => {
-    this.setState({
-      client  : client,
-      rate    : client.default_rate
-    });
+console.log("inside getclientInfo - client: ", client);
+
+// setTimeout(() => 
+  this.setState({
+    client  : client,
+    rate    : client.default_rate
+  })
+    // console.log("this.state.rate", this.state.rate)
+    // , 0);
   }
 
   render() {
+console.log("this.state", this.state);
     return (
       <div>
         <h1>
@@ -172,7 +180,7 @@ console.log(`
                   onChange    = {this.handleChange}
                   value       = {this.state.date}
                   onKeyPress  = {this.handleChange}
-                  disabled    = {( this.rate === "" ) ? false : true } />
+                  disabled    = {( this.state.rate === "" ) ? true : false } />
               </Col>
             </Form.Group>
 
@@ -186,7 +194,7 @@ console.log(`
                   onChange    = {this.handleChange}
                   value       = {this.state.startingTime}
                   onKeyPress  = {this.handleChange}
-                  disabled    = {( this.rate === "" ) ? false : true } />
+                  disabled    = {( this.state.rate === "" ) ? true : false } />
               </Col>
             </Form.Group>
 
@@ -202,7 +210,7 @@ console.log(`
                   onChange    = {this.handleChange}
                   value       = {this.state.endingTime}
                   onKeyPress  = {this.handleChange}
-                  disabled    = {( this.rate === "" ) ? false : true } />
+                  disabled    = {( this.state.rate === "" ) ? true : false } />
               </Col>
 
               <Col sm="6">
@@ -224,7 +232,7 @@ console.log(`
                   onChange    = {this.handleChange}
                   onKeyPress  = {this.handleChange}
                   value       = {this.state.rate}
-                  disabled    = {( this.rate === "" ) ? false : true } />
+                  disabled    = {( this.state.rate === "" ) ? true : false } />
               </Col>
             </Form.Group>
 
@@ -239,7 +247,7 @@ console.log(`
                 onChange    = {this.handleChange}
                 value       = {this.state.notes}
                 onKeyPress  = {this.handleChange}
-                disabled    = {( this.rate === "" ) ? false : true } />
+                disabled    = {( this.state.rate === "" ) ? true : false } />
             </Form.Group>
 
             <Button 

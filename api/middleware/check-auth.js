@@ -11,6 +11,7 @@ module.exports = ((req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const decodedToken  = tokenValidation(token);
     req.userData        = decodedToken;
+// console.log("userData", req.userData);
     next();
   } catch(err) {
     // console.trace("Error: ", err.message);   // too big message. It's better without it due to avoid polluting the screen.
