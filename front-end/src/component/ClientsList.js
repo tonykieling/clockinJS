@@ -75,7 +75,6 @@ class ClientsList extends Component {
       clientId      : this.state.clientId,
       name          : this.state.name,
       nickname      : this.state.nickname,
-      // birthday      : Date.parse(this.state.birthday),
       birthday      : this.state.birthday,
       mother        : this.state.mother,
       mPhone        : this.state.mPhone,
@@ -88,7 +87,7 @@ class ClientsList extends Component {
       cEmail        : this.state.cEmail,
       default_rate  : this.state.default_rate
     };
-    
+console.log("sending to save: ", data.birthday);
     const url = `/client/${data.clientId}`;
 
     try {
@@ -106,8 +105,7 @@ class ClientsList extends Component {
           message:      `${newClientData.data.newData.nickname} has been changed`,
           name          : newClientData.data.newData.name,
           nickname      : newClientData.data.newData.nickname,
-          // birthday      : new Date(newClientData.data.newData.birthday),
-          birthday      : newClientData.data.newData.birthday,
+          birthday      : new Date(newClientData.data.newData.birthday.toLocaleString('en-US', { timeZone: "UTC" })),
           mother        : newClientData.data.newData.mother,
           mPhone        : newClientData.data.newData.mPhone,
           mEmail        : newClientData.data.newData.mEmail,
@@ -153,21 +151,18 @@ class ClientsList extends Component {
 
 
   populateForm = client => {
-console.log("this.populateForm:", client);
-// console.log("getTime()", new Date(client.birthday.getTime()));
     const {
       _id, name, nickname,  mother, mPhone, mEmail, father, fPhone, fEmail, 
       consultant, cPhone, cEmail, default_rate } = client;
-    const birthday = new Date(client.birthday);
-console.log("birthday", birthday);
-let utcDate = new Date(birthday.toLocaleString('en-US', { timeZone: "UTC" }));
-console.log("utcDate", utcDate);
+    // const birthday = new Date(client.birthday);
+    // let utcDate = new Date(birthday.toLocaleString('en-US', { timeZone: "UTC" }));
+    const birthday = new Date(client.birthday.toLocaleString('en-US', { timeZone: "UTC" }));
     this.setState({
       clientId: _id,
       name,
       nickname,
-      birthday: utcDate,
-      // birthday : birthday,
+      // birthday: utcDate,
+      birthday,
       mother,
       mPhone,
       mEmail,
@@ -234,7 +229,7 @@ console.log("utcDate", utcDate);
 
 
   render() {
-console.log("this.state", this.state);
+// console.log("this.state", this.state);
 // console.log("moment:", moment(this.state.birthday).format("D/M/YYYY"));
 
     return (
@@ -292,10 +287,9 @@ console.log("this.state", this.state);
                   <Form.Label>Birthday</Form.Label>
                   <br />
                   <DatePicker
-                    // selected = {Date.parse(this.state.birthday)}
                     selected  = {this.state.birthday}
                     onSelect  ={this.handleChangeDate}
-                    // dateFormat="dd-mm-yyyy"
+                    dateFormat="dd/MM/yyyy"
                     // onChange = {this.handleChangeDate}
                     className = "form-control"
                     disabled  = {this.state.disableEditForm}
