@@ -21,8 +21,7 @@ class ClientNew extends Component {
       cPhone          : "",
       cEmail          : "",
       defaultRate     : "",
-      message         : "",
-      btnType         : undefined
+      message         : ""
     }
 
   handleChange = e => {
@@ -48,9 +47,7 @@ class ClientNew extends Component {
     //   }
 // console.log("e.target.name", e.target.name, "e.target.value", e.target.value);
       this.setState({
-        [e.target.name]: e.target.value,
-
-        btnType: "Submit"
+        [e.target.name]: e.target.value
       });
   }
 
@@ -72,6 +69,7 @@ class ClientNew extends Component {
     //     })
     //     this.textInput4.focus();
       // } else {
+      if (this.state.name && this.state.nickname) {
         const url = "/client";
         // const url         = "http://localhost:3333/client";    // this is dev setting
         const createClient  = {
@@ -89,7 +87,7 @@ class ClientNew extends Component {
           cEmail      : this.state.cEmail,
           defaultRate : this.state.defaultRate
         }
-
+console.log("client sent: ", createClient);
         try {
           const addClient = await axios.post( 
             url, 
@@ -133,6 +131,12 @@ console.log("client added:", addClient.data);
 
           this.clearMessage();
         }
+      } else {
+        if (!this.state.name)
+          this.textInput1.focus();
+        else
+          this.textInput2.focus();
+      }
     }
 
 
@@ -337,7 +341,7 @@ console.log("client added:", addClient.data);
 
             <Button 
               variant = "primary" 
-              type    = {this.state.btnType}
+              type    = "submit"
               className="gridBtnEdit" 
               >
               Save

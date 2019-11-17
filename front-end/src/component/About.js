@@ -105,15 +105,15 @@ export default function Error() {
                 <br />
               </li>
               <li>
-                <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank">LinkedIn</a>
+                <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
                 <br />
               </li>
               <li>
-                <a href="https://github.com/tonykieling" target="_blank">GitHub</a> 
+                <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">GitHub</a> 
                 <br />
               </li>
               <li>
-                <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank">Resume</a> <br />
+                <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">Resume</a> <br />
               </li>
                 <br /><br />
             </ul>

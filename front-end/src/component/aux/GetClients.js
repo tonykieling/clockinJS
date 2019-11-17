@@ -24,7 +24,7 @@ class GetClients extends Component {
           "Content-Type": "application/json",
           "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-// console.log("getClients", getClients.data.message);
+console.log("++getClients", getClients.data.message);
       if (getClients.data.count) {
         this.setState({
           clients: getClients.data.message

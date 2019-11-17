@@ -95,7 +95,8 @@ console.log("---inside addclient");
      } = req.body;
   const userId = req.userData.userId
   const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : null;
-
+console.log("req.body.birthday ", req.body.birthday);
+console.log("birthday: ", birthday);
 
   // it checks whether the name and nickname are already been used by an user account
   // if so, it returns an error message

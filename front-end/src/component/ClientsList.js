@@ -75,7 +75,8 @@ class ClientsList extends Component {
       clientId      : this.state.clientId,
       name          : this.state.name,
       nickname      : this.state.nickname,
-      birthday      : Date.parse(this.state.birthday),
+      // birthday      : Date.parse(this.state.birthday),
+      birthday      : this.state.birthday,
       mother        : this.state.mother,
       mPhone        : this.state.mPhone,
       mEmail        : this.state.mEmail,
@@ -105,7 +106,8 @@ class ClientsList extends Component {
           message:      `${newClientData.data.newData.nickname} has been changed`,
           name          : newClientData.data.newData.name,
           nickname      : newClientData.data.newData.nickname,
-          birthday      : new Date(newClientData.data.newData.birthday),
+          // birthday      : new Date(newClientData.data.newData.birthday),
+          birthday      : newClientData.data.newData.birthday,
           mother        : newClientData.data.newData.mother,
           mPhone        : newClientData.data.newData.mPhone,
           mEmail        : newClientData.data.newData.mEmail,
@@ -151,16 +153,21 @@ class ClientsList extends Component {
 
 
   populateForm = client => {
+console.log("this.populateForm:", client);
+// console.log("getTime()", new Date(client.birthday.getTime()));
     const {
       _id, name, nickname,  mother, mPhone, mEmail, father, fPhone, fEmail, 
       consultant, cPhone, cEmail, default_rate } = client;
-    const birthday = client.birthday;
+    const birthday = new Date(client.birthday);
+console.log("birthday", birthday);
+let utcDate = new Date(birthday.toLocaleString('en-US', { timeZone: "UTC" }));
+console.log("utcDate", utcDate);
     this.setState({
       clientId: _id,
       name,
       nickname,
-      birthday: Date(birthday),
-      // birthday,
+      birthday: utcDate,
+      // birthday : birthday,
       mother,
       mPhone,
       mEmail,
@@ -283,15 +290,17 @@ console.log("this.state", this.state);
 
                 <Form.Group controlId="formBirthday">
                   <Form.Label>Birthday</Form.Label>
-                  <br></br>
+                  <br />
                   <DatePicker
-                    selected = {this.state.birthday}
-                    onSelect={this.handleChangeDate}
+                    // selected = {Date.parse(this.state.birthday)}
+                    selected  = {this.state.birthday}
+                    onSelect  ={this.handleChangeDate}
+                    // dateFormat="dd-mm-yyyy"
                     // onChange = {this.handleChangeDate}
                     className = "form-control"
                     disabled  = {this.state.disableEditForm}
                   />
-                  <br></br>
+                  <br />
                 </Form.Group>
 
                 <Form.Group controlId="formMother">
