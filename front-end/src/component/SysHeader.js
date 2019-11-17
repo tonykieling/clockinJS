@@ -43,6 +43,9 @@ class SysHeader extends Component {
               <NavDropdown.Divider />
               <NavDropdown.Item href="pdfTemplate">List them all</NavDropdown.Item>
             </NavDropdown>            
+
+            <Link to="/about" className="nav-link">About</Link>
+
           </Nav>
 
           <Button onClick={this.logout} className="logoutBtn">Logout</Button>
@@ -61,6 +64,7 @@ class SysHeader extends Component {
         <Nav>
           <Link to="/login" className="nav-link">Login</Link>
           <Link to="/register" className="nav-link">Register</Link>
+          <Link to="/about" className="nav-link">About</Link>
         </Nav>
       </Navbar>
     );

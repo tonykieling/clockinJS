@@ -15,7 +15,8 @@ const clientSchema = mongoose.Schema({
   
   },
   birthday: {
-    type: String
+    type: Date
+    // type: String
   },
   
   mother: {

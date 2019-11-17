@@ -78,10 +78,10 @@ const get_one = async (req, res) => {
 
 // it creates a client register
 const client_add = async (req, res) => {
+console.log("---inside addclient");
   const {
         name,
-        nickName, 
-        birthday, 
+        nickname, 
         mother, 
         mPhone, 
         mEmail, 
@@ -94,20 +94,17 @@ const client_add = async (req, res) => {
         defaultRate
      } = req.body;
   const userId = req.userData.userId
-console.log("req.body", req.body, "userId", userId);
-//   return res.json({
-//     body: req.body,
-//     userId
-//   })
+  const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : null;
+
 
   // it checks whether the name and nickname are already been used by an user account
   // if so, it returns an error message
   try {
     const clientExist = await Client
-      .find({ name, nickname: nickName });
+      .find({ name, nickname: nickname });
   
     if (clientExist.length > 0)
-      return res.status(409).json({ error: `User <name: ${name} nickname: ${nickName}> alread exists.`});
+      return res.status(409).json({ error: `User <name: ${name} nickname: ${nickname}> alread exists.`});
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(409).json({
@@ -119,7 +116,7 @@ console.log("req.body", req.body, "userId", userId);
     const client = new Client({
       _id: new mongoose.Types.ObjectId(),
       name: name || "",
-      nickname: nickName || "", 
+      nickname: nickname || "", 
       birthday: birthday || "", 
       mother: mother || "", 
       mphone: mPhone || "", 
@@ -159,7 +156,7 @@ const client_modify = async (req, res) => {
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
-
+console.log("++req.body from client_modify", req.body);
   
   // this try is for check is the clientId passed from the frontend is alright (exists in database), plus
   //  check whether either the client to be changed belongs for the user or the user is admin - if not, not allowed to change client's data
@@ -190,20 +187,21 @@ const client_modify = async (req, res) => {
 
   const {
     name,
-    nickname, 
-    birthday, 
+    nickname,
     mother, 
-    mphone, 
-    memail, 
+    mPhone, 
+    mEmail, 
     father, 
-    fphone, 
-    femail, 
+    fPhone, 
+    fEmail, 
     consultant, 
-    cphone, 
-    cemail, 
+    cPhone, 
+    cEmail, 
     default_rate
  } = req.body;
-
+console.log("req.body==>", req.body);
+ const birthday = new Date(req.body.birthday);
+console.log("birthday", birthday);
   try {
     const clientToBeChanged = await Client
       .updateOne({
@@ -214,33 +212,34 @@ const client_modify = async (req, res) => {
             nickname: nickname || "", 
             birthday: birthday || "", 
             mother: mother || "", 
-            mphone: mphone || "", 
-            memail: memail || "", 
+            mphone: mPhone || "", 
+            memail: mEmail || "", 
             father: father || "", 
-            fphone: fphone || "", 
-            femail: femail || "", 
+            fphone: fPhone || "", 
+            femail: fEmail || "", 
             consultant: consultant || "", 
-            cphone: cphone || "", 
-            cemail: cemail || "", 
+            cphone: cPhone || "", 
+            cemail: cEmail || "", 
             default_rate: default_rate || "", 
             user_id: userId
         }
       }, {
         runValidators: true
       });
-    
+console.log("clientToBeChanged", clientToBeChanged);
     if (clientToBeChanged.nModified) {
       const clientModified = await Client
         .findById({ _id: clientId})
         .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
-
+      clientModified.birthday = Date.parse(clientModified.birthday);
+console.log("clientModified", clientModified);
       return res.json({
         message: `Client <${clientModified.nickname}> has been modified.`,
         newData: clientModified
       });
     } else
       res.status(200).json({
-        error: `Client <${clientId}> not changed.`
+        error: `Client NOT changed.`
       });
 
   } catch(err) {

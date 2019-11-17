@@ -12,7 +12,7 @@ import * as serviceWorker from './serviceWorker';
 // );
 
 ReactDOM.render(
-  <Provider store={ store }>
+  <Provider store={ store } >
     <App />
   </Provider>,
   document.getElementById('root')

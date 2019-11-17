@@ -18,6 +18,7 @@ import ClientList   from "./component/ClientsList.js";
 import PunchInNew   from "./component/PunchInNew.js";
 import PunchInsList from "./component/PunchInsList.js";
 import InvoiceNew   from "./component/InvoiceNew.js";
+import About        from "./component/About.js";
 // import InvoicesList from "./component/InvoicesList.js";
 
 import PdfTemplate from "./component/PdfTemplate.js";
@@ -120,6 +121,10 @@ class App extends Component {
                 else
                   return <PdfTemplate />
               }} />
+
+            <Route exact path = "/about" >
+              <About />
+            </Route>
 
             <Route component = { NoPage } />
           </Switch>

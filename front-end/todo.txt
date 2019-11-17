@@ -12,12 +12,13 @@ TODO
     trying to mimic User, but it's not working
   X2.2- clientList is hidding the whole card when name is empty because it's checking whether there is props.name
     solved by checking clientId
-  2.3- format and style Add new Client as User Home
+  X2.3- format and style Add new Client as User Home
     fileds name are too big to fit in col sm={2}. Keeping two lines (label + text field)
   2.4- format and style clientList as User Home
     some are working, but others dont
 
-  ? How to get "Select Client" in the button after editing some data?
+  X? How to get "Select Client" in the button after editing some data?
+    passing client as props solves that issue
 
 3. Punch in
  3.1- format data and time pickers
