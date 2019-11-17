@@ -1,5 +1,6 @@
 const express     = require("express");
 const PORT        = process.env.PORT || 3333;
+const path = require('path');
 const app         = express();
 const morgan      = require("morgan");
 const bodyParser  = require("body-parser");
@@ -60,12 +61,6 @@ console.log(" logging OPTIONS");
 });
 
 
-// it handles the root calling
-app.get("/", (req, res) => {
-  res.send(`This is root "/"`);
-});
-
-
 // it calls user routes - there the HTTP verb is gonna be checked and proceed accordingly
 app.use("/user", userRoutes);
 
@@ -86,11 +81,15 @@ app.use("/invoice", invoiceRoutes);
 // the first one will be called only if the server could not handle the request by /products. /orders or /user middlewares
 // the second one is just to practice how to call a next function
 //   p.s. when dealing error message, it has to have 4 parameters (error, req, res, next)
-app.use((req, res) => {
-  console.log(" == no route has been found");
-  res.status(400).send("Route NOT found!!");
-});
+// app.use((req, res) => {
+//   console.log(" == no route has been found");
+//   res.status(400).send("Route NOT found!!");
+// });
 
+// pass these routes to your front end
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './public', 'index.html'))
+});
 
 app.listen(PORT, () => console.log(`Server is running at ${PORT}`));
 
