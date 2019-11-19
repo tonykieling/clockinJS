@@ -7,11 +7,17 @@ const bodyParser  = require("body-parser");
 const mongoose    = require("mongoose");
 require('dotenv').config();
 
-// const productRoutes   = require("./api/routes/products.js");
 const userRoutes      = require("./api/routes/user.js");
 const clientRoutes    = require("./api/routes/client.js");
 const clockinRoutes   = require("./api/routes/clockin.js");
 const invoiceRoutes   = require("./api/routes/invoice.js");
+
+
+const cors = require('cors');
+app.use(cors());
+
+// need it to deply purposes
+app.use(express.static('public'));
 
 console.log("+++process.env.DB", process.env.DB);
 // connection to the database regarding the environment variable URI
@@ -27,20 +33,19 @@ app.use(morgan("dev"));
 
 
 // settings related to boy-parser, which allows extended urlencoder and enables to receive json format
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // here, it checks JSON malformatted messages
 app.use((err, req, res, next) => {
-  if (err)
+  if (err) {
     res.status(409).json({
       error: err.message
     });
+  }
   else
     next()
-})
+});
 
 
 // settings related to CORS
@@ -87,6 +92,7 @@ app.use("/invoice", invoiceRoutes);
 // });
 
 // pass these routes to your front end
+// need it to deply purposes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, './public', 'index.html'))
 });

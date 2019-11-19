@@ -91,7 +91,7 @@ const signup = async (req, res) => {
     phone,
     postalCode
   } = req.body;
-console.log("req.body = signup", req.body);
+// console.log("req.body = signup", req.body);
   // it checks whether the email is already been used by an user account
   // if so, it returns an error message
   try {
@@ -153,7 +153,6 @@ console.log("req.body = signup", req.body);
 // 1- need to check what to send as within token and user - for instance, password
 // 2- need to create a function to change only password
 const login = async (req, res) => {
-console.log("LOGINNNNN: ", req.body)  
   const email     = req.body.email;
   const password  = req.body.password;
 
@@ -171,7 +170,7 @@ console.log("LOGINNNNN: ", req.body)
           return res.status(401).json({ 
             error: "ELIN02: Authentication has failed"
           });
-console.log("user==", user)
+          
         if (result){
           const token = await tokenCreation(user.email, user._id, user.name, user.admin);
 
