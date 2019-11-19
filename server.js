@@ -1,6 +1,6 @@
 const express     = require("express");
 const PORT        = process.env.PORT || 3333;
-const path = require('path');
+const path        = require('path');
 const app         = express();
 const morgan      = require("morgan");
 const bodyParser  = require("body-parser");
@@ -19,7 +19,7 @@ app.use(cors());
 // need it to deply purposes
 app.use(express.static('public'));
 
-console.log("+++process.env.DB", process.env.DB);
+console.log("+++process.env.DB", process.env.DB, process.env.JWT_KEY, process.env.JWT_expiration);
 // connection to the database regarding the environment variable URI
 // mongoose.connect(process.env.URI_DB, { 
 mongoose.connect(process.env.DB, { 

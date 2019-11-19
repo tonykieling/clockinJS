@@ -153,6 +153,7 @@ const signup = async (req, res) => {
 // 1- need to check what to send as within token and user - for instance, password
 // 2- need to create a function to change only password
 const login = async (req, res) => {
+console.log("inside LOGIN - req.body:", req.body);
   const email     = req.body.email;
   const password  = req.body.password;
 

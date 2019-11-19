@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 
 // this method creates the token and returns it
 const token_creation = (email, userId, name, admin) => {
+console.log("inside tokenCreation");
   try {
     return jwt.sign({
       email,
