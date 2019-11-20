@@ -69,7 +69,7 @@ class Home extends Component {
       postalCode  : this.state.postalCode,
       phone       : this.state.phone
     }
-console.log("URL", url)
+        
     try {
       const modUser = await axios.patch( 
         url,

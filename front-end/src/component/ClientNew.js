@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import axios from "axios";
 
 import MaskedInput from 'react-text-mask';
-import DatePicker from "react-datepicker";
+// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 class ClientNew extends Component {
@@ -208,15 +208,15 @@ console.log("client added:", addClient.data);
 
             <Form.Group controlId="formBirthday">
               <Form.Label>Birthday</Form.Label>
-              {/* <Form.Control
+              <Form.Control
                 type        = "date"
                 placeholder = "Type the client's birthday"
                 name        = "birthday"
                 onChange    = {this.handleChange}
                 value       = {this.state.birthday}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput3 = input } /> */}
-                <br />
+                ref         = {input => this.textInput3 = input } />
+                {/* <br />
                 <DatePicker
                   selected  = {this.state.birthday}
                   onSelect  ={this.handleChangeDate}
@@ -227,7 +227,7 @@ console.log("client added:", addClient.data);
                   className = "form-control"
                   disabled  = {this.state.disableEditForm}
                 />
-                <br />
+                <br /> */}
             </Form.Group>
 
             <Form.Group controlId="formMother">

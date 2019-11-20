@@ -6,21 +6,25 @@ const Client    = require("../models/client.js");
 // it is an Admin action
 // TODO: apply the Authorization method
 const get_all = async (req, res) => {
+console.log("getting clients");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
+console.log("userAdmin", userAdmin, "userId", userId);
 
   try {
     let allClients = null;
-    if (userAdmin)
+    if (userAdmin) {
+console.log("ADMIN getting clients");
       allClients = await Client
         .find();
         // .select(" name nickname mother consultant user_id ");
         // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
-
-    else
+    } else {
+console.log("NOPE ADMIN getting clients");
       allClients = await Client
         .find({ user_id: userId});      // it has to be for only that user
         // .select(" name nickname mother consultant ")
+    }
 
     if (!allClients || allClients.length < 1)
       return res.status(200).json({
@@ -33,7 +37,7 @@ const get_all = async (req, res) => {
     });
   } catch(err) {
     console.log("Error => ", err.message);
-    res.status(422).json({
+    res.status(200).json({
       error: "ECGO01: Something got wrong."
     });
   }
@@ -52,11 +56,11 @@ const get_one = async (req, res) => {
       .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
 
     if (!client || client.length < 1)
-      return res.status(409).json({
+      return res.status(200).json({
         error: `ECGO02: Client <id: ${clientId}> does not exist.`
       });
     if (userId !== client.user_id && !userAdmin)
-      return res.status(409).json({
+      return res.status(200).json({
         error: `ECGO03: Client <id: ${clientId}> belongs to another user.`
       });
 
@@ -66,10 +70,10 @@ const get_one = async (req, res) => {
   } catch(err) {
     console.log("Error => ", err.message);
     if (clientId.length !== 24)
-      return res.status(422).json({
+      return res.status(200).json({
         error: "ECGO04: ClientId mystyped."
       });  
-    res.status(422).json({
+    res.status(200).json({
       error: "ECGO05: Something got wrong."
     });
   }
@@ -95,6 +99,7 @@ console.log("---inside addclient");
      } = req.body;
   const userId = req.userData.userId
   const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : null;
+console.log("userId", userId);
 console.log("req.body.birthday ", req.body.birthday);
 console.log("birthday: ", birthday);
 
@@ -105,10 +110,10 @@ console.log("birthday: ", birthday);
       .find({ name, nickname: nickname });
   
     if (clientExist.length > 0)
-      return res.status(409).json({ error: `User <name: ${name} nickname: ${nickname}> alread exists.`});
+      return res.status(200).json({ error: `User <name: ${name} nickname: ${nickname}> alread exists.`});
   } catch(err) {
     console.trace("Error: ", err.message);
-    return res.status(409).json({
+    return res.status(200).json({
       error: `ECAD01: Error CLIENTADD01`
     });
   }
@@ -142,7 +147,7 @@ console.log("birthday: ", birthday);
 
   } catch(err) {
     console.trace("Error: ", err.message);
-    res.status(422).json({
+    res.status(200).json({
       error: "ECAD02: Something wrong with client's data."
     });
   };
@@ -271,7 +276,7 @@ const client_delete = async (req, res) => {
       throw Error;
   } catch(err) {
     console.trace("Error: ", err.message);
-    return res.status(409).json({
+    return res.status(200).json({
       error: `ECD01: Client <${clientId}> NOT found.`
     });
   }
