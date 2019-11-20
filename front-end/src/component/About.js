@@ -34,7 +34,7 @@ export default function Error() {
             List, Check, and Modify client´s data,
           </li>
           <li>
-            Punch in their hours,
+            Punch in their work hours (clock-ins),
           </li>
           <li>
             List, Check and Edit clock-ins data,
