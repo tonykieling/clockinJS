@@ -96,11 +96,11 @@ app.use("/invoice", invoiceRoutes);
 //   res.status(400).send("Route NOT found!!");
 // });
 
-// // pass these routes to your front end
-// // need it to deply purposes
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, './public', 'index.html'))
-// });
+// pass these routes to your front end
+// need it to deply purposes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './public', 'index.html'))
+});
 
 app.listen(PORT, () => console.log(`Server is running at ${PORT}`));
 
