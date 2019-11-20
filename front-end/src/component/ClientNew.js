@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import axios from "axios";
 
 import MaskedInput from 'react-text-mask';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 class ClientNew extends Component {
 
@@ -151,6 +153,18 @@ console.log("client added:", addClient.data);
   }
 
 
+  handleChangeDate = incomingDate => {
+    // Im not able to grab e.targe.name and e.target.value
+    // console.log("e",e)
+    // console.log("e", e.target.name, e.target.selected);
+    // console.log("date", date);
+    this.setState({
+      birthday: incomingDate
+    });
+    this.textInput4.focus();
+  }
+
+
   afterChange = event => {
     this.setState({
       [event.target.name]: event.target.value
@@ -194,14 +208,26 @@ console.log("client added:", addClient.data);
 
             <Form.Group controlId="formBirthday">
               <Form.Label>Birthday</Form.Label>
-              <Form.Control
+              {/* <Form.Control
                 type        = "date"
                 placeholder = "Type the client's birthday"
                 name        = "birthday"
                 onChange    = {this.handleChange}
                 value       = {this.state.birthday}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput3 = input } />
+                ref         = {input => this.textInput3 = input } /> */}
+                <br />
+                <DatePicker
+                  selected  = {this.state.birthday}
+                  onSelect  ={this.handleChangeDate}
+                  // dateFormat="dd/MM/yyyy"
+                  // dateFormat = "MMMM eeee d, yyyy h:mm aa"
+                  dateFormat = "MMMM d, yyyy"
+                  // onChange = {this.handleChangeDate}
+                  className = "form-control"
+                  disabled  = {this.state.disableEditForm}
+                />
+                <br />
             </Form.Group>
 
             <Form.Group controlId="formMother">

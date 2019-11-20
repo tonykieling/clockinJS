@@ -121,6 +121,7 @@ console.log("req.body", req.body);
     rate,
     notes
      } = req.body;
+
   const 
     d   = new Date(req.body.date).getTime();
     t1  = (Number(req.body.timeStart.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.timeStart.split(':')[1]) * 60 * 1000);
@@ -234,7 +235,8 @@ client_modify = async (req, res) => {
     if (clockinId.length !== 24)
       return res.status(422).json({
         error: "ClientId mystyped."
-      });  
+      }); 
+
     res.status(422).json({
       error: "ECM01: Something got wrong."
     });
@@ -312,7 +314,9 @@ client_modify = async (req, res) => {
 // implement soft deletion
 
 const clockin_delete = async (req, res) => {
-  const clockinId = req.params.clockinId;
+console.log("inside CLOCKIN DELETE");
+  // const clockinId = req.params.clockinId;
+  const clockinId = req.body.clockinId;
   const userId    = req.userData.userId;
   const userAdmin = req.userData.admin;
 
@@ -325,7 +329,7 @@ const clockin_delete = async (req, res) => {
       });
 
     if ((userId != clockinToBeDeleted.user_id) && (!userAdmin))
-      return res.status(409).json({
+      return res.status(200).json({
         error: `ECKD02: Clockin <${clockinId}> does not belong to User <${userId}>.`
       });
   } catch(err) {

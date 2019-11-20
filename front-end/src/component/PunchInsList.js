@@ -34,7 +34,7 @@ class PunchInsList extends Component {
 
 
   handleSubmit = async event => {
-    event.preventDefault();
+    // event.preventDefault();
 
     const
       dateStart = this.state.dateStart,
@@ -79,6 +79,51 @@ class PunchInsList extends Component {
   }
 
 
+  handleDelete = async (clockinId) => {
+    if (window.confirm("Are you sure you wanna delete this clockin?")) {
+      const url = `/clockin`;
+
+      try {
+        const deleteClockin = await axios.delete( 
+          url,
+          {
+            data: {
+              clockinId
+            },
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization" : `Bearer ${this.props.storeToken}` }
+        });
+
+        if (deleteClockin.data.error) {
+          this.setState({
+            message: deleteClockin.data.error
+          });
+        } else {
+          this.setState({
+            message: deleteClockin.data.message
+          });
+        }
+
+        this.handleSubmit();
+        setTimeout(() => {
+          this.cleanMessage();
+        }, 3000);
+
+      } catch(err) {
+        console.log(err.message);
+        this.setState({
+          message: err.message
+        });
+
+        setTimeout(() => {
+          this.cleanMessage();
+        }, 2000);
+      }
+    }
+  }
+
+
   renderDataTable = (clockins, client) => {
     // moment.locale("en-gb");
     return clockins.map((clockin, index) => {
@@ -115,10 +160,12 @@ class PunchInsList extends Component {
           <td>{clockinsToSend.invoice}</td>
           <td>
             <Button
-              variant   = "info"
+              variant   = "danger"
+              onClick   = {() => this.handleDelete(clockin._id)}
+              // variant   = "info"
               // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the clockin without invoice related to
               // data-user = {JSON.stringify(userToSend)}
-            > Edit</Button>
+            > Delete</Button>
           </td>
         </tr>
       )

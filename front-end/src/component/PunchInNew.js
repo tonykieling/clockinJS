@@ -53,12 +53,12 @@ class PunchInNew extends Component {
                       ts  = ${data.timeStart}
                       te  = ${data.timeEnd}
                     rate = ${data.rate} `);
-    // if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate){
-    //   this.messageValidationMethod();
-    // }
-    if (1===2){}
+    if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate){
+      this.messageValidationMethod();
+    }
+    // if (1===2){}
     else {
-console.log("xxxxxxxx")    
+// console.log("xxxxxxxx")    
       const url = "/clockin";
       try {
         const addClockin = await axios.post( 
@@ -68,23 +68,24 @@ console.log("xxxxxxxx")
             headers: { 
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
-        })
+        });
 
         if (addClockin.data.message) {
           this.setState({
-            message: `Punched in!`
+            message : `Punched in!`,
+            rate    : ""
           });
         } else if (addClockin.data.error)
           this.setState({
             message: addClockin.data.error
           });
 
-        // this.cleanForm();
+        this.cleanForm();
         
       } catch(err) {
         this.setState({
           message: err.message });
-        // this.cleanForm();
+        this.cleanForm();
       }
     }
   }
@@ -95,9 +96,9 @@ console.log("xxxxxxxx")
       message: !this.state.client ? "Please, select client." : "Please fill the fields."
     });
 
-    // setTimeout(() => {
-    //   this.cleanMessage();
-    // }, 3000);
+    setTimeout(() => {
+      this.cleanMessage();
+    }, 3000);
   }
 
 
@@ -135,25 +136,19 @@ console.log("xxxxxxxx")
   }
 
   getClientInfo = client => {
-console.log("inside getclientInfo - client: ", client);
-
-// setTimeout(() => 
-  this.setState({
-    client  : client,
-    rate    : client.default_rate
-  })
-    // console.log("this.state.rate", this.state.rate)
-    // , 0);
+    this.setState({
+      client  : client,
+      rate    : client.default_rate
+    });
   }
 
+
   render() {
-console.log("this.state", this.state);
     return (
       <div>
         <h1>
-          PunchIn New over here CLASS
+          PunchIn
         </h1>
-        <p>changing state after componentDidMount and working on looping of a list of items</p>
 
         <Card style={{ width: '40rem' }}>
         <Card.Body>

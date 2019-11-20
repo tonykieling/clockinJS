@@ -31,7 +31,8 @@ router.post("/", checkAuth, clockinController.clockin_add);
 
 
 // it deletes a user account
-router.delete("/:clockinId", checkAuth, clockinController.clockin_delete);
+// router.delete("/:clockinId", checkAuth, clockinController.clockin_delete);
+router.delete("/", checkAuth, clockinController.clockin_delete);
 
 
 module.exports = router;
