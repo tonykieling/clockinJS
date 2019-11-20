@@ -59,7 +59,8 @@ class Home extends Component {
 
     // handle submit itself
 
-    const url         = `http://localhost:3333/user/${this.state.userId}`;    // this is dev setting
+    // const url         = `http://localhost:3333/user/${this.state.userId}`;    // this is dev setting
+    const url         = `/${this.state.userId}`;    // this is dev setting
     const changeUser  = {
       name        : this.state.name,
       email       : this.state.email,
