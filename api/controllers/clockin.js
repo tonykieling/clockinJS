@@ -343,7 +343,7 @@ console.log("inside CLOCKIN DELETE");
 
     if (clockinDeleted.deletedCount)
       return res.status(200).json({
-        message: `Clockin <${clockinId}> has been deleted`
+        message: `Clockin has been deleted`
       });
     else
       throw Error;

@@ -45,7 +45,11 @@ class PunchInNew extends Component {
       timeEnd   : this.state.endingTime,
       rate      : this.state.rate,
       notes     : this.state.notes,
-      clientId  : this.state.client._id };
+      clientId  : this.state.client._id,
+      // test      : new Date() 
+    };
+
+      // let sendTime = new Date(2019, 12, 5, 16, 30);
 
       console.log(`  
                     client = ${data.clientId}
@@ -92,8 +96,10 @@ class PunchInNew extends Component {
 
 
   messageValidationMethod = () => {
+console.log("this.state", this.state)    
     this.setState({
-      message: !this.state.client ? "Please, select client." : "Please fill the fields."
+      message: (Object.entries(this.state.client).length === 0) ? "Please, select client." : "Please fill the fields."
+      // Object.entries(obj).length === 0 && obj.constructor === Object
     });
 
     setTimeout(() => {

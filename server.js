@@ -22,9 +22,14 @@ app.use(express.static('public'));
 console.log("+++process.env.DB", process.env.DB, process.env.JWT_KEY, process.env.JWT_expiration);
 // connection to the database regarding the environment variable URI
 // mongoose.connect(process.env.URI_DB, { 
-mongoose.connect(process.env.DB, { 
-  useNewUrlParser: true,
-  useUnifiedTopology: true });
+try {
+  mongoose.connect(process.env.DB, { 
+    useNewUrlParser: true,
+    useUnifiedTopology: true });
+} catch (err) {
+  console.log("error on MongoDB connection");
+  console.log(err.message);
+}
 
 
 // it logs the actions on the screen
