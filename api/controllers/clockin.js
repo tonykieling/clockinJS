@@ -3,11 +3,11 @@ const mongoose  = require("mongoose");
 const Clockin   = require("../models/clockin.js");
 const User      = require("../models/user.js");
 const Client    = require("../models/client.js");
-const moment    = require("moment");
+// const moment    = require("moment");
 
 // it gets all users from the system - on purpose with no auth
 const get_all = async (req, res) => {
-// console.log("req.query.clientId", req.query.clientId)
+console.log("req.query.clientId", req.query.clientId)
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
 
