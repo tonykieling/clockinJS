@@ -174,7 +174,7 @@ console.log("inside LOGIN - req.body:", req.body);
           
         if (result){
           const token = await tokenCreation(user.email, user._id, user.name, user.admin);
-
+console.log("NEW TOKENNNNNNNNNNNNNNNN")
           res.json({
             message: "success", 
             user: {
@@ -265,8 +265,11 @@ console.log("inside modify_user");
         .findById({ _id: user})
         .select(" name email admin");
 
+      const token = await tokenCreation(user.email, user._id, user.name, user.admin);
+console.log("NEW TOKENNNNNNNNNNNNNNNN on Update")
+
       const returnUser = {
-        name, email, city, address, postalCode, phone
+        name, email, city, address, postalCode, phone, token
       }
 
       res.json({
