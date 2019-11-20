@@ -285,7 +285,15 @@ console.log("sending to save: ", data.birthday);
 
                 <Form.Group controlId="formBirthday">
                   <Form.Label>Birthday</Form.Label>
-                  <br />
+                  <Form.Control
+                    type        = "date"
+                    placeholder = "Type the client's birthday"
+                    name        = "birthday"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.birthday}
+                    onKeyPress  = {this.handleChange}
+                    ref         = {input => this.textInput3 = input } />                  
+                  {/* <br />
                   <DatePicker
                     selected  = {this.state.birthday}
                     onSelect  ={this.handleChangeDate}
@@ -296,7 +304,7 @@ console.log("sending to save: ", data.birthday);
                     className = "form-control"
                     disabled  = {this.state.disableEditForm}
                   />
-                  <br />
+                  <br /> */}
                 </Form.Group>
 
                 <Form.Group controlId="formMother">

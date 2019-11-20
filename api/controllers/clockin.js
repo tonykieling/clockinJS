@@ -36,11 +36,14 @@ console.log("req.query.clientId", req.query.clientId)
         })
         .select(" date time_start time_end rate notes invoice_id client_id user_id ");
 
-    if (!allClockins || allClockins.length < 1)
+console.log("checking clockins");
+    if (!allClockins || allClockins.length < 1) {
+console.log("NO CLOCKINS at all");
       return res.status(200).json({
         message: `No clockins at all.`
       });
-    
+    }
+
     if (clientId) {
       const client = await Client
         .findById( clientId )
