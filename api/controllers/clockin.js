@@ -3,6 +3,7 @@ const mongoose  = require("mongoose");
 const Clockin   = require("../models/clockin.js");
 const User      = require("../models/user.js");
 const Client    = require("../models/client.js");
+const moment    = require("moment");
 
 // it gets all users from the system - on purpose with no auth
 const get_all = async (req, res) => {
@@ -131,7 +132,7 @@ console.log("req.body", req.body);
      } = req.body;
   const 
     // time_start  = date + " " + req.body.timeStart;
-    d   = req.body.date;
+    d   = new Date(req.body.date);
     t1  = (Number(req.body.timeStart.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.timeStart.split(':')[1]) * 60 * 1000);
     t2  = (Number(req.body.timeEnd.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.timeEnd.split(':')[1]) * 60 * 1000);
     // time_end    = date + " " + req.body.timeEnd;
@@ -141,7 +142,11 @@ console.log("req.body", req.body);
   const time_start = new Date(d + t1);
   const time_end   = new Date(d + t2);
   const date = new Date(d);
-console.log("times", date, time_start, time_end);
+  // const date = moment(d).format("L");
+  // const date = new Date().toLocaleString('en-UK', {timeZone: "America/Vancouver"});
+console.log("times:", date, time_start, time_end);
+console.log("gettime:", date.getTime());
+return;
   // check for the User
   let userExist = "";
   try {

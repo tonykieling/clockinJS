@@ -17,3 +17,7 @@ X- GetClient component, how to set there the dropdownitem label?
 - Why in after <register:
 Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
 ??
+
+- Best strategy to record data in my app which will be in production?
+ Atlas, Mlab, etc?
+- Date time strategy?
