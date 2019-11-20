@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
 import {  Card, Button, Form, Row, Col, Table } from "react-bootstrap";
+// import moment from "moment";
 
 import GetClients from "./aux/GetClients.js";
 
@@ -51,7 +52,7 @@ class PunchInsList extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-
+        
         if (getClockins.data.allClockins){
           this.setState({
             clockinList       : getClockins.data.allClockins,
@@ -79,15 +80,22 @@ class PunchInsList extends Component {
 
 
   renderDataTable = (clockins, client) => {
+    // moment.locale("en-gb");
     return clockins.map((clockin, index) => {
-      const dt = new Date(clockin.date);
+// console.log("dddd", moment(new Date(clockin.date)).format("LL"));
+      // const t = new Date(clockin.date).toLocaleString('en-GB', { timeZone: "UTC" });
+      // const date = moment(new Date(t)).format("LL");
+      const date = new Date(clockin.date);
       const ts = new Date(clockin.time_start);
-      const te = new Date(clockin.time_end);
+      const te = new Date(clockin.time_end);  
       const clockinsToSend = {
         num         : index + 1,
-        date        : dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate(),
-        timeStart   : ts.getHours() + ":" + (ts.getMinutes() < 10 ? ("0" + ts.getMinutes()) : ts.getMinutes()),
-        timeEnd     : te.getHours() + ":" + (te.getMinutes() < 10 ? ("0" + te.getMinutes()) : te.getMinutes()),
+        date        : (date.getUTCDate() > 10 
+                        ? date.getUTCDate()
+                        : "0" + date.getUTCDate()) + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear(),
+        // date,
+        timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
+        timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
         rate        : clockin.rate,
         totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
         total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)),

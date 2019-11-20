@@ -6,6 +6,7 @@ import MaskedInput from 'react-text-mask';
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+// import moment from "moment";
 
 import GetClients from "./aux/GetClients.js";
 
@@ -99,7 +100,6 @@ console.log("sending to save: ", data.birthday);
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-
       if (newClientData.data.message) {
         this.setState({
           message:      `${newClientData.data.newData.nickname} has been changed`,
@@ -289,7 +289,9 @@ console.log("sending to save: ", data.birthday);
                   <DatePicker
                     selected  = {this.state.birthday}
                     onSelect  ={this.handleChangeDate}
-                    dateFormat="dd/MM/yyyy"
+                    // dateFormat="dd/MM/yyyy"
+                    // dateFormat = "MMMM eeee d, yyyy h:mm aa"
+                    dateFormat = "MMMM d, yyyy"
                     // onChange = {this.handleChangeDate}
                     className = "form-control"
                     disabled  = {this.state.disableEditForm}

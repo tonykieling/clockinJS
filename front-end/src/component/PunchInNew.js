@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
 import {  Card, Button, Form, Row, Col } from "react-bootstrap";
-import moment from "moment";
+// import moment from "moment";
 // import DatePicker from "react-datepicker";
 // import "react-datepicker/dist/react-datepicker.css";
 
@@ -34,10 +34,7 @@ class PunchInNew extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
-console.log("inside onSubmit");
 
-    // const d = new Date(this.state.date);
-    // d.setHours(0, 0, 0);
     const data = { 
       // date      : (new Date(this.state.date).getTime()),
       // date      : new Date(this.state.date.toLocaleString('en-US', { timeZone: "UTC" })),
