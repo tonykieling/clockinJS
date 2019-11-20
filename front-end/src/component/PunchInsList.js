@@ -52,7 +52,7 @@ class PunchInsList extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-        
+
         if (getClockins.data.allClockins){
           this.setState({
             clockinList       : getClockins.data.allClockins,
@@ -61,12 +61,14 @@ class PunchInsList extends Component {
             tableVisibility   : true,
             cleanButton       : true
           });
-        } else {
+        } else {      
           this.setState({
             message: getClockins.data.message
           });
 
+        setTimeout(() => {
           this.cleanMessage();
+        }, 3000);
         }
       } catch(err) {
         this.setState({

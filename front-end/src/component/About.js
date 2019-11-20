@@ -4,11 +4,13 @@ import "../About.css";
 export default function Error() {
   return (
     <div className="page-general">
-      <h1>About</h1>
-      <div className="content-general">
-        <h1 className="main-title">ClockinJS</h1>
+      <br />
+      <h1 className="main-title">ClockinJS</h1>
 
+      <div className="content-general">
+        <p>p.s. Under construction</p>
         <p>The system is aimed to allow register clock-ins and generate invoices.</p>
+        <a href="https://github.com/tonykieling/clockinJS" target="_blank" rel="noopener noreferrer">Project's GitHub at https://github.com/tonykieling/clockinJS</a> 
 
         <h2 className="sub-title">Some of its functionalities are:</h2>
 
@@ -87,6 +89,7 @@ export default function Error() {
         <p>The system is in production and being used by my wife to record and list their hours for her clients.</p>
         <p>Features under developing are:</p>
         <ul>
+          <li>CSS styling, specilially for mobiles</li>
           <li>Change password (being logged)</li>
           <li>Forget password (captcha + send by email - Mailgun)</li>
           <li>Edit Clockin</li>
@@ -110,6 +113,7 @@ export default function Error() {
               </li>
               <li>
                 <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">GitHub</a> 
+                https://github.com/tonykieling/clockinJS
                 <br />
               </li>
               <li>
