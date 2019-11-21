@@ -265,8 +265,7 @@ console.log("inside modify_user");
         .findById({ _id: user})
         .select(" name email admin");
 
-      const token = await tokenCreation(user.email, user._id, user.name, user.admin);
-console.log("NEW TOKENNNNNNNNNNNNNNNN on Update")
+      const token = await tokenCreation(modifiedUser.email, modifiedUser._id, modifiedUser.name, modifiedUser.admin);
 
       const returnUser = {
         name, email, city, address, postalCode, phone, token

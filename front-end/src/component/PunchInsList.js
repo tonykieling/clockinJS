@@ -322,19 +322,9 @@ class PunchInsList extends Component {
 
 const mapStateToProps = store => {
   return {
-    storeToken    : store.token,
-    // storeClientId : store.client_id
+    storeToken    : store.token
   };
 };
-
-
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     dispatchLogin: user => dispatch({
-//       type:"LOGIN",
-//       data: user })
-//   };
-// };
 
 
 export default connect(mapStateToProps, null)(PunchInsList);

@@ -69,7 +69,7 @@ class Home extends Component {
       postalCode  : this.state.postalCode,
       phone       : this.state.phone
     }
-        
+
     try {
       const modUser = await axios.patch( 
         url,
@@ -89,7 +89,6 @@ class Home extends Component {
           address     : modUser.data.data.address,
           postalCode  : modUser.data.data.postalCode,
           phone       : modUser.data.data.phone,
-          // token       : this.props.storeToken 
           token       : modUser.data.data.token
         };
 

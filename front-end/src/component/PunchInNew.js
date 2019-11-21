@@ -51,12 +51,12 @@ class PunchInNew extends Component {
 
       // let sendTime = new Date(2019, 12, 5, 16, 30);
 
-      console.log(`  
-                    client = ${data.clientId}
-                    date = ${data.date}
-                      ts  = ${data.timeStart}
-                      te  = ${data.timeEnd}
-                    rate = ${data.rate} `);
+      // console.log(`  
+      //               client = ${data.clientId}
+      //               date = ${data.date}
+      //                 ts  = ${data.timeStart}
+      //                 te  = ${data.timeEnd}
+      //               rate = ${data.rate} `);
     if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate){
       this.messageValidationMethod();
     }
@@ -96,10 +96,8 @@ class PunchInNew extends Component {
 
 
   messageValidationMethod = () => {
-console.log("this.state", this.state)    
     this.setState({
       message: (Object.entries(this.state.client).length === 0) ? "Please, select client." : "Please fill the fields."
-      // Object.entries(obj).length === 0 && obj.constructor === Object
     });
 
     setTimeout(() => {
@@ -278,19 +276,8 @@ console.log("this.state", this.state)
 const mapStateToProps = store => {
   return {
     storeToken    : store.token
-    // storeRate     : store.client_dr,
-    // storeClientId : store.client_id
   };
 };
-
-
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     dispatchLogin: user => dispatch({
-//       type:"LOGIN",
-//       data: user })
-//   };
-// };
 
 
 export default connect(mapStateToProps, null)(PunchInNew);
