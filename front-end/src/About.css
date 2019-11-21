@@ -1,9 +1,10 @@
 .page-general {
-  background-color: cadetblue;
+  width: 60%;
+  margin-left: 20%;
 }
 
 .content-general {
-  margin: 20px;
+  margin: 20px 20px 0 20px;
 }
 
 .main-title { 
@@ -68,25 +69,37 @@ a {
 
 
 
-.App {
-  text-align: center;
-}
 
-.App-logo {
-  height: 40vmin;
-}
+@media only screen and (max-width: 700px){
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
+  
+  .page-general {
+    width: 90%;
+    margin-left: 0.5rem;
+  }
+  
+  .content-general {
+    margin: 1rem 1rem 0 1rem;
+  }
+  
+  .main-title { 
+    text-align: center;
+  }
+  
+  .sub-title { 
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  .strong {
+    font-weight: bold;
+    color: darkblue;
+  }
+  
+  a {
+    color: blue;
+  }
+  
+  
 
-.App-link {
-  color: #09d3ac;
 }

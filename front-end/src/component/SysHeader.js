@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
 import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 class SysHeader extends Component {
 
   // function to set no user thus closing the user's session
   logout = () => {
-    if (window.confirm("Are you sure you wanna leave?"))
-      this.props.noUser()
+    if (window.confirm("Are you sure you wanna leave?")) {
+      this.props.noUser();
+      return <Redirect to = "/land" />
+    }
   }
 
 

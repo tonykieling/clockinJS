@@ -80,7 +80,7 @@ class Login extends Component {
     return (
       <div>
         <h1>Login Page</h1>
-        <Card>
+        <Card className="frame">
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>User's Email</Form.Label>

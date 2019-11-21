@@ -1,4 +1,15 @@
 
+.twoThirds{
+  /* limits the component to 2/3s of the page */
+  width: 65%;
+}
+
+.frame{
+  max-width: 1200px;
+  margin: 1rem auto;
+}
+
+
 .gridClientBtContainer {
   display: grid;
   grid-template-columns: auto auto auto auto auto auto;
@@ -42,6 +53,8 @@
 
 
 
+
+
 .App {
   text-align: center;
 }
@@ -63,4 +76,32 @@
 
 .App-link {
   color: #09d3ac;
+}
+
+.register {
+  margin: 0 20rem 0 10rem;
+}
+
+.card{
+  padding: 1rem;
+  width: 40%;
+  margin-left: 10%;
+}
+
+@media only screen and (max-width: 700px){
+
+  /* WRAPPER */
+  .frame{
+    margin: 1rem 1rem;
+  }
+
+  .twoThirds{
+    /* limits the component to 2/3s of the page */
+    width: 100%;
+  }
+
+  .card{
+    padding: 1rem;
+    width: 90%;
+  }
 }

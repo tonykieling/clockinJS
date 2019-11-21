@@ -154,7 +154,7 @@ class Register extends Component {
       return (
         <div>
           <h1>Register ClockinJS User Page</h1>
-          <Card>
+          <Card className="frame register card">
             <Form onSubmit={this.handleSubmit}>
 
               <Form.Group controlId="formName">

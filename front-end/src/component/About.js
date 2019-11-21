@@ -3,7 +3,7 @@ import "../About.css";
 
 export default function Error() {
   return (
-    <div className="page-general">
+    <div className="page-general twoThirds">
       <br />
       <h1 className="main-title">ClockinJS</h1>
 
@@ -112,16 +112,15 @@ export default function Error() {
                 <br />
               </li>
               <li>
-                <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">GitHub</a> 
-                https://github.com/tonykieling/clockinJS
+                <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">GitHub
+                https://github.com/tonykieling/clockinJS </a>
                 <br />
               </li>
               <li>
                 <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">Resume</a> <br />
               </li>
-                <br /><br />
             </ul>
-
+                <br /><br />
       </div>
     </div>
   )
