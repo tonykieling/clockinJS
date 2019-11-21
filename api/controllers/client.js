@@ -14,13 +14,11 @@ console.log("userAdmin", userAdmin, "userId", userId);
   try {
     let allClients = null;
     if (userAdmin) {
-console.log("ADMIN getting clients");
       allClients = await Client
         .find();
         // .select(" name nickname mother consultant user_id ");
         // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
     } else {
-console.log("NOPE ADMIN getting clients");
       allClients = await Client
         .find({ user_id: userId});      // it has to be for only that user
         // .select(" name nickname mother consultant ")

@@ -7,7 +7,6 @@ const Client    = require("../models/client.js");
 
 // it gets all users from the system - on purpose with no auth
 const get_all = async (req, res) => {
-console.log("req.query.clientId", req.query.clientId)
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
 
@@ -36,9 +35,7 @@ console.log("req.query.clientId", req.query.clientId)
         })
         .select(" date time_start time_end rate notes invoice_id client_id user_id ");
 
-console.log("checking clockins");
     if (!allClockins || allClockins.length < 1) {
-console.log("NO CLOCKINS at all");
       return res.status(200).json({
         message: `No clockins at all.`
       });

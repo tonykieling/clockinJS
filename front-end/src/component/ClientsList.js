@@ -292,6 +292,7 @@ console.log("sending to save: ", data.birthday);
                     onChange    = {this.handleChange}
                     value       = {this.state.birthday}
                     onKeyPress  = {this.handleChange}
+                    disabled  = {this.state.disableEditForm}
                     ref         = {input => this.textInput3 = input } />                  
                   {/* <br />
                   <DatePicker

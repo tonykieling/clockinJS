@@ -61,14 +61,14 @@ class PunchInsList extends Component {
             tableVisibility   : true,
             cleanButton       : true
           });
-        } else {      
+        } else {
           this.setState({
             message: getClockins.data.message
           });
 
-        setTimeout(() => {
-          this.cleanMessage();
-        }, 3000);
+          setTimeout(() => {
+            this.cleanMessage();
+          }, 3000);
         }
       } catch(err) {
         this.setState({
@@ -81,7 +81,7 @@ class PunchInsList extends Component {
   }
 
 
-  handleDelete = async (clockinId) => {
+  handleDelete = async (clockinId, key) => {
     if (window.confirm("Are you sure you wanna delete this clockin?")) {
       const url = `/clockin`;
 
@@ -102,7 +102,11 @@ class PunchInsList extends Component {
             message: deleteClockin.data.error
           });
         } else {
+          const array = this.state.clockInListTable;
+          const newList = array.filter(row => Number(row.key) !== Number(key));
+
           this.setState({
+            clockInListTable: newList,
             message: deleteClockin.data.message
           });
         }
@@ -163,7 +167,7 @@ class PunchInsList extends Component {
           <td>
             <Button
               variant   = "danger"
-              onClick   = {() => this.handleDelete(clockin._id)}
+              onClick   = {() => this.handleDelete(clockin._id, clockinsToSend.num)}
               // variant   = "info"
               // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the clockin without invoice related to
               // data-user = {JSON.stringify(userToSend)}
