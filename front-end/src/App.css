@@ -88,7 +88,20 @@
   margin-left: 10%;
 }
 
+
+.showHamburguer {
+  display: none;
+}
+
 @media only screen and (max-width: 700px){
+
+  .showNormalMenu {
+    display: none;
+  }
+
+  .showHamburguer {
+    display: block;
+  }
 
   /* WRAPPER */
   .frame{

@@ -131,10 +131,12 @@ class PunchInNew extends Component {
   showTotalTime = () => {
     const time1 = Date.parse(`01 Jan 1970 ${(this.state.startingTime)}:00 GMT`);
     const time2 = Date.parse(`01 Jan 1970 ${this.state.endingTime}:00 GMT`);
-
+    const tt = ((time2 - time1) / (60 * 60 * 1000));
+    const totalTime = parseFloat(Math.round(tt * 100) / 100).toFixed(2)
+    
     return(
       <Form.Group as={Row} controlId="formTotal">
-        <Form.Label column sm="9" >Total time: {((time2 - time1) / (60 * 60 * 1000))} hr</Form.Label>
+        <Form.Label column sm="9" >Total time: {totalTime} hr</Form.Label>
       </Form.Group>
     )
   }
