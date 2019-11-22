@@ -151,12 +151,13 @@ class PunchInNew extends Component {
 
   render() {
     return (
-      <div>
+      <div className="twoThirds">
         <h1>
           PunchIn
         </h1>
 
-        <Card style={{ width: '40rem' }}>
+        {/* <Card style={{ width: '40rem' }}> */}
+        <Card className="card-settings">
         <Card.Body>
           <Card.Title>Punch in</Card.Title>
 

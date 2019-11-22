@@ -82,9 +82,9 @@
   margin: 0 20rem 0 10rem;
 }
 
-.card{
+.card-settings{
   padding: 1rem;
-  width: 40%;
+  width: 100%;
   margin-left: 10%;
 }
 
@@ -93,7 +93,7 @@
   display: none;
 }
 
-@media only screen and (max-width: 700px){
+@media only screen and (max-width: 800px){
 
   .showNormalMenu {
     display: none;
@@ -103,6 +103,10 @@
     display: block;
   }
 
+  .navBar {
+    color: green;
+  }
+
   /* WRAPPER */
   .frame{
     margin: 1rem 1rem;
@@ -110,10 +114,10 @@
 
   .twoThirds{
     /* limits the component to 2/3s of the page */
-    width: 100%;
+    width: 95%;
   }
 
-  .card{
+  .card-settings{
     padding: 1rem;
     width: 90%;
   }

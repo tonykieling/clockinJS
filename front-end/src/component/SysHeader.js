@@ -2,22 +2,12 @@ import React, { Component } from 'react'
 import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import {
-  MDBNavbar,
-  MDBNavbarBrand,
-  MDBNavbarNav,
-  MDBNavItem,
-  MDBNavLink,
-  MDBNavbarToggler,
-  MDBCollapse,
-  MDBContainer
-} from 'mdbreact';
+
+import { slide as Menu } from "react-burger-menu";
+import "../burguer.css";
 
 class SysHeader extends Component {
 
-  state = {
-    collapseID: ""
-  };
 
   // function to set no user thus closing the user's session
   logout = () => {
@@ -27,12 +17,12 @@ class SysHeader extends Component {
     }
   }
 
-
-  toggleCollapse = collapseID => () => {
-    this.setState(prevState => ({
-      collapseID: prevState.collapseID !== collapseID ? collapseID : ''
-    }));
-  };
+// example of prevState
+  // toggleCollapse = collapseID => () => {
+  //   this.setState(prevState => ({
+  //     collapseID: prevState.collapseID !== collapseID ? collapseID : ''
+  //   }));
+  // };
 
 
   // when a user is logged
@@ -51,7 +41,6 @@ class SysHeader extends Component {
               <Link to="/user" className="nav-link">{this.props.storeEmail} is logged</Link>
               <NavDropdown title="Clients" id="basic-nav-dropdown1">
                 <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item>
-                {/* <Link to = "/clientNew" className="dropdown-item"> Add New Client</Link> */}
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="/clientList"> List </NavDropdown.Item>
               </NavDropdown>
@@ -69,78 +58,48 @@ class SysHeader extends Component {
               </NavDropdown>            
 
               <Link to="/about" className="nav-link">About</Link>
-
             </Nav>
-
             <Button onClick={this.logout} className="logoutBtn">Logout</Button>
-
           </Navbar.Collapse>
-
         </Navbar>
 
+        <div className="showHamburguer">
+          <Navbar bg="primary">
+            {/* <Navbar.Brand href="/">ClockinJSburguer</Navbar.Brand> */}
+            <Link to="/" className="nav-link">ClockinJSB#</Link>
+            {/* <Link to="/user" className="nav-link">{this.props.storeEmail} is logged</Link> */}
+            <Menu right>
+              {/* <NavDropdown.Item href="/user" className="nav-link">User's HomePage</NavDropdown.Item> */}
+              {/* <Link to="/user" className="nav-link menu-item">User's Home</Link> */}
+              {/* <Link to="/user" className="menu-item">User</Link> */}
+              <a id="home" className="menu-item" href="/user">User's Home</a>
+              <NavDropdown title="Clients" id="basic-nav-dropdown1" className="menu-item">
+                <NavDropdown.Item href="clientNew" className="menu-item">Add New One</NavDropdown.Item>
+                {/* <Link to = "/clientNew" className="dropdown-item"> Add New Client</Link> */}
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="clientList"> List </NavDropdown.Item>
+              </NavDropdown>
 
-        <MDBContainer className="showHamburguer">
-          <MDBNavbar
-            color='light-blue lighten-4'
-            style={{ marginTop: '20px'}}
-            light
-          >
-            <MDBContainer>
-              <MDBNavbarBrand>
-                <Link to = "/" className="navbar-brand"> ClockinJS </Link>
-              </MDBNavbarBrand>
+              <NavDropdown title="Clockins" id="basic-nav-dropdown2">
+                <NavDropdown.Item href="punchInNew"> Punch in </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="punchInsList">List them all</NavDropdown.Item>
+              </NavDropdown>
 
-              <MDBNavbarToggler
-                onClick={this.toggleCollapse('navbarCollapse1')}
-              />
-              <MDBCollapse
-                id='navbarCollapse1'
-                isOpen={this.state.collapseID}
-                navbar
-              >
-                {/* https://mdbootstrap.com/docs/react/navigation/hamburger-menu/ */}
+              <NavDropdown title="Invoices" id="basic-nav-dropdown3" className="font-color">
+                <NavDropdown.Item href="invoiceNew">Generate a brand new one</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="pdfTemplate">List them all</NavDropdown.Item>
+              </NavDropdown>            
 
-                <MDBNavbarNav left>
-                    <MDBNavLink to='/user'>User's Home</MDBNavLink>
-                </MDBNavbarNav>
-
-                <MDBNavbarNav left>
-                  <MDBNavItem active>
-                    <NavDropdown title="Clients" id="basic-nav-dropdown1">
-                      <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item>
-                      <NavDropdown.Divider />
-                      <NavDropdown.Item href="/clientList"> List </NavDropdown.Item>
-                    </NavDropdown>
-                  </MDBNavItem>
-
-                  <MDBNavItem active>
-                    <NavDropdown title="Clockins" id="basic-nav-dropdown2">
-                      <NavDropdown.Item href="punchInNew"> Punch in </NavDropdown.Item>
-                      <NavDropdown.Divider />
-                      <NavDropdown.Item href="punchInsList">List them all</NavDropdown.Item>
-                    </NavDropdown>
-                  </MDBNavItem>
-                  <MDBNavItem>
-                    <NavDropdown title="Invoices" id="basic-nav-dropdown3">
-                      <NavDropdown.Item href="invoiceNew">Generate a brand new one</NavDropdown.Item>
-                      <NavDropdown.Divider />
-                      <NavDropdown.Item href="pdfTemplate">List them all</NavDropdown.Item>
-                    </NavDropdown>    
-                  </MDBNavItem>
-
-                  <MDBNavItem>
-                    <MDBNavLink to='about'>About</MDBNavLink>
-                    {/* <Link to="/about" className="nav-link">About</Link> */}
-                  </MDBNavItem>
-                </MDBNavbarNav>
-              </MDBCollapse>
-            </MDBContainer>
-          </MDBNavbar>
-        </MDBContainer>
-
-
-      </div>
-
+              {/* <NavDropdown.Item className="font-color menu-item" href="about">About</NavDropdown.Item> */}
+              {/* <Link to="/about" className="nav-link menu-item">About</Link> */}
+              <a id="about" className="menu-item" href="/about">About</a>
+              <a onClick={ this.logout } className="menu-item--small" href="">Logout</a>
+            </Menu>
+          </Navbar>
+        </div>
+   </div>
 
     );
   }

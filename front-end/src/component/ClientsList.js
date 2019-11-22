@@ -233,11 +233,11 @@ console.log("sending to save: ", data.birthday);
 // console.log("moment:", moment(this.state.birthday).format("D/M/YYYY"));
 
     return (
-      <div>
+      <div className="twoThirds">
         <h1> Your clients' list </h1>
-        <p>Select the client in order to check or modify their data.</p>
+        <p>Select the client to check or modify their data.</p>
 
-        <Card style={{ width: '40rem' }}>
+        <Card className="card-settings">
         <Card.Body>
           <Card.Title>Clients:</Card.Title>
 
@@ -249,7 +249,7 @@ console.log("sending to save: ", data.birthday);
       { this.state.clientId
         ? 
           <div>
-            <Card>
+            <Card className="card-settings">
               <Form autoComplete="off"
                 onSubmit  = {this.handleSubmit}
                 className = "formPosition" >

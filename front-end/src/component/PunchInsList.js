@@ -221,13 +221,14 @@ class PunchInsList extends Component {
 
   render() {
     return (
-      <Fragment>
+      <Fragment className="twoThirds">
         <h1>
           List of Punch ins
         </h1>
         <p>some random text</p>
 
-        <Card style={{ width: '40rem' }}>
+        {/* <Card style={{ width: '40rem' }}> */}
+        <Card className="card-settings">
           <Card.Body>
 
           { /* mount the Dropbox Button with all clients for the user */ }

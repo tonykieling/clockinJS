@@ -173,9 +173,9 @@ console.log("client added:", addClient.data);
 
   render() {
     return (
-      <div>
+      <div className="twoThirds">
         <h2>Add New Client Page</h2>
-        <Card>
+        <Card className="card-settings">
           <Form
             autoComplete  = "off"
             onSubmit      = {this.handleSubmit}
