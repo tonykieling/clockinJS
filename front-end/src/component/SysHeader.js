@@ -82,13 +82,13 @@ class SysHeader extends Component {
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="clientList"> List </NavDropdown.Item>
               </NavDropdown>
-
+              <br />
               <NavDropdown title="Clockins" id="basic-nav-dropdown2">
                 <NavDropdown.Item href="punchInNew"> Punch in </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="punchInsList">List them all</NavDropdown.Item>
               </NavDropdown>
-
+              <br />
               <NavDropdown title="Invoices" id="basic-nav-dropdown3" className="font-color">
                 <NavDropdown.Item href="invoiceNew">Generate a brand new one</NavDropdown.Item>
                 <NavDropdown.Divider />
@@ -97,7 +97,9 @@ class SysHeader extends Component {
 
               {/* <NavDropdown.Item className="font-color menu-item" href="about">About</NavDropdown.Item> */}
               {/* <Link to="/about" className="nav-link menu-item">About</Link> */}
+              <br />
               <a id="about" className="menu-item" href="/about">About</a>
+              <br />
               <a onClick={ this.logout } className="menu-item--small" href="/">Logout</a>
             </Menu>
           </Navbar>

@@ -164,7 +164,7 @@ class Register extends Component {
                 <Form.Control
                   autoFocus   = {true}
                   type        = "text"
-                  placeholder = "Type the user's name"
+                  placeholder = "User's name"
                   name        = "name"
                   onChange    = {this.handleChange}
                   value       = {this.state.name}
@@ -177,7 +177,7 @@ class Register extends Component {
                 <Form.Label>Email address</Form.Label>
                 <Form.Control
                   type        = "email"
-                  placeholder = "Type the user's email"
+                  placeholder = "User's email"
                   name        = "email"
                   onChange    = {this.handleChange}
                   value       = {this.state.email}

@@ -234,7 +234,7 @@ console.log("client added:", addClient.data);
               <Form.Label className="cardLabel">Mother</Form.Label>
               <Form.Control
                 type        = "text"
-                placeholder = "Type the client's mother name"
+                placeholder = "Client's mother name"
                 name        = "mother"
                 onChange    = {this.handleChange}
                 value       = {this.state.mother}
@@ -247,7 +247,7 @@ console.log("client added:", addClient.data);
               <MaskedInput
                 mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
                 className   = "form-control"
-                placeholder = "Enter mother's phone number"
+                placeholder = "Mother's phone number"
                 name        = "mPhone"
                 // guide={false}
                 id="mPhone"
@@ -261,7 +261,7 @@ console.log("client added:", addClient.data);
               <Form.Label className="cardLabel">Mother's Email address</Form.Label>
               <Form.Control
                 type        = "email"
-                placeholder = "Type the mother's email"
+                placeholder = "Mother's email"
                 name        = "mEmail"
                 onChange    = {this.handleChange}
                 value       = {this.state.mEmail}
@@ -273,7 +273,7 @@ console.log("client added:", addClient.data);
               <Form.Label className="cardLabel">Father</Form.Label>
               <Form.Control
                 type        = "text"
-                placeholder = "Type the client's father name"
+                placeholder = "Client's father name"
                 name        = "father"
                 onChange    = {this.handleChange}
                 value       = {this.state.father}
@@ -286,7 +286,7 @@ console.log("client added:", addClient.data);
               <MaskedInput
                 mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
                 className   = "form-control"
-                placeholder = "Enter father's phone number"
+                placeholder = "Father's phone number"
                 name        = "fPhone"
                 // guide={false}
                 id          = "fPhone"
@@ -300,7 +300,7 @@ console.log("client added:", addClient.data);
               <Form.Label className="cardLabel">Father's Email address</Form.Label>
               <Form.Control
                 type        = "email"
-                placeholder = "Type the father's email"
+                placeholder = "Father's email"
                 name        = "fEmail"
                 onChange    = {this.handleChange}
                 value       = {this.state.fEmail}
@@ -312,7 +312,7 @@ console.log("client added:", addClient.data);
               <Form.Label className="cardLabel">Consultant</Form.Label>
               <Form.Control
                 type        = "text"
-                placeholder = "Type the consultant's name"
+                placeholder = "Consultant's name"
                 name        = "consultant"
                 onChange    = {this.handleChange}
                 value       = {this.state.consultant}
@@ -325,7 +325,7 @@ console.log("client added:", addClient.data);
               <MaskedInput
                 mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
                 className   = "form-control"
-                placeholder = "Enter consultant's phone number"
+                placeholder = "Consultant's phone number"
                 name        = "cPhone"
                 // guide={false}
                 id          = "cPhone"
@@ -339,7 +339,7 @@ console.log("client added:", addClient.data);
               <Form.Label className="cardLabel">Consultant's Email address</Form.Label>
               <Form.Control
                 type        = "email"
-                placeholder = "Type the consultant's email"
+                placeholder = "Consultant's email"
                 name        = "cEmail"
                 onChange    = {this.handleChange}
                 value       = {this.state.cEmail}
@@ -351,7 +351,7 @@ console.log("client added:", addClient.data);
               <Form.Label className="cardLabel">Rate</Form.Label>
               <Form.Control
                 type        = "number"
-                placeholder = "Type the hourly rate - CAD$"
+                placeholder = "Hourly rate - CAD$"
                 name        = "defaultRate"
                 onChange    = {this.handleChange}
                 value       = {this.state.defaultRate}
