@@ -174,7 +174,6 @@ console.log("inside LOGIN - req.body:", req.body);
           
         if (result){
           const token = await tokenCreation(user.email, user._id, user.name, user.admin);
-console.log("NEW TOKENNNNNNNNNNNNNNNN")
           res.json({
             message: "success", 
             user: {

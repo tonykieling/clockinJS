@@ -157,8 +157,6 @@ class PunchInNew extends Component {
         {/* <Card style={{ width: '40rem' }}> */}
         <Card className="card-settings">
         <Card.Body>
-          <Card.Title>Punch in</Card.Title>
-
           { /* mount the Dropbox Button with all clients for the user */ }
           <div className="gridClientBtContainer">
             <GetClients 
