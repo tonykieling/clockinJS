@@ -78,9 +78,10 @@ class Login extends Component {
 
   render() {
     return (
-      <div>
-        <h1>Login Page</h1>
-        <Card className="frame">
+      <div className="formPosition">
+        <br />
+        <h3>Login Page</h3>
+        <Card className="card-settings">
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>User's Email</Form.Label>

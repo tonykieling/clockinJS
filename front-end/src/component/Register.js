@@ -152,9 +152,11 @@ class Register extends Component {
       return(<Redirect to="/" />);
     else
       return (
-        <div>
-          <h1>Register ClockinJS User Page</h1>
-          <Card className="frame register card">
+        <div className="formPosition">
+          <br />
+          <h3>User's Register</h3>
+          {/* <Card className="frame register card"> */}
+          <Card className="card-settings">
             <Form onSubmit={this.handleSubmit}>
 
               <Form.Group controlId="formName">
@@ -279,7 +281,7 @@ class Register extends Component {
 
               { /* mount the Dropbox Button with all clients for the user */ }
             <div className="gridClientBtContainer">
-              <span></span>
+              <span></span><span></span><span></span>
               <Button 
                 variant = "primary" 
                 type    = {this.state.btnType}
@@ -292,11 +294,10 @@ class Register extends Component {
               </span>
             </div>
 
-          <br></br>
-          <br></br>
-
             </Form>
-            </Card>
+          </Card>
+          <br></br>
+          <br></br>
         </div>
       )
   }

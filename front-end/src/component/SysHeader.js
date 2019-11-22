@@ -95,7 +95,7 @@ class SysHeader extends Component {
               {/* <NavDropdown.Item className="font-color menu-item" href="about">About</NavDropdown.Item> */}
               {/* <Link to="/about" className="nav-link menu-item">About</Link> */}
               <a id="about" className="menu-item" href="/about">About</a>
-              <a onClick={ this.logout } className="menu-item--small" href="">Logout</a>
+              <a onClick={ this.logout } className="menu-item--small" href="/">Logout</a>
             </Menu>
           </Navbar>
         </div>
