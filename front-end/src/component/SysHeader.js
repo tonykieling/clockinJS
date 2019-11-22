@@ -72,7 +72,10 @@ class SysHeader extends Component {
               {/* <NavDropdown.Item href="/user" className="nav-link">User's HomePage</NavDropdown.Item> */}
               {/* <Link to="/user" className="nav-link menu-item">User's Home</Link> */}
               {/* <Link to="/user" className="menu-item">User</Link> */}
-              <a id="home" className="menu-item" href="/user">User's Home</a>
+              {/* <a id="home" className="menu-item" href="/user">User's Home</a>
+              <Link to="/user" className="nav-link">{this.props.storeEmail} is logged</Link> */}
+              {/* it's broken */}
+
               <NavDropdown title="Clients" id="basic-nav-dropdown1" className="menu-item">
                 <NavDropdown.Item href="clientNew" className="menu-item">Add New One</NavDropdown.Item>
                 {/* <Link to = "/clientNew" className="dropdown-item"> Add New Client</Link> */}
