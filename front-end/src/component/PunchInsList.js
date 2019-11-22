@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
 import {  Card, Button, Form, Row, Col, Table } from "react-bootstrap";
@@ -156,7 +156,7 @@ class PunchInsList extends Component {
       return (
         <tr key={clockinsToSend.num}>
           <td>{clockinsToSend.num}</td>
-          <td>{client}</td>
+          {/* <td>{client}</td> */}
           <td>{clockinsToSend.date}</td>
           <td>{clockinsToSend.timeStart}</td>
           <td>{clockinsToSend.timeEnd}</td>
@@ -221,11 +221,8 @@ class PunchInsList extends Component {
 
   render() {
     return (
-      <Fragment className="twoThirds">
-        <h1>
-          List of Punch ins
-        </h1>
-        <p>some random text</p>
+      <div className="formPosition">
+        <h3>List of Punch ins</h3>
 
         {/* <Card style={{ width: '40rem' }}> */}
         <Card className="card-settings">
@@ -247,22 +244,20 @@ class PunchInsList extends Component {
             <Form >
 
               <Form.Group as={Row} controlId="formST">
-                <Form.Label column sm="3" >Date Start:</Form.Label>
+                <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
                 <Col sm="5">
                   <Form.Control
                     type        = "date"
                     name        = "dateStart"
                     onChange    = {this.handleChange}
                     value       = {this.state.dateStart}
-                    // onKeyPress  = {this.handleChange}
-                    // ref         = {input => this.textInput2 = input } 
-                    />
+                    disabled    = {( this.state.clientId === "" ) ? true : false } />
                 </Col>
               </Form.Group>
 
               <Form.Group as={Row} controlId="formET">
                 <Col sm="3">
-                  <Form.Label>Date End:</Form.Label>
+                  <Form.Label className="cardLabel">Date End:</Form.Label>
                 </Col>
                 <Col sm="5">
                   <Form.Control                
@@ -270,9 +265,7 @@ class PunchInsList extends Component {
                     name        = "dateEnd"
                     onChange    = {this.handleChange}
                     value       = {this.state.dateEnd}
-                    // onKeyPress  = {this.handleChange}
-                    // ref         = {input => this.textInput3 = input } 
-                    />
+                    disabled    = {( this.state.clientId === "" ) ? true : false } />
                 </Col>
               </Form.Group>
 
@@ -296,12 +289,14 @@ class PunchInsList extends Component {
         { this.state.tableVisibility
           ?
             <Card id="clockinListResult" >
+              <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label>
+{console.log("this.state", this.state)}              
               {(this.state.clockinList.length > 0) 
                 ? <Table striped bordered hover size="sm" responsive>
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Client</th>
+                        {/* <th>Client</th> */}
                         <th>Date</th>
                         <th>Time Start</th>
                         <th>Time End</th>
@@ -319,7 +314,7 @@ class PunchInsList extends Component {
             </Card>
           : null }
 
-        </Fragment>
+        </div>
     )
   }
 }

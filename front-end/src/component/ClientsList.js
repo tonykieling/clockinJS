@@ -233,8 +233,8 @@ console.log("sending to save: ", data.birthday);
 // console.log("moment:", moment(this.state.birthday).format("D/M/YYYY"));
 
     return (
-      <div className="twoThirds">
-        <h1> Your clients' list </h1>
+      <div className="formPosition">
+        <h3> Your clients' list </h3>
         <p>Select the client to check or modify their data.</p>
 
         <Card className="card-settings">
@@ -255,7 +255,7 @@ console.log("sending to save: ", data.birthday);
                 className = "formPosition" >
 
                 <Form.Group controlId="formName">
-                  <Form.Label>Name</Form.Label>
+                  <Form.Label className="cardLabel">Name</Form.Label>
                   <Form.Control
                     // autoFocus   = {true}
                     type        = "text"
@@ -270,7 +270,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formNickname">
-                  <Form.Label>Nickname</Form.Label>
+                  <Form.Label className="cardLabel">Nickname</Form.Label>
                   <Form.Control
                     type        = "text"
                     placeholder = {this.state.nickname || "Type the client's nickname"}
@@ -284,7 +284,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formBirthday">
-                  <Form.Label>Birthday</Form.Label>
+                  <Form.Label className="cardLabel">Birthday</Form.Label>
                   <Form.Control
                     type        = "date"
                     placeholder = "Type the client's birthday"
@@ -309,7 +309,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formMother">
-                  <Form.Label>Mother</Form.Label>
+                  <Form.Label className="cardLabel">Mother</Form.Label>
                   <Form.Control
                     type        = "text"
                     placeholder = { this.state.mother || "Type the client's mother name"}
@@ -322,7 +322,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formMPhone">
-                  <Form.Label>Mother's Phone</Form.Label>
+                  <Form.Label className="cardLabel">Mother's Phone</Form.Label>
                   <MaskedInput
                     mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
                     className   = "form-control"
@@ -337,7 +337,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formMEmail">
-                  <Form.Label>Mother's Email address</Form.Label>
+                  <Form.Label className="cardLabel">Mother's Email address</Form.Label>
                   <Form.Control
                     type        = "email"
                     placeholder = {this.state.mEmail || "Type the mother's email"}
@@ -350,7 +350,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formFather">
-                  <Form.Label>Father</Form.Label>
+                  <Form.Label className="cardLabel">Father</Form.Label>
                   <Form.Control
                     type        = "text"
                     placeholder = {this.state.father || "Type the client's father name"}
@@ -363,7 +363,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formFPhone">
-                  <Form.Label>Father's Phone</Form.Label>
+                  <Form.Label className="cardLabel">Father's Phone</Form.Label>
                   <MaskedInput
                     mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
                     className   = "form-control"
@@ -378,7 +378,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formFEmail">
-                  <Form.Label>Father's Email address</Form.Label>
+                  <Form.Label className="cardLabel">Father's Email address</Form.Label>
                   <Form.Control
                     type        = "email"
                     placeholder = {this.state.fEmail || "Type the father's email"}
@@ -391,7 +391,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formConsultant">
-                  <Form.Label>Consultant</Form.Label>
+                  <Form.Label className="cardLabel">Consultant</Form.Label>
                   <Form.Control
                     type        = "text"
                     placeholder = {this.state.consultant || "Type the consultant's name"}
@@ -404,7 +404,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formCPhone">
-                  <Form.Label>Consultant's Phone</Form.Label>
+                  <Form.Label className="cardLabel">Consultant's Phone</Form.Label>
                   <MaskedInput
                     mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
                     className   = "form-control"
@@ -420,7 +420,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formCEmail">
-                  <Form.Label>Consultant's Email address</Form.Label>
+                  <Form.Label className="cardLabel">Consultant's Email address</Form.Label>
                   <Form.Control
                     type        = "email"
                     placeholder = {this.state.cEmail || "Type the consultant's email"}
@@ -433,7 +433,7 @@ console.log("sending to save: ", data.birthday);
                 </Form.Group>
 
                 <Form.Group controlId="formDefaultRate">
-                  <Form.Label>Rate</Form.Label>
+                  <Form.Label className="cardLabel">Rate</Form.Label>
                   <Form.Control
                     type        = "text"
                     placeholder = {this.state.default_rate || "Type the hourly rate - CAD$"}
@@ -477,11 +477,10 @@ console.log("sending to save: ", data.birthday);
                 Edit
               </Button>
           }
-          <br></br>
-          <br></br>
-
-              </Form>
-            </Card>
+          </Form>
+        </Card>
+        <br></br>
+        <br></br>
 
           </div>
         : null

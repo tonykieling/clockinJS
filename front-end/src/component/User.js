@@ -153,24 +153,25 @@ class Home extends Component {
 
   render() {
     return (
-      <div>
-        <h1 className="htitle">User's Home Page</h1>
-        <h3>Welcome {this.props.storeEmail} </h3> 
-        <br></br>
+      <div className="formPosition">
+        <br />
+        <h3 className="htitle">User's Home Page</h3>
+        <h4>Welcome {this.props.storeEmail} </h4> 
+        <br />
 
-        <Card>
+        <Card className="card-settings">
           <Card.Header className="cardTitle">User Information</Card.Header>
 
           <Form className="formPosition">
             <Form.Group as={Row} controlId="formId">
-              <Form.Label column sm={2} className="card-label">Id</Form.Label>
+              <Form.Label column sm={2} className="cardLabel">Id</Form.Label>
               <Col >
                 <Form.Label column sm={8} >{this.state.userId}</Form.Label>
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formName">
-              <Form.Label column sm={2} className="card-label">Name</Form.Label>
+              <Form.Label column sm={2} className="cardLabel">Name</Form.Label>
               <Col sm={8}>
                 <Form.Control
                   disabled      = {this.state.disableEdit}
@@ -186,7 +187,7 @@ class Home extends Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId="formEmail">
-              <Form.Label column sm={2} className="card-label">Email</Form.Label>
+              <Form.Label column sm={2} className="cardLabel">Email</Form.Label>
               <Col sm={8}>
                 <Form.Control
                   disabled      = {this.state.disableEdit}
@@ -202,7 +203,7 @@ class Home extends Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId="formAddress">
-              <Form.Label column sm={2} className="card-label">Address</Form.Label>
+              <Form.Label column sm={2} className="cardLabel">Address</Form.Label>
               <Col sm={8}>
                 <Form.Control
                   disabled      = {this.state.disableEdit}
@@ -218,7 +219,7 @@ class Home extends Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId="formCity">
-              <Form.Label column sm={2} className="card-label">City:</Form.Label>
+              <Form.Label column sm={2} className="cardLabel">City:</Form.Label>
               <Col sm={8}>
                 <Form.Control
                   disabled      = {this.state.disableEdit}
@@ -234,7 +235,7 @@ class Home extends Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId="formPostalCode">
-              <Form.Label column sm={2} className="card-label">Postal Code</Form.Label>
+              <Form.Label column sm={2} className="cardLabel">Postal Code</Form.Label>
               <Col sm={4}>
                 <Form.Control
                   disabled      = {this.state.disableEdit}
@@ -250,7 +251,7 @@ class Home extends Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId="formPhone">
-              <Form.Label column sm={2} className="card-label">Phone</Form.Label>
+              <Form.Label column sm={2} className="cardLabel">Phone</Form.Label>
               <Col sm={4}>
                 <Form.Control
                   disabled      = {this.state.disableEdit}
@@ -295,10 +296,9 @@ class Home extends Component {
                 Edit
               </Button>
           }
-          <br></br>
-          <br></br>
-
         </Card>        
+        <br></br>
+        <br></br>
       </div>
     )
   }

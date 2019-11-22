@@ -173,8 +173,8 @@ console.log("client added:", addClient.data);
 
   render() {
     return (
-      <div className="twoThirds">
-        <h2>Add New Client Page</h2>
+      <div className="formPosition">
+        <h3>New Client Page</h3>
         <Card className="card-settings">
           <Form
             autoComplete  = "off"
@@ -182,11 +182,11 @@ console.log("client added:", addClient.data);
             className     = "formPosition"  >
 
             <Form.Group controlId="formName">
-              <Form.Label>Name</Form.Label>
+              <Form.Label className="cardLabel">Name</Form.Label>
               <Form.Control
                 autoFocus   = {true}
                 type        = "text"
-                placeholder = "Type the client's name"
+                placeholder = "Client's name"
                 name        = "name"
                 onChange    = {this.handleChange}
                 value       = {this.state.name}
@@ -195,10 +195,10 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formNickname">
-              <Form.Label>Nickname</Form.Label>
+              <Form.Label className="cardLabel">Nickname</Form.Label>
               <Form.Control
                 type        = "text"
-                placeholder = "Type the client's nickname"
+                placeholder = "Client's nickname"
                 name        = "nickname"
                 onChange    = {this.handleChange}
                 value       = {this.state.nickname}
@@ -207,10 +207,10 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formBirthday">
-              <Form.Label>Birthday</Form.Label>
+              <Form.Label className="cardLabel">Birthday</Form.Label>
               <Form.Control
                 type        = "date"
-                placeholder = "Type the client's birthday"
+                placeholder = "Client's birthday"
                 name        = "birthday"
                 onChange    = {this.handleChange}
                 value       = {this.state.birthday}
@@ -231,7 +231,7 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formMother">
-              <Form.Label>Mother</Form.Label>
+              <Form.Label className="cardLabel">Mother</Form.Label>
               <Form.Control
                 type        = "text"
                 placeholder = "Type the client's mother name"
@@ -243,7 +243,7 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formMPhone">
-              <Form.Label>Mother's Phone</Form.Label>
+              <Form.Label className="cardLabel">Mother's Phone</Form.Label>
               <MaskedInput
                 mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
                 className   = "form-control"
@@ -258,7 +258,7 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formMEmail">
-              <Form.Label>Mother's Email address</Form.Label>
+              <Form.Label className="cardLabel">Mother's Email address</Form.Label>
               <Form.Control
                 type        = "email"
                 placeholder = "Type the mother's email"
@@ -270,7 +270,7 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formFather">
-              <Form.Label>Father</Form.Label>
+              <Form.Label className="cardLabel">Father</Form.Label>
               <Form.Control
                 type        = "text"
                 placeholder = "Type the client's father name"
@@ -282,7 +282,7 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formFPhone">
-              <Form.Label>Father's Phone</Form.Label>
+              <Form.Label className="cardLabel">Father's Phone</Form.Label>
               <MaskedInput
                 mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
                 className   = "form-control"
@@ -297,7 +297,7 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formFEmail">
-              <Form.Label>Father's Email address</Form.Label>
+              <Form.Label className="cardLabel">Father's Email address</Form.Label>
               <Form.Control
                 type        = "email"
                 placeholder = "Type the father's email"
@@ -309,7 +309,7 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formConsultant">
-              <Form.Label>Consultant</Form.Label>
+              <Form.Label className="cardLabel">Consultant</Form.Label>
               <Form.Control
                 type        = "text"
                 placeholder = "Type the consultant's name"
@@ -321,7 +321,7 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formCPhone">
-              <Form.Label>Consultant's Phone</Form.Label>
+              <Form.Label className="cardLabel">Consultant's Phone</Form.Label>
               <MaskedInput
                 mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
                 className   = "form-control"
@@ -336,7 +336,7 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formCEmail">
-              <Form.Label>Consultant's Email address</Form.Label>
+              <Form.Label className="cardLabel">Consultant's Email address</Form.Label>
               <Form.Control
                 type        = "email"
                 placeholder = "Type the consultant's email"
@@ -348,7 +348,7 @@ console.log("client added:", addClient.data);
             </Form.Group>
 
             <Form.Group controlId="formDefaultRate">
-              <Form.Label>Rate</Form.Label>
+              <Form.Label className="cardLabel">Rate</Form.Label>
               <Form.Control
                 type        = "number"
                 placeholder = "Type the hourly rate - CAD$"
@@ -372,12 +372,10 @@ console.log("client added:", addClient.data);
               >
               Save
             </Button>
-
-            <br></br>
-            <br></br>
-
           </Form>
         </Card>
+        <br></br>
+        <br></br>
       </div>
     )
   }

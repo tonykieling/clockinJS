@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
 import {  Card, Button, Form, Row, Col, Table } from "react-bootstrap";
@@ -158,13 +158,12 @@ console.log("clockinsToSend", clockinsToSend);
         { this.state.showPreview
           ? this.invoicePdfPreview()
           :
-      <Fragment>
-        <h1>
-          Invoice generator
-        </h1>
+      <div className="formPosition">
+        <h3>Invoice generator</h3>
         <p>In order to generate the invoice, please select the client and the range of dates.</p>
+        <h2 style={{color:"red"}}>This process is UNDER CONSTRUCTION</h2>
 
-        <Card style={{ width: '40rem' }}>
+        <Card className="card-settings">
         <Card.Body>
 
          <GetClients />     { /* mount the Dropbox Button with all clients for the user */ }
@@ -173,7 +172,7 @@ console.log("clockinsToSend", clockinsToSend);
           <Form onSubmit={this.handleSubmit} >
 
             <Form.Group as={Row} controlId="formST">
-              <Form.Label column sm="3" >Date Start:</Form.Label>
+              <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
               <Col sm="5">
                 <Form.Control
                   type        = "date"
@@ -185,7 +184,7 @@ console.log("clockinsToSend", clockinsToSend);
 
             <Form.Group as={Row} controlId="formET">
               <Col sm="3">
-                <Form.Label>Date End:</Form.Label>
+                <Form.Label className="cardLabel">Date End:</Form.Label>
               </Col>
               <Col sm="5">
                 <Form.Control                
@@ -238,7 +237,7 @@ console.log("clockinsToSend", clockinsToSend);
           </Card>
         : null }
 
-          </Fragment>
+          </div>
         }
       </div>
     )

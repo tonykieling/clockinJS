@@ -151,10 +151,8 @@ class PunchInNew extends Component {
 
   render() {
     return (
-      <div className="twoThirds">
-        <h1>
-          PunchIn
-        </h1>
+      <div className="formPosition">
+        <h3>PunchIn</h3>
 
         {/* <Card style={{ width: '40rem' }}> */}
         <Card className="card-settings">
@@ -177,7 +175,7 @@ class PunchInNew extends Component {
           <Form onSubmit={this.handleSubmit} >
 
             <Form.Group as={Row} controlId="formDate">
-              <Form.Label column sm="3">Date:</Form.Label>
+              <Form.Label column sm="3" className="cardLabel">Date:</Form.Label>
               <Col sm="6">
                 <Form.Control 
                   type        = "date"
@@ -190,7 +188,7 @@ class PunchInNew extends Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId="formST">
-              <Form.Label column sm="3" >Time Start:</Form.Label>
+              <Form.Label column sm="3" className="cardLabel">Time Start:</Form.Label>
               <Col sm="3">
                 <Form.Control
                   type        = "time"
@@ -205,7 +203,7 @@ class PunchInNew extends Component {
 
             <Form.Group as={Row} controlId="formET">
               <Col sm="3">
-                <Form.Label>Time End:</Form.Label>
+                <Form.Label className="cardLabel">Time End:</Form.Label>
               </Col>
               <Col sm="3">
                 <Form.Control                
@@ -228,7 +226,7 @@ class PunchInNew extends Component {
             </Form.Group>
 
             <Form.Group as={Row} controlId="formRate">
-              <Form.Label column sm="3" >Rate</Form.Label>
+              <Form.Label column sm="3" className="cardLabel" >Rate</Form.Label>
               <Col sm="3">
                 <Form.Control
                   type        = "number"
@@ -242,7 +240,7 @@ class PunchInNew extends Component {
             </Form.Group>
 
             <Form.Group controlId="formBasicPassword">
-              <Form.Label>Notes</Form.Label>
+              <Form.Label className="cardLabel">Notes</Form.Label>
               <Form.Control
                 as          = "textarea"
                 rows        = "3"
@@ -269,7 +267,7 @@ class PunchInNew extends Component {
           </Form>
         </Card.Body>
       </Card>        
-
+      <br /><br />
       </div>
     )
   }
