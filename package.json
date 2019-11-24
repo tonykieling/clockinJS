@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node others/cleanPort.js && nodemon server.js",
+    "doc": "jsdoc -c jsdoc.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -23,6 +24,7 @@
     "nan": "^2.14.0"
   },
   "devDependencies": {
+    "jsdoc": "^3.6.3",
     "nodemon": "^1.19.4",
     "shelljs": "^0.8.3"
   }

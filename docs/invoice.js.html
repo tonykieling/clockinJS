@@ -1,18 +1,38 @@
-const mongoose  = require("mongoose");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: invoice.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: invoice.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const mongoose  = require("mongoose");
 
 const Invoice   = require("../models/invoice.js");
 const Clockin   = require("../models/clockin.js");
 const User      = require("../models/user.js");
 const Client    = require("../models/client.js");
 
-// https://youtu.be/YK-GurROGIg
-// @ts-check    // it makes the type checking mandatory for that piece of code
-// @type {Array<number>}
-// @type {{id: number, anotherField: string, oneMore: number|boolean}}   //=> it should be place just before an object declaration
-// templates:
-  // node_modules/jsdoc/templates // copy the default and paste it into the the code for a new directory
-  // go to jsdoc.json and set the template as:
-    // "template": "name-of-the-dir"   / this should be inside "opts"
 
 /**
  * it gets all users from the system - on purpose with no auth
@@ -35,7 +55,7 @@ const get_all = async (req, res) => {
         .find({ user_id: userId})
         .select(" date date_start date_end notes total_cad status");        
 
-    if (!allInvoices || allInvoices.length < 1)
+    if (!allInvoices || allInvoices.length &lt; 1)
       return res.status(200).json({
         message: `No Invoices at all.`
       });
@@ -64,13 +84,13 @@ const get_one = async (req, res) => {
       .findById(invoiceId)
       .select(" date date_start date_end notes total_cad user_id ");
 
-    if (!invoice || invoice.length < 1)
+    if (!invoice || invoice.length &lt; 1)
       return res.status(409).json({
-        error: `EIGO01: Invoice <id: ${invoiceId}> does not exist.`
+        error: `EIGO01: Invoice &lt;id: ${invoiceId}> does not exist.`
       });
-    if (userId !== invoice.user_id && !userAdmin)
+    if (userId !== invoice.user_id &amp;&amp; !userAdmin)
       return res.status(409).json({
-        error: `EIGO02: Invoice <id: ${invoiceId}> belongs to another user.`
+        error: `EIGO02: Invoice &lt;id: ${invoiceId}> belongs to another user.`
       });
 
     res.status(200).json({
@@ -120,7 +140,7 @@ console.log("date1 =", date1);
       .findOne({ _id: userId });
     if (!userExist)
       return res.status(403).json({
-        error: `EIADD01: User <${userId}> does not exist`
+        error: `EIADD01: User &lt;${userId}> does not exist`
       });
   } catch(err) {
     console.trace("Error: ", err.message);
@@ -137,13 +157,13 @@ console.log("date1 =", date1);
       .findOne({ _id: clientId });
     if (!clientExist)
       return res.status(403).json({
-        error: `EIADD03: Client <${clientId}> does not exist`
+        error: `EIADD03: Client &lt;${clientId}> does not exist`
       });
 
     // check whether the Client belongs to the User
     if (clientExist.user_id != userId)
       return res.status(403).json({
-        error: `EIADD04: Client <${clientExist.name}> does not belong to User <${userExist.name}>.`
+        error: `EIADD04: Client &lt;${clientExist.name}> does not belong to User &lt;${userExist.name}>.`
       });
   } catch(err) {
     console.trace("Error: ", err.message);
@@ -165,7 +185,7 @@ console.log("date1 =", date1);
         }
       });
 
-    if (clockins.length < 1)
+    if (clockins.length &lt; 1)
       return res.status(208).json({
         message: "No clockins at all.",
         user: userExist.name,
@@ -219,7 +239,7 @@ const date2 = new Date()
 console.log("date2 =", date2);
 console.log("total time = ", (date2 - date1) / 1000);
     res.json({
-      message: `Invoice <${newInvoice._id}> has been created.`,
+      message: `Invoice &lt;${newInvoice._id}> has been created.`,
       user: userExist.name,
       client: clientExist.name
     });
@@ -248,13 +268,13 @@ const client_modify = async (req, res) => {
     const client = await Client
       .findById(invoiceId);
 
-    if (!client || client.length < 1)
+    if (!client || client.length &lt; 1)
       return res.status(409).json({
-        error: `Client <id: ${invoiceId}> does not exist.`
+        error: `Client &lt;id: ${invoiceId}> does not exist.`
       });
-    if (userId !== client.user_id && !userAdmin)
+    if (userId !== client.user_id &amp;&amp; !userAdmin)
       return res.status(409).json({
-        error: `Client <id: ${invoiceId}> belongs to another user.`
+        error: `Client &lt;id: ${invoiceId}> belongs to another user.`
       });
 
   } catch(err) {
@@ -317,11 +337,11 @@ const client_modify = async (req, res) => {
         // .select(" name nickname mother consultant default_rate");
 
       return res.json({
-        message: `Client <${clientModified}> has been modified.`
+        message: `Client &lt;${clientModified}> has been modified.`
       });
     } else
       res.status(409).json({
-        error: `Client <${invoiceId}> not changed.`
+        error: `Client &lt;${invoiceId}> not changed.`
       });
 
   } catch(err) {
@@ -343,14 +363,14 @@ const invoice_delete = async (req, res) => {
     const invoiceToBeDeleted = await Invoice
       .findById(invoiceId);
 
-    if (!invoiceToBeDeleted || invoiceToBeDeleted.length < 1)
+    if (!invoiceToBeDeleted || invoiceToBeDeleted.length &lt; 1)
       return res.status(409).json({
-        error: `EIDE01: Invoice <${invoiceId} NOT found.`
+        error: `EIDE01: Invoice &lt;${invoiceId} NOT found.`
       });
 
-    if ((userId != invoiceToBeDeleted.user_id) && (!userAdmin))
+    if ((userId != invoiceToBeDeleted.user_id) &amp;&amp; (!userAdmin))
         return res.status(409).json({
-          error: `EIDE02: Invoice <${invoiceId}> does not belong to User <${userId}>.`
+          error: `EIDE02: Invoice &lt;${invoiceId}> does not belong to User &lt;${userId}>.`
         });
   } catch(err) {
     return res.status(409).json({
@@ -364,13 +384,13 @@ const invoice_delete = async (req, res) => {
 
     if (clockinDeleted.deletedCount)
       return res.status(200).json({
-        message: `Invoice <${invoiceId}> has been deleted`
+        message: `Invoice &lt;${invoiceId}> has been deleted`
       });
     else
       throw Error;
   } catch (err) {
     res.status(404).json({
-      error: `EIDE04: Something bad with Invoice id <${invoiceId}>`
+      error: `EIDE04: Something bad with Invoice id &lt;${invoiceId}>`
     })
   }
 }
@@ -381,4 +401,26 @@ module.exports = {
   get_one,
   invoice_add,
   invoice_delete
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#get_all">get_all</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Sun Nov 24 2019 09:49:10 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -3,8 +3,10 @@
 
 const tokenValidation = require("../helpers/token.js").token_validation;
 
-// In order to proceed with authorization, the front end should send the token by the headers, following the pattern:
-// Authorization: Bear <token>
+/**
+ * In order to proceed with authorization, the front end should send the token by the headers, following the pattern:
+ * Authorization: Bear <token>
+ */
 
 module.exports = ((req, res, next) => {
   try {
