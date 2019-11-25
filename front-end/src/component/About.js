@@ -1,6 +1,12 @@
 import React from 'react';
 import "../About.css";
 
+import gmailIcon from "../icons/gmail.svg";
+import resumeIcon from "../icons/resume.svg";
+import linkedinIcon from "../icons/linkedin.png";
+import githubIcon from "../icons/github.png";
+
+
 export default function Error() {
   return (
     <div className="page-general twoThirds">
@@ -27,24 +33,26 @@ export default function Error() {
           <li>
             Users are able to:
           </li>
-          <li>
-            Register clients,
-          </li>
-          <li>
-            List, Check, and Modify client´s data,
-          </li>
-          <li>
-            Punch in their work hours (clock-ins),
-          </li>
-          <li>
-            List, Check and Edit clock-ins data,
-          </li>
-          <li>
-            Generate invoice and control their status (generated, sent and received),
-          </li>
-          <li>
-            List and Check invoices.
-          </li>
+          <ul>
+            <li>
+              Register clients,
+            </li>
+            <li>
+              List, Check, and Modify client´s data,
+            </li>
+            <li>
+              Punch in their work hours (clock-ins),
+            </li>
+            <li>
+              List, Check and Edit clock-ins data,
+            </li>
+            <li>
+              Generate invoice and control their status (generated, sent and received),
+            </li>
+            <li>
+              List and Check invoices.
+            </li>
+          </ul>
         </ul>
 
 
@@ -100,26 +108,53 @@ export default function Error() {
           <li>Adapt pdf to receive data from the system.</li>
         </ul>
 
-        <h3 className="sub-title">Contact</h3>
+        <h3 className="sub-title">Contact us</h3>
           <p> Tony Kieling's: </p>
-            <ul>
-              <li>
-                <a href="mailto:tony.kieling@gmail.com" target="_top">Gmail - tony.kieling@gmail.com</a> 
+            {/* <ul>
+              <li className="iconLine">
+                <a href="mailto:tony.kieling@gmail.com" target="_top" >
+                  <img src={gmailIcon} alt="gmail"/> Gmail- tony.kieling@gmail.com
+                </a> 
+              </li>
+
+              <li className="iconLine">
+                <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank" rel="noopener noreferrer">
+                  <img src={linkedinIcon} className="iconSettings" alt="linkedin"/> LinkedIn - https://www.linkedin.com/in/tony-kieling
+                </a>
+              </li>
+
+              <li className="iconLine">
+                <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">
+                  <img src={githubIcon} className="iconSettings" alt="linkedin"/> GitHub https://github.com/tonykieling/clockinJS
+                </a>
+              </li>
+
+              <li className="iconLine">
+                <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">
+                  <img src={resumeIcon} alt="resume"/> Resume On-Line
+                </a>
                 <br />
               </li>
-              <li>
-                <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <br />
-              </li>
-              <li>
-                <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">GitHub
-                https://github.com/tonykieling/clockinJS </a>
-                <br />
-              </li>
-              <li>
-                <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">Resume</a> <br />
-              </li>
-            </ul>
+
+            </ul> */}
+              <div className="iconLine">
+                <a href="mailto:tony.kieling@gmail.com" target="_top" >
+                  <img src={gmailIcon} alt="gmail" className="iconSettings" />
+                </a> 
+
+                <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank" rel="noopener noreferrer">
+                  <img src={linkedinIcon} className="iconSettings" alt="linkedin" />
+                </a>
+                
+                <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">
+                  <img src={githubIcon} className="iconSettings" alt="linkedin"/>
+                </a>
+
+                <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">
+                  <img src={resumeIcon} alt="resume" className="iconSettings" />
+                </a>
+              </div>
+
                 <br /><br />
       </div>
     </div>

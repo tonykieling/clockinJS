@@ -26,7 +26,18 @@ a {
 }
 
 
+.iconSettings {
+  height: 30px;
+  width: 30px;
+  margin-bottom: 10px;
+  margin-left: 12%;
+}
 
+.iconLine {
+  margin: auto;
+  /* margin-bottom: 10px;
+  margin-left: 30px; */
+}
 
 
 @media only screen and (max-width: 700px){
