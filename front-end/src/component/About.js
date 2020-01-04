@@ -16,7 +16,7 @@ export default function Error() {
       <div className="content-general">
         <p>p.s. Under construction</p>
         <p>The system is aimed to allow register clock-ins and generate invoices.</p>
-        <a href="https://github.com/tonykieling/clockinJS" target="_blank" rel="noopener noreferrer">Project's GitHub at https://github.com/tonykieling/clockinJS</a> 
+        <a href="https://github.com/tonykieling/clockinJS" target="_blank" rel="noopener noreferrer">GitHub Project at https://github.com/tonykieling/clockinJS</a> 
 
         <h2 className="sub-title">Some of its functionalities are:</h2>
 

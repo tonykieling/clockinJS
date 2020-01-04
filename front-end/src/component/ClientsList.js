@@ -60,12 +60,15 @@ class ClientsList extends Component {
 
 
   handleChangeDate = incomingDate => {
+console.log("incomingDate", incomingDate);
+    const newDate = ((incomingDate.getUTCMonth() + 1) + "-" + incomingDate.getUTCDate() + "-" + incomingDate.getUTCFullYear()) + "00:00";
+console.log("newDate", newDate.parseISO());
     // Im not able to grab e.targe.name and e.target.value
     // console.log("e",e)
     // console.log("e", e.target.name, e.target.selected);
     // console.log("date", date);
     this.setState({
-      birthday: incomingDate
+      birthday: newDate.parseISO()
     });
   }
 
@@ -101,11 +104,16 @@ console.log("sending to save: ", data.birthday);
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
       if (newClientData.data.message) {
+        const date = new Date(newClientData.data.newData.birthday);
+        const birthday = date ? 
+          new Date((date.getUTCMonth() + 1) + "-" + date.getUTCDate() + "-" + date.getUTCFullYear())
+          : "";
         this.setState({
           message:      `${newClientData.data.newData.nickname} has been changed`,
           name          : newClientData.data.newData.name,
           nickname      : newClientData.data.newData.nickname,
-          birthday      : new Date(newClientData.data.newData.birthday.toLocaleString('en-US', { timeZone: "UTC" })),
+          birthday,
+          // birthday      : new Date(newClientData.data.newData.birthday.toLocaleString('en-US', { timeZone: "UTC" })),
           mother        : newClientData.data.newData.mother,
           mPhone        : newClientData.data.newData.mPhone,
           mEmail        : newClientData.data.newData.mEmail,
@@ -146,17 +154,28 @@ console.log("sending to save: ", data.birthday);
 
 
   getClientInfo = client => {
+// console.log("client", client);
     this.populateForm(client);
   }
 
 
   populateForm = client => {
+console.log("inside populateForm, client: ", client);
     const {
       _id, name, nickname,  mother, mPhone, mEmail, father, fPhone, fEmail, 
       consultant, cPhone, cEmail, default_rate } = client;
     // const birthday = new Date(client.birthday);
     // let utcDate = new Date(birthday.toLocaleString('en-US', { timeZone: "UTC" }));
-    const birthday = new Date(client.birthday.toLocaleString('en-US', { timeZone: "UTC" }));
+console.log("client.birthday: ", client.birthday);
+    // const birthday = client.birthday ? new Date(client.birthday.toLocaleString('en-US', { timeZone: "UTC" })) : "";
+    // const birthday = client.birthday ? new Date(client.birthday).toUTCString() : "";
+    const date = client.birthday ? new Date(client.birthday) : "";
+console.log("date", date);
+    const birthday = date ? 
+      new Date((date.getUTCMonth() + 1) + "-" + date.getUTCDate() + "-" + date.getUTCFullYear())
+      : "";
+
+console.log("birthday: ", birthday);
     this.setState({
       clientId: _id,
       name,
@@ -229,7 +248,7 @@ console.log("sending to save: ", data.birthday);
 
 
   render() {
-// console.log("this.state", this.state);
+console.log("this.state", this.state);
 // console.log("moment:", moment(this.state.birthday).format("D/M/YYYY"));
 
     return (
@@ -242,6 +261,9 @@ console.log("sending to save: ", data.birthday);
           <Card.Title>Clients:</Card.Title>
 
          <GetClients getClientInfo = { this.getClientInfo } />     { /* mount the Dropbox Button with all clients for the user */ }
+         {/* <GetClients 
+              client        = { this.state.client }
+              getClientInfo = { this.getClientInfo } /> */}
 
         </Card.Body>
       </Card>        
@@ -292,20 +314,20 @@ console.log("sending to save: ", data.birthday);
                     onChange    = {this.handleChange}
                     value       = {this.state.birthday}
                     onKeyPress  = {this.handleChange}
-                    disabled  = {this.state.disableEditForm}
+                    disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput3 = input } />                  
-                  {/* <br />
-                  <DatePicker
+                  <br />
+                  {/* <DatePicker
                     selected  = {this.state.birthday}
                     onSelect  ={this.handleChangeDate}
                     // dateFormat="dd/MM/yyyy"
                     // dateFormat = "MMMM eeee d, yyyy h:mm aa"
-                    dateFormat = "MMMM d, yyyy"
+                    dateFormat = "MMMM d, yyyy" //it was this
                     // onChange = {this.handleChangeDate}
                     className = "form-control"
                     disabled  = {this.state.disableEditForm}
-                  />
-                  <br /> */}
+                  /> */}
+                  <br />
                 </Form.Group>
 
                 <Form.Group controlId="formMother">

@@ -60,6 +60,9 @@ class GetClients extends Component {
 
   changes = (event, incommingClient) => {
     event.preventDefault();
+// console.log("inside this.changes - GetClients.js");
+// console.log(event.target);
+// console.log("clients", this.state.clients);
 
     // this.setState({
     //   dropDownLabel: event.target.name

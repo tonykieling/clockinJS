@@ -12,7 +12,7 @@ class InvoiceNew extends Component {
   state = {
     dateStart         : "",
     dateEnd           : "",
-    clientId          : this.props.storeClientId,
+    clientId          : "",
     clockinList       : [],
     client            : "",
     clockInListTable  : "",
@@ -37,17 +37,10 @@ class InvoiceNew extends Component {
     const
       dateStart = this.state.dateStart,
       dateEnd   = this.state.dateEnd,
-      clientId  = this.props.storeClientId ;
+      clientId  = this.state.clientId ;
+
 
     const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-    ///
-    //
-    //
-    //
-    //
-    //
-//
-
 
     try {
       const getClockins = await axios.get( 
@@ -57,18 +50,13 @@ class InvoiceNew extends Component {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-console.log("getClockins", getClockins.data.allClockins);
 
       if (getClockins.data.allClockins){
-console.log("alrigth");
         this.setState({
           clockinList       : getClockins.data.allClockins,
-          client            : getClockins.data.client,
-          clockInListTable  : this.renderDataTable(getClockins.data.allClockins, getClockins.data.client),
+          clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
           clientId,
-          // tableVisibility   : "showTable",
-          tableVisibility   : true,
-          showPreview       : true
+          tableVisibility   : true
         });
       }
 console.log("--- this.state", this.state);
@@ -81,36 +69,80 @@ console.log("errorrrrr");
     }
   }
 
+// // old STUFF bellow
+//   renderDataTable = (clockins, client) => {
+// console.log("inside rednderDataTable", clockins);
+//     return clockins.map((clockin, index) => {
+//       const dt = new Date(clockin.date);
+//       const ts = new Date(clockin.time_start);
+//       const te = new Date(clockin.time_end);
+//       const clockinsToSend = {
+//         index,
+//         date        : dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate(),
+//         // timeStart   : ts.getHours() + ":" + (ts.getMinutes() < 10 ? ("0" + ts.getMinutes()) : ts.getMinutes()),
+//         // timeEnd     : te.getHours() + ":" + (te.getMinutes() < 10 ? ("0" + te.getMinutes()) : te.getMinutes()),
+//         rate        : clockin.rate,
+//         totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
+//         total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate))
+//       }
+// console.log("clockinsToSend", clockinsToSend);
 
-  renderDataTable = (clockins, client) => {
-console.log("inside rednderDataTable", clockins);
-    return clockins.map((clockin, index) => {
-      const dt = new Date(clockin.date);
-      const ts = new Date(clockin.time_start);
-      const te = new Date(clockin.time_end);
-      const clockinsToSend = {
-        index,
-        date        : dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate(),
-        // timeStart   : ts.getHours() + ":" + (ts.getMinutes() < 10 ? ("0" + ts.getMinutes()) : ts.getMinutes()),
-        // timeEnd     : te.getHours() + ":" + (te.getMinutes() < 10 ? ("0" + te.getMinutes()) : te.getMinutes()),
-        rate        : clockin.rate,
-        totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
-        total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate))
-      }
-console.log("clockinsToSend", clockinsToSend);
+//       return (
+//         <tr key={clockinsToSend.index}>
+//           <td>Behavior intervention</td>
+//           <td>{clockinsToSend.date}</td>
+//           <td>{clockinsToSend.totalTime}</td>
+//           <td>{clockinsToSend.rate}</td>
+//           <td>{clockinsToSend.total}</td>
+//         </tr>
+//       )
+//     })
+//   }  
 
-      return (
-        <tr key={clockinsToSend.index}>
-          <td>Behavior intervention</td>
-          <td>{clockinsToSend.date}</td>
-          <td>{clockinsToSend.totalTime}</td>
-          <td>{clockinsToSend.rate}</td>
-          <td>{clockinsToSend.total}</td>
-        </tr>
-      )
-    })
-  }  
+renderDataTable = (clockins) => {
+  return clockins.map((clockin, index) => {
+// console.log("dddd", moment(new Date(clockin.date)).format("LL"));
+    // const t = new Date(clockin.date).toLocaleString('en-GB', { timeZone: "UTC" });
+    // const date = moment(new Date(t)).format("LL");
+    const date = new Date(clockin.date);
+    const ts = new Date(clockin.time_start);
+    const te = new Date(clockin.time_end);  
+    const clockinsToSend = {
+      num         : index + 1,
+      date        : (date.getUTCDate() > 10 
+                      ? date.getUTCDate()
+                      : "0" + date.getUTCDate()) + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear(),
+      // date,
+      timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
+      timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
+      rate        : clockin.rate,
+      totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
+      total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)),
+      invoice     : clockin.invoice_id ? clockin.invoice_id : "not yet"
+    }
 
+    return (
+      <tr key={clockinsToSend.num}>
+        <td>{clockinsToSend.num}</td>
+        <td>{clockinsToSend.date}</td>
+        <td>{clockinsToSend.timeStart}</td>
+        <td>{clockinsToSend.timeEnd}</td>
+        <td>{clockinsToSend.totalTime}</td>
+        <td>{clockinsToSend.rate}</td>
+        <td>{clockinsToSend.total}</td>
+        <td>
+          <Button
+            variant   = "danger"
+            onClick   = {() => this.handleDelete(clockin._id, clockinsToSend.num)}
+            // variant   = "info"
+            // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the clockin without invoice related to
+            // data-user = {JSON.stringify(userToSend)}
+          > Delete</Button>
+        </td>
+      </tr>
+    )
+  })
+}  
 
   cleanForm = () => {
     setTimeout(() => {
@@ -126,35 +158,46 @@ console.log("clockinsToSend", clockinsToSend);
     }, 3000);
   }
 
-  invoicePdfPreview = () => {
-    const clockinsTable = 
-      <Table striped bordered hover size="sm" responsive>
-        <thead>
-          <tr>
-            <th>Type of Service</th>
-            <th>Dates</th>
-            <th># of Hours</th>
-            <th>Rate Per Hour - inclusive of PST if applicable</th>
-            <th>Total Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.state.clockInListTable}
-        </tbody>
-      </Table> 
+  // invoicePdfPreview = () => {
+  //   const clockinsTable = 
+  //     <Table striped bordered hover size="sm" responsive>
+  //       <thead>
+  //         <tr>
+  //           <th>Type of Service</th>
+  //           <th>Dates</th>
+  //           <th># of Hours</th>
+  //           <th>Rate Per Hour - inclusive of PST if applicable</th>
+  //           <th>Total Amount</th>
+  //         </tr>
+  //       </thead>
+  //       <tbody>
+  //         {this.state.clockInListTable}
+  //       </tbody>
+  //     </Table> 
 
-      return(
-        <PdfTemplate 
-            client        = {this.state.client} 
-            clockinsTable = {clockinsTable} />
-      )
+  //     return(
+  //       <PdfTemplate 
+  //           client        = {this.state.client} 
+  //           clockinsTable = {clockinsTable} />
+  //     )
+  // }
+
+
+  getClientInfo = client => {
+console.log("CLIENTinfo:", client)    
+    this.setState({
+      client,
+      clientId      : client._id,
+      disabledIPBtn : false
+    });
+console.log("CCCCCCCC", this.state);
   }
 
 
   render() {
     return (
       <div>
-        {console.log("this.showPreview", this.state.client)};
+        {console.log("this.showPreview:", this.state.client.nickname)};
         { this.state.showPreview
           ? this.invoicePdfPreview()
           :
@@ -166,7 +209,9 @@ console.log("clockinsToSend", clockinsToSend);
         <Card className="card-settings">
         <Card.Body>
 
-         <GetClients />     { /* mount the Dropbox Button with all clients for the user */ }
+         <GetClients 
+              client        = { this.state.client }
+              getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
 
           <br></br>
           <Form onSubmit={this.handleSubmit} >
@@ -195,7 +240,11 @@ console.log("clockinsToSend", clockinsToSend);
               </Col>
             </Form.Group>
 
-          <Button variant="primary" type= "submit" onClick = { this.handleSubmit }>
+          <Button 
+            variant   ="primary" 
+            type      = "submit" 
+            disabled  = { (this.state.dateStart && this.state.dateEnd && this.state.client) ? false : true }
+            onClick   = { this.handleSubmit }>
             Invoice Preview
           </Button>            
             
@@ -205,6 +254,34 @@ console.log("clockinsToSend", clockinsToSend);
 
 
       { this.state.tableVisibility
+          ?
+            <Card id="clockinListResult" >
+              <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label>
+{console.log("this.state.CLIENT", this.state.client)}        
+              {(this.state.clockinList.length > 0) 
+                ? <Table striped bordered hover size="sm" responsive>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Time Start</th>
+                        <th>Time End</th>
+                        <th>Total Time</th>
+                        <th>Rate</th>
+                        <th>Total CAD$</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.clockInListTable}
+                    </tbody>
+                  </Table> 
+                : null }
+            </Card>
+          : null }
+
+
+{/* old stuff bellow */}
+      {/* { this.state.tableVisibility
         ?
           <Card id="clockinListResult"  >
             {(this.state.clockinList.length > 0) 
@@ -223,19 +300,8 @@ console.log("clockinsToSend", clockinsToSend);
                   </tbody>
                 </Table> 
               : null }
-            {/* <CSVLink
-                data      = {this.state.dataTableCSVFile}
-                headers   = {fileHeaders}
-                separator = {";"}
-                filename  = {(this.state.dropDownBtnName === "Wanna consider user's type?") ?
-                                          "userList.csv" :
-                                          `${this.state.dropDownBtnName}.csv`}
-                className = "btn btn-primary"
-                target    = "blank" >
-                Download me
-            </CSVLink>             */}
           </Card>
-        : null }
+        : null } */}
 
           </div>
         }

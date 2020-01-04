@@ -56,14 +56,14 @@ app.use((err, req, res, next) => {
 // settings related to CORS
 // it allows other clients (other than the SPA provided for this app) access these APIs
 app.use((req, res, next) => {
-console.log(" checking headers")  
+// console.log(" checking headers")  
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   if (req.method === "OPTIONS") {
-console.log(" logging OPTIONS");
+// console.log(" logging OPTIONS");
     res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
     return res.status(200).json({});
   }
@@ -86,6 +86,9 @@ app.use("/clockin", clockinRoutes);
 // it calls invoice routes
 app.use("/invoice", invoiceRoutes);
 
+app.get('/ping', (req, res) => {
+  return res.send('pong');
+})
 
 // the two below functions are designed to handle error
 // the first one will be called only if the server could not handle the request by /products. /orders or /user middlewares

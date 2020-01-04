@@ -42,7 +42,7 @@ class PunchInsList extends Component {
       clientId  = this.state.clientId;
 
     const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-
+console.log("URL=== ", url);
     if (clientId) {
       try {
         const getClockins = await axios.get( 
@@ -57,7 +57,7 @@ class PunchInsList extends Component {
           this.setState({
             clockinList       : getClockins.data.allClockins,
             // client            : getClockins.data.client,
-            clockInListTable  : this.renderDataTable(getClockins.data.allClockins, getClockins.data.client),
+            clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
             tableVisibility   : true,
             cleanButton       : true
           });
@@ -130,7 +130,7 @@ class PunchInsList extends Component {
   }
 
 
-  renderDataTable = (clockins, client) => {
+  renderDataTable = (clockins) => {
     // moment.locale("en-gb");
     return clockins.map((clockin, index) => {
 // console.log("dddd", moment(new Date(clockin.date)).format("LL"));
