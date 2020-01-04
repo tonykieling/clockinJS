@@ -15,6 +15,7 @@ class GetClients extends Component {
   }
 
   async componentDidMount() {
+console.log("DIDMOUNT on GetClients.js");
     const url = "/client";    // this is dev setting
     try {
       const getClients = await axios.get( 

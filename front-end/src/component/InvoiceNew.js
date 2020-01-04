@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import {  Card, Button, Form, Row, Col, Table } from "react-bootstrap";
+import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 
 import GetClients from "./aux/GetClients.js";
-import PdfTemplate from "./PdfTemplate.js";
+
+/**
+ * how to use tooltips (TIPS)
+ * https://www.w3schools.com/howto/howto_css_tooltip.asp
+ */
+
 
 
 class InvoiceNew extends Component {
@@ -17,7 +22,7 @@ class InvoiceNew extends Component {
     client            : "",
     clockInListTable  : "",
     tableVisibility   : false,
-    showPreview       : false
+    message           : ""
   }
 
 
@@ -30,10 +35,7 @@ class InvoiceNew extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
-// this.setState({
-//   showPreview: true
-// });
-// return;
+
     const
       dateStart = this.state.dateStart,
       dateEnd   = this.state.dateEnd,
@@ -58,55 +60,31 @@ class InvoiceNew extends Component {
           clientId,
           tableVisibility   : true
         });
+      } else {
+        this.setState({
+          message: "No clockins for this period."
+        });
+
+        this.clearMessage();
       }
-console.log("--- this.state", this.state);
+
+
     } catch(err) {
-console.log("errorrrrr");
       this.setState({
         message: err.message });
       
-      this.cleanForm();
+      this.clearMessage();
     }
   }
 
-// // old STUFF bellow
-//   renderDataTable = (clockins, client) => {
-// console.log("inside rednderDataTable", clockins);
-//     return clockins.map((clockin, index) => {
-//       const dt = new Date(clockin.date);
-//       const ts = new Date(clockin.time_start);
-//       const te = new Date(clockin.time_end);
-//       const clockinsToSend = {
-//         index,
-//         date        : dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate(),
-//         // timeStart   : ts.getHours() + ":" + (ts.getMinutes() < 10 ? ("0" + ts.getMinutes()) : ts.getMinutes()),
-//         // timeEnd     : te.getHours() + ":" + (te.getMinutes() < 10 ? ("0" + te.getMinutes()) : te.getMinutes()),
-//         rate        : clockin.rate,
-//         totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
-//         total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate))
-//       }
-// console.log("clockinsToSend", clockinsToSend);
 
-//       return (
-//         <tr key={clockinsToSend.index}>
-//           <td>Behavior intervention</td>
-//           <td>{clockinsToSend.date}</td>
-//           <td>{clockinsToSend.totalTime}</td>
-//           <td>{clockinsToSend.rate}</td>
-//           <td>{clockinsToSend.total}</td>
-//         </tr>
-//       )
-//     })
-//   }  
-
+//************************************ */
+// work on edit with this.state.clockList
 renderDataTable = (clockins) => {
   return clockins.map((clockin, index) => {
-// console.log("dddd", moment(new Date(clockin.date)).format("LL"));
-    // const t = new Date(clockin.date).toLocaleString('en-GB', { timeZone: "UTC" });
-    // const date = moment(new Date(t)).format("LL");
-    const date = new Date(clockin.date);
-    const ts = new Date(clockin.time_start);
-    const te = new Date(clockin.time_end);  
+    const date  = new Date(clockin.date);
+    const ts    = new Date(clockin.time_start);
+    const te    = new Date(clockin.time_end);  
     const clockinsToSend = {
       num         : index + 1,
       date        : (date.getUTCDate() > 10 
@@ -122,85 +100,53 @@ renderDataTable = (clockins) => {
     }
 
     return (
-      <tr key={clockinsToSend.num}>
+      <tr key={clockinsToSend.num} onClick={() => this.test()}>
         <td>{clockinsToSend.num}</td>
         <td>{clockinsToSend.date}</td>
-        <td>{clockinsToSend.timeStart}</td>
-        <td>{clockinsToSend.timeEnd}</td>
-        <td>{clockinsToSend.totalTime}</td>
-        <td>{clockinsToSend.rate}</td>
+        {/* <td>{clockinsToSend.timeStart}</td>
+        <td>{clockinsToSend.timeEnd}</td> */}
+        <td>{clockinsToSend.totalTime} {clockinsToSend.totalTime > 1 ? "hours" : "hour"}</td>
+        {/* <td>{clockinsToSend.rate}</td> */}
         <td>{clockinsToSend.total}</td>
-        <td>
+        <td>{clockinsToSend.invoice}</td>
+        {/* <td>
           <Button
-            variant   = "danger"
+            variant   = "info"
             onClick   = {() => this.handleDelete(clockin._id, clockinsToSend.num)}
             // variant   = "info"
             // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the clockin without invoice related to
             // data-user = {JSON.stringify(userToSend)}
-          > Delete</Button>
-        </td>
+          > Edit</Button>
+        </td> */}
       </tr>
     )
   })
 }  
 
-  cleanForm = () => {
+  clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        date            : "",
-        timeStart       : "",
-        timeEnd         : "",
-        rate            : "",
-        notes           : "",
-        message         : "",
-        tableVisibility : false
+        message         : ""
       });
     }, 3000);
   }
 
-  // invoicePdfPreview = () => {
-  //   const clockinsTable = 
-  //     <Table striped bordered hover size="sm" responsive>
-  //       <thead>
-  //         <tr>
-  //           <th>Type of Service</th>
-  //           <th>Dates</th>
-  //           <th># of Hours</th>
-  //           <th>Rate Per Hour - inclusive of PST if applicable</th>
-  //           <th>Total Amount</th>
-  //         </tr>
-  //       </thead>
-  //       <tbody>
-  //         {this.state.clockInListTable}
-  //       </tbody>
-  //     </Table> 
-
-  //     return(
-  //       <PdfTemplate 
-  //           client        = {this.state.client} 
-  //           clockinsTable = {clockinsTable} />
-  //     )
-  // }
-
 
   getClientInfo = client => {
-console.log("CLIENTinfo:", client)    
     this.setState({
       client,
-      clientId      : client._id,
-      disabledIPBtn : false
+      clientId        : client._id,
+      disabledIPBtn   : false,
+      tableVisibility : false
     });
-console.log("CCCCCCCC", this.state);
   }
 
+  test = () => {
+    console.log("YUP!!!! \n\n NEED TO ADD A MODAL TO EDIT DATA OR DELETE THE CLOCKINS ROW ");
+  }
 
   render() {
     return (
-      <div>
-        {console.log("this.showPreview:", this.state.client.nickname)};
-        { this.state.showPreview
-          ? this.invoicePdfPreview()
-          :
       <div className="formPosition">
         <h3>Invoice generator</h3>
         <p>In order to generate the invoice, please select the client and the range of dates.</p>
@@ -241,12 +187,18 @@ console.log("CCCCCCCC", this.state);
             </Form.Group>
 
           <Button 
-            variant   ="primary" 
+            variant   = "primary" 
             type      = "submit" 
             disabled  = { (this.state.dateStart && this.state.dateEnd && this.state.client) ? false : true }
             onClick   = { this.handleSubmit }>
-            Invoice Preview
-          </Button>            
+            {/* {this.state.tableVisibility ? "Invoice Preview" : "Get clockins"} */}
+            Get Clockins
+          </Button>
+
+          <span>
+            {this.state.message}
+          </span>
+
             
           </Form>
         </Card.Body>
@@ -257,55 +209,40 @@ console.log("CCCCCCCC", this.state);
           ?
             <Card id="clockinListResult" >
               <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label>
-{console.log("this.state.CLIENT", this.state.client)}        
               {(this.state.clockinList.length > 0) 
-                ? <Table striped bordered hover size="sm" responsive>
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Date</th>
-                        <th>Time Start</th>
-                        <th>Time End</th>
-                        <th>Total Time</th>
-                        <th>Rate</th>
-                        <th>Total CAD$</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {this.state.clockInListTable}
-                    </tbody>
-                  </Table> 
+                ? 
+                  <div>
+                    <Table striped bordered hover size="sm" responsive>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Date</th>
+                          {/* <th>Time Start</th>
+                          <th>Time End</th> */}
+                          <th>Total Time</th>
+                          {/* <th>Rate</th> */}
+                          <th>Total CAD$</th>
+                          <th>Invoice</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {this.state.clockInListTable}
+                      </tbody>
+                    </Table>
+
+                    {/* Button to fire Preview Invoice Method */}
+                    <Button 
+                      variant   = "primary" 
+                      type      = "submit" 
+                      onClick   = { this.handleSubmit }>
+                      Invoice Preview
+                    </Button>
+                  </div>
                 : null }
             </Card>
           : null }
 
-
-{/* old stuff bellow */}
-      {/* { this.state.tableVisibility
-        ?
-          <Card id="clockinListResult"  >
-            {(this.state.clockinList.length > 0) 
-              ? <Table striped bordered hover size="sm" responsive>
-                  <thead>
-                    <tr>
-                      <th>Type of Service</th>
-                      <th>Dates</th>
-                      <th># of Hours</th>
-                      <th>Rate Per Hour - inclusive of PST if applicable</th>
-                      <th>Total Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.state.clockInListTable}
-                  </tbody>
-                </Table> 
-              : null }
-          </Card>
-        : null } */}
-
           </div>
-        }
-      </div>
     )
   }
 }

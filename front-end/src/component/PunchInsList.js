@@ -42,7 +42,7 @@ class PunchInsList extends Component {
       clientId  = this.state.clientId;
 
     const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-console.log("URL=== ", url);
+
     if (clientId) {
       try {
         const getClockins = await axios.get( 
