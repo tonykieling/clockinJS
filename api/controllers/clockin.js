@@ -28,33 +28,48 @@ console.log("clockins ALLLLLLL")
     else {
       // https://stackoverflow.com/questions/6502541/mongodb-query-multiple-collections-at-once
       // this code works - BEFORE doing a $lookup
-      allClockins = await Clockin
-        .find({ 
-          user_id: userId,
-          date: {
-            $gte: dateStart,
-            $lte: dateEnd
-          },
-          client_id: clientId
-        })
-        .select(" date time_start time_end rate notes invoice_id client_id user_id ");
       // allClockins = await Clockin
-      //   .aggregate([
-      //     { $match: {
-      //       user_id: userId,
-      //       date: {
-      //         $gte: dateStart,
-      //         $lte: dateEnd            
-      //     }}},
-      //     { $lookup: {
-      //       from: "invoices",
-      //       localField: "invoice_id",
-      //       foreignField: "code",
-      //       as: "code"
-      //     }
-
-      //     }
-      //   ]).exec();
+      //   .find({ 
+      //     user_id: userId,
+      //     date: {
+      //       $gte: dateStart,
+      //       $lte: dateEnd
+      //     },
+      //     client_id: clientId
+      //   })
+      //   .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+console.log("dt=>", userId, dateStart, dateEnd, clientId);
+      allClockins = await Clockin
+        .aggregate([
+          { $match: 
+            {
+              user_id: mongoose.Types.ObjectId(userId),
+              date: {
+                // $gte: "2019-05-06T00:00:00.000Z",
+                // $lte: "2020-01-18T00:00:00.000Z"
+                $gte: dateStart,
+                $lte: dateEnd
+              },
+              client_id: mongoose.Types.ObjectId(clientId)
+            }
+          },
+          { $lookup: 
+            {
+              // from: `${Invoice}`,
+              from: "invoices",
+              localField: "invoice_id",
+              foreignField: "_id",
+              as: "invoices"
+            }
+          },
+          // { $unwind: "$invoices"}
+          {
+            $unwind: {
+              path: "$invoices",
+              preserveNullAndEmptyArrays: true
+            }
+          }
+        ]);
     }
 
 console.log("allClockins info:", allClockins);
