@@ -118,7 +118,8 @@ console.log("req.body:", req.body);
     dateStart,
     dateEnd,
     notes,
-    clientId
+    clientId,
+    code
   } = req.body;
   const userId = req.userData.userId
 
@@ -198,6 +199,7 @@ console.log("req.body:", req.body);
       notes,
       status: "generated",
       total_cad: 0,
+      code,
       client_id: clientId,
       user_id: userId
     });

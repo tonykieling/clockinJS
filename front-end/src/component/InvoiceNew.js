@@ -22,7 +22,9 @@ class InvoiceNew extends Component {
     client            : "",
     clockInListTable  : "",
     tableVisibility   : false,
-    message           : ""
+    message           : "",
+    // invoice_id        : "",
+    invoiceCode       : ""
   }
 
 
@@ -85,46 +87,51 @@ class InvoiceNew extends Component {
     event.preventDefault();
 console.log("inside InvoiceGenerator");
 
-    const data = {
-      date      : new Date(),
-      dateStart : this.state.dateStart,
-      dateEnd   : this.state.dateEnd,
-      notes     : this.state.notes || "no notes at all",
-      clientId  : this.state.clientId
-    }
-console.log("data:", data);
-
-      const url = "/invoice";
-      try {
-        // const Invoice = "Almost There";
-        // Invoice.data.message = Invoice;
-        const Invoice = await axios.post( 
-          url,
-          data,
-          {  
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization" : `Bearer ${this.props.storeToken}` }
-        });
-
-        if (Invoice.data.message) {
-          this.setState({
-            message : `Invoice Generated!`
-          });
-        } else if (Invoice.data.error)
-          this.setState({
-            message: Invoice.data.error
-          });
-console.log("Invoice result:", Invoice);
-        this.clearMessage();
-        
-      } catch(err) {
-        this.setState({
-          message: err.message });
-        this.clearMessage();
+    if (!this.state.invoiceCode || this.state.invoiceCode === "") {
+      alert("Please, provide Invoice's Code.");
+      this.textCode.focus();
+    } else {
+      const data = {
+        date      : new Date(),
+        dateStart : this.state.dateStart,
+        dateEnd   : this.state.dateEnd,
+        notes     : this.state.notes || "no notes at all",
+        clientId  : this.state.clientId,
+        code      : this.state.invoiceCode
       }
-    }
-    
+  console.log("data:", data);
+
+        const url = "/invoice";
+        try {
+          // const Invoice = "Almost There";
+          // Invoice.data.message = Invoice;
+          const Invoice = await axios.post( 
+            url,
+            data,
+            {  
+              headers: { 
+                "Content-Type": "application/json",
+                "Authorization" : `Bearer ${this.props.storeToken}` }
+          });
+
+          if (Invoice.data.message) {
+            this.setState({
+              message : `Invoice Generated!`
+            });
+          } else if (Invoice.data.error)
+            this.setState({
+              message: Invoice.data.error
+            });
+  console.log("Invoice result:", Invoice);
+          this.clearMessage();
+          
+        } catch(err) {
+          this.setState({
+            message: err.message });
+          this.clearMessage();
+        }
+      }
+    }  
 
 
 
@@ -176,7 +183,8 @@ renderDataTable = (clockins) => {
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        message         : ""
+        message     : "",
+        invoiceCode : ""
       });
     }, 3000);
   }
@@ -199,7 +207,7 @@ renderDataTable = (clockins) => {
     return (
       <div className="formPosition">
         <h3>Invoice generator</h3>
-        <p>In order to generate the invoice, please select the client and the range of dates.</p>
+        <p>In order to generate the invoice, select the client and the period's.</p>
         <h2 style={{color:"red"}}>This process is UNDER CONSTRUCTION</h2>
 
         <Card className="card-settings">
@@ -287,6 +295,20 @@ renderDataTable = (clockins) => {
                       onClick   = { this.handleInvoiceGenerator }>
                       Invoice's Generator
                     </Button>
+
+                    <Form.Group as={Row} controlId="invoiceCode">
+                      <Form.Label column sm="3" className="cardLabel">Code:</Form.Label>
+                      <Col sm="5">
+                        <Form.Control
+                          type        = "text"
+                          name        = "invoiceCode"
+                          onChange    = {this.handleChange}
+                          value       = {this.state.invoiceCode}
+                          ref         = {input => this.textCode = input }
+                        />
+                      </Col>
+                    </Form.Group>
+
                   </div>
                 : null }
             </Card>

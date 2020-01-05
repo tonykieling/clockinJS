@@ -26,6 +26,10 @@ const invoiceSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  code: {
+    type: String,
+    required: true
+  },
   client_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Client",

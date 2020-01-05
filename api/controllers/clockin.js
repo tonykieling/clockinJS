@@ -3,6 +3,7 @@ const mongoose  = require("mongoose");
 const Clockin   = require("../models/clockin.js");
 const User      = require("../models/user.js");
 const Client    = require("../models/client.js");
+const Invoice   = require("../models/invoice.js");
 // const moment    = require("moment");
 
 // it gets all users from the system - on purpose with no auth
@@ -24,7 +25,9 @@ console.log("clockins ALLLLLLL")
       allClockins = await Clockin
         .find()
         .select(" date time_start time_end rate notes invoice_id client_id user_id ");
-    else
+    else {
+      // https://stackoverflow.com/questions/6502541/mongodb-query-multiple-collections-at-once
+      // this code works - BEFORE doing a $lookup
       allClockins = await Clockin
         .find({ 
           user_id: userId,
@@ -35,12 +38,33 @@ console.log("clockins ALLLLLLL")
           client_id: clientId
         })
         .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+      // allClockins = await Clockin
+      //   .aggregate([
+      //     { $match: {
+      //       user_id: userId,
+      //       date: {
+      //         $gte: dateStart,
+      //         $lte: dateEnd            
+      //     }}},
+      //     { $lookup: {
+      //       from: "invoices",
+      //       localField: "invoice_id",
+      //       foreignField: "code",
+      //       as: "code"
+      //     }
 
+      //     }
+      //   ]).exec();
+    }
+
+console.log("allClockins info:", allClockins);
     if (!allClockins || allClockins.length < 1) {
       return res.status(200).json({
         message: `No clockins at all.`
       });
     }
+    // const invoiceCode = await Invoice
+    //   .findById(allClockins.)
 
     if (clientId) {
       const client = await Client
