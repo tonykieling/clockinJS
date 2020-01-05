@@ -29,4 +29,9 @@ TODO
 4. Invoices
   4.1- format date and time pickers
   4.2- ...
+  
+  4.3- Add Code in the db structure
+  when hit "Invoice's Generator", the user should add this info, which can be queried by the clockings from the previous month
+   Invoice Code should appear when listing Clockins || "not yet"
+  Clockins with a Invoice related to cannot be delete (the button should not come out)
 
