@@ -21,8 +21,13 @@ const Client    = require("../models/client.js");
  * @returns
  */
 const get_all = async (req, res) => {
+console.log("GET_ALL Invoices");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
+
+// const asd = await Invoice.find()  
+// res.send(asd);
+// return;
 
   try {
     let allInvoices = null;
@@ -31,15 +36,15 @@ const get_all = async (req, res) => {
         .find()
         .select(" date date_start date_end notes total_cad user_id status ");
     else
-      allInvoices = await Clockin
+      allInvoices = await Invoice
         .find({ user_id: userId})
-        .select(" date date_start date_end notes total_cad status");        
+        .select(" date date_start date_end notes total_cad status");
 
     if (!allInvoices || allInvoices.length < 1)
       return res.status(200).json({
         message: `No Invoices at all.`
       });
-    
+
     res.status(200).json({
       count: allInvoices.length,
       allInvoices
@@ -101,9 +106,13 @@ list of actions:
  - write down the invoice_id in each clockin
 */
 const invoice_add = async (req, res) => {
+console.log("Inside Invoice_add, body:", req.body);
 const date1 = new Date();
 console.log("date1 =", date1);
-// console.log("req.userData", req.userData);
+console.log("req.userData", req.userData);
+console.log("req.body:", req.body);
+// res.send("OK");
+// return;
   const {
     date,
     dateStart,
@@ -171,6 +180,7 @@ console.log("date1 =", date1);
         user: userExist.name,
         client: clientExist.name
       });
+
   } catch(err) {
     return res.status(409).json({
       error: `EIADD06: Something got wrong.`
@@ -233,6 +243,8 @@ console.log("total time = ", (date2 - date1) / 1000);
 }
 
 
+// Jan 4th-DEFINITION: Invoice CANNIOT be mofified. If something to change, delete and generate a new one.
+// ONLY to change Invoice's status (Generated, Delivered and Paid)
 // change user data
 // input: token, which should be admin
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email

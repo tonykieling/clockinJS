@@ -1,4 +1,4 @@
-// this is the definition/shape of products should like in the application
+// this is the definition/shape of Invoices should like in the application
 const mongoose = require("mongoose");
 
 const invoiceSchema = mongoose.Schema({

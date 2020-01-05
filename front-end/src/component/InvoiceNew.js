@@ -33,7 +33,7 @@ class InvoiceNew extends Component {
   }
 
 
-  handleSubmit = async event => {
+  handleGetClockins = async event => {
     event.preventDefault();
 
     const
@@ -76,6 +76,56 @@ class InvoiceNew extends Component {
       this.clearMessage();
     }
   }
+
+
+  /**
+   * Inovice's Generator Method
+   */
+  handleInvoiceGenerator = async event => {
+    event.preventDefault();
+console.log("inside InvoiceGenerator");
+
+    const data = {
+      date      : new Date(),
+      dateStart : this.state.dateStart,
+      dateEnd   : this.state.dateEnd,
+      notes     : this.state.notes || "no notes at all",
+      clientId  : this.state.clientId
+    }
+console.log("data:", data);
+
+      const url = "/invoice";
+      try {
+        // const Invoice = "Almost There";
+        // Invoice.data.message = Invoice;
+        const Invoice = await axios.post( 
+          url,
+          data,
+          {  
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization" : `Bearer ${this.props.storeToken}` }
+        });
+
+        if (Invoice.data.message) {
+          this.setState({
+            message : `Invoice Generated!`
+          });
+        } else if (Invoice.data.error)
+          this.setState({
+            message: Invoice.data.error
+          });
+console.log("Invoice result:", Invoice);
+        this.clearMessage();
+        
+      } catch(err) {
+        this.setState({
+          message: err.message });
+        this.clearMessage();
+      }
+    }
+    
+
 
 
 //************************************ */
@@ -160,7 +210,7 @@ renderDataTable = (clockins) => {
               getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
 
           <br></br>
-          <Form onSubmit={this.handleSubmit} >
+          <Form onSubmit={this.handleGetClockins} >
 
             <Form.Group as={Row} controlId="formST">
               <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
@@ -190,7 +240,7 @@ renderDataTable = (clockins) => {
             variant   = "primary" 
             type      = "submit" 
             disabled  = { (this.state.dateStart && this.state.dateEnd && this.state.client) ? false : true }
-            onClick   = { this.handleSubmit }>
+            onClick   = { this.handleGetClockins }>
             {/* {this.state.tableVisibility ? "Invoice Preview" : "Get clockins"} */}
             Get Clockins
           </Button>
@@ -234,8 +284,8 @@ renderDataTable = (clockins) => {
                     <Button 
                       variant   = "primary" 
                       type      = "submit" 
-                      onClick   = { this.handleSubmit }>
-                      Invoice Preview
+                      onClick   = { this.handleInvoiceGenerator }>
+                      Invoice's Generator
                     </Button>
                   </div>
                 : null }

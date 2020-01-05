@@ -11,6 +11,7 @@ const tokenValidation = require("../helpers/token.js").token_validation;
 module.exports = ((req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
+// console.log("token:::", token);
     const decodedToken  = tokenValidation(token);
     req.userData        = decodedToken;
 // console.log("userData", req.userData);

@@ -7,6 +7,7 @@ const Client    = require("../models/client.js");
 
 // it gets all users from the system - on purpose with no auth
 const get_all = async (req, res) => {
+console.log("clockins ALLLLLLL")  
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
 
@@ -28,8 +29,8 @@ const get_all = async (req, res) => {
         .find({ 
           user_id: userId,
           date: {
-            $gt: dateStart,
-            $lt: dateEnd
+            $gte: dateStart,
+            $lte: dateEnd
           },
           client_id: clientId
         })
@@ -117,6 +118,7 @@ const get_one = async (req, res) => {
 //   write down invoice (it needs to be before 2)
 const clockin_add = async (req, res) => {
 console.log("req.body", req.body);
+
   const {
     rate,
     notes
