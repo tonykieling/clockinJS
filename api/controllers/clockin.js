@@ -28,16 +28,16 @@ console.log("clockins ALLLLLLL")
     else {
       // https://stackoverflow.com/questions/6502541/mongodb-query-multiple-collections-at-once
       // this code works - BEFORE doing a $lookup
-      // allClockins = await Clockin
-      //   .find({ 
-      //     user_id: userId,
-      //     date: {
-      //       $gte: dateStart,
-      //       $lte: dateEnd
-      //     },
-      //     client_id: clientId
-      //   })
-      //   .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+      allClockins = await Clockin
+        // .find({ 
+        //   user_id: userId,
+        //   date: {
+        //     $gte: dateStart,
+        //     $lte: dateEnd
+        //   },
+        //   client_id: clientId
+        // })
+        // .select(" date time_start time_end rate notes invoice_id client_id user_id ");
 console.log("dt=>", userId, dateStart, dateEnd, clientId);
       allClockins = await Clockin
         .aggregate([
@@ -55,23 +55,43 @@ console.log("dt=>", userId, dateStart, dateEnd, clientId);
           },
           { $lookup: 
             {
-              // from: `${Invoice}`,
               from: "invoices",
-              localField: "invoice_id",
-              foreignField: "_id",
-              as: "invoices"
+              localField: "ObjectId(invoice_id)",
+              foreignField: "ObjectId(_id)",
+              as: "invoice"
             }
           },
-          // { $unwind: "$invoices"}
+          // { $unwind: "$invoice"},
           {
             $unwind: {
-              path: "$invoices",
+              path :'$invoice', 
               preserveNullAndEmptyArrays: true
             }
+          },
+          {
+              $project: {
+                  "invoice.__v": 0,
+                  // "invoice._id": 0,
+                  "invoice.date": 0,
+                  "invoice.date_start": 0,
+                  "invoice.date_end": 0,
+                  "invoice.notes": 0,
+                  "invoice.status": 0,
+                  "invoice.total_cad": 0,
+                  "invoice.client_id": 0,
+                  "invoice.user_id": 0
+              }
           }
+          // {
+          //   $unwind: {
+          //     path: "$invoiceCode",
+          //     preserveNullAndEmptyArrays: false
+          //   }
+          // }
         ]);
     }
 
+// console.log("allClockins info:", allClockins.invoice[0].invoice.code);
 console.log("allClockins info:", allClockins);
     if (!allClockins || allClockins.length < 1) {
       return res.status(200).json({

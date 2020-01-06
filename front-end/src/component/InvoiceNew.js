@@ -56,6 +56,7 @@ class InvoiceNew extends Component {
       });
 
       if (getClockins.data.allClockins){
+console.log("getClockins.data.allClockins", getClockins.data.allClockins);
         this.setState({
           clockinList       : getClockins.data.allClockins,
           clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
@@ -153,7 +154,7 @@ renderDataTable = (clockins) => {
       rate        : clockin.rate,
       totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
       total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)),
-      invoice     : clockin.invoice_id ? clockin.invoice_id : "not yet"
+      invoice     : clockin.invoice_id ? clockin.invoice.code : "not yet"
     }
 
     return (
@@ -165,6 +166,7 @@ renderDataTable = (clockins) => {
         <td>{clockinsToSend.totalTime} {clockinsToSend.totalTime > 1 ? "hours" : "hour"}</td>
         {/* <td>{clockinsToSend.rate}</td> */}
         <td>{clockinsToSend.total}</td>
+        {/* <td>{clockinsToSend.invoice}</td> */}
         <td>{clockinsToSend.invoice}</td>
         {/* <td>
           <Button
