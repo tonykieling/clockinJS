@@ -56,7 +56,6 @@ class InvoiceNew extends Component {
       });
 
       if (getClockins.data.allClockins){
-console.log("getClockins.data.allClockins", getClockins.data.allClockins);
         this.setState({
           clockinList       : getClockins.data.allClockins,
           clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
@@ -87,7 +86,6 @@ console.log("getClockins.data.allClockins", getClockins.data.allClockins);
    */
   handleInvoiceGenerator = async event => {
     event.preventDefault();
-console.log("inside InvoiceGenerator");
 
     if (!this.state.invoiceCode || this.state.invoiceCode === "") {
       alert("Please, provide Invoice's Code.");
@@ -99,14 +97,11 @@ console.log("inside InvoiceGenerator");
         dateEnd   : this.state.dateEnd,
         notes     : this.state.notes || "no notes at all",
         clientId  : this.state.clientId,
-        code      : this.state.invoiceCode
+        code      : this.state.invoiceCode.toUpperCase()
       }
-  console.log("data:", data);
 
         const url = "/invoice";
         try {
-          // const Invoice = "Almost There";
-          // Invoice.data.message = Invoice;
           const Invoice = await axios.post( 
             url,
             data,
@@ -120,11 +115,14 @@ console.log("inside InvoiceGenerator");
             this.setState({
               message : `Invoice Generated!`
             });
+
+            // reload clockins after creating invoice
+            this.getClockinsBtn.click();
+
           } else if (Invoice.data.error)
             this.setState({
               message: Invoice.data.error
             });
-  console.log("Invoice result:", Invoice);
           this.clearMessage();
           
         } catch(err) {
@@ -193,7 +191,7 @@ renderDataTable = (clockins) => {
         message     : "",
         invoiceCode : ""
       });
-    }, 3000);
+    }, 3500);
   }
 
 
@@ -210,11 +208,7 @@ renderDataTable = (clockins) => {
 
   checkIfThereIsInvoiceCode = (listOfClockins) => {
     const check = listOfClockins.filter(clockin => clockin.invoice);
-    console.log("check", check.length);
     return((check.length > 0) ? true : false)
-      // this.setState({ clockinWithInvoiceCode: true});
-    // check ? this.setState({ clockinWithInvoiceCode: true}) : this.setState({ clockinWithInvoiceCode: false});
-    // return(check);
   }
 
 
@@ -224,12 +218,10 @@ renderDataTable = (clockins) => {
   }
 
   render() {
-console.log("this.state.clockinList", this.state.clockinList);
     return (
       <div className="formPosition">
         <h3>Invoice generator</h3>
-        <p>In order to generate the invoice, select the client and the period's.</p>
-        <h2 style={{color:"red"}}>This process is UNDER CONSTRUCTION</h2>
+        <p>In order to generate the invoice, select client and period to get the clockins.</p>
 
         <Card className="card-settings">
         <Card.Body>
@@ -269,12 +261,12 @@ console.log("this.state.clockinList", this.state.clockinList);
             variant   = "primary" 
             type      = "submit" 
             disabled  = { (this.state.dateStart && this.state.dateEnd && this.state.client) ? false : true }
-            onClick   = { this.handleGetClockins }>
-            {/* {this.state.tableVisibility ? "Invoice Preview" : "Get clockins"} */}
+            onClick   = { this.handleGetClockins } 
+            ref       = {input => this.getClockinsBtn = input }  >
             Get Clockins
           </Button>
 
-          <span>
+          <span className="invoiceGenMsg">
             {this.state.message}
           </span>
 
@@ -309,14 +301,11 @@ console.log("this.state.clockinList", this.state.clockinList);
                       </tbody>
                     </Table>
 
-                    {/* Button to fire Preview Invoice Method */}
-                    
-                    {/* {this.checkIfThereIsInvoiceCode()} */}
                     <Button 
                       variant   = "primary" 
                       type      = "submit"
                       disabled  = {this.state.clockinWithInvoiceCode}
-                      onClick   = { this.handleInvoiceGenerator }>
+                      onClick   = { this.handleInvoiceGenerator } >
                       Invoice's Generator
                     </Button>
 

@@ -110,6 +110,13 @@
 }
 
 
+.invoiceGenMsg {
+  margin-left: 30px;
+  color: red;
+  font-weight: bold;
+}
+
+
 @media only screen and (max-width: 800px){
 
   .showNormalMenu {
