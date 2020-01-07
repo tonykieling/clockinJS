@@ -56,12 +56,11 @@ console.log("dt=>", userId, dateStart, dateEnd, clientId);
           { $lookup: 
             {
               from: "invoices",
-              localField: "ObjectId(invoice_id)",
-              foreignField: "ObjectId(_id)",
+              localField: "invoice_id",
+              foreignField: "_id",
               as: "invoice"
             }
           },
-          // { $unwind: "$invoice"},
           {
             $unwind: {
               path :'$invoice', 
@@ -82,12 +81,6 @@ console.log("dt=>", userId, dateStart, dateEnd, clientId);
                   "invoice.user_id": 0
               }
           }
-          // {
-          //   $unwind: {
-          //     path: "$invoiceCode",
-          //     preserveNullAndEmptyArrays: false
-          //   }
-          // }
         ]);
     }
 

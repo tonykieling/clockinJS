@@ -23,8 +23,8 @@ class InvoiceNew extends Component {
     clockInListTable  : "",
     tableVisibility   : false,
     message           : "",
-    // invoice_id        : "",
-    invoiceCode       : ""
+    invoiceCode       : "",
+    clockinWithInvoiceCode: false
   }
 
 
@@ -60,8 +60,9 @@ console.log("getClockins.data.allClockins", getClockins.data.allClockins);
         this.setState({
           clockinList       : getClockins.data.allClockins,
           clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
+          tableVisibility   : true,
           clientId,
-          tableVisibility   : true
+          clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(getClockins.data.allClockins)
         });
       } else {
         this.setState({
@@ -155,7 +156,12 @@ renderDataTable = (clockins) => {
       totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
       total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)),
       invoice     : clockin.invoice_id ? clockin.invoice.code : "not yet"
-    }
+      // invoice     : clockin.invoice_id ? (() => {
+      //   this.setState({ clockinwithInvoiceCode: true });
+      //   return(clockin.invoice.code);
+      //  })
+      //  : "not yet"
+      }
 
     return (
       <tr key={clockinsToSend.num} onClick={() => this.test()}>
@@ -166,7 +172,6 @@ renderDataTable = (clockins) => {
         <td>{clockinsToSend.totalTime} {clockinsToSend.totalTime > 1 ? "hours" : "hour"}</td>
         {/* <td>{clockinsToSend.rate}</td> */}
         <td>{clockinsToSend.total}</td>
-        {/* <td>{clockinsToSend.invoice}</td> */}
         <td>{clockinsToSend.invoice}</td>
         {/* <td>
           <Button
@@ -201,11 +206,25 @@ renderDataTable = (clockins) => {
     });
   }
 
+
+
+  checkIfThereIsInvoiceCode = (listOfClockins) => {
+    const check = listOfClockins.filter(clockin => clockin.invoice);
+    console.log("check", check.length);
+    return((check.length > 0) ? true : false)
+      // this.setState({ clockinWithInvoiceCode: true});
+    // check ? this.setState({ clockinWithInvoiceCode: true}) : this.setState({ clockinWithInvoiceCode: false});
+    // return(check);
+  }
+
+
+
   test = () => {
     console.log("YUP!!!! \n\n NEED TO ADD A MODAL TO EDIT DATA OR DELETE THE CLOCKINS ROW ");
   }
 
   render() {
+console.log("this.state.clockinList", this.state.clockinList);
     return (
       <div className="formPosition">
         <h3>Invoice generator</h3>
@@ -291,9 +310,12 @@ renderDataTable = (clockins) => {
                     </Table>
 
                     {/* Button to fire Preview Invoice Method */}
+                    
+                    {/* {this.checkIfThereIsInvoiceCode()} */}
                     <Button 
                       variant   = "primary" 
-                      type      = "submit" 
+                      type      = "submit"
+                      disabled  = {this.state.clockinWithInvoiceCode}
                       onClick   = { this.handleInvoiceGenerator }>
                       Invoice's Generator
                     </Button>
@@ -306,6 +328,7 @@ renderDataTable = (clockins) => {
                           name        = "invoiceCode"
                           onChange    = {this.handleChange}
                           value       = {this.state.invoiceCode}
+                          disabled    = {this.state.clockinWithInvoiceCode}
                           ref         = {input => this.textCode = input }
                         />
                       </Col>
