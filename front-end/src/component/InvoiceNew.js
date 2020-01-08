@@ -278,7 +278,8 @@ renderDataTable = (clockins) => {
 
       { this.state.tableVisibility
           ?
-            <Card id="clockinListResult" >
+            // <Card id="clockinListResult">
+            <Card className="cardInvoiceGenListofClockins card">
               <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label>
               {(this.state.clockinList.length > 0) 
                 ? 

@@ -34,7 +34,7 @@ class PunchInsList extends Component {
 
 
   handleSubmit = async event => {
-    // event.preventDefault();
+    event.preventDefault();
 
     const
       dateStart = this.state.dateStart,
@@ -63,7 +63,8 @@ class PunchInsList extends Component {
           });
         } else {
           this.setState({
-            message: getClockins.data.message
+            message         : getClockins.data.message,
+            tableVisibility : false
           });
 
           setTimeout(() => {
@@ -214,8 +215,9 @@ class PunchInsList extends Component {
 
   getClientInfo = client => {
     this.setState({
-      client  : client,
-      clientId : client._id
+      client          : client,
+      clientId        : client._id,
+      tableVisibility : false
     });
   }
 
@@ -288,7 +290,8 @@ class PunchInsList extends Component {
 
         { this.state.tableVisibility
           ?
-            <Card id="clockinListResult" >
+            // <Card id="clockinListResult" >
+            <Card className="cardInvoiceGenListofClockins card">
               <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label>
 {console.log("this.state", this.state)}              
               {(this.state.clockinList.length > 0) 

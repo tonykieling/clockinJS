@@ -116,6 +116,11 @@
   font-weight: bold;
 }
 
+.cardInvoiceGenListofClockins {
+  margin-left: 10%;
+  width: 100%;
+}
+
 
 @media only screen and (max-width: 800px){
 

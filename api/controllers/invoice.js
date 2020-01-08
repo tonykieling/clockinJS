@@ -24,10 +24,10 @@ const get_all = async (req, res) => {
 console.log("GET_ALL Invoices");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
-
-// const asd = await Invoice.find()  
-// res.send(asd);
-// return;
+  const 
+    clientId  = req.query.clientId,
+    dateStart = new Date(req.query.dateStart || "2000-03-01T09:00:00.000Z"),
+    dateEnd   = new Date(req.query.dateEnd || "2100-03-01T09:00:00.000Z");
 
   try {
     let allInvoices = null;
@@ -37,8 +37,15 @@ console.log("GET_ALL Invoices");
         .select(" date date_start date_end notes total_cad user_id status ");
     else
       allInvoices = await Invoice
-        .find({ user_id: userId})
-        .select(" date date_start date_end notes total_cad status");
+        .find({ 
+          user_id   : userId,
+          client_id : clientId,
+          date: {
+            $gte: dateStart,
+            $lte: dateEnd
+          },
+        })
+        .select(" date date_start date_end notes total_cad status code");
 
     if (!allInvoices || allInvoices.length < 1)
       return res.status(200).json({
