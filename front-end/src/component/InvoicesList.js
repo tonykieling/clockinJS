@@ -22,9 +22,7 @@ class InvoicesList extends Component {
     client            : "",
     invoiceListTable  : "",
     tableVisibility   : false,
-    message           : "",
-    invoiceCode       : "",
-    clockinWithInvoiceCode: false
+    message           : ""
   }
 
 
@@ -43,42 +41,48 @@ class InvoicesList extends Component {
       dateEnd   = this.state.dateEnd,
       clientId  = this.state.clientId ;
 
-
-    // const url = `/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-    const url = `/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-
-    try {
-      const getInvoices = await axios.get( 
-        url,
-        {  
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization" : `Bearer ${this.props.storeToken}` }
-      });
-
-      if (getInvoices.data.allInvoices){
-        this.setState({
-          invoiceList       : getInvoices.data.allInvoices,
-          invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
-          tableVisibility   : true,
-          clientId,
-          // clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(getInvoices.data.allInvoices)
-        });
-      } else {
-        this.setState({
-          message: "No Invoices for this period."
-        });
-
-        this.clearMessage();
-      }
-
-
-    } catch(err) {
+    if (!this.state.clientId) {
       this.setState({
-        message: err.message });
-      
-      this.clearMessage();
+        message: "Select a client."
+      });
+      // this.clearMessage();
+    } else {
+      const url = `/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+
+      try {
+        const getInvoices = await axios.get( 
+          url,
+          {  
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization" : `Bearer ${this.props.storeToken}` }
+        });
+
+        if (getInvoices.data.allInvoices){
+          this.setState({
+            invoiceList       : getInvoices.data.allInvoices,
+            invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
+            tableVisibility   : true,
+            clientId,
+            // clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(getInvoices.data.allInvoices)
+          });
+        } else {
+          this.setState({
+            message: "No Invoices for this period."
+          });
+
+          // this.clearMessage();
+        }
+
+
+      } catch(err) {
+        this.setState({
+          message: err.message });
+        
+        // this.clearMessage();
+      }
     }
+    this.clearMessage();
   }
 
 
