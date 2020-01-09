@@ -92,7 +92,7 @@ class SysHeader extends Component {
               <NavDropdown title="Invoices" id="basic-nav-dropdown3" className="font-color">
                 <NavDropdown.Item href="invoiceNew">Generate a brand new one</NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="pdfTemplate">List them all</NavDropdown.Item>
+                <NavDropdown.Item href="invoicesList">List, Check and Edit</NavDropdown.Item>
               </NavDropdown>            
 
               {/* <NavDropdown.Item className="font-color menu-item" href="about">About</NavDropdown.Item> */}

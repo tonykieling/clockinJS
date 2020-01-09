@@ -1,4 +1,7 @@
+echo "You are at ===> "
 pwd
+echo "Run this command to generate a new react build front-end :)"
+echo " Starting ..."
 echo "1/3 => remove ../public"
 rm -rf ../public
 echo "... done"
