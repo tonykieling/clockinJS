@@ -11,6 +11,11 @@ const userSchema = mongoose.Schema({
     default: false
   },
 
+  able_send_email: {
+    type: Boolean,
+    default: false
+  },
+
   name: {
     type: String
   },

@@ -3,7 +3,8 @@ const mongoose  = require("mongoose");
 const Clockin   = require("../models/clockin.js");
 const User      = require("../models/user.js");
 const Client    = require("../models/client.js");
-const Invoice   = require("../models/invoice.js");
+// const Invoice   = require("../models/invoice.js");
+const Email = require("../helpers/send-email.js");
 // const moment    = require("moment");
 
 // it gets all users from the system - on purpose with no auth
@@ -244,6 +245,9 @@ console.log("req.body", req.body);
     });
 
     await newClockin.save();
+
+    // Email.send("Clockin added", newClockin, userExist.email);
+    Email.send("Clockin added", newClockin, userExist.email);
     
     res.json({
       message: "Clockin has been created.",

@@ -35,3 +35,8 @@ TODO
    Invoice Code should appear when listing Clockins || "not yet"
   Clockins with a Invoice related to cannot be delete (the button should not come out)
 
+5. Email
+  4.1- Prepare the db to set user to receive Email
+    4.1.1- Add a field to the user schema: able_send_email: Boolean
+  4.2- Send email for each clockin
+  4.3- Send email for each invoice generated
