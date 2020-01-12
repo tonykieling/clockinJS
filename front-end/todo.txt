@@ -46,4 +46,8 @@ TODO v2:
   2.3- Send email for each invoice generated
     also deleted or changed
   
-
+3. List Invoices
+  3.1- Modal with invoice and clockin info
+    first version is done, need formatting
+  3.2- Enable to delete invoice and change each of its clockin's invoice.Code
+  3.3- Enable change Invoice's

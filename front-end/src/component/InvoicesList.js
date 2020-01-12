@@ -25,7 +25,8 @@ class InvoicesList extends Component {
     tableVisibility   : false,
     message           : "",
 
-    openModal         : false
+    openModal         : false,
+    invoice           : ""
   }
 
 
@@ -93,19 +94,20 @@ class InvoicesList extends Component {
 renderDataTable = (invoices) => {
   // date date_start date_end notes total_cad status
   return invoices.map((invoice, index) => {
+console.log("what is invoice: ", invoice);
     const date  = new Date(invoice.date);
     const invoiceToSend = {
       num         : index + 1,
       date        : (date.getUTCDate() > 10 
-                      ? date.getUTCDate()
-                      : "0" + date.getUTCDate()) + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear(),
+                      ? date.getUTCDate() + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear()
+                      : "0" + date.getUTCDate() + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear()),
       totalCad    : invoice.total_cad,
       code        : invoice.code,
       status      : invoice.status
     }
 
     return (
-      <tr key={invoiceToSend.num} onClick={() => this.test()}>
+      <tr key={invoiceToSend.num} onClick={() => this.invoiceEdit(invoice)}>
         <td>{invoiceToSend.num}</td>
         <td>{invoiceToSend.date}</td>
         <td>${invoiceToSend.totalCad}</td>
@@ -153,11 +155,13 @@ renderDataTable = (invoices) => {
 
 
 
-  test = () => {
-    console.log("YUP!!!! \n\n NEED TO ADD A MODAL TO EDIT DATA OR DELETE THE CLOCKINS ROW ");
+  invoiceEdit = (invoice) => {
+    console.log("YUP!!!! \n\n NEED TO ADD A MODAL TO EDIT DATA OR DELETE THE CLOCKINS ROW ", this.state.openModal);
     this.setState({
-      openModal: true
+      openModal: true,
+      invoice
     });
+    console.log("YUP!!!! \n\n NEED TO ADD A MODAL TO EDIT DATA OR DELETE THE CLOCKINS ROW ", this.state.openModal);
   }
 
   render() {
@@ -168,8 +172,12 @@ renderDataTable = (invoices) => {
         <p>.</p>
 
         {this.state.openModal ?
-          <InvoiceModal />
-        : ""}
+          <InvoiceModal
+            invoice   = { this.state.invoice }
+            clientId  = { this.state.clientId }
+            client    = {this.state.client }
+         />
+        : "" }
 
         <Card className="card-settings">
         <Card.Body>

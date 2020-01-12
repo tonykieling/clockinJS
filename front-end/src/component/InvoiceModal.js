@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
+import { Card, Button, ButtonGroup, Form, Row, Col, Table } from "react-bootstrap";
 
 // import GetClients from "./aux/GetClients.js";
 import ReactModal from "react-modal";
@@ -10,10 +10,6 @@ import ReactModal from "react-modal";
 
 ReactModal.setAppElement('#root');
 
-const user = {
-  name: "bob",
-  password: "bob"
-}
 
 const customStyles = {
   content : {
@@ -46,10 +42,11 @@ class InvoiceModal extends Component {
     invoiceList       : [],
     client            : "",
     invoiceListTable  : "",
+    
+    showModal         : true,
+    clockInListTable  : "",
     tableVisibility   : false,
-    message           : "",
-
-    showModal         : true
+    message           : ""
   };
 
 
@@ -61,40 +58,40 @@ class InvoiceModal extends Component {
 
 
 
-renderDataTable = (invoices) => {
-  // date date_start date_end notes total_cad status
-  return invoices.map((invoice, index) => {
-    const date  = new Date(invoice.date);
-    const invoiceToSend = {
-      num         : index + 1,
-      date        : (date.getUTCDate() > 10 
-                      ? date.getUTCDate()
-                      : "0" + date.getUTCDate()) + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear(),
-      totalCad    : invoice.total_cad,
-      code        : invoice.code,
-      status      : invoice.status
-    }
+// renderDataTable = invoices => {
+//   // date date_start date_end notes total_cad status
+//   return invoices.map((invoice, index) => {
+//     const date  = new Date(invoice.date);
+//     const invoiceToSend = {
+//       num         : index + 1,
+//       date        : (date.getUTCDate() > 10 
+//                       ? date.getUTCDate()
+//                       : "0" + date.getUTCDate()) + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear(),
+//       totalCad    : invoice.total_cad,
+//       code        : invoice.code,
+//       status      : invoice.status
+//     }
 
-    return (
-      <tr key={invoiceToSend.num} onClick={() => this.test()}>
-        <td>{invoiceToSend.num}</td>
-        <td>{invoiceToSend.date}</td>
-        <td>${invoiceToSend.totalCad}</td>
-        <td>{invoiceToSend.code}</td>
-        <td>{invoiceToSend.status}</td>
-        {/* <td>
-          <Button
-            variant   = "info"
-            onClick   = {() => this.handleDelete(invoice._id, invoiceToSend.num)}
-            // variant   = "info"
-            // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the invoice without invoice related to
-            // data-user = {JSON.stringify(userToSend)}
-          > Edit</Button>
-        </td> */}
-      </tr>
-    )
-  })
-}  
+//     return (
+//       <tr key={invoiceToSend.num} onClick={() => this.test()}>
+//         <td>{invoiceToSend.num}</td>
+//         <td>{invoiceToSend.date}</td>
+//         <td>${invoiceToSend.totalCad}</td>
+//         <td>{invoiceToSend.code}</td>
+//         <td>{invoiceToSend.status}</td>
+//         {/* <td>
+//           <Button
+//             variant   = "info"
+//             onClick   = {() => this.handleDelete(invoice._id, invoiceToSend.num)}
+//             // variant   = "info"
+//             // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the invoice without invoice related to
+//             // data-user = {JSON.stringify(userToSend)}
+//           > Edit</Button>
+//         </td> */}
+//       </tr>
+//     )
+//   })
+// }  
 
   clearMessage = () => {
     setTimeout(() => {
@@ -106,6 +103,53 @@ renderDataTable = (invoices) => {
   }
 
 
+
+  componentDidMount = async() => {
+console.log("this.props.invoice", this.props.invoice);
+console.log("this.props.client", this.props.client);
+    // event.preventDefault();
+
+    const
+      dateStart = this.props.invoice.date_start,
+      dateEnd   = this.props.invoice.date_end,
+      clientId  = this.props.clientId;
+
+    const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+console.log("url", url);
+
+      try {
+        const getClockins = await axios.get( 
+          url,
+          {  
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization" : `Bearer ${this.props.storeToken}` }
+        });
+
+        if (getClockins.data.allClockins){
+          this.setState({
+            clockinList       : getClockins.data.allClockins,
+            clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
+            tableVisibility   : true
+          });
+        } else {
+          //////////////////it's not suppose to happen and I need to get ride of it
+          this.setState({
+            message         : getClockins.data.message,
+            tableVisibility : false
+          });
+        }
+      } catch(err) {
+        this.setState({
+          message         : err.message,
+          tableVisibility : false
+        });
+        
+      }
+
+  }
+
+
   handleCloseModal = () => {
     this.setState({
       showModal: false
@@ -113,6 +157,71 @@ renderDataTable = (invoices) => {
   }
 
 
+  handleChangeInvoice = () => {
+    console.log("It is gonna change Invoice's status SOON");
+  }
+
+
+  handleDeleteInvoice = () => {
+    console.log("It is gonna delete Invoice SOON");
+  }
+
+
+  formatDate = incomingDate => {
+    const date = new Date(incomingDate);
+    const month = date.toLocaleString('default', { month: 'short' });
+    return(date.getUTCDate() > 10 
+        ? month + " " + date.getUTCDate() + "," + " " + date.getUTCFullYear()
+        : month + " " + "0" + date.getUTCDate() + "," + " " + date.getUTCFullYear());
+  }
+
+
+  renderDataTable = clockins => {
+    // moment.locale("en-gb");
+    return clockins.map((clockin, index) => {
+// console.log("dddd", moment(new Date(clockin.date)).format("LL"));
+      // const t = new Date(clockin.date).toLocaleString('en-GB', { timeZone: "UTC" });
+      // const date = moment(new Date(t)).format("LL");
+      const date = new Date(clockin.date);
+      const ts = new Date(clockin.time_start);
+      const te = new Date(clockin.time_end);  
+      const clockinsToSend = {
+        num         : index + 1,
+        date        : this.formatDate(date),
+        timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
+        timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
+        // rate        : clockin.rate,
+        totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
+        total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)),
+        invoice     : clockin.invoice_id ? clockin.invoice_id : "not yet"
+      }
+
+      return (
+        <tr key={clockinsToSend.num}>
+          <td>{clockinsToSend.num}</td>
+          {/* <td>{client}</td> */}
+          <td>{clockinsToSend.date}</td>
+          <td>{clockinsToSend.timeStart}</td>
+          <td>{clockinsToSend.timeEnd}</td>
+          <td>{clockinsToSend.totalTime}</td>
+          {/* <td>{clockinsToSend.rate}</td> */}
+          <td>{clockinsToSend.total}</td>
+          {/* <td>{clockinsToSend.invoice}</td> */}
+          {/*
+          ////////////////////MAYBE in the future I can allow delete clocking by this point of the process
+          <td>
+            <Button
+              variant   = "danger"
+              onClick   = {() => this.handleDelete(clockin._id, clockinsToSend.num)}
+              // variant   = "info"
+              // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the clockin without invoice related to
+              // data-user = {JSON.stringify(userToSend)}
+            > Delete</Button>
+          </td> */}
+        </tr>
+      )
+    })
+  }
 
 
   render() {
@@ -121,42 +230,88 @@ renderDataTable = (invoices) => {
         isOpen = {this.state.showModal}
         style = {customStyles}
         // contentLabel = {"react model test"}
-      >
-        <h1>Modal</h1>
-        <h3>Form</h3>
-          <Form onSubmit={this.handleSubmit}>
-              <Form.Group controlId="formBasicEmail">
-                  <Form.Label>User / Email address</Form.Label>
-                  <Form.Control
-                      type="name"
-                      placeholder="Type the user's name"
-                      name="name"
-                      onChange={this.handleChange}
-                      value={this.state.name}
-                  />
-                  <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
-                  </Form.Text>
-              </Form.Group>
+        >
 
-              <Form.Group controlId="formBasicPassword">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control
-                      type="password"
-                      placeholder="Password"
-                      name="password"
-                      value={this.state.password}
-                      onChange={this.handleChange}
-                  />
-              </Form.Group>
+        <Card>
+          <Card.Header as="h3">Invoice: { this.props.invoice.code }</Card.Header>
+          <Card.Body>
+            <Card.Title> Client: { this.props.client.nickname }</Card.Title>
 
-              <Button variant="primary" type="submit">
-                Submit
-              </Button>
-              <Button variant="danger" onClick={this.handleCloseModal}>
-                Close Modal
-              </Button>
-          </Form>
+            <Form>
+              <Form.Row>
+                <Form.Group as={Col} >
+                  <Form.Label> Total: ${ this.props.invoice.total_cad }</Form.Label>
+                </Form.Group>
+                <Form.Group>
+                <Form.Label> Date: { this.formatDate(this.props.invoice.date) }
+                </Form.Label>
+                </Form.Group>
+              </Form.Row>
+
+              <Form.Row>
+              <Form.Group as={Col} >
+                <Form.Label> From: { this.formatDate(this.props.invoice.date_start) }</Form.Label>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label> To: { this.formatDate(this.props.invoice.date_end) }
+                </Form.Label>
+              </Form.Group>
+              </Form.Row>
+
+              <div className="d-flex flex-column">
+                <ButtonGroup className="mt-3">
+                  <Button
+                    variant = "info"
+                    onClick = {() => this.handleChangeInvoice()}
+                  >{this.props.invoice.status}</Button>
+                  <Button 
+                    variant = "danger"
+                    onClick = {() => this.handleDeleteInvoice()}
+                  > Delete </Button>
+                </ButtonGroup>
+              </div>
+            </Form>
+
+          </Card.Body>
+        </Card>
+
+        {this.state.tableVisibility 
+          ?
+            <Card className="cardInvoiceGenListofClockins card">
+              <Table striped bordered hover size="sm" responsive>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    {/* <th>Client</th> */}
+                    <th>Date</th>
+                    <th>Time Start</th>
+                    <th>Time End</th>
+                    <th>Total Time</th>
+                    {/* <th>Rate</th> */}
+                    <th>Total CAD$</th>
+                    {/* <th>Invoice</th> */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.clockInListTable}
+                </tbody>
+              </Table>
+            </Card>
+          :
+            <Card>
+              <Card.Title>
+                {this.state.message}
+              </Card.Title>
+            </Card>
+        }
+
+        <Button
+          variant = "success"
+          onClick = { this.handleCloseModal }
+        >
+          Close Window
+        </Button>
+
       </ReactModal>
     );
   }
