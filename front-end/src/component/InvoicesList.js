@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 
 import GetClients from "./aux/GetClients.js";
+import InvoiceModal from "./InvoiceModal.js";
 
 /**
  * how to use tooltips (TIPS)
@@ -22,7 +23,9 @@ class InvoicesList extends Component {
     client            : "",
     invoiceListTable  : "",
     tableVisibility   : false,
-    message           : ""
+    message           : "",
+
+    openModal         : false
   }
 
 
@@ -152,6 +155,9 @@ renderDataTable = (invoices) => {
 
   test = () => {
     console.log("YUP!!!! \n\n NEED TO ADD A MODAL TO EDIT DATA OR DELETE THE CLOCKINS ROW ");
+    this.setState({
+      openModal: true
+    });
   }
 
   render() {
@@ -160,6 +166,10 @@ renderDataTable = (invoices) => {
         <h3>Invoice's List and Edit</h3>
         {/* <p>In order to generate the invoice, select client and period to get the invoices.</p> */}
         <p>.</p>
+
+        {this.state.openModal ?
+          <InvoiceModal />
+        : ""}
 
         <Card className="card-settings">
         <Card.Body>

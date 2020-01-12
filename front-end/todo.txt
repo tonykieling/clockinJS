@@ -29,14 +29,21 @@ TODO
 4. Invoices
   4.1- format date and time pickers
   4.2- ...
-  
-  4.3- Add Code in the db structure
+
+
+TODO v2:
+1. Invoices
+  X1.1- Add Code in the db structure
   when hit "Invoice's Generator", the user should add this info, which can be queried by the clockings from the previous month
    Invoice Code should appear when listing Clockins || "not yet"
-  Clockins with a Invoice related to cannot be delete (the button should not come out)
+  1.2- Clockins with a Invoice related to cannot be delete (the button should not come out)
 
-5. Email
-  4.1- Prepare the db to set user to receive Email
-    4.1.1- Add a field to the user schema: able_send_email: Boolean
-  4.2- Send email for each clockin
-  4.3- Send email for each invoice generated
+2. Email
+  X2.1- Prepare the db to set user to receive Email
+    X2.1.1- Add a field to the user schema: able_send_email: Boolean
+  X2.2- Send email for each clockin generated
+    also deleted or changed
+  2.3- Send email for each invoice generated
+    also deleted or changed
+  
+
