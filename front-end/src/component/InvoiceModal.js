@@ -3,7 +3,7 @@ import axios from "axios";
 import { connect } from "react-redux";
 import { Card, Button, ButtonGroup, Form, Row, Col, Table } from "react-bootstrap";
 
-// import GetClients from "./aux/GetClients.js";
+import InvoiceChangeStatusModal from "./InvoiceChangeStatusModal.js";
 import ReactModal from "react-modal";
 
 
@@ -43,10 +43,10 @@ class InvoiceModal extends Component {
     client            : "",
     invoiceListTable  : "",
     
-    showModal         : true,
     clockInListTable  : "",
     tableVisibility   : false,
-    message           : ""
+    message           : "",
+    changeStatusModal : false
   };
 
 
@@ -115,7 +115,6 @@ console.log("this.props.client", this.props.client);
       clientId  = this.props.clientId;
 
     const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-console.log("url", url);
 
       try {
         const getClockins = await axios.get( 
@@ -150,15 +149,11 @@ console.log("url", url);
   }
 
 
-  handleCloseModal = () => {
-    this.setState({
-      showModal: false
-    });
-  }
-
-
-  handleChangeInvoice = () => {
+  handleChangeInvoiceStatus = () => {
     console.log("It is gonna change Invoice's status SOON");
+    this.setState({
+      changeStatusModal: true
+    });
   }
 
 
@@ -224,12 +219,18 @@ console.log("url", url);
   }
 
 
+  closeChangeModal = () => {
+    this.setState({
+      changeStatusModal: false
+    });
+  }
+
+
   render() {
     return (
       <ReactModal
-        isOpen = {this.state.showModal}
+        isOpen = { true }
         style = {customStyles}
-        // contentLabel = {"react model test"}
         >
 
         <Card>
@@ -262,7 +263,8 @@ console.log("url", url);
                 <ButtonGroup className="mt-3">
                   <Button
                     variant = "info"
-                    onClick = {() => this.handleChangeInvoice()}
+                    onClick = {() => this.handleChangeInvoiceStatus()}
+                    // onClick = {() => this.handleChangeInvoiceStatus()}
                   >{this.props.invoice.status}</Button>
                   <Button 
                     variant = "danger"
@@ -274,6 +276,17 @@ console.log("url", url);
 
           </Card.Body>
         </Card>
+
+
+        { this.state.changeStatusModal 
+          ?
+            <InvoiceChangeStatusModal
+              invoiceStatus = { this.props.invoice.status }
+              closeChangeModal    = { this.closeChangeModal }
+            />
+          :
+            ""
+        }
 
         {this.state.tableVisibility 
           ?
@@ -306,8 +319,8 @@ console.log("url", url);
         }
 
         <Button
-          variant = "success"
-          onClick = { this.handleCloseModal }
+          variant = "primary"
+          onClick = { this.props.closeModal }
         >
           Close Window
         </Button>

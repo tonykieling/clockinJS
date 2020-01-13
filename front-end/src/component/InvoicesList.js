@@ -164,18 +164,25 @@ console.log("what is invoice: ", invoice);
     console.log("YUP!!!! \n\n NEED TO ADD A MODAL TO EDIT DATA OR DELETE THE CLOCKINS ROW ", this.state.openModal);
   }
 
+
+  closeModal = () => {
+    this.setState({
+      openModal: false
+    });
+  }
+
   render() {
     return (
       <div className="formPosition">
         <h3>Invoice's List and Edit</h3>
-        {/* <p>In order to generate the invoice, select client and period to get the invoices.</p> */}
         <p>.</p>
 
         {this.state.openModal ?
           <InvoiceModal
             invoice   = { this.state.invoice }
             clientId  = { this.state.clientId }
-            client    = {this.state.client }
+            client    = { this.state.client }
+            closeModal  = { this.closeModal }
          />
         : "" }
 
@@ -216,7 +223,6 @@ console.log("what is invoice: ", invoice);
           <Button 
             variant   = "primary" 
             type      = "submit" 
-            // disabled  = { (this.state.dateStart && this.state.dateEnd && this.state.client) ? false : true }
             onClick   = { this.handleGetInvoices } 
             ref       = {input => this.getClockinsBtn = input }  >
             Get Invoices
