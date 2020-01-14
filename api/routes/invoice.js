@@ -16,13 +16,8 @@ router.get("/:invoiceId", checkAuth, invoiceController.get_one);
 // it creates an user account
 router.post("/", checkAuth, invoiceController.invoice_add);
 
-
-// // it logs the user into the system
-// router.post("/login", invoice.login);
-
-
-// // it modifies user's data
-// router.patch("/:userId", checkAuth, invoice.modify_user);
+// // it modifies invoice's status
+router.patch("/:invoiceId", checkAuth, invoiceController.invoice_modify_status);
 
 // // // change password
 // // router.patch("password")

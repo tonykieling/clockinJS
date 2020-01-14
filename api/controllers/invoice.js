@@ -252,102 +252,72 @@ console.log("total time = ", (date2 - date1) / 1000);
 }
 
 
-// Jan 4th-DEFINITION: Invoice CANNIOT be mofified. If something to change, delete and generate a new one.
-// ONLY to change Invoice's status (Generated, Delivered and Paid)
+// Jan 4th-DEFINITION: Invoice CANNOT be mofified. If something to change, delete and generate a new one.
+// ONLY to change Invoice's status (Generated, Delivered and Received)
 // change user data
 // input: token, which should be admin
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
-const client_modify = async (req, res) => {
+const invoice_modify_status = async (req, res) => {
   const invoiceId  = req.params.invoiceId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;  
   
   // this try is for check is the invoiceId passed from the frontend is alright (exists in database), plus
-  //  check whether either the client to be changed belongs for the user or the user is admin - if not, not allowed to change client's data
+  //  check whether either the invoice to be changed belongs for the user or the user is admin - if not, not allowed to change invoice's data
+  let invoice = "";
   try {
-    const client = await Client
+    invoice = await Invoice
       .findById(invoiceId);
-
-    if (!client || client.length < 1)
-      return res.status(409).json({
-        error: `Client <id: ${invoiceId}> does not exist.`
+    if (!invoice)
+      return res.json({
+        error: `Invoice <id: ${invoice.code}> does not exist.`
       });
-    if (userId !== client.user_id && !userAdmin)
-      return res.status(409).json({
-        error: `Client <id: ${invoiceId}> belongs to another user.`
+      
+    if ((userId != invoice.user_id) && !userAdmin)
+      return res.json({
+        error: `Invoice <id: ${invoice.code}> belongs to another user.`
       });
 
   } catch(err) {
     console.log("Error => ", err.message);
-    if (invoiceId.length !== 24)
-      return res.status(422).json({
-        error: "ClientId mystyped."
-      });  
-    res.status(422).json({
-      error: "ECM01: Something got wrong."
-    });
+    return((invoiceId.length !== 24) 
+      ? res.json({
+        error: "InvoiceId mystyped."
+      })
+      : res.json({
+        error: "EIMS: Something got wrong."
+      })
+    );
   }
 
 
-  const {
-    name,
-    nickname, 
-    birthday, 
-    mother, 
-    mphone, 
-    memail, 
-    father, 
-    fphone, 
-    femail, 
-    consultant, 
-    cphone, 
-    cemail, 
-    defaultRate
- } = req.body;
+  const status = req.body.newStatus;
 
   try {
-    const clientToBeChanged = await Client
+    const invoiceToBeChanged = await Invoice
       .updateOne({
         _id: invoiceId
       }, {
         $set: {
-            name,
-            nickname, 
-            birthday, 
-            mother, 
-            mphone, 
-            memail, 
-            father, 
-            fphone, 
-            femail, 
-            consultant, 
-            cphone, 
-            cemail, 
-            default_rate: defaultRate,
-            user_id: userId
+            status
         }
       }, {
         runValidators: true
       });
     
-    if (clientToBeChanged.nModified) {
-      const clientModified = await Client
-        .findById({ _id: invoiceId})
-        .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
-        // .select(" name nickname mother consultant default_rate");
-
+    if (invoiceToBeChanged.nModified) {
       return res.json({
-        message: `Client <${clientModified}> has been modified.`
+        message: `Invoice <${invoice.code}> has been modified.`
       });
     } else
-      res.status(409).json({
-        error: `Client <${invoiceId}> not changed.`
+      res.json({
+        error: `Invoice <${invoice.code}> not changed.`
       });
 
   } catch(err) {
     console.trace("Error: ", err.message);
-    res.status(409).json({
+    res.json({
       error: "ECM02: Something bad"
     });
   }
@@ -401,5 +371,6 @@ module.exports = {
   get_all,
   get_one,
   invoice_add,
+  invoice_modify_status,
   invoice_delete
 }

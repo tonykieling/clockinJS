@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import { Card, Button, ButtonGroup, Form, Row, Col, Table } from "react-bootstrap";
-
-// import GetClients from "./aux/GetClients.js";
+import { Card, Button, ButtonGroup, Form } from "react-bootstrap";
 import ReactModal from "react-modal";
 
 
@@ -36,73 +34,62 @@ const customStyles = {
 class InvoiceChangeStatusModal extends Component {
 
   state = {
-    dateStart         : "",
-    dateEnd           : "",
-    clientId          : "",
-    invoiceList       : [],
-    client            : "",
-    invoiceListTable  : "",
-    
-    message           : ""
+    message           : "",
+    newStatus         : this.props.invoice.status === "generated" ? "delivered" : "received"
   };
 
 
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        message     : "",
-        invoiceCode : ""
+        message     : ""
       });
     }, 3500);
   }
 
 
+  handleChangeInvoiceStatus = async () => {
+    console.log("INVOICE info:", this.props.invoice);
+    console.log("this.state", this.state);
+    
+    const data = {
+      newStatus: this.state.newStatus
+    };
 
-  componentDidMount = async() => {
-console.log("didMOUNT");
-return;
-    const
-      dateStart = this.props.invoice.date_start,
-      dateEnd   = this.props.invoice.date_end,
-      clientId  = this.props.clientId;
+    const url = `/invoice/${this.props.invoice._id}`;
+    try {
+      const Invoice = await axios.patch( 
+        url,
+        data,
+        {  
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization" : `Bearer ${this.props.storeToken}` }
+      });
 
-    const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-
-      try {
-        const getClockins = await axios.get( 
-          url,
-          {  
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization" : `Bearer ${this.props.storeToken}` }
+      if (Invoice.data.message) {
+        this.setState({
+          message : `Invoice's status changed!`
         });
 
-        if (getClockins.data.allClockins){
-          this.setState({
-            clockinList       : getClockins.data.allClockins,
-            clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
-            tableVisibility   : true
-          });
-        } else {
-          //////////////////it's not suppose to happen and I need to get ride of it
-          this.setState({
-            message         : getClockins.data.message,
-            tableVisibility : false
-          });
-        }
-      } catch(err) {
+        this.props.receiveNewStatus(this.state.newStatus);
+        setTimeout(() => {
+          this.props.closeChangeModal();
+        }, 3500);
+      } else {
         this.setState({
-          message         : err.message,
-          tableVisibility : false
+          message: "Something wrong happened."
         });
         
+        // this.clearMessage();
       }
+console.log("Invoice info coming", Invoice);
+    } catch(err) {
+      console.log("Error:", err.message);
+    }
 
-  }
+    this.clearMessage();
 
-
-  handleChangeInvoiceStatus = () => {
-    console.log("It is gonna change Invoice's status SOON\nHEREEEEE");
   }
 
 
@@ -114,70 +101,57 @@ return;
         >
 
         <Card>
-          <Card.Header as="h3">Invoice</Card.Header>
+          <Card.Header as="h3"> Change Invoice Status </Card.Header>
           <Card.Body>
-            <Card.Title> Change Invoice Status </Card.Title>
             <Card.Text>
               Do you wanna change the Invoice's Status to:
-              {/* Do you wanna change the Invoice's Status to { this.props.invoiceStatus === "generated" ? "Delivered" : "Received"}? */}
             </Card.Text>
 
             <Form>
-              <Form.Row>
+            <div className="d-flex flex-column">
+              <ButtonGroup className="mt-3">
                 <Button
                   variant  = "secondary"
                   disabled = { true } >
                   Generated 
                 </Button>
                 <Button
-                  disabled  = { this.props.invoiceStatus === "generated" ? false : true }
-                  variant   = { this.props.invoiceStatus === "generated" ? "primary" : "secondary" }
+                  disabled  = { this.state.newStatus === "delivered" ? false : true }
+                  variant   = { this.state.newStatus === "delivered" ? "primary" : "secondary" }
                   onClick   = { this.handleChangeInvoiceStatus }
                 >
                   Delivered
                 </Button>
                 <Button
-                  disabled = { this.props.invoiceStatus === "delivered" ? false : true}
-                  variant  = { this.props.invoiceStatus === "delivered" ? "primary" : "secondary" }
+                  disabled = { this.state.newStatus === "received" ? false : true}
+                  variant  = { this.state.newStatus === "received" ? "primary" : "secondary" }
                   onClick   = { this.handleChangeInvoiceStatus }
                 >
                   Received
                 </Button>
-                {/* <Form.Group as={Col} >
-                  <Form.Label> Total: ${ this.props.invoice.total_cad }</Form.Label>
-                </Form.Group>
-                <Form.Group>
-                <Form.Label> Date: { this.formatDate(this.props.invoice.date) }
-                </Form.Label>
-                </Form.Group> */}
-              </Form.Row>
+              </ButtonGroup>
+            </div>
 
-              {/* <Form.Row>
-              <Form.Group as={Col} >
-                <Form.Label> From: { this.formatDate(this.props.invoice.date_start) }</Form.Label>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label> To: { this.formatDate(this.props.invoice.date_end) }
-                </Form.Label>
-              </Form.Group>
-              </Form.Row> */}
+            <span className="invoiceGenMsg">
+              {this.state.message}
+            </span>
 
-              <div className="d-flex flex-column">
-                <ButtonGroup className="mt-3">
-                  <Button
-                    variant = "success"
-                    onClick = { this.handleChangeInvoiceStatus }
-                  >Yes</Button>
-                  <Button 
-                    variant = "danger"
-                    onClick = { this.props.closeChangeModal}
-                  > No </Button>
-                </ButtonGroup>
-              </div>
-            </Form>
+            <div className="d-flex flex-column">
+              <ButtonGroup className="mt-3">
+                <Button
+                  variant = "success"
+                  onClick = { this.handleChangeInvoiceStatus }
+                >Yes</Button>
+                <Button 
+                  variant = "danger"
+                  onClick = { this.props.closeChangeModal}
+                > No </Button>
+              </ButtonGroup>
+            </div>
+          </Form>
 
-          </Card.Body>
-        </Card>
+        </Card.Body>
+      </Card>
 
       </ReactModal>
     );

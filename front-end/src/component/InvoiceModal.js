@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import { Card, Button, ButtonGroup, Form, Row, Col, Table } from "react-bootstrap";
+import { Card, Button, ButtonGroup, Form, Col, Table } from "react-bootstrap";
 
 import InvoiceChangeStatusModal from "./InvoiceChangeStatusModal.js";
 import ReactModal from "react-modal";
@@ -46,8 +46,11 @@ class InvoiceModal extends Component {
     clockInListTable  : "",
     tableVisibility   : false,
     message           : "",
-    changeStatusModal : false
+    changeStatusModal : false,
+    currentStatus     : this.props.invoice.status.charAt(0).toUpperCase() + this.props.invoice.status.slice(1),
+    updateYN          : false
   };
+
 
 
   handleChange = event => {
@@ -57,41 +60,6 @@ class InvoiceModal extends Component {
   }
 
 
-
-// renderDataTable = invoices => {
-//   // date date_start date_end notes total_cad status
-//   return invoices.map((invoice, index) => {
-//     const date  = new Date(invoice.date);
-//     const invoiceToSend = {
-//       num         : index + 1,
-//       date        : (date.getUTCDate() > 10 
-//                       ? date.getUTCDate()
-//                       : "0" + date.getUTCDate()) + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear(),
-//       totalCad    : invoice.total_cad,
-//       code        : invoice.code,
-//       status      : invoice.status
-//     }
-
-//     return (
-//       <tr key={invoiceToSend.num} onClick={() => this.test()}>
-//         <td>{invoiceToSend.num}</td>
-//         <td>{invoiceToSend.date}</td>
-//         <td>${invoiceToSend.totalCad}</td>
-//         <td>{invoiceToSend.code}</td>
-//         <td>{invoiceToSend.status}</td>
-//         {/* <td>
-//           <Button
-//             variant   = "info"
-//             onClick   = {() => this.handleDelete(invoice._id, invoiceToSend.num)}
-//             // variant   = "info"
-//             // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the invoice without invoice related to
-//             // data-user = {JSON.stringify(userToSend)}
-//           > Edit</Button>
-//         </td> */}
-//       </tr>
-//     )
-//   })
-// }  
 
   clearMessage = () => {
     setTimeout(() => {
@@ -157,17 +125,19 @@ console.log("this.props.client", this.props.client);
   }
 
 
+
   handleDeleteInvoice = () => {
     console.log("It is gonna delete Invoice SOON");
   }
+
 
 
   formatDate = incomingDate => {
     const date = new Date(incomingDate);
     const month = date.toLocaleString('default', { month: 'short' });
     return(date.getUTCDate() > 10 
-        ? month + " " + date.getUTCDate() + "," + " " + date.getUTCFullYear()
-        : month + " " + "0" + date.getUTCDate() + "," + " " + date.getUTCFullYear());
+        ? `${month} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
+        : `${month} 0${date.getUTCDate()}, ${date.getUTCFullYear()}` );
   }
 
 
@@ -226,6 +196,20 @@ console.log("this.props.client", this.props.client);
   }
 
 
+  receiveNewStatus = (newStatus) => {
+    this.setState({
+      currentStatus : newStatus,
+      updateYN      : true
+    });
+  }
+
+
+  backToThePrevious = () => {
+    this.state.updateYN ? this.props.updateScreen() : this.props.closeModal();
+  }
+
+
+
   render() {
     return (
       <ReactModal
@@ -262,13 +246,15 @@ console.log("this.props.client", this.props.client);
               <div className="d-flex flex-column">
                 <ButtonGroup className="mt-3">
                   <Button
-                    variant = "info"
-                    onClick = {() => this.handleChangeInvoiceStatus()}
-                    // onClick = {() => this.handleChangeInvoiceStatus()}
-                  >{this.props.invoice.status}</Button>
+                    variant   = "info"
+                    disabled  = { this.props.invoice.status === "received" ? true : false }
+                    onClick   = { this.handleChangeInvoiceStatus }
+                  // >{this.props.invoice.status.charAt(0).toUpperCase() + this.props.invoice.status.slice(1)}</Button>
+                  >{ this.state.currentStatus }</Button>
                   <Button 
                     variant = "danger"
-                    onClick = {() => this.handleDeleteInvoice()}
+                    disabled  = { this.props.invoice.status === "received" ? true : false }
+                    onClick = { this.handleDeleteInvoice }
                   > Delete </Button>
                 </ButtonGroup>
               </div>
@@ -281,8 +267,9 @@ console.log("this.props.client", this.props.client);
         { this.state.changeStatusModal 
           ?
             <InvoiceChangeStatusModal
-              invoiceStatus = { this.props.invoice.status }
-              closeChangeModal    = { this.closeChangeModal }
+              invoice           = { this.props.invoice }
+              closeChangeModal  = { this.closeChangeModal }
+              receiveNewStatus  = { this.receiveNewStatus }
             />
           :
             ""
@@ -320,7 +307,7 @@ console.log("this.props.client", this.props.client);
 
         <Button
           variant = "primary"
-          onClick = { this.props.closeModal }
+          onClick = { this.backToThePrevious }
         >
           Close Window
         </Button>

@@ -38,6 +38,8 @@ class InvoicesList extends Component {
 
 
   handleGetInvoices = async event => {
+  // handleGetInvoices = async() => {
+console.log("event", event);
     event.preventDefault();
 
     const
@@ -94,7 +96,6 @@ class InvoicesList extends Component {
 renderDataTable = (invoices) => {
   // date date_start date_end notes total_cad status
   return invoices.map((invoice, index) => {
-console.log("what is invoice: ", invoice);
     const date  = new Date(invoice.date);
     const invoiceToSend = {
       num         : index + 1,
@@ -171,6 +172,14 @@ console.log("what is invoice: ", invoice);
     });
   }
 
+
+  updateScreen = () => {
+    this.closeModal();
+    this.handleGetInvoices("event");
+  }
+
+
+
   render() {
     return (
       <div className="formPosition">
@@ -179,10 +188,11 @@ console.log("what is invoice: ", invoice);
 
         {this.state.openModal ?
           <InvoiceModal
-            invoice   = { this.state.invoice }
-            clientId  = { this.state.clientId }
-            client    = { this.state.client }
-            closeModal  = { this.closeModal }
+            invoice       = { this.state.invoice }
+            clientId      = { this.state.clientId }
+            client        = { this.state.client }
+            closeModal    = { this.closeModal }
+            updateScreen  = { this.updateScreen }
          />
         : "" }
 
@@ -194,7 +204,8 @@ console.log("what is invoice: ", invoice);
               getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
 
           <br></br>
-          <Form onSubmit={this.handleGetInvoices} >
+          {/* <Form onSubmit={this.handleGetInvoices} > */}
+          <Form>
 
             <Form.Group as={Row} controlId="formST">
               <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
