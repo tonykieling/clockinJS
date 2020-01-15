@@ -92,7 +92,6 @@ class InvoicesList extends Component {
 
 
 renderDataTable = (invoices) => {
-  console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");  
   // date date_start date_end notes total_cad status
   return invoices.map((invoice, index) => {
     const date  = new Date(invoice.date);

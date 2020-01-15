@@ -30,15 +30,17 @@ const customStyles = {
 class InvoiceChangeStatusModal extends Component {
 
   state = {
-    message           : "",
-    newStatus         : this.props.currentStatus === "Generated" ? "Delivered" : "Received"
+    message         : "",
+    newStatus       : this.props.currentStatus === "Generated" ? "Delivered" : "Received",
+    disableButtons  : false
   };
 
 
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        message     : ""
+        message       : "",
+        disableButtons : false
       });
     }, 3500);
   }
@@ -62,7 +64,8 @@ class InvoiceChangeStatusModal extends Component {
 
       if (Invoice.data.message) {
         this.setState({
-          message : `Invoice's status changed!`
+          message       : `Invoice's status changed to ${this.state.newStatus}`,
+          disableButtons : true
         });
 
         this.props.receiveNewStatus(this.state.newStatus);
@@ -74,9 +77,7 @@ class InvoiceChangeStatusModal extends Component {
           message: "Something wrong happened."
         });
         
-        // this.clearMessage();
       }
-console.log("Invoice info coming", Invoice);
     } catch(err) {
       console.log("Error:", err.message);
     }
@@ -87,8 +88,6 @@ console.log("Invoice info coming", Invoice);
 
 
   render() {
-console.log("this.props.currentStatus", this.props.currentStatus);
-console.log("this.state.newStatis", this.state.newStatus);
     return (
       <ReactModal
         isOpen = { this.props.openChangeInvoiceModal }
@@ -111,14 +110,14 @@ console.log("this.state.newStatis", this.state.newStatus);
                   Generated 
                 </Button>
                 <Button
-                  disabled  = { this.state.newStatus === "Delivered" ? false : true }
+                  disabled  = { this.state.disableButtons ? true : this.state.newStatus === "Delivered" ? false : true }
                   variant   = { this.state.newStatus === "Delivered" ? "primary" : "secondary" }
                   onClick   = { this.handleChangeInvoiceStatus }
                 >
                   Delivered
                 </Button>
                 <Button
-                  disabled = { this.state.newStatus === "Received" ? false : true}
+                  disabled = { this.state.disableButtons ? true : this.state.newStatus === "Received" ? false : true}
                   variant  = { this.state.newStatus === "Received" ? "primary" : "secondary" }
                   onClick   = { this.handleChangeInvoiceStatus }
                 >
@@ -134,12 +133,14 @@ console.log("this.state.newStatis", this.state.newStatus);
             <div className="d-flex flex-column">
               <ButtonGroup className="mt-3">
                 <Button
-                  variant = "success"
-                  onClick = { this.handleChangeInvoiceStatus }
+                  variant   = "success"
+                  onClick   = { this.handleChangeInvoiceStatus }
+                  disabled  = { this.state.disableButtons }
                 >Yes</Button>
                 <Button 
-                  variant = "danger"
-                  onClick = { this.props.closeChangeModal}
+                  variant   = "danger"
+                  onClick   = { this.props.closeChangeModal}
+                  disabled  = { this.state.disableButtons }
                 > No </Button>
               </ButtonGroup>
             </div>
