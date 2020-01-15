@@ -35,6 +35,18 @@ object-assign
 @license MIT
 */
 
+/*!
+ * Adapted from jQuery UI core
+ *
+ * http://jqueryui.com
+ *
+ * Copyright 2014 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/category/ui-core/
+ */
+
 /** @license React v16.11.0
  * react.production.min.js
  *
@@ -77,3 +89,9 @@ object-assign
  * @author   Feross Aboukhadijeh <https://feross.org>
  * @license  MIT
  */
+
+/*!
+  Copyright (c) 2015 Jed Watson.
+  Based on code that is Copyright 2013-2015, Facebook, Inc.
+  All rights reserved.
+*/
