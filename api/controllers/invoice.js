@@ -204,7 +204,7 @@ console.log("req.body:", req.body);
       date_start: dateStart,
       date_end: dateEnd,
       notes,
-      status: "generated",
+      status: "Generated",
       total_cad: 0,
       code,
       client_id: clientId,

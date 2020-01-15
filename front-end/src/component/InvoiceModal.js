@@ -47,7 +47,7 @@ class InvoiceModal extends Component {
     tableVisibility   : false,
     message           : "",
     changeStatusModal : false,
-    currentStatus     : this.props.invoice.status.charAt(0).toUpperCase() + this.props.invoice.status.slice(1),
+    currentStatus     : this.props.invoice.status,
     updateYN          : false
   };
 
@@ -73,14 +73,11 @@ class InvoiceModal extends Component {
 
 
   componentDidMount = async() => {
-console.log("this.props.invoice", this.props.invoice);
-console.log("this.props.client", this.props.client);
-    // event.preventDefault();
 
     const
       dateStart = this.props.invoice.date_start,
       dateEnd   = this.props.invoice.date_end,
-      clientId  = this.props.clientId;
+      clientId  = this.props.client._id;
 
     const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
@@ -118,7 +115,6 @@ console.log("this.props.client", this.props.client);
 
 
   handleChangeInvoiceStatus = () => {
-    console.log("It is gonna change Invoice's status SOON");
     this.setState({
       changeStatusModal: true
     });
@@ -142,11 +138,7 @@ console.log("this.props.client", this.props.client);
 
 
   renderDataTable = clockins => {
-    // moment.locale("en-gb");
     return clockins.map((clockin, index) => {
-// console.log("dddd", moment(new Date(clockin.date)).format("LL"));
-      // const t = new Date(clockin.date).toLocaleString('en-GB', { timeZone: "UTC" });
-      // const date = moment(new Date(t)).format("LL");
       const date = new Date(clockin.date);
       const ts = new Date(clockin.time_start);
       const te = new Date(clockin.time_end);  
@@ -155,7 +147,6 @@ console.log("this.props.client", this.props.client);
         date        : this.formatDate(date),
         timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
         timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
-        // rate        : clockin.rate,
         totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
         total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)),
         invoice     : clockin.invoice_id ? clockin.invoice_id : "not yet"
@@ -191,7 +182,7 @@ console.log("this.props.client", this.props.client);
 
   closeChangeModal = () => {
     this.setState({
-      changeStatusModal: false
+      changeStatusModal : false
     });
   }
 
@@ -213,8 +204,8 @@ console.log("this.props.client", this.props.client);
   render() {
     return (
       <ReactModal
-        isOpen = { true }
-        style = {customStyles}
+        isOpen  = { this.props.openInvoiceModal }
+        style   = {customStyles}
         >
 
         <Card>
@@ -247,13 +238,12 @@ console.log("this.props.client", this.props.client);
                 <ButtonGroup className="mt-3">
                   <Button
                     variant   = "info"
-                    disabled  = { this.props.invoice.status === "received" ? true : false }
+                    disabled  = { this.state.currentStatus === "Received" ? true : false }
                     onClick   = { this.handleChangeInvoiceStatus }
-                  // >{this.props.invoice.status.charAt(0).toUpperCase() + this.props.invoice.status.slice(1)}</Button>
                   >{ this.state.currentStatus }</Button>
                   <Button 
                     variant = "danger"
-                    disabled  = { this.props.invoice.status === "received" ? true : false }
+                    disabled  = { this.state.currentStatus === "Received" ? true : false }
                     onClick = { this.handleDeleteInvoice }
                   > Delete </Button>
                 </ButtonGroup>
@@ -263,17 +253,16 @@ console.log("this.props.client", this.props.client);
           </Card.Body>
         </Card>
 
-
-        { this.state.changeStatusModal 
-          ?
-            <InvoiceChangeStatusModal
-              invoice           = { this.props.invoice }
-              closeChangeModal  = { this.closeChangeModal }
-              receiveNewStatus  = { this.receiveNewStatus }
-            />
-          :
-            ""
-        }
+        { this.state.changeStatusModal
+        ?
+          <InvoiceChangeStatusModal
+            invoice                 = { this.props.invoice }
+            closeChangeModal        = { this.closeChangeModal }
+            receiveNewStatus        = { this.receiveNewStatus }
+            currentStatus           = { this.state.currentStatus }
+            openChangeInvoiceModal  = { this.state.changeStatusModal }
+          />
+        : "" }
 
         {this.state.tableVisibility 
           ?

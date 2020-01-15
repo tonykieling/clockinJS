@@ -25,7 +25,7 @@ class InvoicesList extends Component {
     tableVisibility   : false,
     message           : "",
 
-    openModal         : false,
+    openInvoiceModal  : false,
     invoice           : ""
   }
 
@@ -38,8 +38,6 @@ class InvoicesList extends Component {
 
 
   handleGetInvoices = async event => {
-  // handleGetInvoices = async() => {
-console.log("event", event);
     event.preventDefault();
 
     const
@@ -157,25 +155,23 @@ renderDataTable = (invoices) => {
 
 
   invoiceEdit = (invoice) => {
-    console.log("YUP!!!! \n\n NEED TO ADD A MODAL TO EDIT DATA OR DELETE THE CLOCKINS ROW ", this.state.openModal);
     this.setState({
-      openModal: true,
+      openInvoiceModal: true,
       invoice
     });
-    console.log("YUP!!!! \n\n NEED TO ADD A MODAL TO EDIT DATA OR DELETE THE CLOCKINS ROW ", this.state.openModal);
   }
 
 
   closeModal = () => {
     this.setState({
-      openModal: false
+      openInvoiceModal: false
     });
   }
 
 
   updateScreen = () => {
     this.closeModal();
-    this.handleGetInvoices("event");
+    this.getInvoicesBtn.click();
   }
 
 
@@ -186,13 +182,13 @@ renderDataTable = (invoices) => {
         <h3>Invoice's List and Edit</h3>
         <p>.</p>
 
-        {this.state.openModal ?
+        {this.state.openInvoiceModal ?
           <InvoiceModal
-            invoice       = { this.state.invoice }
-            clientId      = { this.state.clientId }
-            client        = { this.state.client }
-            closeModal    = { this.closeModal }
-            updateScreen  = { this.updateScreen }
+            invoice           = { this.state.invoice }
+            client            = { this.state.client }
+            closeModal        = { this.closeModal }
+            updateScreen      = { this.updateScreen }
+            openInvoiceModal  = { this.state.openInvoiceModal }
          />
         : "" }
 
@@ -204,8 +200,7 @@ renderDataTable = (invoices) => {
               getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
 
           <br></br>
-          {/* <Form onSubmit={this.handleGetInvoices} > */}
-          <Form>
+          <Form onSubmit={this.handleGetInvoices} >
 
             <Form.Group as={Row} controlId="formST">
               <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
@@ -235,7 +230,7 @@ renderDataTable = (invoices) => {
             variant   = "primary" 
             type      = "submit" 
             onClick   = { this.handleGetInvoices } 
-            ref       = {input => this.getClockinsBtn = input }  >
+            ref       = {input => this.getInvoicesBtn = input }  >
             Get Invoices
           </Button>
 

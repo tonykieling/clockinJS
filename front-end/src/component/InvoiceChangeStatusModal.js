@@ -11,10 +11,6 @@ ReactModal.setAppElement('#root');
 
 const customStyles = {
   content : {
-    // width: "100%",
-    // height: "100%",
-    // left: "0",
-    // top: "0"
     top                   : '50%',
     left                  : '50%',
     right                 : 'auto',
@@ -35,7 +31,7 @@ class InvoiceChangeStatusModal extends Component {
 
   state = {
     message           : "",
-    newStatus         : this.props.invoice.status === "generated" ? "delivered" : "received"
+    newStatus         : this.props.currentStatus === "Generated" ? "Delivered" : "Received"
   };
 
 
@@ -48,10 +44,7 @@ class InvoiceChangeStatusModal extends Component {
   }
 
 
-  handleChangeInvoiceStatus = async () => {
-    console.log("INVOICE info:", this.props.invoice);
-    console.log("this.state", this.state);
-    
+  handleChangeInvoiceStatus = async () => {    
     const data = {
       newStatus: this.state.newStatus
     };
@@ -94,10 +87,12 @@ console.log("Invoice info coming", Invoice);
 
 
   render() {
+console.log("this.props.currentStatus", this.props.currentStatus);
+console.log("this.state.newStatis", this.state.newStatus);
     return (
       <ReactModal
-        isOpen = { true }
-        style = {customStyles}
+        isOpen = { this.props.openChangeInvoiceModal }
+        style  = { customStyles }
         >
 
         <Card>
@@ -116,15 +111,15 @@ console.log("Invoice info coming", Invoice);
                   Generated 
                 </Button>
                 <Button
-                  disabled  = { this.state.newStatus === "delivered" ? false : true }
-                  variant   = { this.state.newStatus === "delivered" ? "primary" : "secondary" }
+                  disabled  = { this.state.newStatus === "Delivered" ? false : true }
+                  variant   = { this.state.newStatus === "Delivered" ? "primary" : "secondary" }
                   onClick   = { this.handleChangeInvoiceStatus }
                 >
                   Delivered
                 </Button>
                 <Button
-                  disabled = { this.state.newStatus === "received" ? false : true}
-                  variant  = { this.state.newStatus === "received" ? "primary" : "secondary" }
+                  disabled = { this.state.newStatus === "Received" ? false : true}
+                  variant  = { this.state.newStatus === "Received" ? "primary" : "secondary" }
                   onClick   = { this.handleChangeInvoiceStatus }
                 >
                   Received
