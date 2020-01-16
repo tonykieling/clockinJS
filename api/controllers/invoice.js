@@ -45,7 +45,8 @@ console.log("GET_ALL Invoices");
             $lte: dateEnd
           },
         })
-        .select(" date date_start date_end notes total_cad status code");
+        .select(" date date_start date_end notes total_cad status code")
+        .sort({date: 1});
 
     if (!allInvoices || allInvoices.length < 1)
       return res.status(200).json({

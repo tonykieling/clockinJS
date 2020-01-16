@@ -36,7 +36,7 @@ TODO v2:
   X1.1- Add Code in the db structure
   when hit "Invoice's Generator", the user should add this info, which can be queried by the clockings from the previous month
    Invoice Code should appear when listing Clockins || "not yet"
-  1.2- Clockins with a Invoice related to cannot be delete (the button should not come out)
+  X1.2- Clockins with a Invoice related to cannot be delete (the button should not come out)
 
 2. Email
   X2.1- Prepare the db to set user to receive Email
@@ -47,7 +47,15 @@ TODO v2:
     also deleted or changed
   
 3. List Invoices
-  3.1- Modal with invoice and clockin info
+  X3.1- Modal with invoice and clockin info
     first version is done, need formatting
   3.2- Enable to delete invoice and change each of its clockin's invoice.Code
-  3.3- Enable change Invoice's
+  X3.3- Enable change Invoice's
+
+- date in Invoices list is "010" instead of "10" => considerer creating a pattern "Jan 10, 2020"
+  010 is fixed, but need to use the pattern
+- sort/order invoices by date - in render table
+ done: .sort({date: -}
+- in Invoice's List Generator, add a last row to sum up "total hours" and "total $"
+- enable scroll in Invoice's modals
+

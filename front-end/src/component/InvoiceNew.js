@@ -54,7 +54,7 @@ class InvoiceNew extends Component {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-
+console.log("getClockins:::", getClockins);
       if (getClockins.data.allClockins){
         this.setState({
           clockinList       : getClockins.data.allClockins,
@@ -144,7 +144,7 @@ renderDataTable = (clockins) => {
     const te    = new Date(clockin.time_end);  
     const clockinsToSend = {
       num         : index + 1,
-      date        : (date.getUTCDate() > 10 
+      date        : (date.getUTCDate() > 9
                       ? date.getUTCDate()
                       : "0" + date.getUTCDate()) + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear(),
       // date,

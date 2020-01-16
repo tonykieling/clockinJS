@@ -131,7 +131,7 @@ class InvoiceModal extends Component {
   formatDate = incomingDate => {
     const date = new Date(incomingDate);
     const month = date.toLocaleString('default', { month: 'short' });
-    return(date.getUTCDate() > 10 
+    return(date.getUTCDate() > 9
         ? `${month} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
         : `${month} 0${date.getUTCDate()}, ${date.getUTCFullYear()}` );
   }
@@ -208,6 +208,7 @@ class InvoiceModal extends Component {
         style   = {customStyles}
         >
 
+        <div className="scroll">
         <Card>
           <Card.Header as="h3">Invoice: { this.props.invoice.code }</Card.Header>
           <Card.Body>
@@ -289,7 +290,7 @@ class InvoiceModal extends Component {
           :
             <Card>
               <Card.Title>
-                {this.state.message}
+                { this.state.message }
               </Card.Title>
             </Card>
         }
@@ -300,7 +301,7 @@ class InvoiceModal extends Component {
         >
           Close Window
         </Button>
-
+</div>
       </ReactModal>
     );
   }

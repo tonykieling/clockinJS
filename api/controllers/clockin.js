@@ -29,7 +29,7 @@ console.log("clockins ALLLLLLL")
     else {
       // https://stackoverflow.com/questions/6502541/mongodb-query-multiple-collections-at-once
       // this code works - BEFORE doing a $lookup
-      allClockins = await Clockin
+      // allClockins = await Clockin
         // .find({ 
         //   user_id: userId,
         //   date: {
@@ -82,11 +82,10 @@ console.log("dt=>", userId, dateStart, dateEnd, clientId);
                   "invoice.user_id": 0
               }
           }
-        ]);
+        ])
+        .sort({date: 1});
     }
-
-// console.log("allClockins info:", allClockins.invoice[0].invoice.code);
-console.log("allClockins info:", allClockins);
+console.log("ALLCLOCKINS", allClockins);
     if (!allClockins || allClockins.length < 1) {
       return res.status(200).json({
         message: `No clockins at all.`
