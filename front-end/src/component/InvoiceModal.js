@@ -7,14 +7,27 @@ import InvoiceChangeStatusModal from "./InvoiceChangeStatusModal.js";
 import ReactModal from "react-modal";
 
 
-
 ReactModal.setAppElement('#root');
+console.log("window.innerWidth", window.innerWidth);
 
-
-const customStyles = {
+const customStyles = window.innerWidth < 800 
+? { 
+    content : {
+      // width: "50%",
+      height: "95%",
+      // left: "0",
+      // top: "0"
+      top                   : '50%',
+      left                  : '50%',
+      right                 : 'auto',
+      bottom                : 'auto',
+      marginRight           : '-50%',
+      transform             : 'translate(-50%, -50%)',
+      overflow              : 'scroll'  } }
+: { 
   content : {
-    // width: "100%",
-    // height: "100%",
+    // width: "50%",
+    height: "80%",
     // left: "0",
     // top: "0"
     top                   : '50%',
@@ -22,9 +35,9 @@ const customStyles = {
     right                 : 'auto',
     bottom                : 'auto',
     marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
-  }
-};
+    transform             : 'translate(-50%, -50%)',
+    overflow              : 'scroll'  } };
+console.log("customStyles", customStyles);
 
 /**
  * how to use tooltips (TIPS)
@@ -129,8 +142,10 @@ class InvoiceModal extends Component {
 
 
   formatDate = incomingDate => {
+// console.log("===> incomingDate", incomingDate);
     const date = new Date(incomingDate);
     const month = date.toLocaleString('default', { month: 'short' });
+// console.log("month", month);
     return(date.getUTCDate() > 9
         ? `${month} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
         : `${month} 0${date.getUTCDate()}, ${date.getUTCFullYear()}` );
@@ -151,6 +166,7 @@ class InvoiceModal extends Component {
         total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)),
         invoice     : clockin.invoice_id ? clockin.invoice_id : "not yet"
       }
+// console.log(index, "clockin data: ", clockinsToSend.date);
 
       return (
         <tr key={clockinsToSend.num}>
@@ -205,10 +221,12 @@ class InvoiceModal extends Component {
     return (
       <ReactModal
         isOpen  = { this.props.openInvoiceModal }
-        style   = {customStyles}
+        style   = { customStyles }
+        // base = "ModalSettings"
+        // className = "ModalSettings"
+        // overlayClassName="ModalSettings"
         >
 
-        <div className="scroll">
         <Card>
           <Card.Header as="h3">Invoice: { this.props.invoice.code }</Card.Header>
           <Card.Body>
@@ -301,7 +319,7 @@ class InvoiceModal extends Component {
         >
           Close Window
         </Button>
-</div>
+
       </ReactModal>
     );
   }
