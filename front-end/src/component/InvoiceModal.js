@@ -8,7 +8,6 @@ import ReactModal from "react-modal";
 
 
 ReactModal.setAppElement('#root');
-console.log("window.innerWidth", window.innerWidth);
 
 const customStyles = window.innerWidth < 800 
 ? { 
@@ -37,7 +36,6 @@ const customStyles = window.innerWidth < 800
     marginRight           : '-50%',
     transform             : 'translate(-50%, -50%)',
     overflow              : 'scroll'  } };
-console.log("customStyles", customStyles);
 
 /**
  * how to use tooltips (TIPS)
@@ -140,26 +138,33 @@ class InvoiceModal extends Component {
   }
 
 
-
   formatDate = incomingDate => {
-// console.log("===> incomingDate", incomingDate);
+console.log("===> incomingDate", incomingDate);
     const date = new Date(incomingDate);
-    const month = date.toLocaleString('default', { month: 'short' });
+console.log("===", date, "=", date.toUTCString());
+// the error is because month is taking the date before convert it to UTC
+// solved with the below code
+// need to create a function componenet to have this as a pattern for each date in the system, i.e. "Jan 01, 2020"
+    // const month = date.toLocaleString('default', { month: 'short' });
+    const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 // console.log("month", month);
-    return(date.getUTCDate() > 9
-        ? `${month} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
-        : `${month} 0${date.getUTCDate()}, ${date.getUTCFullYear()}` );
+    const day = date.getUTCDate() > 9 ? date.getUTCDate() : `0${date.getUTCDate()}`;
+    // return(date.getUTCDate() > 9
+    //     ? `${month} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
+    //     : `${month} 0${date.getUTCDate()}, ${date.getUTCFullYear()}` );
+    return(`${month[date.getUTCMonth()]} ${day}, ${date.getUTCFullYear()}`);
+    // return(`${date}`);
   }
 
 
   renderDataTable = clockins => {
     return clockins.map((clockin, index) => {
-      const date = new Date(clockin.date);
+      // const date = new Date(clockin.date);
       const ts = new Date(clockin.time_start);
       const te = new Date(clockin.time_end);  
       const clockinsToSend = {
         num         : index + 1,
-        date        : this.formatDate(date),
+        date        : this.formatDate(clockin.date),
         timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
         timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
         totalTime   : ((te - ts) / ( 60 * 60 * 1000)),

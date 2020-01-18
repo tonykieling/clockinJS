@@ -52,7 +52,7 @@ class PunchInsList extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-
+console.log(getClockins.data.allClockins);
         if (getClockins.data.allClockins){
           this.setState({
             clockinList       : getClockins.data.allClockins,
@@ -151,7 +151,8 @@ class PunchInsList extends Component {
         rate        : clockin.rate,
         totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
         total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)),
-        invoice     : clockin.invoice_id ? clockin.invoice_id : "not yet"
+        // invoice     : clockin.invoice_id ? clockin.invoice_id : "not yet"
+        invoice     : clockin.invoice_id ? clockin.invoice.code : "not yet"
       }
 
       return (

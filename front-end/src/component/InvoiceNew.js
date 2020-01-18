@@ -138,6 +138,9 @@ console.log("getClockins:::", getClockins);
 //************************************ */
 // work on edit with this.state.clockList
 renderDataTable = (clockins) => {
+  let 
+    totalTime = 0, 
+    totalCAD  = 0;
   return clockins.map((clockin, index) => {
     const date  = new Date(clockin.date);
     const ts    = new Date(clockin.time_start);
@@ -147,6 +150,7 @@ renderDataTable = (clockins) => {
       date        : (date.getUTCDate() > 9
                       ? date.getUTCDate()
                       : "0" + date.getUTCDate()) + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear(),
+      // date        : this.formatdate(date);
       // date,
       timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
       timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
@@ -160,15 +164,29 @@ renderDataTable = (clockins) => {
       //  })
       //  : "not yet"
       }
-
-    return (
-      <tr key={clockinsToSend.num} onClick={() => this.test()}>
+    totalTime += clockinsToSend.totalTime;
+    totalCAD += clockinsToSend.total;
+    return ((clockins.length === index + 1) 
+      ? (<tr key={clockinsToSend.num} onClick={() => this.test()}>
         <td>{clockinsToSend.num}</td>
         <td>{clockinsToSend.date}</td>
-        {/* <td>{clockinsToSend.timeStart}</td>
-        <td>{clockinsToSend.timeEnd}</td> */}
         <td>{clockinsToSend.totalTime} {clockinsToSend.totalTime > 1 ? "hours" : "hour"}</td>
-        {/* <td>{clockinsToSend.rate}</td> */}
+        <td>{clockinsToSend.total}</td>
+        <td>{clockinsToSend.invoice}</td>
+      </tr>,
+      <tr key={clockinsToSend.num + 1}>
+        <th></th>
+        <th></th>
+        <th>{totalTime} {totalTime > 1 ? "hours" : "hour"}</th>
+        <th>$ {totalCAD}</th>
+        <th></th>
+      </tr>
+      )
+      
+      : (<tr key={clockinsToSend.num} onClick={() => this.test()}>
+        <td>{clockinsToSend.num}</td>
+        <td>{clockinsToSend.date}</td>
+        <td>{clockinsToSend.totalTime} {clockinsToSend.totalTime > 1 ? "hours" : "hour"}</td>
         <td>{clockinsToSend.total}</td>
         <td>{clockinsToSend.invoice}</td>
         {/* <td>
@@ -180,7 +198,7 @@ renderDataTable = (clockins) => {
             // data-user = {JSON.stringify(userToSend)}
           > Edit</Button>
         </td> */}
-      </tr>
+      </tr> )
     )
   })
 }  
