@@ -7,7 +7,7 @@ import linkedinIcon from "../icons/linkedin.png";
 import githubIcon from "../icons/github.png";
 
 
-export default function Error() {
+export default function About() {
   return (
     <div className="page-general twoThirds">
       <br />

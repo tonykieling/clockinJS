@@ -5,7 +5,7 @@ import { Card, Button, ButtonGroup, Form, Col, Table } from "react-bootstrap";
 
 import InvoiceChangeStatusModal from "./InvoiceChangeStatusModal.js";
 import ReactModal from "react-modal";
-
+import * as formatDate from "./aux/formatDate.js";
 
 ReactModal.setAppElement('#root');
 
@@ -84,7 +84,6 @@ class InvoiceModal extends Component {
 
 
   componentDidMount = async() => {
-
     const
       dateStart = this.props.invoice.date_start,
       dateEnd   = this.props.invoice.date_end,
@@ -138,23 +137,28 @@ class InvoiceModal extends Component {
   }
 
 
-  formatDate = incomingDate => {
-console.log("===> incomingDate", incomingDate);
-    const date = new Date(incomingDate);
-console.log("===", date, "=", date.toUTCString());
-// the error is because month is taking the date before convert it to UTC
-// solved with the below code
-// need to create a function componenet to have this as a pattern for each date in the system, i.e. "Jan 01, 2020"
-    // const month = date.toLocaleString('default', { month: 'short' });
-    const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-// console.log("month", month);
-    const day = date.getUTCDate() > 9 ? date.getUTCDate() : `0${date.getUTCDate()}`;
-    // return(date.getUTCDate() > 9
-    //     ? `${month} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
-    //     : `${month} 0${date.getUTCDate()}, ${date.getUTCFullYear()}` );
-    return(`${month[date.getUTCMonth()]} ${day}, ${date.getUTCFullYear()}`);
-    // return(`${date}`);
-  }
+  /**
+   // this call is an old one.
+   now it is being done by valling formatDate.show, importing from the file ../aux/formatDate.js
+   */
+
+//   formatDate = incomingDate => {
+// console.log("===> incomingDate", incomingDate);
+//     const date = new Date(incomingDate);
+// console.log("===", date, "=", date.toUTCString());
+// // the error is because month is taking the date before convert it to UTC
+// // solved with the below code
+// // need to create a function componenet to have this as a pattern for each date in the system, i.e. "Jan 01, 2020"
+//     // const month = date.toLocaleString('default', { month: 'short' });
+//     const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// // console.log("month", month);
+//     const day = date.getUTCDate() > 9 ? date.getUTCDate() : `0${date.getUTCDate()}`;
+//     // return(date.getUTCDate() > 9
+//     //     ? `${month} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
+//     //     : `${month} 0${date.getUTCDate()}, ${date.getUTCFullYear()}` );
+//     return(`${month[date.getUTCMonth()]} ${day}, ${date.getUTCFullYear()}`);
+//     // return(`${date}`);
+//   }
 
 
   renderDataTable = clockins => {
@@ -164,7 +168,8 @@ console.log("===", date, "=", date.toUTCString());
       const te = new Date(clockin.time_end);  
       const clockinsToSend = {
         num         : index + 1,
-        date        : this.formatDate(clockin.date),
+        // date        : this.formatDate(clockin.date),
+        date        : formatDate.show(clockin.date),
         timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
         timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
         totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
@@ -243,17 +248,20 @@ console.log("===", date, "=", date.toUTCString());
                   <Form.Label> Total: ${ this.props.invoice.total_cad }</Form.Label>
                 </Form.Group>
                 <Form.Group>
-                <Form.Label> Date: { this.formatDate(this.props.invoice.date) }
+                {/* <Form.Label> Date: { this.formatDate(this.props.invoice.date) } */}
+                <Form.Label> Date: { formatDate.show(this.props.invoice.date) }
                 </Form.Label>
                 </Form.Group>
               </Form.Row>
 
               <Form.Row>
               <Form.Group as={Col} >
-                <Form.Label> From: { this.formatDate(this.props.invoice.date_start) }</Form.Label>
+                {/* <Form.Label> From: { this.formatDate(this.props.invoice.date_start) }</Form.Label> */}
+                <Form.Label> From: { formatDate.show(this.props.invoice.date_start) }</Form.Label>
               </Form.Group>
               <Form.Group>
-                <Form.Label> To: { this.formatDate(this.props.invoice.date_end) }
+                {/* <Form.Label> To: { this.formatDate(this.props.invoice.date_end) } */}
+                <Form.Label> To: { formatDate.show(this.props.invoice.date_end) }
                 </Form.Label>
               </Form.Group>
               </Form.Row>

@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 
 import GetClients from "./aux/GetClients.js";
+import * as formatDate from "./aux/formatDate.js";
+
 
 /**
  * how to use tooltips (TIPS)
@@ -54,7 +56,7 @@ class InvoiceNew extends Component {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-console.log("getClockins:::", getClockins);
+      
       if (getClockins.data.allClockins){
         this.setState({
           clockinList       : getClockins.data.allClockins,
@@ -142,16 +144,11 @@ renderDataTable = (clockins) => {
     totalTime = 0, 
     totalCAD  = 0;
   return clockins.map((clockin, index) => {
-    const date  = new Date(clockin.date);
     const ts    = new Date(clockin.time_start);
     const te    = new Date(clockin.time_end);  
     const clockinsToSend = {
       num         : index + 1,
-      date        : (date.getUTCDate() > 9
-                      ? date.getUTCDate()
-                      : "0" + date.getUTCDate()) + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear(),
-      // date        : this.formatdate(date);
-      // date,
+      date        : formatDate.show(clockin.date),
       timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
       timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
       rate        : clockin.rate,

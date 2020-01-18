@@ -5,6 +5,8 @@ import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 
 import GetClients from "./aux/GetClients.js";
 import InvoiceModal from "./InvoiceModal.js";
+import * as formatDate from "./aux/formatDate.js";
+
 
 /**
  * how to use tooltips (TIPS)
@@ -94,12 +96,9 @@ class InvoicesList extends Component {
 renderDataTable = (invoices) => {
   // date date_start date_end notes total_cad status
   return invoices.map((invoice, index) => {
-    const date  = new Date(invoice.date);
     const invoiceToSend = {
       num         : index + 1,
-      date        : (date.getUTCDate() > 10 
-                      ? date.getUTCDate() + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear()
-                      : "0" + date.getUTCDate() + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear()),
+      date        : formatDate.show(invoice.date),
       totalCad    : invoice.total_cad,
       code        : invoice.code,
       status      : invoice.status

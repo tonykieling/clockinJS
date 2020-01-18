@@ -53,10 +53,14 @@ TODO v2:
   X3.3- Enable change Invoice's
 
 - date in Invoices list is "010" instead of "10" => considerer creating a pattern "Jan 10, 2020"
-  010 is fixed, but need to use the pattern. this.formatDate in InvoiceModal is okay to be a functional componenet and be used in other components
+  X010 is fixed, but need to use the pattern. this.formatDate in InvoiceModal is okay to be a functional componenet and be used in other components
+    solution: created a funcion .show in ./aux/formatDate.js which handle pretty good the date formating
 - sort/order invoices by date - in render table
- done: .sort({date: -}
+  Xdone: 
+    solution: .sort({date: -}
 - in Invoice's List Generator, add a last row to sum up "total hours" and "total $"
+  Xdone
 - enable scroll in Invoice's modals
- done
+  Xdone
+- format email to be sent when punched in
 

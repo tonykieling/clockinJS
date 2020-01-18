@@ -246,7 +246,8 @@ console.log("req.body", req.body);
     await newClockin.save();
 
     // Email.send("Clockin added", newClockin, userExist.email);
-    Email.send("Clockin added", newClockin, userExist.email);
+    // Email.send("Clockin added", newClockin, userExist.email);
+    Email.send("Clockin added", newClockin, userExist, clientExist);
     
     res.json({
       message: "Clockin has been created.",

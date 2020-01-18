@@ -5,6 +5,8 @@ import {  Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 // import moment from "moment";
 
 import GetClients from "./aux/GetClients.js";
+import * as formatDate from "./aux/formatDate.js";
+
 
 
 class PunchInsList extends Component {
@@ -137,15 +139,15 @@ console.log(getClockins.data.allClockins);
 // console.log("dddd", moment(new Date(clockin.date)).format("LL"));
       // const t = new Date(clockin.date).toLocaleString('en-GB', { timeZone: "UTC" });
       // const date = moment(new Date(t)).format("LL");
-      const date = new Date(clockin.date);
+      // const date = new Date(clockin.date);
       const ts = new Date(clockin.time_start);
       const te = new Date(clockin.time_end);  
       const clockinsToSend = {
         num         : index + 1,
-        date        : (date.getUTCDate() > 10 
-                        ? date.getUTCDate()
-                        : "0" + date.getUTCDate()) + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear(),
-        // date,
+        // date        : (date.getUTCDate() > 9 
+        //                 ? date.getUTCDate()
+        //                 : "0" + date.getUTCDate()) + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCFullYear(),
+        date        : formatDate.show(clockin.date),
         timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
         timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
         rate        : clockin.rate,
