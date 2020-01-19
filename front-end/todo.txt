@@ -63,4 +63,6 @@ TODO v2:
 - enable scroll in Invoice's modals
   Xdone
 - format email to be sent when punched in
-
+  Xdone
+- Hamburger menu color to Wheat, Invoice Generator text, Clockin email subject, no Edit button in InvoiceList mobile
+  Xdone

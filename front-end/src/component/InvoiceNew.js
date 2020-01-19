@@ -236,7 +236,7 @@ renderDataTable = (clockins) => {
     return (
       <div className="formPosition">
         <h3>Invoice generator</h3>
-        <p>In order to generate the invoice, select client and period to get the clockins.</p>
+        <p>Select client and period to get the clockins.</p>
 
         <Card className="card-settings">
         <Card.Body>

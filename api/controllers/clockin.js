@@ -169,7 +169,8 @@ const get_one = async (req, res) => {
 // and
 //   write down invoice (it needs to be before 2)
 const clockin_add = async (req, res) => {
-console.log("req.body", req.body);
+  const formatDT = require("../helpers/formatDT.js");
+
 
   const {
     rate,
@@ -245,9 +246,8 @@ console.log("req.body", req.body);
 
     await newClockin.save();
 
-    // Email.send("Clockin added", newClockin, userExist.email);
-    // Email.send("Clockin added", newClockin, userExist.email);
-    Email.send("Clockin added", newClockin, userExist, clientExist);
+    Email.sendClockinEmail(`Clockin added - ${clientExist.nickname}: 
+              ${formatDT.showDate(newClockin.date)} - ${formatDT.showTime(newClockin.time_start)}`, newClockin, userExist, clientExist);
     
     res.json({
       message: "Clockin has been created.",

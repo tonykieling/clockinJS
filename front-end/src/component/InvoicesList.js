@@ -111,15 +111,12 @@ renderDataTable = (invoices) => {
         <td>${invoiceToSend.totalCad}</td>
         <td>{invoiceToSend.code}</td>
         <td>{invoiceToSend.status}</td>
-        <td>
+        {/* <td>
           <Button
             variant   = "info"
             onClick   = {() => this.invoiceEdit(invoice)}
-            // variant   = "info"
-            // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the invoice without invoice related to
-            // data-user = {JSON.stringify(userToSend)}
           > Edit</Button>
-        </td>
+        </td> */}
       </tr>
     );
   });
