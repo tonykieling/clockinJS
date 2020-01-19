@@ -13,7 +13,7 @@ TODO
   X2.2- clientList is hidding the whole card when name is empty because it's checking whether there is props.name
     solved by checking clientId
   X2.3- format and style Add new Client as User Home
-    fileds name are too big to fit in col sm={2}. Keeping two lines (label + text field)
+    fields name are too big to fit in col sm={2}. Keeping two lines (label + text field)
   2.4- format and style clientList as User Home
     some are working, but others dont
 
@@ -66,3 +66,33 @@ TODO v2:
   Xdone
 - Hamburger menu color to Wheat, Invoice Generator text, Clockin email subject, no Edit button in InvoiceList mobile
   Xdone
+
+- forget/change password. Two ways
+  1. FORGET: Login has a "Forget Password" link
+    1.1 It opens a modal with a email field + 2 buttons
+      OK - creates a temp password, send an email, pops up a message "If <email> is a valid email within Clocki.JS, a temp password has been created and sent to it." and returns to Login
+      CANCEL - returns to Login
+    1.2 DB user schema has ta have:
+      enable_send_email: Boolean
+      temp_password: Text
+      temp_password_expiry_at: Date
+    1.3 user control - I need to create a generate_temp_password method:
+      a- check whether the user is allowed to receive email
+        if no, send a failure message: "this action is not available to this user. If you need to enable senging email function, send an email to tony.kieling@gmail.com"
+      b- temp_password generator - a function to scramble 15 characteres
+      c- write down on the db the new info (temp_password + temp_password_expiry_at)
+      d- send email with 
+      e- return the method with a success message
+    1.3 user control - login has to:
+      if password does not match, check password against temp_password, if it matches, check temp_password_expiry_at
+  
+  2. CHANGE: User page has a button "Change password"
+    2.1 If user does not have send email enabled, there is no two-way authentication
+      2.1.1 It opens a modal with a current password, new Password and confirma password fields
+      2.2 If new password and confirma password matchs, them send a message to the server
+      2.3 If not, pops up a message "New Password does not match New Password"
+    2.2 NO two-way authentication: User control has a change_password method which receives current password
+      2.2.1 Check current_password
+      2.2.2 If it is okay, encrypt it and write it down into the db and send a successful message
+      2.2.3 If it is not okay, send a failure message
+    2.3 WITH TWO WAY AUTHENTICATION:

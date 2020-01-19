@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { Button, Form, Card, Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import ForgetPasswordModal from "./LoginForgetPasswordModal.js";
+
 
 class Login extends Component {
 
     state = {
       email         : "",
       password      : "",
-      errorMsg      : ""
+      errorMsg      : "",
+
+      forgetPasswordModal: false
     }
 
   handleChange = e => {
@@ -76,6 +80,23 @@ class Login extends Component {
     }, 3500);
   }
 
+
+  openModal = event => {
+    event.preventDefault();
+    this.setState({
+      forgetPasswordModal: true
+    });
+    console.log("this.state", this.state);
+  }
+
+
+  closeModal = () => {
+    this.setState({
+      forgetPasswordModal: false
+    });
+  }
+
+
   render() {
     return (
       <div className="formPosition">
@@ -113,6 +134,19 @@ class Login extends Component {
               />
               {/* <p id="errorMsg">{ this.state.errorMsg }</p> */}
             </Form.Group>
+            <p><a href={window.location.hash} onClick={this.openModal}>Forget password</a></p>
+
+
+            {this.state.forgetPasswordModal
+              ?
+                <ForgetPasswordModal
+                  openFPModal = { this.state.forgetPasswordModal }
+                  closeModal  = { this.closeModal }
+                >
+
+                </ForgetPasswordModal>
+              : ""
+            }
             
             <Button variant="primary" type="submit">
               Submit
