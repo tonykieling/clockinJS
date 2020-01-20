@@ -3,6 +3,7 @@ const bcrypt        = require("bcrypt");
 
 const User          = require("../models/user.js");
 const tokenCreation = require("../helpers/token.js").token_creation;
+const sendEmail     = require("../helpers/send-email.js");
 
 
 /**
@@ -334,11 +335,105 @@ const delete_user = async (req, res) => {
 }
 
 
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+const forget_password = async (req, res) => {
+  console.log("@@@ inside FORGET PASSWORD");
+  const user  = req.body.data.email;
+
+  try {
+    const userExist = await User
+      .find( { email: user });
+
+    if (userExist.length > 0)
+      if (userExist[0].able_send_email) {
+
+        /**
+         * generate a code
+         * in the user schema, create a code and expiry time to it
+         * record the code into the db along the expiry
+         * send the url which points to a page to reset password
+         * url: https://clockinjs.herokuapp.com/resetpwd/<code>
+         *    new password + confirm new password
+         * 
+         * server will receive a post where the code identifies the user
+         * */
+
+        sendEmail.sendResetPassword("Clockin.js - Reset Password", userExist[0]);
+      } else
+        return res.send({
+          error: "User is no able to send email. Please contact tony.kieling@gmail.com"
+        });
+    // } else  there is no else due to if there is no email, system does nothing.
+    // actually, if there is no email, system is gonna send a message just to the front -end receive it
+    return res.send({
+      message: "email is not valid"
+    });
+  } catch(err) {  // system answer if there is an error
+    console.trace("Error: ", err.message);
+    return res.status(200).json({
+      error: `Error: EFP01`
+    });
+  }
+}
+
+
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+const reset_password = async (req, res) => {
+  console.log("@@@ inside RESET PASSWORD");
+  const code  = req.params;
+
+  try {
+    const userExist = await User
+      .find( { code });
+
+    if (userExist.length > 0) {
+      if (userExist.expiryCode > code) {
+        /// throw an error
+      } else {
+        /**
+         * generate a code
+         * in the user schema, create a code and expiry time to it
+         * record the code into the db along the expiry
+         * send the url which points to a page to reset password
+         * url: https://clockinjs.herokuapp.com/resetpwd/<code>
+         *    new password + confirm new password
+         * 
+         * server will receive a post where the code identifies the user
+         * */
+
+        return res.send({
+          message: "email is not valid"
+        });
+      }
+    } else { // if user does not exist
+
+    }
+  } catch(err) {  // system answer if there is an error
+    console.trace("Error: ", err.message);
+    return res.status(200).json({
+      error: `Error: ERP01`
+    });
+  }
+}  
+
+
 module.exports = {
   get_all,
   get_one,
   signup,
   login,
   modify_user,
-  delete_user
+  delete_user,
+  forget_password,
+  reset_password
 }

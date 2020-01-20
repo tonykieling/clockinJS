@@ -126,6 +126,19 @@
   width: 100%;
 }
 
+.messageFailure {
+  margin-top: 15px;
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
+
+.messageSuccess {
+  margin-top: 15px;
+  color: green;
+  font-weight: bold;
+  text-align: center;
+}
 
 @media only screen and (max-width: 800px){
 

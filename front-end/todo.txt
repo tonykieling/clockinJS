@@ -88,7 +88,7 @@ TODO v2:
   
   2. CHANGE: User page has a button "Change password"
     2.1 If user does not have send email enabled, there is no two-way authentication
-      2.1.1 It opens a modal with a current password, new Password and confirma password fields
+      2.1.1 It opens a modal with a current password, new Password and confirms password fields
       2.2 If new password and confirma password matchs, them send a message to the server
       2.3 If not, pops up a message "New Password does not match New Password"
     2.2 NO two-way authentication: User control has a change_password method which receives current password
@@ -96,3 +96,5 @@ TODO v2:
       2.2.2 If it is okay, encrypt it and write it down into the db and send a successful message
       2.2.3 If it is not okay, send a failure message
     2.3 WITH TWO WAY AUTHENTICATION:
+
+    "first phase to forgetPassword is done: modal / form validation / handling messages and communication to the server + backend receiving and handling data + send email are working. Missing generate code to be sent, page to change password and method to proceed"

@@ -32,4 +32,8 @@ router.patch("/:userId", checkAuth, userController.modify_user);
 router.delete("/:userId", checkAuth, userController.delete_user);
 
 
+// ofrget password method caller
+router.post("/forgetPassword", userController.forget_password);
+router.post("/resetPassword", userController.reset_password);
+
 module.exports = router;
