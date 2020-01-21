@@ -133,7 +133,7 @@ console.log("@@@ forgetPassword", forgetPassword);
         >
 
         <Card>
-          <Card.Header as="h3"> Forget Password </Card.Header>
+          <Card.Header as="h3"> Reset Password </Card.Header>
           <Card.Body>
             <Form>
               <Form.Label>This procedure is going to send an email to reset the password.</Form.Label>

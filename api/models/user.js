@@ -40,18 +40,29 @@ const userSchema = mongoose.Schema({
     type: String,
     // required: true
   },
+
   city: {
     type: String,
     // required: true
   },
+
   postal_code: {
     type: String,
     // required: true
   },
+
   phone: {
     type: String,
     // required: true
   },      
+
+  code: {
+    type: String
+  },
+
+  code_expiry_at: {
+    type: Number
+  }
 
   
 });

@@ -242,7 +242,6 @@ console.log("inside modify_user");
 // return res.json({ 
 //   message: "OK", 
 //   data: req.body });
-
     const changeUser = await User
       .updateOne({
         _id: checkUser._id
@@ -363,10 +362,33 @@ const forget_password = async (req, res) => {
          * server will receive a post where the code identifies the user
          * */
 
-         // create a code
-         const code = "codeToBeSent";
+         // create a code, record it and the expiry timestamp for it
+         const code = require('uuid/v1')();
 
          // record the code into the user db
+         try {
+          const code_expiry_at  = new Date().getTime() + 86400000;
+
+          const recordCode = await User
+            .updateOne({
+              _id: userExist[0]._id
+            }, {
+              $set: {
+                code,
+                code_expiry_at
+              }
+            });
+
+          if (!recordCode.nModified)
+            return res.send({
+              error: `EFP01: Error in recording code(1).`
+            });
+        } catch(err) {
+          console.trace("Error EFP02: ", err.message);
+          return res.status(200).json({
+            error: "EFP02: Error in recording code(2)"
+          });
+        }
 
         //  send the email
         sendEmail.sendResetPassword("Clockin.js - Reset Password", userExist[0], code);
@@ -382,7 +404,7 @@ const forget_password = async (req, res) => {
   } catch(err) {  // system answer if there is an error
     console.trace("Error: ", err.message);
     return res.status(200).json({
-      error: `Error: EFP01`
+      error: `Error: EFP03`
     });
   }
 }
