@@ -97,4 +97,4 @@ TODO v2:
       2.2.3 If it is not okay, send a failure message
     2.3 WITH TWO WAY AUTHENTICATION:
 
-    "first phase to forgetPassword is done: modal / form validation / handling messages and communication to the server + backend receiving and handling data + send email are working. Missing generate code to be sent, page to change password and method to proceed"
+    "front-end to reset password is pretty done, back is started but is missing code generator + the method to handle password change + alter user schema to have 'code' and 'expiry_at'"

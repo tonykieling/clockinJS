@@ -363,7 +363,13 @@ const forget_password = async (req, res) => {
          * server will receive a post where the code identifies the user
          * */
 
-        sendEmail.sendResetPassword("Clockin.js - Reset Password", userExist[0]);
+         // create a code
+         const code = "codeToBeSent";
+
+         // record the code into the user db
+
+        //  send the email
+        sendEmail.sendResetPassword("Clockin.js - Reset Password", userExist[0], code);
       } else
         return res.send({
           error: "User is no able to send email. Please contact tony.kieling@gmail.com"

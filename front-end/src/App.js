@@ -5,21 +5,22 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { connect } from "react-redux";
 
-import Land         from "./component/Land.js";
-import NoPage       from "./component/Error.js";
-import SysHeader    from "./component/SysHeader.js";
-import Register     from './component/Register.js';
-import Login        from "./component/Login.js";
+import Land           from "./component/Land.js";
+import NoPage         from "./component/Error.js";
+import SysHeader      from "./component/SysHeader.js";
+import Register       from './component/Register.js';
+import Login          from "./component/Login.js";
 // import decodeToken from "./component/aux/decodeToken.js";
-import Home         from "./component/Home.js";
-import User         from "./component/User.js";
-import ClientNew    from "./component/ClientNew.js";
-import ClientList   from "./component/ClientsList.js";
-import PunchInNew   from "./component/PunchInNew.js";
-import PunchInsList from "./component/PunchInsList.js";
-import InvoiceNew   from "./component/InvoiceNew.js";
-import About        from "./component/About.js";
-import InvoicesList from "./component/InvoicesList.js";
+import Home           from "./component/Home.js";
+import User           from "./component/User.js";
+import ClientNew      from "./component/ClientNew.js";
+import ClientList     from "./component/ClientsList.js";
+import PunchInNew     from "./component/PunchInNew.js";
+import PunchInsList   from "./component/PunchInsList.js";
+import InvoiceNew     from "./component/InvoiceNew.js";
+import About          from "./component/About.js";
+import InvoicesList   from "./component/InvoicesList.js";
+import ResetPassword  from "./component/ResetPassword.js";
 
 
 class App extends Component {
@@ -120,6 +121,10 @@ class App extends Component {
                 else
                   return <InvoicesList />
               }} />
+
+            <Route path = "/reset_password" >
+              <ResetPassword />
+            </Route>
 
             <Route exact path = "/about" >
               <About />

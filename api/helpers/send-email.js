@@ -44,13 +44,13 @@ const sendClockinEmail = (subject, clockin, user, client) => {
 }
 
 
-const sendResetPassword = (subject, user) => {
+const sendResetPassword = (subject, user, code) => {
 
   const content = (`
     <div>
       <p>Hi <b>${user.name}</b></p>
       <p>Recently you asked to reset your password.</p>
-      <p>Click on <a href="addres_to_reset_password">reset password</a> to proceed.</p>
+      <p>Click on <a href="https://clockinjs.herokuapp.com/reset_password/${code}">reset password</a> to proceed.</p>
       <br>
       <p>Please, disregard this message in case you do not intend to change your password.</p>
       <br>
