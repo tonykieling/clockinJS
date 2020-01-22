@@ -3,7 +3,7 @@ import { saveState, clearUserLS } from './localStorage.js'
 const initialState = {}
 
 const reducer = (state = initialState, action) => {
-// console.log("***action", action);
+console.log("***action", action);
   let newState = {...state};
   if (action.type === "LOGIN") {
     newState = {...state,

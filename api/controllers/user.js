@@ -12,6 +12,7 @@ const sendEmail     = require("../helpers/send-email.js");
  * @return {User} List of all Users.
  */
 const get_all = async (req, res) => {
+console.log("inside USER GET_ALL");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
   if (!userAdmin)
@@ -49,6 +50,8 @@ const get_all = async (req, res) => {
  */
 // async function get_one(req, res) {
 const get_one = async (req, res) => {
+console.log("inside USER GET onnnnnnnne");
+
   const userAdmin       = req.userData.admin;
   const userId          = req.userData.userId;
   const userToBeChecked = req.params.userId;
@@ -412,47 +415,137 @@ const forget_password = async (req, res) => {
 
 
 /**
- * 
+ * method to change password and return user to loggin autometically
  * @param {*} req 
  * @param {*} res 
  */
 const reset_password = async (req, res) => {
-  console.log("@@@ inside RESET PASSWORD");
+  console.log("*****************\n inside RESET PASSWORD");
   const code  = req.params;
+  const {
+    userId, 
+    newPassword
+   } = req.body.data;
+console.log("req.body", req.body);
+console.log("req.params", req.params);
+   console.log("code", code, "userId", userId, "newPassword", newPassword);
+  //  return res.send("OKKKKKKK");
 
-  try {
+
+   try {
     const userExist = await User
-      .find( { code });
+      .findOne({ _id: userId });
+console.log("11111---userExist", userExist);
+    if (userExist.length < 1)
+      return res.status(200).json({ 
+        error: `Error: URP01` });
+        
+    else {
+        /**check timestamp!!!!!!!!!!!!!!!!!! */
+console.log("need to check timestamp");
 
-    if (userExist.length > 0) {
-      if (userExist.expiryCode > code) {
-        /// throw an error
-      } else {
-        /**
-         * generate a code
-         * in the user schema, create a code and expiry time to it
-         * record the code into the db along the expiry
-         * send the url which points to a page to reset password
-         * url: https://clockinjs.herokuapp.com/resetpwd/<code>
-         *    new password + confirm new password
-         * 
-         * server will receive a post where the code identifies the user
-         * */
+        bcrypt.hash(newPassword, 10, async (err, hash) => {
+          if (err)
+            return res.json({
+              error: "Error: URP02"
+            });
+          else {
+            try {
+              const resetPassword = await User
+                .updateOne({
+                  _id: userExist._id
+                }, {
+                  $set: {
+                    password        : hash,
+                    code            : "",
+                    code_expiry_at  : ""
+                  }
+                });
+console.log("22222---resetPassword:", resetPassword.nModified);
+              if (!resetPassword.nModified)
+                return res.send({
+                  error: "Error: URP03"
+                });
 
-        return res.send({
-          message: "email is not valid"
+                const token = await tokenCreation(userExist.email, userExist._id, userExist.name, userExist.admin);
+console.log("33333---toke:", token);
+                res.json({
+                  message: "success", 
+                  user: {
+                    _id         : userExist._id,
+                    name        : userExist.name,
+                    email       : userExist.email,
+                    admin       : userExist.admin,
+                    address     : userExist.address,
+                    city        : userExist.city,
+                    postalCode  : userExist.postal_code,
+                    phone       : userExist.phone
+                  },
+                  token
+                });
+
+            } catch(err) {
+              console.trace("Error: URP04", err.message);
+              return res.status(200).json({
+                error: "Error: URP04"
+              });
+            }
+          }
         });
       }
-    } else { // if user does not exist
 
+    } catch(err) {
+      console.trace("Error: ", err.message);
+      return res.status(200).json({
+        error: `Error: URP05`
+      });
     }
-  } catch(err) {  // system answer if there is an error
-    console.trace("Error: ", err.message);
-    return res.status(200).json({
-      error: `Error: ERP01`
+
+
+
+}
+
+
+
+/**
+ * this method provide info about user when they are about to reset password
+ * @param {*} req 
+ * @param {*} res 
+ */
+const get_by_code = async (req, res) => {
+  const code  = req.params.code;
+
+  try {
+    const user = await User
+      .findOne({ code });
+
+    if (!user || user.length < 1)
+      return res.json({
+        error: `EGUBC01: Error`
+      });
+
+    else
+      res.json({
+        message: "success", 
+        user: {
+          _id         : user._id,
+          name        : user.name,
+          email       : user.email,
+          admin       : user.admin,
+          address     : user.address,
+          city        : user.city,
+          postalCode  : user.postal_code,
+          phone       : user.phone
+        }
+      });
+  } catch(err) {
+    console.log("Error => ", err.message);
+    res.status(422).json({
+      error: "EUGBC02: Something got wrong."
     });
   }
-}  
+}
+
 
 
 module.exports = {
@@ -463,5 +556,6 @@ module.exports = {
   modify_user,
   delete_user,
   forget_password,
-  reset_password
+  reset_password,
+  get_by_code
 }

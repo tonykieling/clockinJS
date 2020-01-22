@@ -4,7 +4,6 @@ const router          = express.Router();
 const checkAuth       = require("../middleware/check-auth.js")  // it calls the middleware which checks if user's authorized
 const userController  = require("../controllers/user.js");
 
-
 // it returns all users
 router.get("/", checkAuth, userController.get_all);
 
@@ -32,8 +31,13 @@ router.patch("/:userId", checkAuth, userController.modify_user);
 router.delete("/:userId", checkAuth, userController.delete_user);
 
 
-// ofrget password method caller
+// forget password method caller
 router.post("/forgetPassword", userController.forget_password);
-router.post("/resetPassword", userController.reset_password);
+
+// get user by code method caller
+router.get("/get_by_code/:code", userController.get_by_code);
+
+// reset password method caller
+router.post("/reset_password/:code", userController.reset_password);
 
 module.exports = router;

@@ -24,11 +24,16 @@ class ResetPassword extends Component {
       [e.target.name]: e.target.value
     });
     
-    if (e.key === "Enter" && this.state.email !== "") {
-      if (e.target.name === "email")
-        this.textInput2.focus();
+    // if (e.key === "Enter" && this.state.email !== "") {
+    if (e.key === "Enter" && e.target.name === "newPassword" && e.target.value !== "") {
+      this.textInput2.focus();
+      e.preventDefault();
+    } else if (e.key === "Enter" && e.target.name === "confirmPassword" && e.target.value !== "") {
+      this.handleSubmit(e);
+      e.preventDefault();
     }
   }
+
 
 
   handleSubmit = async event => {
@@ -39,20 +44,23 @@ class ResetPassword extends Component {
       else if (this.state.newPassword !== this.state.confirmPassword)
         alert("New Password and Confirm Password have to be the same.");
       else {
-        const url = this.state.url;
-
+        const url = `/user${this.state.url}`;
+console.log("url to reset", url);
+console.log("this.state", this.state);
         try {
           const resetPassword = await axios.post( 
             url,
             {
               data: {
-                userId    : this.state.user._id,
-                password  : this.state.newPassword
+                userId      : this.state.user._id,
+                newPassword : this.state.newPassword
               }
           });
   console.log("@@@ resetPassword", resetPassword);
           if (resetPassword.data.message){
-            this.props.dispatchLogin(this.state.user);
+            const user  = resetPassword.data.user;
+            user.token  = resetPassword.data.token
+            this.props.dispatchLogin({ user });
             this.setState({
               logged: true
             });
@@ -65,9 +73,10 @@ class ResetPassword extends Component {
   
         } catch(err) {
           this.setState({
-            message: err.message });
+            message: err.message,
+            classNameMessage  : "messageFailure",
+          });
         }
-
         
       }
   }
@@ -89,26 +98,42 @@ class ResetPassword extends Component {
   }
 
 
-  componentDidMount() {
+  componentDidMount = async () => {
     const match = matchPath(window.location.pathname, {
       path: '/reset_password/:param',
       exact: true,
       strict: false
     });
-console.log("match", match.url);
 
-    if (match)
-      this.setState({
-        code  : match.params.param,
-        url   : match.params.url
+    try {
+      const url = `/user/get_by_code/${match.params.param}`;
+      const getUser = await axios.get( 
+        url,
+        {
+          data: {
+            code  : this.state.code
+          }
       });
 
-    /**
-     * 
-     * by the code, query the user to be shown in the page and to have the password changed
-     * 
-     * need to get user  + log after change password
-     * */
+      if (getUser.data.message){
+        this.setState({
+          user  : getUser.data.user,
+          code  : match.params.param,
+          url   : match.url
+        });
+      } else {
+        this.setState({
+          message           : getUser.data.error,
+          classNameMessage  : "messageFailure",
+        });
+      }
+
+    } catch(err) {
+      this.setState({
+        message: err.message,
+        classNameMessage  : "messageFailure",
+      });
+    }
 
   }
 
@@ -123,7 +148,9 @@ console.log("match", match.url);
             <div>
               <div className="formPosition">
                 <br />
-                <h3>Reset Password code = { this.state.code }</h3>
+                <h3>Reset Password</h3>
+                <br />
+                <p>Hi {this.state.user.name}</p>
                 <br />
                 <Card className="card-settings">
                   <Form onSubmit={this.handleSubmit}>
