@@ -242,9 +242,7 @@ console.log("inside modify_user");
         error: `EMU03: Email <${email}> is invalid.`
       });
     }
-// return res.json({ 
-//   message: "OK", 
-//   data: req.body });
+    
     const changeUser = await User
       .updateOne({
         _id: checkUser._id
@@ -420,29 +418,30 @@ const forget_password = async (req, res) => {
  * @param {*} res 
  */
 const reset_password = async (req, res) => {
-  console.log("*****************\n inside RESET PASSWORD");
+  // console.log("*****************\n inside RESET PASSWORD");
   const code  = req.params;
   const {
     userId, 
     newPassword
    } = req.body.data;
-console.log("req.body", req.body);
-console.log("req.params", req.params);
-   console.log("code", code, "userId", userId, "newPassword", newPassword);
-  //  return res.send("OKKKKKKK");
-
 
    try {
     const userExist = await User
       .findOne({ _id: userId });
-console.log("11111---userExist", userExist);
-    if (userExist.length < 1)
+
+      if (userExist.length < 1)
       return res.status(200).json({ 
         error: `Error: URP01` });
         
     else {
         /**check timestamp!!!!!!!!!!!!!!!!!! */
-console.log("need to check timestamp");
+// http://localhost:3000/reset_password/485b7950-3cab-11ea-817d-57374e57b7c8
+
+      if (userExist.code_expiry_at < new Date().getTime())
+        return res.send({
+          error : "Code has already expired. Please, generate a new one.",
+          code  : "expired"
+        });
 
         bcrypt.hash(newPassword, 10, async (err, hash) => {
           if (err)
@@ -461,14 +460,14 @@ console.log("need to check timestamp");
                     code_expiry_at  : ""
                   }
                 });
-console.log("22222---resetPassword:", resetPassword.nModified);
+                
               if (!resetPassword.nModified)
                 return res.send({
                   error: "Error: URP03"
                 });
 
                 const token = await tokenCreation(userExist.email, userExist._id, userExist.name, userExist.admin);
-console.log("33333---toke:", token);
+
                 res.json({
                   message: "success", 
                   user: {
@@ -500,9 +499,6 @@ console.log("33333---toke:", token);
         error: `Error: URP05`
       });
     }
-
-
-
 }
 
 
@@ -519,12 +515,19 @@ const get_by_code = async (req, res) => {
     const user = await User
       .findOne({ code });
 
-    if (!user || user.length < 1)
+    if (!user || user.length < 1) { 
       return res.json({
         error: `EGUBC01: Error`
       });
-
-    else
+    }
+    
+    if (user.code_expiry_at < new Date().getTime())
+      return res.send({
+        error : "Code has already expired. Please, generate a new one.",
+        code  : "expired",
+        user
+      });      
+      
       res.json({
         message: "success", 
         user: {

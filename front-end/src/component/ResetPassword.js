@@ -15,7 +15,9 @@ class ResetPassword extends Component {
       url               : "",
       user              : "",
       cancel            : false,
-      logged            : false
+      logged            : false,
+      newResetPassword  : false,
+      message           : ""
     }
 
 
@@ -45,8 +47,7 @@ class ResetPassword extends Component {
         alert("New Password and Confirm Password have to be the same.");
       else {
         const url = `/user${this.state.url}`;
-console.log("url to reset", url);
-console.log("this.state", this.state);
+
         try {
           const resetPassword = await axios.post( 
             url,
@@ -56,7 +57,7 @@ console.log("this.state", this.state);
                 newPassword : this.state.newPassword
               }
           });
-  console.log("@@@ resetPassword", resetPassword);
+          
           if (resetPassword.data.message){
             const user  = resetPassword.data.user;
             user.token  = resetPassword.data.token
@@ -77,7 +78,7 @@ console.log("this.state", this.state);
             classNameMessage  : "messageFailure",
           });
         }
-        
+        this.clearMsg();
       }
   }
 
@@ -85,7 +86,7 @@ console.log("this.state", this.state);
   clearMsg = () => {
     setTimeout(() => {
       this.setState({
-        errorMsg: ""
+        message: ""
       })
     }, 3500);
   }
@@ -122,25 +123,35 @@ console.log("this.state", this.state);
           url   : match.url
         });
       } else {
+        
         this.setState({
+          user              : getUser.data.user,
           message           : getUser.data.error,
-          classNameMessage  : "messageFailure",
+          classNameMessage  : "messageFailure"
         });
+
+        setTimeout(() => {
+          this.setState({
+            newResetPassword: true
+          });
+        }, 4000);
       }
 
     } catch(err) {
       this.setState({
-        message: err.message,
+        message           : err.message,
         classNameMessage  : "messageFailure",
       });
     }
+
+    this.clearMsg();
 
   }
 
 
   render() {
     return (
-      this.state.cancel
+      (this.state.cancel || this.state.newResetPassword)
         ? <Redirect to = "/login" />
         : this.state.logged
           ? <Redirect to = "/" />
@@ -186,7 +197,7 @@ console.log("this.state", this.state);
                     </Form.Group>
 
                     <Container className="msgcolor">
-                      {this.state.errorMsg}
+                      {this.state.message}
                     </Container>
                     
                     <br />

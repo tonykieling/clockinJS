@@ -98,3 +98,5 @@ TODO v2:
     2.3 WITH TWO WAY AUTHENTICATION:
 
     "front-end to reset password is pretty done, back is started but is missing code generator + the method to handle password change + alter user schema to have 'code' and 'expiry_at'"
+
+    "forget password process, including check expiry date, is done and working. Need to change user register to have info about enable_send_email and organize two_factor auth and also one - for those that do not have enable_send_email activated. Deploying to Heroku"
