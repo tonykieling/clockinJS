@@ -114,3 +114,18 @@ TODO v2:
     - the field above allow user's email modify to be safer
       I need to protect this field to be changed, adding a button "change email" which will send an email to the user to have email modified.
     - also, it allows the user to have a button "change password" which just call "forget password"
+
+    email is created and send from clocki.js
+    when a user is signup,
+      1 - send the above email
+      2 - go to MailGun and add the email
+      3 - check when user agree and afer that set able_send_email: true in the database
+    
+    need to write:
+      - change password - which points to forget_password
+      - change email - which will use a similar process
+          open a modal
+          user type the new email
+          receives an email to confirm
+
+"method to send email when user signup, email sample and buttons to user are done - need to implement change password to call forget (done) and change email. Deplying to Heroku."

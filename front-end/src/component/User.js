@@ -4,6 +4,9 @@ import { connect } from 'react-redux'
 import axios from "axios";
 
 const btnStyle = {
+  width : "20%"
+};
+const btnStyle2 = {
   width : "50%"
 };
 
@@ -295,20 +298,30 @@ class Home extends Component {
               </ButtonGroup>
               </div>
             :
-              <div className="d-flex flex-column">
+              <div 
+                className="d-flex flex-column"
+              >
                 <ButtonGroup className="mt-3">
                   { this.state.mailGun
                     ?
-                      <Button 
-                        variant = "info"
-                        style   = { btnStyle }
-                        onClick = { () => console.log("CALL reset passowrd, first confirm") } >
-                        Change Password
-                      </Button>
+                      <div>
+                        <Button 
+                          variant = "info"
+                          // style   = { btnStyle2 }
+                          onClick = { () => console.log("CALL reset passowrd, first confirm") } >
+                          Change Password
+                        </Button>
+                        <Button 
+                          variant = "warning"
+                          // style   = { btnStyle2 }
+                          onClick = { () => console.log("CHANGE EMAIL METHOD, first confirm") } >
+                          Modify email
+                        </Button>
+                      </div>
                     : ""
                   }
                   <Button
-                    style   = { btnStyle }
+                    // style   = { btnStyle }
                     onClick = { this.editForm } >
                     Edit Data
                   </Button>
