@@ -11,11 +11,6 @@ const userSchema = mongoose.Schema({
     default: false
   },
 
-  able_send_email: {
-    type: Boolean,
-    default: false
-  },
-
   name: {
     type: String
   },
@@ -56,14 +51,18 @@ const userSchema = mongoose.Schema({
     // required: true
   },      
 
+  able_send_email: {
+    type: Boolean,
+    default: false
+  },
+
   code: {
     type: String
   },
 
   code_expiry_at: {
     type: Number
-  }
-
+  },
   
 });
 

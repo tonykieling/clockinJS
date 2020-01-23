@@ -100,3 +100,17 @@ TODO v2:
     "front-end to reset password is pretty done, back is started but is missing code generator + the method to handle password change + alter user schema to have 'code' and 'expiry_at'"
 
     "forget password process, including check expiry date, is done and working. Need to change user register to have info about enable_send_email and organize two_factor auth and also one - for those that do not have enable_send_email activated. Deploying to Heroku"
+
+    change user page to inform about the two_factor auth
+    + send an email when password got changed
+
+    after sign up, system send a message to me so I can add the new user's meail as authorized recipient
+    I need to:
+    - create a method to email me
+    - send a message for the new user saying they are going to receive an email from mailgun to confirm they are a autorized recipient
+      this message I can explain it will allow them to receive an email for each punch in and to have a two-factor authorization - for security purposes, which will allow to their account to be safer adding an extra protection layer to their Clockin.js account.
+    - add a field to user schema called mailgun-recipient (boolean)
+      after added as AR, I need to check this field
+    - the field above allow user's email modify to be safer
+      I need to protect this field to be changed, adding a button "change email" which will send an email to the user to have email modified.
+    - also, it allows the user to have a button "change password" which just call "forget password"

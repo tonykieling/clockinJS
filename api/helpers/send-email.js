@@ -76,7 +76,41 @@ const sendResetPassword = (subject, user, code) => {
 }
 
 
+/**
+ * this method is called when a new user is signed up
+ * it is used to advise and let me knwo so I can add the nes user as mailgun authorized recipient
+ * the caller method need to pass only the new user object
+ *  */
+const gotNewUser = user => {
+  const content = (`
+    <div>
+      <p>New user</p>
+      <p>Need to add in Mailgun</p>
+      <p><b>${user}</b></p>
+      <br>
+      <p>Kind regards from</p>
+      <h4>Clockin.js Team :)</h4>
+    </div>
+  `);
+
+  const data = {
+    from    : "Clockin JS<clockin.js@gmail.com>",
+    to      : "tony.kieling@gmail.com",
+    subject : "!!!!! Clockin.js got a new user",
+    html    : content
+  };
+  
+  mailgun.messages().send(data, (error, body) => {
+    if (error)
+      console.log("*** Mailgun ERROR: ", error);
+    else
+      console.log("*** Mailgun: ", body.message);
+  });
+}
+
+
 module.exports = {
   sendClockinEmail,
-  sendResetPassword
+  sendResetPassword,
+  gotNewUser
 };

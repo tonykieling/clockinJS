@@ -123,9 +123,12 @@ class ResetPassword extends Component {
           url   : match.url
         });
       } else {
-        
+        const user = {
+          name: "<code is invaild>"
+        };
+
         this.setState({
-          user              : getUser.data.user,
+          user              : getUser.data.code ? getUser.data.user.name : user,
           message           : getUser.data.error,
           classNameMessage  : "messageFailure"
         });
@@ -134,7 +137,7 @@ class ResetPassword extends Component {
           this.setState({
             newResetPassword: true
           });
-        }, 4000);
+        }, 5000);        
       }
 
     } catch(err) {
@@ -196,7 +199,7 @@ class ResetPassword extends Component {
 
                     </Form.Group>
 
-                    <Container className="msgcolor">
+                    <Container className = { this.state.classNameMessage }>
                       {this.state.message}
                     </Container>
                     

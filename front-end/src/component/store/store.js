@@ -12,7 +12,8 @@ const persistedData = {
   address     : getUser().address,
   city        : getUser().city,
   postalCode  : getUser().postalCode,
-  phone       : getUser().phone
+  phone       : getUser().phone,
+  mailGun     : getUser().mailGun
 }
 
 const store = createStore(

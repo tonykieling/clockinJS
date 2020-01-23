@@ -67,7 +67,7 @@ class SysHeader extends Component {
           <Navbar bg="info">
             {/* <Navbar.Brand href="/">ClockinJSburguer</Navbar.Brand> */}
             <Link to="/" className="nav-link">ClockinJS</Link>
-            <Link to="/user" className="nav-link">{this.props.storeEmail} is logged</Link>
+            <Link to="/user" className="nav-link">{this.props.storeEmail}</Link>
             <Menu right>
               {/* <NavDropdown.Item href="/user" className="nav-link">User's HomePage</NavDropdown.Item> */}
               {/* <Link to="/user" className="nav-link menu-item">User's Home</Link> */}

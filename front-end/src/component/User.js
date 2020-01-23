@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { Card, Form, Col, Row, Button} from 'react-bootstrap';
+import { Card, Form, Col, Row, Button, ButtonGroup } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import axios from "axios";
 
+const btnStyle = {
+  width : "50%"
+};
 
 class Home extends Component {
 
@@ -18,6 +21,7 @@ class Home extends Component {
       address     : (this.props.storeAddress === "undefined") ? "-" : this.props.storeAddress,
       phone       : (this.props.storePhone === "undefined") ? "-" : this.props.storePhone,
       postalCode  : (this.props.storePostalCode === "undefined") ? "-" : this.props.storePostalCode,
+      mailGun     : (this.props.storeMailgun === "undefined" ? "" : this.props.storeMailgun),
       message     : "",
       tmp_name        : "",
       tmp_email       : "",
@@ -276,25 +280,40 @@ class Home extends Component {
 
           { !this.state.disableEdit
             ?
-              <div className="gridBtnSC">
+              <div className="d-flex flex-column">
+              <ButtonGroup className="mt-3">
+                <Button
+                  variant   = "success"
+                  style   = { btnStyle }
+                  onClick   = { this.handleChange }
+                >Save </Button>
                 <Button 
-                  variant = "success" 
-                  onClick = {this.handleSubmit} >
-                  Save
-                </Button>
-
-                <Button 
-                  variant="warning" 
-                  onClick={ this.btnCancel } >
-                  Cancel
-                </Button>
+                  variant = "warning"
+                  style   = { btnStyle }
+                  onClick = { this.btnCancel }
+                > Cancel </Button>
+              </ButtonGroup>
               </div>
             :
-              <Button 
-                className="gridBtnEdit"
-                onClick = { this.editForm } >
-                Edit
-              </Button>
+              <div className="d-flex flex-column">
+                <ButtonGroup className="mt-3">
+                  { this.state.mailGun
+                    ?
+                      <Button 
+                        variant = "info"
+                        style   = { btnStyle }
+                        onClick = { () => console.log("CALL reset passowrd, first confirm") } >
+                        Change Password
+                      </Button>
+                    : ""
+                  }
+                  <Button
+                    style   = { btnStyle }
+                    onClick = { this.editForm } >
+                    Edit Data
+                  </Button>
+                </ButtonGroup>
+              </div>
           }
         </Card>        
         <br></br>
@@ -314,7 +333,8 @@ const mapStateToProps = store => {
     storeCity       : store.city,
     storeAddress    : store.address,
     storePostalCode : store.postalCode,
-    storePhone      : store.phone
+    storePhone      : store.phone,
+    storeMailgun    : store.mailGun
   }
 }
 

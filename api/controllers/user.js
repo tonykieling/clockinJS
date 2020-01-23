@@ -89,7 +89,6 @@ const signup = async (req, res) => {
     name,
     email,
     password,
-    admin,
     address,
     city,
     phone,
@@ -124,17 +123,21 @@ const signup = async (req, res) => {
           name,
           email,
           password: hash,
-          admin,
           address,
           city,
           postal_code: postalCode,
           phone
         });
 
+
         await user.save();
 
         const token = await tokenCreation(user.email, user._id, user.name, user.admin);
         user.postalCode = postalCode;
+
+        // send email for me so I can add the new user as an Authorized Recipient.
+        sendEmail.gotNewUser(user);
+
         res.json({
           message: `User <${user.email}> has been created.`, 
           user, 
@@ -188,7 +191,8 @@ console.log("inside LOGIN - req.body:", req.body);
               address     : user.address,
               city        : user.city,
               postalCode  : user.postal_code,
-              phone       : user.phone
+              phone       : user.phone,
+              mailGun     : user.able_send_email,
             },
             token
           });
@@ -517,7 +521,7 @@ const get_by_code = async (req, res) => {
 
     if (!user || user.length < 1) { 
       return res.json({
-        error: `EGUBC01: Error`
+        error: `EGUBC01: This code is not valid anymore. Try a new reset password.`
       });
     }
     

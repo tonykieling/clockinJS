@@ -154,7 +154,7 @@ class Register extends Component {
       return (
         <div className="formPosition">
           <br />
-          <h3>User's Register</h3>
+          <h3>User's Sign Up</h3>
           {/* <Card className="frame register card"> */}
           <Card className="card-settings">
             <Form onSubmit={this.handleSubmit}>
