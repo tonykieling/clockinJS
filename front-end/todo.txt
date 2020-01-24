@@ -129,3 +129,5 @@ TODO v2:
           receives an email to confirm
 
 "method to send email when user signup, email sample and buttons to user are done - need to implement change password to call forget (done) and change email. Deplying to Heroku."
+
+"change passowrd for logged user is working, back, front and db is ok. Next feature is gonna be change email"

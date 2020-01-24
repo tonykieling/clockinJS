@@ -73,6 +73,7 @@ class ForgetPasswordModal extends Component {
   }
 
 
+  
   handleResetPassword = async event => {
     event.preventDefault();
 

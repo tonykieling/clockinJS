@@ -388,30 +388,35 @@ const forget_password = async (req, res) => {
             return res.send({
               error: `EFP01: Error in recording code(1).`
             });
-        } catch(err) {
-          console.trace("Error EFP02: ", err.message);
-          return res.status(200).json({
-            error: "EFP02: Error in recording code(2)"
-          });
-        }
 
-        //  send the email
-        sendEmail.sendResetPassword("Clockin.js - Reset Password", userExist[0], code);
-      } else
-        return res.send({
-          error: "User is no able to send email. Please contact tony.kieling@gmail.com"
-        });
-    // } else  there is no else due to if there is no email, system does nothing.
-    // actually, if there is no email, system is gonna send a message just to the front -end receive it
-    return res.send({
-      message: "email is not valid"
-    });
-  } catch(err) {  // system answer if there is an error
-    console.trace("Error: ", err.message);
-    return res.status(200).json({
-      error: `Error: EFP03`
-    });
-  }
+          } catch(err) {
+            console.trace("Error EFP02: ", err.message);
+            return res.status(200).json({
+              error: "EFP02: Error in recording code(2)"
+            });
+          }
+
+          //  send the email
+          sendEmail.sendResetPassword("Clockin.js - Reset Password", userExist[0], code);
+          return res.send({
+            message: "Email has been sent"
+          });
+
+        } else
+          return res.send({
+            error: "User is no able to send email. Please contact tony.kieling@gmail.com"
+          });
+      // } else  there is no else due to if there is no email, system does nothing.
+      // actually, if there is no email, system is gonna send a message just to the front -end receive it
+      return res.send({
+        message: "email is not valid"
+      });
+    } catch(err) {  // system answer if there is an error
+      console.trace("Error: ", err.message);
+      return res.status(200).json({
+        error: `Error: EFP03`
+      });
+    }
 }
 
 
@@ -482,7 +487,8 @@ const reset_password = async (req, res) => {
                     address     : userExist.address,
                     city        : userExist.city,
                     postalCode  : userExist.postal_code,
-                    phone       : userExist.phone
+                    phone       : userExist.phone,
+                    mailGun     : userExist.able_send_email
                   },
                   token
                 });

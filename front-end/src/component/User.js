@@ -4,11 +4,13 @@ import { connect } from 'react-redux'
 import axios from "axios";
 
 const btnStyle = {
-  width : "20%"
+  width : "33%",
+  paddingLeft: "0px",
+  paddingRight: "0px"
 };
-const btnStyle2 = {
-  width : "50%"
-};
+// const btnStyle2 = {
+//   width : "33%"
+// };
 
 class Home extends Component {
 
@@ -34,6 +36,7 @@ class Home extends Component {
       tmp_postalCode  : ""
     }
   }
+
 
 
   // need to implement it
@@ -117,9 +120,8 @@ class Home extends Component {
     } catch(error) {
       console.log("catch error: ", error.message);
     }
-
-
   }
+
 
 
   updateState = event => {
@@ -129,11 +131,13 @@ class Home extends Component {
   }
 
 
+
   editForm = () => {
     this.setState({
       disableEdit: false,
     });
   }
+
 
 
   btnCancel = () => {
@@ -150,6 +154,7 @@ class Home extends Component {
   }
 
 
+
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
@@ -157,6 +162,62 @@ class Home extends Component {
       });
     }, 3000);
   }
+
+
+
+  handleChangePassword = async () => {
+    const confirmCP = window.confirm("Are you sure you want to change your password?");
+    if (confirmCP) {
+      const secondConfirm = window.confirm("You are receive an email with the instructions to modify your password.");
+        if (secondConfirm) {
+          //call the method to send an email with change password instructions
+          console.log("sending email");
+
+          const url = `/user/forgetPassword`;
+
+          try {
+            const changePassword = await axios.post( 
+              url,
+              {
+                data: {
+                  email: this.state.email
+                }
+            });
+            
+            if (changePassword.data.message){
+              this.setState({
+                message           : `Your email <${this.state.email}> is going to receive an email with instructions to change your password.`,
+                classNameMessage  : "messageSuccess"
+              });
+            } else {
+              this.setState({
+                message           : changePassword.data.error,
+                classNameMessage  : "messageFailure",
+              });
+    
+              this.clearMessage();
+            }
+    
+          } catch(err) {
+            this.setState({
+              message: err.message 
+            });
+          }
+
+          setTimeout(() => {
+            this.clearMessage();
+          }, 2000);
+        }
+    }
+  }
+
+
+
+  handleChangeEmail = () => {
+
+  }
+
+
 
   render() {
     return (
@@ -197,7 +258,8 @@ class Home extends Component {
               <Form.Label column sm={2} className="cardLabel">Email</Form.Label>
               <Col sm={8}>
                 <Form.Control
-                  disabled      = {this.state.disableEdit}
+                  // disabled      = {this.state.disableEdit}
+                  disabled      = { true }
                   type          = "text"
                   name          = "email"
                   onChange      = {this.updateState}
@@ -275,7 +337,8 @@ class Home extends Component {
           </Form>
 
           
-          <Card.Header className="cardTitle message">          
+          {/* <Card.Header className="cardTitle message">           */}
+          <Card.Header className= { this.state.classNameMessage}>          
             { this.state.message
               ? this.state.message
               : <span className="noMessage">.</span> }
@@ -287,12 +350,12 @@ class Home extends Component {
               <ButtonGroup className="mt-3">
                 <Button
                   variant   = "success"
-                  style   = { btnStyle }
+                  // style   = { btnStyle }
                   onClick   = { this.handleChange }
                 >Save </Button>
                 <Button 
                   variant = "warning"
-                  style   = { btnStyle }
+                  // style   = { btnStyle }
                   onClick = { this.btnCancel }
                 > Cancel </Button>
               </ButtonGroup>
@@ -301,23 +364,23 @@ class Home extends Component {
               <div 
                 className="d-flex flex-column"
               >
-                <ButtonGroup className="mt-3">
                   { this.state.mailGun
                     ?
-                      <div>
+                      <ButtonGroup className="mt-3">
                         <Button 
                           variant = "info"
-                          // style   = { btnStyle2 }
-                          onClick = { () => console.log("CALL reset passowrd, first confirm") } >
+                          style   = { btnStyle }
+                          // onClick = { () => console.log("CALL reset passowrd, first confirm") } >
+                          onClick = { this.handleChangePassword } >
                           Change Password
                         </Button>
                         <Button 
                           variant = "warning"
-                          // style   = { btnStyle2 }
+                          style   = { btnStyle }
                           onClick = { () => console.log("CHANGE EMAIL METHOD, first confirm") } >
                           Modify email
                         </Button>
-                      </div>
+                    </ButtonGroup>
                     : ""
                   }
                   <Button
@@ -325,7 +388,6 @@ class Home extends Component {
                     onClick = { this.editForm } >
                     Edit Data
                   </Button>
-                </ButtonGroup>
               </div>
           }
         </Card>        
