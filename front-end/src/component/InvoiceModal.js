@@ -232,7 +232,6 @@ class InvoiceModal extends Component {
 
 
   setShowModalDeleteInvoice = () => {
-    console.log("inside setShowModalDeleteInvoice");
     this.setState({
       showModalDeleteInvoice: true
     })

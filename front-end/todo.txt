@@ -133,3 +133,4 @@ TODO v2:
 "change passowrd for logged user is working, back, front and db is ok. Deploying to Heroku. Next feature is gonna be change email"
 !!! decide put aside change email right now. Let's focus on the system workflow. 2FA is working.
 
+"started changing popbox for Bootstrap Modal, instead of React Modal, and also using Hooks. Delete Invoice front-end is pretty done, missing double check back-end. Plus, no change email for now."

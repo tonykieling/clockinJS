@@ -1,64 +1,21 @@
-import React, { useState } from 'react'
-import { Navbar, Nav, NavDropdown, Button, Modal, ButtonGroup } from "react-bootstrap";
+import React, { Component } from 'react'
+import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { slide as Menu } from "react-burger-menu";
 import "../burguer.css";
 
-// class SysHeader extends Component {
-function SysHeader(props) {
+class SysHeader extends Component {
 
-  const [showModal, setShowModal] = useState(false);
-  const [quit, setQuit] = useState(true);
+
   // function to set no user thus closing the user's session
-  const logout = (e) => {
-    e.preventDefault();
-    // if (window.confirm("Are you sure you wanna leave?")) {
-    //   props.noUser();
-    //   return <Redirect to = "/land" />
-    // }
-    setShowModal(true);
+  logout = () => {
+    if (window.confirm("Are you sure you wanna leave?")) {
+      this.props.noUser();
+      return <Redirect to = "/land" />
+    }
   }
-
-
-  const quiting = () => {
-    console.log("inside quiting function");
-    setShowModal(false);
-    props.noUser();
-    return <Redirect to = "/land" />
-    // setQuit(true);
-  }
-
-  const leaveModal =         
-    <Modal
-      show    = { showModal }
-      onHide  = { () => console.log("onExit Modal") } 
-    >
-{showModal ? console.log("modal is ONNNNN") : ""}
-      <Modal.Header closeButton>
-        <Modal.Title>Are you sure you wanna leave?</Modal.Title>
-      </Modal.Header>
-      <Modal.Footer>
-        <ButtonGroup 
-          className = "mt-3"
-          style     = {{ width: "50%" }} >
-          <Button 
-            variant   = "primary" 
-            onClick   = { () => quiting() } 
-            style     = {{width: "50%"}} >
-            Yes
-          </Button>
-          <Button 
-            variant   = "danger" 
-            onClick   = { () => setShowModal(false) } 
-            style     = {{ width: "50%"}} >
-            No
-          </Button>
-        </ButtonGroup>
-      </Modal.Footer>
-
-    </Modal>      
 
 // example of prevState
   // toggleCollapse = collapseID => () => {
@@ -69,7 +26,7 @@ function SysHeader(props) {
 
 
   // when a user is logged
-  const loggedHeader = () => {
+  loggedHeader = () => {
     return (
       <div>
         <Navbar bg="primary showNormalMenu" >
@@ -81,7 +38,7 @@ function SysHeader(props) {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Link to="/user" className="nav-link">{props.storeEmail} is logged</Link>
+              <Link to="/user" className="nav-link">{this.props.storeEmail} is logged</Link>
               <NavDropdown title="Clients" id="basic-nav-dropdown1">
                 <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item>
                 <NavDropdown.Divider />
@@ -102,7 +59,7 @@ function SysHeader(props) {
 
               <Link to="/about" className="nav-link">About</Link>
             </Nav>
-            <Button onClick={logout} className="logoutBtn">Logout</Button>
+            <Button onClick={this.logout} className="logoutBtn">Logout</Button>
           </Navbar.Collapse>
         </Navbar>
 
@@ -110,11 +67,8 @@ function SysHeader(props) {
           <Navbar bg="info">
             {/* <Navbar.Brand href="/">ClockinJSburguer</Navbar.Brand> */}
             <Link to="/" className="nav-link">ClockinJS</Link>
-            <Link to="/user" className="nav-link">{props.storeEmail}</Link>
-            <Menu 
-              right
-              /////////////need to do isOpen
-            >
+            <Link to="/user" className="nav-link">{this.props.storeEmail}</Link>
+            <Menu right>
               {/* <NavDropdown.Item href="/user" className="nav-link">User's HomePage</NavDropdown.Item> */}
               {/* <Link to="/user" className="nav-link menu-item">User's Home</Link> */}
               {/* <Link to="/user" className="menu-item">User</Link> */}
@@ -146,7 +100,7 @@ function SysHeader(props) {
               <br />
               <a id="about" className="menu-item" href="/about">About</a>
               <br />
-              <a onClick={ logout } className="menu-item--small" href="/">Logout</a>
+              <a onClick={ this.logout } className="menu-item--small" href="/">Logout</a>
             </Menu>
           </Navbar>
         </div>
@@ -156,7 +110,7 @@ function SysHeader(props) {
   }
 
 
-  const notLoggedHeader = () => {
+  notLoggedHeader = () => {
     return (
       <Navbar bg="dark" variant="dark">
         <Navbar.Brand href="/">ClockinJS</Navbar.Brand>
@@ -169,33 +123,14 @@ function SysHeader(props) {
     );
   }
 
-    return(
-      <div>
-        {(props.storeEmail) ?
-              loggedHeader() :
-              notLoggedHeader()
-        }
-
-        {showModal
-          ? leaveModal
-          : console.log("showModal is OFF")
-        }
-
-        {/* {quit 
-          ? <Redirect to = "/land" />
-          : console.log("no quiting")
-        } */}
-
-      </div>
-    )
-
+  render() {
+    return(this.props.storeEmail ?
+            this.loggedHeader() :
+            this.notLoggedHeader()
+          );
+  }
 }
 
-
-/**
- * 
- * Redux methods
- */
 const mapStateToProps = store => {
   return {
     storeEmail      : store.email
