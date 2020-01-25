@@ -3,14 +3,14 @@ import { Card, Form, Col, Row, Button, ButtonGroup } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import axios from "axios";
 
+// const btnStyle = {
+//   width : "33%",
+// };
 const btnStyle = {
-  width : "33%",
+  width : "50%",
   paddingLeft: "0px",
   paddingRight: "0px"
 };
-// const btnStyle2 = {
-//   width : "33%"
-// };
 
 class Home extends Component {
 
@@ -213,9 +213,9 @@ class Home extends Component {
 
 
 
-  handleChangeEmail = () => {
-
-  }
+  // not doing this now
+  // handleChangeEmail = () => {
+  // }
 
 
 
@@ -354,40 +354,36 @@ class Home extends Component {
                   onClick   = { this.handleChange }
                 >Save </Button>
                 <Button 
-                  variant = "warning"
+                  variant = "danger"
                   // style   = { btnStyle }
                   onClick = { this.btnCancel }
                 > Cancel </Button>
               </ButtonGroup>
               </div>
             :
-              <div 
-                className="d-flex flex-column"
-              >
+              <div className="d-flex flex-column" >
                   { this.state.mailGun
                     ?
                       <ButtonGroup className="mt-3">
                         <Button 
                           variant = "info"
                           style   = { btnStyle }
-                          // onClick = { () => console.log("CALL reset passowrd, first confirm") } >
                           onClick = { this.handleChangePassword } >
                           Change Password
                         </Button>
                         <Button 
-                          variant = "warning"
+                          variant = "primary"
                           style   = { btnStyle }
-                          onClick = { () => console.log("CHANGE EMAIL METHOD, first confirm") } >
-                          Modify email
+                          onClick = { this.editForm } >
+                          Edit data
                         </Button>
-                    </ButtonGroup>
-                    : ""
-                  }
-                  <Button
-                    // style   = { btnStyle }
-                    onClick = { this.editForm } >
-                    Edit Data
-                  </Button>
+                      </ButtonGroup>
+                    :
+                      <Button
+                        onClick = { this.editForm } >
+                        Edit Data
+                      </Button>
+                    }
               </div>
           }
         </Card>        

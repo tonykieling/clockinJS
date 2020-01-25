@@ -130,4 +130,6 @@ TODO v2:
 
 "method to send email when user signup, email sample and buttons to user are done - need to implement change password to call forget (done) and change email. Deplying to Heroku."
 
-"change passowrd for logged user is working, back, front and db is ok. Next feature is gonna be change email"
+"change passowrd for logged user is working, back, front and db is ok. Deploying to Heroku. Next feature is gonna be change email"
+!!! decide put aside change email right now. Let's focus on the system workflow. 2FA is working.
+

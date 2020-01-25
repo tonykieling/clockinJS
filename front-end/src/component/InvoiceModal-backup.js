@@ -6,7 +6,6 @@ import { Card, Button, ButtonGroup, Form, Col, Table } from "react-bootstrap";
 import InvoiceChangeStatusModal from "./InvoiceChangeStatusModal.js";
 import ReactModal from "react-modal";
 import * as formatDate from "./aux/formatDate.js";
-import InvoiceModalDelete from "./InvoiceModalDelete.js";
 
 ReactModal.setAppElement('#root');
 
@@ -48,23 +47,23 @@ const customStyles = window.innerWidth < 800
  */
 
 
+
 class InvoiceModal extends Component {
-  
+
   state = {
     dateStart         : "",
     dateEnd           : "",
     clientId          : "",
-    // invoiceList       : [],
+    invoiceList       : [],
     client            : "",
-    // invoiceListTable  : "",
+    invoiceListTable  : "",
     
     clockInListTable  : "",
     tableVisibility   : false,
     message           : "",
     changeStatusModal : false,
     currentStatus     : this.props.invoice.status,
-    updateYN          : false,
-    showModalDeleteInvoice: false
+    updateYN          : false
   };
 
 
@@ -231,24 +230,8 @@ class InvoiceModal extends Component {
   }
 
 
-  setShowModalDeleteInvoice = () => {
-    console.log("inside setShowModalDeleteInvoice");
-    this.setState({
-      showModalDeleteInvoice: true
-    })
-  }
-
-
-  closeShowModalDeleteInvoice = () => {
-    this.setState({
-      showModalDeleteInvoice: false
-    });
-  }
-
 
   render() {
-
-  // const [showModalDeleteInvoice, setShowModalDeleteInvoice] = useState(false);
     return (
       <ReactModal
         isOpen  = { this.props.openInvoiceModal }
@@ -299,8 +282,7 @@ class InvoiceModal extends Component {
                     style     = { { width: "50%" }}
                     variant   = "danger"
                     disabled  = { this.state.currentStatus === "Received" ? true : false }
-                    // onClick   = { this.handleDeleteInvoice }
-                    onClick   = { this.setShowModalDeleteInvoice }
+                    onClick   = { this.handleDeleteInvoice }
                   > Delete </Button>
                 </ButtonGroup>
               </div>
@@ -356,16 +338,6 @@ class InvoiceModal extends Component {
         >
           Close Window
         </Button>
-
-
-        {this.state.showModalDeleteInvoice
-          ? <InvoiceModalDelete
-              initialState      = { this.state.showModalDeleteInvoice }
-              closeDeleteModal  = { this.closeShowModalDeleteInvoice }
-              invoiceCode       = { this.props.invoice.code }
-              />
-          : ""
-        }
 
       </ReactModal>
     );

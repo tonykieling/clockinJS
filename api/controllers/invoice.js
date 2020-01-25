@@ -330,7 +330,8 @@ const invoice_delete = async (req, res) => {
   const invoiceId = req.params.invoiceId;
   const userId    = req.userData.userId;
   const userAdmin = req.userData.admin;
-
+console.log("bingo")  
+return res.send({error: "bingo!!"});
   try {
     const invoiceToBeDeleted = await Invoice
       .findById(invoiceId);

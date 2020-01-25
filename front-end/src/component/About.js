@@ -90,7 +90,7 @@ export default function About() {
 
         <h2 className="sub-title">Teck stack</h2>
         <p>
-          MERN - MongoDB, Express, React and Node, plus JWT, React, Bootstrap, and Bcrypt are the main technologies used.
+          MERN - MongoDB, Express, React and Node, plus JWT, React, Bootstrap, Bcrypt and Mailgun are the main technologies used.
         </p>
 
         <h2 className="sub-title">Todo list and Releases</h2>
