@@ -10,16 +10,18 @@ import "../burguer.css";
 function SysHeader(props) {
 
   const [showModal, setShowModal] = useState(false);
-  const [quit, setQuit] = useState(true);
-  // function to set no user thus closing the user's session
+  const [showMenu, setShowMenu] = useState();
+  
+
   const logout = (e) => {
     e.preventDefault();
     // if (window.confirm("Are you sure you wanna leave?")) {
     //   props.noUser();
     //   return <Redirect to = "/land" />
     // }
+    setShowMenu(false);
     setShowModal(true);
-  }
+  };
 
 
   const quiting = () => {
@@ -27,15 +29,15 @@ function SysHeader(props) {
     setShowModal(false);
     props.noUser();
     return <Redirect to = "/land" />
-    // setQuit(true);
-  }
+  };
+
 
   const leaveModal =         
     <Modal
       show    = { showModal }
-      onHide  = { () => console.log("onExit Modal") } 
+      onHide  = { () => setShowModal(false) }
     >
-{showModal ? console.log("modal is ONNNNN") : ""}
+{/* {showModal ? console.log("modal is ONNNNN") : ""} */}
       <Modal.Header closeButton>
         <Modal.Title>Are you sure you wanna leave?</Modal.Title>
       </Modal.Header>
@@ -57,8 +59,12 @@ function SysHeader(props) {
           </Button>
         </ButtonGroup>
       </Modal.Footer>
+    </Modal>;
 
-    </Modal>      
+
+  // const isMenuOpen = (state) => {
+  //   console.log("Menus state = ", state);
+  // }
 
 // example of prevState
   // toggleCollapse = collapseID => () => {
@@ -73,7 +79,6 @@ function SysHeader(props) {
     return (
       <div>
         <Navbar bg="primary showNormalMenu" >
-          {/* <Navbar.Brand href="/">ClockinJS</Navbar.Brand> */}
           <Navbar.Brand>
             <Link to = "/" className="navbar-brand"> ClockinJS </Link>
           </Navbar.Brand>
@@ -108,19 +113,13 @@ function SysHeader(props) {
 
         <div className="showHamburguer">
           <Navbar bg="info">
-            {/* <Navbar.Brand href="/">ClockinJSburguer</Navbar.Brand> */}
             <Link to="/" className="nav-link">ClockinJS</Link>
             <Link to="/user" className="nav-link">{props.storeEmail}</Link>
             <Menu 
               right
-              /////////////need to do isOpen
-            >
-              {/* <NavDropdown.Item href="/user" className="nav-link">User's HomePage</NavDropdown.Item> */}
-              {/* <Link to="/user" className="nav-link menu-item">User's Home</Link> */}
-              {/* <Link to="/user" className="menu-item">User</Link> */}
-              {/* <a id="home" className="menu-item" href="/user">User's Home</a>
-              <Link to="/user" className="nav-link">{this.props.storeEmail} is logged</Link> */}
-              {/* it's broken */}
+              isOpen = { showMenu }
+              // onStateChange = { isMenuOpen }
+              >
 
               <NavDropdown title="Clients" id="basic-nav-dropdown1" className="menu-item">
                 <NavDropdown.Item href="clientNew" className="menu-item">Add New One</NavDropdown.Item>
@@ -141,8 +140,6 @@ function SysHeader(props) {
                 <NavDropdown.Item href="invoicesList">List, Check and Edit</NavDropdown.Item>
               </NavDropdown>            
 
-              {/* <NavDropdown.Item className="font-color menu-item" href="about">About</NavDropdown.Item> */}
-              {/* <Link to="/about" className="nav-link menu-item">About</Link> */}
               <br />
               <a id="about" className="menu-item" href="/about">About</a>
               <br />
@@ -169,8 +166,10 @@ function SysHeader(props) {
     );
   }
 
+
     return(
       <div>
+  
         {(props.storeEmail) ?
               loggedHeader() :
               notLoggedHeader()
@@ -181,14 +180,8 @@ function SysHeader(props) {
           : console.log("showModal is OFF")
         }
 
-        {/* {quit 
-          ? <Redirect to = "/land" />
-          : console.log("no quiting")
-        } */}
-
       </div>
-    )
-
+    );
 }
 
 
@@ -202,10 +195,12 @@ const mapStateToProps = store => {
   }
 };
 
+
 const mapDispatchToProps = dispatch => {
   return {
     noUser: () => dispatch({type:"LOGOUT"})
   }
 };
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(SysHeader);
