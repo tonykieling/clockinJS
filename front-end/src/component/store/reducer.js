@@ -15,8 +15,7 @@ const reducer = (state = initialState, action) => {
       address     : action.data.user.address,
       city        : action.data.user.city,
       postalCode  : action.data.user.postalCode,
-      phone       : action.data.user.phone,
-      mailGun     : action.data.user.mailGun
+      phone       : action.data.user.phone
     };
     saveState(newState);
 
@@ -30,8 +29,7 @@ const reducer = (state = initialState, action) => {
       address         : undefined,
       city            : undefined,
       postalCode      : undefined,
-      phone           : undefined,
-      mailGun         : undefined
+      phone           : undefined
       // client_id       : undefined,
       // client_nickname : undefined,
       // client_dr       : undefined,

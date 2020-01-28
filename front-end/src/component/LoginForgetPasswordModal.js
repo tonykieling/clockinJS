@@ -33,7 +33,7 @@ const btnStyle = {
 class ForgetPasswordModal extends Component {
 
   state = {
-    emailFP           : "",
+    emailFP           : this.props.email,
     message           : "",
     classNameMessage  : "",
     disableBtnReset   : false,
@@ -170,7 +170,7 @@ console.log("@@@ forgetPassword", forgetPassword);
                   }
 
                   <Button 
-                    variant = "danger"
+                    variant = { this.state.disableBtnReset ? "primary" : "danger" }
                     disabled  = { this.state.disableBtnCancel }
                     style     = { btnStyle }
                     onClick = { this.closeFTModal }

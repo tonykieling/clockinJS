@@ -26,7 +26,6 @@ class Home extends Component {
       address     : (this.props.storeAddress === "undefined") ? "-" : this.props.storeAddress,
       phone       : (this.props.storePhone === "undefined") ? "-" : this.props.storePhone,
       postalCode  : (this.props.storePostalCode === "undefined") ? "-" : this.props.storePostalCode,
-      mailGun     : (this.props.storeMailgun === "undefined" ? "" : this.props.storeMailgun),
       message     : "",
       tmp_name        : "",
       tmp_email       : "",
@@ -56,7 +55,7 @@ class Home extends Component {
         });
 
         this.textInput2.focus();
-      } else  {
+      } else if (!this.state.name && !this.state.email) {
         this.setState({
           message: "Please, at least name and email should be filled."
         });
@@ -79,7 +78,7 @@ class Home extends Component {
       postalCode  : this.state.postalCode,
       phone       : this.state.phone
     }
-
+console.log("changeUser", changeUser);
     try {
       const modUser = await axios.patch( 
         url,
@@ -171,7 +170,6 @@ class Home extends Component {
       const secondConfirm = window.confirm("You are receive an email with the instructions to modify your password.");
         if (secondConfirm) {
           //call the method to send an email with change password instructions
-          console.log("sending email");
 
           const url = `/user/forgetPassword`;
 
@@ -212,6 +210,13 @@ class Home extends Component {
   }
 
 
+  // handleChange = () => {
+  //   this.setState({
+  //     [e.target.name]: e.target.value
+  //   });
+  // }
+
+
 
   // not doing this now
   // handleChangeEmail = () => {
@@ -224,7 +229,7 @@ class Home extends Component {
       <div className="formPosition">
         <br />
         <h3 className="htitle">User's Home Page</h3>
-        <h4>Welcome {this.props.storeEmail} </h4> 
+        {/* <h4>Welcome {this.props.storeName.split(" ")[0]} </h4>  */}
         <br />
 
         <Card className="card-settings">
@@ -351,7 +356,7 @@ class Home extends Component {
                 <Button
                   variant   = "success"
                   // style   = { btnStyle }
-                  onClick   = { this.handleChange }
+                  onClick   = { this.handleSubmit }
                 >Save </Button>
                 <Button 
                   variant = "danger"
@@ -362,28 +367,20 @@ class Home extends Component {
               </div>
             :
               <div className="d-flex flex-column" >
-                  { this.state.mailGun
-                    ?
-                      <ButtonGroup className="mt-3">
-                        <Button 
-                          variant = "info"
-                          style   = { btnStyle }
-                          onClick = { this.handleChangePassword } >
-                          Change Password
-                        </Button>
-                        <Button 
-                          variant = "primary"
-                          style   = { btnStyle }
-                          onClick = { this.editForm } >
-                          Edit data
-                        </Button>
-                      </ButtonGroup>
-                    :
-                      <Button
-                        onClick = { this.editForm } >
-                        Edit Data
-                      </Button>
-                    }
+                <ButtonGroup className="mt-3">
+                  <Button 
+                    variant = "info"
+                    style   = { btnStyle }
+                    onClick = { this.handleChangePassword } >
+                    Change Password
+                  </Button>
+                  <Button 
+                    variant = "primary"
+                    style   = { btnStyle }
+                    onClick = { this.editForm } >
+                    Edit data
+                  </Button>
+                </ButtonGroup>
               </div>
           }
         </Card>        
@@ -404,8 +401,7 @@ const mapStateToProps = store => {
     storeCity       : store.city,
     storeAddress    : store.address,
     storePostalCode : store.postalCode,
-    storePhone      : store.phone,
-    storeMailgun    : store.mailGun
+    storePhone      : store.phone
   }
 }
 

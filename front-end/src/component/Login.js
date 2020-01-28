@@ -86,7 +86,6 @@ class Login extends Component {
     this.setState({
       forgetPasswordModal: true
     });
-    console.log("this.state", this.state);
   }
 
 
@@ -142,6 +141,7 @@ class Login extends Component {
                 <ForgetPasswordModal
                   openFPModal = { this.state.forgetPasswordModal }
                   closeModal  = { this.closeModal }
+                  email       = { this.state.email }
                 >
 
                 </ForgetPasswordModal>

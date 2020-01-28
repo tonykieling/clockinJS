@@ -11,8 +11,7 @@ export const getUser = () => {
       address     : localStorage.getItem("address"),
       city        : localStorage.getItem("city"),
       postalCode  : localStorage.getItem("postalCode"),
-      phone       : localStorage.getItem("phone"),
-      mailGun     : localStorage.getItem("mailGun")
+      phone       : localStorage.getItem("phone")
     }
     return(user ? user : undefined);
 
@@ -32,7 +31,6 @@ export const saveState = user => {
     localStorage.setItem("address", user.address);
     localStorage.setItem("postalCode", user.postalCode);
     localStorage.setItem("phone", user.phone);
-    localStorage.setItem("mailGun", user.mailGun);
 
   } catch (err) {
     return err.message;
@@ -74,7 +72,6 @@ export const clearUserLS = () => {
   localStorage.removeItem("city");
   localStorage.removeItem("postalCode");
   localStorage.removeItem("phone");
-  localStorage.removeItem("mailGun");
   
 
   // localStorage.removeItem("client_id");

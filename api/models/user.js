@@ -49,11 +49,6 @@ const userSchema = mongoose.Schema({
   phone: {
     type: String,
     // required: true
-  },      
-
-  able_send_email: {
-    type: Boolean,
-    default: false
   },
 
   code: {

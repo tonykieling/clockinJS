@@ -138,6 +138,9 @@ const signup = async (req, res) => {
         // send email for me so I can add the new user as an Authorized Recipient.
         sendEmail.gotNewUser(user);
 
+        // send a welcome email to the new user
+        sendEmail.welcomeEmail(user.name, user.email);
+
         res.send({
           message: `User <${user.email}> has been created.`, 
           user, 
@@ -191,8 +194,7 @@ console.log("inside LOGIN - req.body:", req.body);
               address     : user.address,
               city        : user.city,
               postalCode  : user.postal_code,
-              phone       : user.phone,
-              mailGun     : user.able_send_email,
+              phone       : user.phone
             },
             token
           });
@@ -353,9 +355,7 @@ const forget_password = async (req, res) => {
     const userExist = await User
       .find( { email: user });
 
-    if (userExist.length > 0)
-      if (userExist[0].able_send_email) {
-
+    if (userExist.length > 0) {
         /**
          * generate a code
          * in the user schema, create a code and expiry time to it
@@ -401,22 +401,18 @@ const forget_password = async (req, res) => {
           return res.send({
             message: "Email has been sent"
           });
-
-        } else
-          return res.send({
-            error: "User is no able to send email. Please contact tony.kieling@gmail.com"
-          });
-      // } else  there is no else due to if there is no email, system does nothing.
-      // actually, if there is no email, system is gonna send a message just to the front -end receive it
-      return res.send({
-        message: "email is not valid"
-      });
-    } catch(err) {  // system answer if there is an error
-      console.trace("Error: ", err.message);
-      return res.status(200).json({
-        error: `Error: EFP03`
-      });
     }
+    // } else  there is no else due to if there is no email, system does nothing.
+    // actually, if there is no email, system is gonna send a message just to the front -end receive it
+    return res.send({
+      message: "email is not valid"
+    });
+  } catch(err) {  // system answer if there is an error
+    console.trace("Error: ", err.message);
+    return res.status(200).json({
+      error: `Error: EFP03`
+    });
+  }
 }
 
 
@@ -487,8 +483,7 @@ const reset_password = async (req, res) => {
                     address     : userExist.address,
                     city        : userExist.city,
                     postalCode  : userExist.postal_code,
-                    phone       : userExist.phone,
-                    mailGun     : userExist.able_send_email
+                    phone       : userExist.phone
                   },
                   token
                 });

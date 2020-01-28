@@ -134,3 +134,8 @@ TODO v2:
 !!! decide put aside change email right now. Let's focus on the system workflow. 2FA is working.
 
 "started changing popbox for Bootstrap Modal, instead of React Modal, and also using Hooks. Delete Invoice front-end is pretty done, missing double check back-end. Plus, no change email for now."
+
+small changes on the button styling
+user page and email
+getting ride of Mailgun
+Logout close menu

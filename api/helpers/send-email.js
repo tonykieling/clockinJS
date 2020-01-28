@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 const sendClockinEmail = (subject, clockin, user, client) => {
   const content = (`
     <div>
-      <p>Hi <b>${user.name}</b></p>
+      <p>Hi <b>${user.name.split(" ")[0]}</b></p>
       <p>You have just punched in the following data:</p>
       <br>
       <p> <b>Client: <i>${client.nickname} </i></b></p>
@@ -37,7 +37,7 @@ const sendResetPassword = (subject, user, code) => {
 
   const content = (`
     <div>
-      <p>Hi <b>${user.name}</b></p>
+      <p>Hi <b>${user.name.split(" ")[0]}</b></p>
       <p>Recently you asked to reset your password.</p>
       <p>Click on <a href="https://clockinjs.herokuapp.com/reset_password/${code}">reset password</a> to proceed.</p>
       <br>
@@ -61,7 +61,6 @@ const gotNewUser = user => {
   const content = (`
     <div>
       <p>New user</p>
-      <p>Need to add in Mailgun</p>
       <p><b>${user}</b></p>
       <br>
       <p>Kind regards from</p>
@@ -71,6 +70,25 @@ const gotNewUser = user => {
 
   generalSender("tony.kieling@gmail.com", "!!!!! Clockin.js got a new user", content);
 }
+
+
+/**
+ * it send a welcome message to the new user
+ */
+const welcomeEmail = (user, to) => {
+  const content = (`
+    <div>
+      <p>Hi ${user.split(" ")[0]}.</p>
+      <p>Welcome to Clockin.js</p>
+      <br>
+      <p>Kind regards from</p>
+      <h4>Clockin.js Team :)</h4>
+    </div>
+  `);
+
+  generalSender(to, "Welcome - Clockin.js", content);
+};
+
 
 
 const generalSender = async (to, subject, html) => {
@@ -90,5 +108,6 @@ const generalSender = async (to, subject, html) => {
 module.exports = {
   sendClockinEmail,
   sendResetPassword,
-  gotNewUser
+  gotNewUser,
+  welcomeEmail
 };

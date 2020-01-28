@@ -28,7 +28,7 @@ export default function About() {
             User´s login
           </li>
           <li>
-            User modify their own data
+            User modify their own data - 2FA already added and working
           </li>
           <li>
             Users are able to:
@@ -90,7 +90,7 @@ export default function About() {
 
         <h2 className="sub-title">Teck stack</h2>
         <p>
-          MERN - MongoDB, Express, React and Node, plus JWT, Bootstrap, Bcrypt and Nodemailer are the main technologies used.
+          MERN - MongoDB, Express, React and Node, plus Redux, JWT, Bootstrap, Bcrypt, Axios, Mongoose and Nodemailer are the main technologies used.
         </p>
 
         <h2 className="sub-title">Todo list and Releases</h2>
@@ -98,8 +98,8 @@ export default function About() {
         <p>Features under developing are:</p>
         <ul>
           <li>CSS styling, specilially for mobiles</li>
-          <li>Change password (being logged)</li>
-          <li>Forget password (captcha + send by email - Mailgun)</li>
+          <li>Change password (being logged and not - both done)</li>
+          <li>Forget password (captcha + send by email (done) -)</li>
           <li>Edit Clockin</li>
           <li>Generate Invoices</li>
           <li>Review invoice backend code,</li>

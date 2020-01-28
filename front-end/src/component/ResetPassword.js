@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Card, Container } from 'react-bootstrap';
+import { Button, Form, Card, Container, ButtonGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
 import { matchPath } from "react-router-dom";
@@ -60,6 +60,7 @@ class ResetPassword extends Component {
           
           if (resetPassword.data.message){
             const user  = resetPassword.data.user;
+            user.id     = resetPassword.data.user._id;
             user.token  = resetPassword.data.token
             this.props.dispatchLogin({ user });
             this.setState({
@@ -164,7 +165,7 @@ class ResetPassword extends Component {
                 <br />
                 <h3>Reset Password</h3>
                 <br />
-                <p>Hi {this.state.user.name}</p>
+                <p>Hi <b>{this.state.user ? this.state.user.name.split(" ")[0] : ""}</b></p>
                 <br />
                 <Card className="card-settings">
                   <Form onSubmit={this.handleSubmit}>
@@ -186,7 +187,7 @@ class ResetPassword extends Component {
                     </Form.Group>
 
                     <Form.Group controlId="formBasicPassword">
-                      <Form.Label>Confirm Password</Form.Label>
+                      <Form.Label>Confirm New Password</Form.Label>
                       <Form.Control
                         type        = "password"
                         placeholder = "Confirm New Password"
@@ -205,17 +206,21 @@ class ResetPassword extends Component {
                     
                     <br />
 
-                    <Button 
-                      variant="primary" 
-                      type="submit" >
-                      Proceed New Password
-                    </Button>
+                    <div className="d-flex flex-column">
+                      <ButtonGroup className="mt-3">
+                        <Button 
+                          variant="primary" 
+                          type="submit" >
+                          Submit
+                        </Button>
 
-                    <Button 
-                      variant = "danger"
-                      onClick = { this.cancelResetPassword } >
-                      Cancel Reset Password
-                    </Button>
+                        <Button 
+                          variant = "danger"
+                          onClick = { this.cancelResetPassword } >
+                          Cancel
+                        </Button>
+                      </ButtonGroup>
+                    </div>
                   </Form>
                   </Card>
               </div>
