@@ -157,13 +157,17 @@ console.log("@@@ forgetPassword", forgetPassword);
 
               <div className="d-flex flex-column">
                 <ButtonGroup className="mt-3">
-                  <Button
-                    variant   = "info"
-                    style     = { btnStyle }
-                    disabled  = { this.state.disableBtnReset }
-                    onClick   = { this.handleResetPassword }
-                    ref       = {input => this.resetPasswordBtn = input }
-                    > Reset password </Button>
+                  {!this.state.disableBtnReset
+                    ?
+                      <Button
+                        variant   = "info"
+                        style     = { btnStyle }
+                        disabled  = { this.state.disableBtnReset }
+                        onClick   = { this.handleResetPassword }
+                        ref       = {input => this.resetPasswordBtn = input }
+                        > Reset password </Button>
+                    : ""
+                  }
 
                   <Button 
                     variant = "danger"

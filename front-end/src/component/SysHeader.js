@@ -3,7 +3,8 @@ import { Navbar, Nav, NavDropdown, Button, Modal, ButtonGroup } from "react-boot
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { slide as Menu } from "react-burger-menu";
+// import { slide as Menu } from "react-burger-menu";
+import Menu from "react-burger-menu/lib/menus/slide";
 import "../burguer.css";
 
 // class SysHeader extends Component {
@@ -19,7 +20,7 @@ function SysHeader(props) {
     //   props.noUser();
     //   return <Redirect to = "/land" />
     // }
-    setShowMenu(false);
+    setShowMenu(!!false);
     setShowModal(true);
   };
 
@@ -32,12 +33,19 @@ function SysHeader(props) {
   };
 
 
+  const noLeave = e => {
+    // e.preventDefault();
+console.log("stillllllll", e);
+    setShowMenu(true);
+    setShowModal(false);
+  };
+
+
   const leaveModal =         
     <Modal
       show    = { showModal }
-      onHide  = { () => setShowModal(false) }
+      onHide  = { noLeave }
     >
-{/* {showModal ? console.log("modal is ONNNNN") : ""} */}
       <Modal.Header closeButton>
         <Modal.Title>Are you sure you wanna leave?</Modal.Title>
       </Modal.Header>
@@ -53,7 +61,7 @@ function SysHeader(props) {
           </Button>
           <Button 
             variant   = "danger" 
-            onClick   = { () => setShowModal(false) } 
+            onClick   = { noLeave } 
             style     = {{ width: "50%"}} >
             No
           </Button>

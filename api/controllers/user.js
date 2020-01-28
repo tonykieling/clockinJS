@@ -138,7 +138,7 @@ const signup = async (req, res) => {
         // send email for me so I can add the new user as an Authorized Recipient.
         sendEmail.gotNewUser(user);
 
-        res.json({
+        res.send({
           message: `User <${user.email}> has been created.`, 
           user, 
           token

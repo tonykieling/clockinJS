@@ -1,14 +1,17 @@
 require('dotenv').config();
 const formatDT = require("./formatDT.js");
 
-const mailgun = require("mailgun-js")({
-  apiKey: process.env.API_KEY, 
-  domain: process.env.DOMAIN });
-////////////////// need to install mailgun-js library
-// const mg = mailgun({apiKey: process.env.API_KEY, domain: process.env.DOMAIN});
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.user,
+    pass: process.env.password
+  }
+});
 
 const sendClockinEmail = (subject, clockin, user, client) => {
-
   const content = (`
     <div>
       <p>Hi <b>${user.name}</b></p>
@@ -26,21 +29,7 @@ const sendClockinEmail = (subject, clockin, user, client) => {
     </div>
   `);
 
-  const data = {
-    from  : "Clockin JS<clockin.js@gmail.com>",
-    to    : user.email,
-    subject,
-    // text: JSON.stringify(message)
-    html  : content
-  };
-  
-  mailgun.messages().send(data, (error, body) => {
-    if (error)
-      console.log("*** Mailgun ERROR: ", error);
-    else
-      console.log("*** Mailgun: ", body.message);
-  });
-
+  generalSender(user.email, subject, content);
 }
 
 
@@ -59,20 +48,7 @@ const sendResetPassword = (subject, user, code) => {
     </div>
   `);
 
-  const data = {
-    from  : "Clockin JS<clockin.js@gmail.com>",
-    to    : user.email,
-    subject,
-    html  : content
-  };
-  
-  mailgun.messages().send(data, (error, body) => {
-    if (error)
-      console.log("*** Mailgun ERROR: ", error);
-    else
-      console.log("*** Mailgun: ", body.message);
-  });
-
+  generalSender(user.email, subject, content);
 }
 
 
@@ -93,19 +69,21 @@ const gotNewUser = user => {
     </div>
   `);
 
-  const data = {
-    from    : "Clockin JS<clockin.js@gmail.com>",
-    to      : "tony.kieling@gmail.com",
-    subject : "!!!!! Clockin.js got a new user",
-    html    : content
-  };
-  
-  mailgun.messages().send(data, (error, body) => {
-    if (error)
-      console.log("*** Mailgun ERROR: ", error);
-    else
-      console.log("*** Mailgun: ", body.message);
-  });
+  generalSender("tony.kieling@gmail.com", "!!!!! Clockin.js got a new user", content);
+}
+
+
+const generalSender = async (to, subject, html) => {
+  try {
+    await transporter.sendMail({
+      from  : "Clockin JS<clockin.js@gmail.com>",
+      to,
+      subject,
+      html,
+    });
+  } catch (err) {
+    console.log(`Error in GeneralSender`);
+  }
 }
 
 
