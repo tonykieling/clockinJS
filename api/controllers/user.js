@@ -12,7 +12,7 @@ const sendEmail     = require("../helpers/send-email.js");
  * @return {User} List of all Users.
  */
 const get_all = async (req, res) => {
-console.log("inside USER GET_ALL");
+console.log("inside USER get_all");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
   if (!userAdmin)
@@ -48,9 +48,8 @@ console.log("inside USER GET_ALL");
  * @param {number} req.params.userData.userId it's asd,
  * @return {number} Data about one specific User.
  */
-// async function get_one(req, res) {
 const get_one = async (req, res) => {
-console.log("inside USER GET onnnnnnnne");
+console.log("inside USER get_one");
 
   const userAdmin       = req.userData.admin;
   const userId          = req.userData.userId;
@@ -85,6 +84,7 @@ console.log("inside USER GET onnnnnnnne");
 
 // it creates an user account
 const signup = async (req, res) => {
+console.log("inside USER signup");
   const {
     name,
     email,
@@ -130,7 +130,6 @@ const signup = async (req, res) => {
           phone
         });
 
-
         await user.save();
 
         const token = await tokenCreation(user.email, user._id, user.name, user.admin);
@@ -142,7 +141,7 @@ const signup = async (req, res) => {
         // send a welcome email to the new user
         sendEmail.welcomeEmail(user.name, user.email);
 
-        res.send({
+        return res.send({
           message: `User <${user.email}> has been created.`, 
           user, 
           token
@@ -150,7 +149,7 @@ const signup = async (req, res) => {
 
       } catch(err) {
         console.trace("Error: ", err.message);
-        res.status(200).json({
+        return res.status(200).json({
           error: "ESUP03: Something wrong with email."
         });
       };

@@ -3,6 +3,7 @@ import { Card, Form, Col, Row, Button, ButtonGroup } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import axios from "axios";
 import MaskedInput from "react-text-mask";
+import ConfirmModal from "./ConfirmModal.js";
 
 const btnStyle = {
   width : "50%",
@@ -30,7 +31,9 @@ class Home extends Component {
       tmp_city        : "",
       tmp_address     : "",
       tmp_phone       : "",
-      tmp_postalCode  : ""
+      tmp_postalCode  : "",
+
+      showModal      : false 
     }
   }
 
@@ -64,7 +67,6 @@ class Home extends Component {
       this.clearMessage();
     }
 
-    // const url         = `http://localhost:3333/user/${this.state.userId}`;    // this is dev setting
     const url         = `user/${this.state.userId}`;    // this is dev setting
     const changeUser  = {
       name        : this.state.name,
@@ -138,7 +140,6 @@ class Home extends Component {
   btnCancel = () => {
     this.setState({
       disableEdit: true,
-
       name            : this.props.storeName,
       email           : this.props.storeEmail,
       city            : this.props.storeCity,
@@ -159,50 +160,49 @@ class Home extends Component {
   }
 
 
+  handleAskChangePassowrd = () => {
+    this.setState({
+      showModal: true,
+      modalMessage: "Are you sure you want to change your password?"
+    })
+  }
+
 
   handleChangePassword = async () => {
-    const confirmCP = window.confirm("Are you sure you want to change your password?");
-    if (confirmCP) {
-      const secondConfirm = window.confirm("You are receive an email with the instructions to modify your password.");
-        if (secondConfirm) {
-          //call the method to send an email with change password instructions
+    const url = `/user/forgetPassword`;
 
-          const url = `/user/forgetPassword`;
-
-          try {
-            const changePassword = await axios.post( 
-              url,
-              {
-                data: {
-                  email: this.state.email
-                }
-            });
-            
-            if (changePassword.data.message){
-              this.setState({
-                message           : `Your email <${this.state.email}> is going to receive an email with instructions to change your password.`,
-                classNameMessage  : "messageSuccess"
-              });
-            } else {
-              this.setState({
-                message           : changePassword.data.error,
-                classNameMessage  : "messageFailure",
-              });
-    
-              this.clearMessage();
-            }
-    
-          } catch(err) {
-            this.setState({
-              message: err.message 
-            });
+    try {
+      const changePassword = await axios.post( 
+        url,
+        {
+          data: {
+            email: this.state.email
           }
+      });
+      
+      if (changePassword.data.message){
+        this.setState({
+          message           : `Your email <${this.state.email}> is going to receive an email with instructions to change your password.`,
+          classNameMessage  : "messageSuccess"
+        });
+      } else {
+        this.setState({
+          message           : changePassword.data.error,
+          classNameMessage  : "messageFailure",
+        });
 
-          setTimeout(() => {
-            this.clearMessage();
-          }, 2000);
-        }
+        this.clearMessage();
+      }
+
+    } catch(err) {
+      this.setState({
+        message: err.message 
+      });
     }
+
+    setTimeout(() => {
+      this.clearMessage();
+    }, 2000);
   }
 
 
@@ -234,7 +234,6 @@ class Home extends Component {
       <div className="formPosition">
         <br />
         <h3 className="htitle">User's Home Page</h3>
-        {/* <h4>Welcome {this.props.storeName.split(" ")[0]} </h4>  */}
         <br />
 
         <Card className="card-settings">
@@ -388,7 +387,8 @@ class Home extends Component {
                   <Button 
                     variant = "info"
                     style   = { btnStyle }
-                    onClick = { this.handleChangePassword } >
+                    // onClick = { this.handleChangePassword } >
+                    onClick = { this.handleAskChangePassowrd } >
                     Change Password
                   </Button>
                   <Button 
@@ -403,6 +403,25 @@ class Home extends Component {
         </Card>        
         <br></br>
         <br></br>
+
+        {this.state.showModal
+          ? <ConfirmModal
+              openModal   = { true }
+              message     = { this.state.modalMessage }
+              noMethod    = { () => this.setState({ showModal: false }) }
+              yesMethod   = { () => {
+                if (this.state.modalMessage === "You are going to receive an email with the instructions to modify your password.") {
+                  this.handleChangePassword();
+                  this.setState({ showModal: false});
+                } else
+                  this.setState({
+                    showModal: true,
+                    modalMessage   : "You are going to receive an email with the instructions to modify your password.",
+                  });
+              }}
+            />
+          : ""
+        }
       </div>
     )
   }
@@ -414,7 +433,6 @@ const mapStateToProps = store => {
     storeId     : store.id,
     storeEmail  : store.email,
     storeName   : store.name,
-
     storeCity       : store.city,
     storeAddress    : store.address,
     storePostalCode : store.postalCode,

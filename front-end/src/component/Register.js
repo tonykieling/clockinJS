@@ -63,8 +63,6 @@ class Register extends Component {
         default:                     
       }
 
-
-
         if (e.target.name !== "postalCode") {
           this.setState({
             [e.target.name]: e.target.value
@@ -97,7 +95,6 @@ class Register extends Component {
         this.clearMessage();
       } else {
         const url = "/user/signup";
-        // const url         = "http://localhost:3333/user/signup";    // this is dev setting
         const createUser  = {
           name        : this.state.name,
           email       : this.state.email,
@@ -153,7 +150,6 @@ class Register extends Component {
         password        : "",
         confirmPassword : ""
       })
-      // this.textInput1.focus();
     }, 3500);
   }
 
@@ -234,6 +230,7 @@ class Register extends Component {
                 <Form.Label>Postal Code</Form.Label>
                 <Form.Control
                   type        = "text"
+                  // mask        = {[/^[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z] [0-9][ABCEGHJ-NPRSTV-Z][0-9]$/]}
                   placeholder = "Type the user's Postal Code"
                   name        = "postalCode"
                   onChange    = {this.handleChange}
@@ -260,12 +257,11 @@ class Register extends Component {
                   className   = "form-control"
                   placeholder = "Enter your phone number"
                   name        = "phone"
-                  // guide={false}
                   // id          = "fPhone"
                   onBlur      = {e => this.afterChange(e)}
                   value       = {this.state.phone}
-                  onKeyPress  = {() => this.handleChange}
-                  ref         = {input => this.textInput6 = input }
+                  onKeyPress  = {this.handleChange}
+                  // ref         = {input => this.textInput6 = input }
                   // alwaysShowMask = {true}
                 />
               </Form.Group>

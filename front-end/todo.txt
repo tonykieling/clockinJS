@@ -151,7 +151,10 @@ review user
       set a algorithm to accep only letter + number + letter   number + letter + number and capital letter + format with "-" in the middle
     Xcheck phone
     ?is it possinle to verify if an email is valid?
-  login
+  Xlogin
+  Xreset password
+  todo: mask input data improvement, such as Postal Code and Dates. Phone is working but not its ref
+  todo: set strong password for users
 review client page
 review closkin
 review invoice
