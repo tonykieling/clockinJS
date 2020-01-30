@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import { Card, Form, Col, Row, Button, ButtonGroup } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import axios from "axios";
+import MaskedInput from "react-text-mask";
 
-// const btnStyle = {
-//   width : "33%",
-// };
 const btnStyle = {
   width : "50%",
   paddingLeft: "0px",
@@ -66,8 +64,6 @@ class Home extends Component {
       this.clearMessage();
     }
 
-    // handle submit itself
-
     // const url         = `http://localhost:3333/user/${this.state.userId}`;    // this is dev setting
     const url         = `user/${this.state.userId}`;    // this is dev setting
     const changeUser  = {
@@ -78,7 +74,7 @@ class Home extends Component {
       postalCode  : this.state.postalCode,
       phone       : this.state.phone
     }
-console.log("changeUser", changeUser);
+
     try {
       const modUser = await axios.patch( 
         url,
@@ -102,31 +98,31 @@ console.log("changeUser", changeUser);
         };
 
         this.setState({
-          message     : modUser.data.message,
-          disableEdit : true
+          message           : "Info has been updated.",
+          classNameMessage  : "messageSuccess",
+          disableEdit       : true
         });
 
         this.props.dispatchLogin({ user });
 
       } else if (modUser.data.error) {
         this.setState({
-          disableEdit : true,
-          message     : modUser.data.error
+          disableEdit       : true,
+          message           : modUser.data.error,
+          classNameMessage  : "messageFailure"
         });
       }
 
-      this.clearMessage();
     } catch(error) {
       console.log("catch error: ", error.message);
+      this.setState({
+        disableEdit       : true,
+        message           : error.message,
+        classNameMessage  : "messageFailure"
+      });
     }
-  }
 
-
-
-  updateState = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
+    this.clearMessage();
   }
 
 
@@ -210,14 +206,23 @@ console.log("changeUser", changeUser);
   }
 
 
-  // handleChange = () => {
-  //   this.setState({
-  //     [e.target.name]: e.target.value
-  //   });
+  // afterChange = event => {
+  //   this.handleChange(event);
   // }
 
+  handleChange = e => {
+    if (e.target.name !== "postalCode") {
+      this.setState({
+        [e.target.name]: e.target.value
+      });
+    } else if (e.target.value.length < 7)  {
+      this.setState({
+        [e.target.name]: e.target.value
+      });
+    }
+  }
 
-
+  
   // not doing this now
   // handleChangeEmail = () => {
   // }
@@ -250,10 +255,10 @@ console.log("changeUser", changeUser);
                   disabled      = {this.state.disableEdit}
                   type          = "text"
                   name          = "name"
-                  onChange      = {this.updateState}
+                  onChange      = {this.handleChange}
                   placeholder   = {this.state.name}
                   value         = {this.state.name}
-                  onKeyPress    = {this.handleChange}
+                  // onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput1 = input }
                 />
               </Col>
@@ -267,10 +272,10 @@ console.log("changeUser", changeUser);
                   disabled      = { true }
                   type          = "text"
                   name          = "email"
-                  onChange      = {this.updateState}
+                  onChange      = {this.handleChange}
                   placeholder   = {this.state.email}
                   value         = {this.state.email}
-                  onKeyPress    = {this.handleChange}
+                  // onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput2 = input }
                 />
               </Col>
@@ -284,9 +289,9 @@ console.log("changeUser", changeUser);
                   placeholder   = {this.state.address}
                   type          = "text"
                   name          = "address"
-                  onChange      = {this.updateState}
+                  onChange      = {this.handleChange}
                   value         = {this.state.address}
-                  onKeyPress    = {this.handleChange}
+                  // onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput3 = input }
                 />
               </Col>
@@ -299,10 +304,10 @@ console.log("changeUser", changeUser);
                   disabled      = {this.state.disableEdit}
                   type          = "text"
                   name          = "city"
-                  onChange      = {this.updateState}
+                  onChange      = {this.handleChange}
                   placeholder   = {this.state.city}
                   value         = {this.state.city}
-                  onKeyPress    = {this.handleChange}
+                  // onKeyDown    = {this.handleK}
                   ref           = {input => this.textInput4 = input }
                 />
               </Col>
@@ -315,10 +320,10 @@ console.log("changeUser", changeUser);
                   disabled      = {this.state.disableEdit}
                   type          = "text"
                   name          = "postalCode"
-                  onChange      = {this.updateState}
+                  onChange      = {this.handleChange}
                   value         = {this.state.postalCode}
                   placeholder   = {this.state.postalCode}
-                  onKeyPress    = {this.handleChange}
+                  // onKeyDown    = {this.handleK}
                   ref           = {input => this.textInput5 = input }
                 />
               </Col>
@@ -327,15 +332,29 @@ console.log("changeUser", changeUser);
             <Form.Group as={Row} controlId="formPhone">
               <Form.Label column sm={2} className="cardLabel">Phone</Form.Label>
               <Col sm={4}>
-                <Form.Control
+                {/* <Form.Control
                   disabled      = {this.state.disableEdit}
                   type          = "text"
                   name          = "phone"
-                  onChange      = {this.updateState}
+                  onChange      = {this.handleChange}
                   value         = {this.state.phone}
                   placeholder   = {this.state.phone}
                   onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput6 = input }
+                /> */}
+                <MaskedInput
+                  mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                  className   = "form-control"
+                  placeholder = "Enter your phone number"
+                  name        = "phone"
+                  // guide={false}
+                  // id          = "fPhone"
+                  onBlur      = { e => this.handleChange(e)}
+                  value       = { this.state.phone}
+                  onKeyPress  = { this.handleChange}
+                  disabled    = { this.state.disableEdit}
+                  ref         = { input => this.textInput6 = input }
+                  // alwaysShowMask = {true}
                 />
               </Col>
             </Form.Group>
@@ -346,27 +365,25 @@ console.log("changeUser", changeUser);
           <Card.Header className= { this.state.classNameMessage}>          
             { this.state.message
               ? this.state.message
-              : <span className="noMessage">.</span> }
+              : <br /> }
           </Card.Header>
 
-          { !this.state.disableEdit
-            ?
-              <div className="d-flex flex-column">
-              <ButtonGroup className="mt-3">
-                <Button
-                  variant   = "success"
-                  // style   = { btnStyle }
-                  onClick   = { this.handleSubmit }
-                >Save </Button>
-                <Button 
-                  variant = "danger"
-                  // style   = { btnStyle }
-                  onClick = { this.btnCancel }
-                > Cancel </Button>
-              </ButtonGroup>
-              </div>
-            :
-              <div className="d-flex flex-column" >
+          <div className="d-flex flex-column">
+            { !this.state.disableEdit
+              ?
+                <ButtonGroup className="mt-3">
+                  <Button
+                    variant   = "success"
+                    style   = { btnStyle }
+                    onClick   = { this.handleSubmit }
+                  >Save </Button>
+                  <Button 
+                    variant = "danger"
+                    style   = { btnStyle }
+                    onClick = { this.btnCancel }
+                  > Cancel </Button>
+                </ButtonGroup>
+              :
                 <ButtonGroup className="mt-3">
                   <Button 
                     variant = "info"
@@ -381,8 +398,8 @@ console.log("changeUser", changeUser);
                     Edit data
                   </Button>
                 </ButtonGroup>
-              </div>
-          }
+            }
+          </div>
         </Card>        
         <br></br>
         <br></br>

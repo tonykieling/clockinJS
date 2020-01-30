@@ -135,7 +135,23 @@ TODO v2:
 
 "started changing popbox for Bootstrap Modal, instead of React Modal, and also using Hooks. Delete Invoice front-end is pretty done, missing double check back-end. Plus, no change email for now."
 
-small changes on the button styling
-user page and email
-getting ride of Mailgun
+Xsmall changes on the button styling
+Xuser page and email
+Xgetting ride of Mailgun
 Logout close menu
+
+Xdb cleanedup
+review user
+  signup and user page
+    Xset message from server's colors
+    Xalert message should be a modal
+      Xput in as card message instead of modal or alert
+    check postal code
+      Xpostalcode lenght limited to 6
+      set a algorithm to accep only letter + number + letter   number + letter + number and capital letter + format with "-" in the middle
+    Xcheck phone
+    ?is it possinle to verify if an email is valid?
+  login
+review client page
+review closkin
+review invoice

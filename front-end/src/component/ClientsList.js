@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import {  Card, Button, Form } from "react-bootstrap";
+import {  Card, Button, Form, ButtonGroup } from "react-bootstrap";
 import MaskedInput from 'react-text-mask';
 
 // import DatePicker from "react-datepicker";
@@ -9,6 +9,8 @@ import "react-datepicker/dist/react-datepicker.css";
 // import moment from "moment";
 
 import GetClients from "./aux/GetClients.js";
+import * as formatDate from "./aux/formatDate.js";
+
 
 
 class ClientsList extends Component {
@@ -48,14 +50,24 @@ class ClientsList extends Component {
       tmp_cPhone          : "",
       tmp_cEmail          : "",
       tmp_default_rate    : "",
+
+      typeDate            : "text"
     }
   }
 
 
   handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value || ""
-    });
+console.log("=", event.target);
+    if (event.target.name === "birthday") {
+      console.log("birthday field VALUE=", event.target.value);
+console.log("=====", typeof event.target.value);
+      this.setState({
+        birthday: new Date(event.target.value)
+      });
+    } else
+      this.setState({
+        [event.target.name]: event.target.value || ""
+      });
   }
 
 
@@ -71,6 +83,7 @@ console.log("newDate", newDate.parseISO());
       birthday: newDate.parseISO()
     });
   }
+
 
   handleSubmit = async event => {
     event.preventDefault();
@@ -247,8 +260,21 @@ console.log("birthday: ", birthday);
   }
 
 
+  onFocusDate = () => {
+    this.setState({ typeDate: "date"});
+    this.textInput3.click();
+console.log("date clicked");
+  }
+
+
+  onBlurDate = () => {
+    this.setState({ typeDate: "text"});
+console.log("onBlur Date");
+  }
+
+
   render() {
-console.log("this.state", this.state);
+console.log("render ===> this.state", this.state);
 // console.log("moment:", moment(this.state.birthday).format("D/M/YYYY"));
 
     return (
@@ -308,12 +334,15 @@ console.log("this.state", this.state);
                 <Form.Group controlId="formBirthday">
                   <Form.Label className="cardLabel">Birthday</Form.Label>
                   <Form.Control
-                    type        = "date"
-                    placeholder = "Type the client's birthday"
+                    type        = { this.state.typeDate }
+                    placeholder = { formatDate.show(this.state.birthday) }
                     name        = "birthday"
                     onChange    = {this.handleChange}
-                    value       = {this.state.birthday}
-                    onKeyPress  = {this.handleChange}
+                    // value       = {this.state.birthday}
+                    // value       = { formatDate.show(this.state.birthday) }
+                    // onFocus     = { this.onFocusDate }
+                    // onBlur      = { this.onBlurDate }
+                    // onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput3 = input } />                  
                   <br />
@@ -468,37 +497,40 @@ console.log("this.state", this.state);
                 </Form.Group>
 
 
-
-
-
           <Card.Header className="cardTitle message">          
             { this.state.message
               ? this.state.message
               : <span className="noMessage">.</span> }
           </Card.Header>
 
-          { !this.state.disableEditForm
-            ?
-              <div className="gridBtnSC">
-                <Button 
-                  variant = "success" 
-                  onClick = {this.handleSubmit} >
-                  Save
-                </Button>
+          <div className="d-flex flex-column">
+            { !this.state.disableEditForm
+              ?
+                <ButtonGroup>
+                  <Button 
+                    variant = "success"
+                    style   = { {width: "50%"}}
+                    onClick = {this.handleSubmit} >
+                    Save
+                  </Button>
 
+                  <Button 
+                    variant="warning"
+                    style   = { {width: "50%"}}
+                    onClick={ this.btnCancel } >
+                    Cancel
+                  </Button>
+                </ButtonGroup>
+              :
                 <Button 
-                  variant="warning" 
-                  onClick={ this.btnCancel } >
-                  Cancel
+                  style   = { {width: "100%"}}
+                  onClick = { this.editForm } 
+                  ref     = { input => this.textInputX = input }
+                  >
+                  Edit
                 </Button>
-              </div>
-            :
-              <Button 
-                className="gridBtnEdit"
-                onClick = { this.editForm } >
-                Edit
-              </Button>
-          }
+            }
+          </div>
           </Form>
         </Card>
         <br></br>

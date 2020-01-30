@@ -21,7 +21,7 @@ function SysHeader(props) {
     //   return <Redirect to = "/land" />
     // }
     setShowMenu(!!false);
-    setShowModal(true);
+    setShowModal(!!true);
   };
 
 
@@ -34,7 +34,7 @@ function SysHeader(props) {
 
 
   const noLeave = e => {
-    // e.preventDefault();
+    e.preventDefault();
 console.log("stillllllll", e);
     setShowMenu(true);
     setShowModal(false);
@@ -47,8 +47,9 @@ console.log("stillllllll", e);
       onHide  = { noLeave }
     >
       <Modal.Header closeButton>
-        <Modal.Title>Are you sure you wanna leave?</Modal.Title>
+        <Modal.Title>Clockin.js</Modal.Title>
       </Modal.Header>
+      <Modal.Body>Are you sure you wanna leave?</Modal.Body>
       <Modal.Footer>
         <ButtonGroup 
           className = "mt-3"
@@ -125,7 +126,7 @@ console.log("stillllllll", e);
             <Link to="/user" className="nav-link">{props.storeEmail}</Link>
             <Menu 
               right
-              isOpen = { showMenu }
+              isOpen  = { showMenu }
               // onStateChange = { isMenuOpen }
               >
 

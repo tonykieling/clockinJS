@@ -20,7 +20,8 @@ class Register extends Component {
 
       redirectFlag    : false,
       message         : "",
-      btnType         : undefined
+      btnType         : undefined,
+      classNameMessage: ""
     }
 
 
@@ -62,9 +63,21 @@ class Register extends Component {
         default:                     
       }
 
-      this.setState({
-        [e.target.name]: e.target.value
-      });
+
+
+        if (e.target.name !== "postalCode") {
+          this.setState({
+            [e.target.name]: e.target.value
+          });
+        } else if (e.target.value.length < 7)  {
+          // const value = (typeof e.target.value == "string")
+          //   ? e.target.value.toUpperCase()
+          //   : e.target.value;
+
+          this.setState({
+            [e.target.name]: e.target.value
+          });
+        }
   }
 
 
@@ -73,12 +86,15 @@ class Register extends Component {
 
     if (this.state.email !== "" && this.state.name !== "") { // && this.state.password !== "" && this.state.confirmPassword !== "") {
       if ((this.state.password !== this.state.confirmPassword) || (this.state.password === "")) {
-        alert("Password and \nConfirm Password fields\n\nMUST be the same\n and NOT empty.");
+        // alert("Password and \nConfirm Password fields\n\nMUST be the same\n and NOT empty.");
         this.setState({
-          password        : "",
-          confirmPassword : ""
+          classNameMessage  : "messageFailure",
+          message           : "Password and \nConfirm Password fields\n\nMUST be the same\n and NOT empty.",
+          password          : "",
+          confirmPassword   : ""
         })
-        this.textInput4.focus();
+        // this.textInput7.focus();
+        this.clearMessage();
       } else {
         const url = "/user/signup";
         // const url         = "http://localhost:3333/user/signup";    // this is dev setting
@@ -113,13 +129,15 @@ class Register extends Component {
             });
           } else if (addUser.data.error) {
             this.setState({
-              message : addUser.data.error });
+              classNameMessage  : "messageFailure",
+              message           : addUser.data.error });
             this.clearMessage();
           }
 
         } catch(err) {
           this.setState({
-            message : err.message });
+            classNameMessage  : "messageFailure",
+            message           : err.message });
           this.clearMessage();
         }
       }
@@ -135,7 +153,7 @@ class Register extends Component {
         password        : "",
         confirmPassword : ""
       })
-      this.textInput1.focus();
+      // this.textInput1.focus();
     }, 3500);
   }
 
@@ -279,19 +297,20 @@ class Register extends Component {
               </Form.Group>
 
 
-              { /* mount the Dropbox Button with all clients for the user */ }
-            <div className="gridClientBtContainer">
-              <span></span><span></span><span></span>
+            <Card.Header className= { this.state.classNameMessage}>          
+              { this.state.message
+                ? this.state.message
+                : <br /> }
+            </Card.Header>
+
+            <div className="d-flex flex-column">
+              <br />
               <Button 
                 variant = "primary" 
                 type    = {this.state.btnType}
                 onClick = {this.handleSubmit}>
                 Submit
               </Button>
-
-              <span className="messageSettings">
-                {this.state.message }
-              </span>
             </div>
 
             </Form>

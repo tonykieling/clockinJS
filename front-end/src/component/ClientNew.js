@@ -365,13 +365,14 @@ console.log("client added:", addClient.data);
                 : <span className="noMessage">.</span> }
             </Card.Header>
 
-            <Button 
-              variant = "primary" 
-              type    = "submit"
-              className="gridBtnEdit" 
-              >
-              Save
-            </Button>
+            <div className="d-flex flex-column">
+              <Button 
+                variant = "primary" 
+                type    = "submit"
+                >
+                Save
+              </Button>
+            </div>
           </Form>
         </Card>
         <br></br>

@@ -94,6 +94,7 @@ const signup = async (req, res) => {
     phone,
     postalCode
   } = req.body;
+
 // console.log("req.body = signup", req.body);
   // it checks whether the email is already been used by an user account
   // if so, it returns an error message
