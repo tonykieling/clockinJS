@@ -32,17 +32,74 @@ class Home extends Component {
       tmp_address     : "",
       tmp_phone       : "",
       tmp_postalCode  : "",
-
+      
       showModal      : false 
     }
   }
-
-
-
+  
+  
+  
   // need to implement it
-  handleSubmit = async () => {
+  handleSubmit = async e => {
+    e.preventDefault();
+
     if (this.state.name && this.state.email) {
-      // asd
+      const url         = `user/${this.state.userId}`;    // this is dev setting
+      const changeUser  = {
+        name        : this.state.name,
+        email       : this.state.email,
+        address     : this.state.address,
+        city        : this.state.city,
+        postalCode  : this.state.postalCode,
+        phone       : this.state.phone
+      }
+    
+      try {
+        const modUser = await axios.patch( 
+          url,
+          changeUser,
+          {  
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization" : `Bearer ${this.props.storeToken}` }
+        });
+    
+        if (modUser.data.message) {
+          const user = {
+            id          : this.props.storeId,
+            name        : modUser.data.data.name,
+            email       : modUser.data.data.email,
+            city        : modUser.data.data.city,
+            address     : modUser.data.data.address,
+            postalCode  : modUser.data.data.postalCode,
+            phone       : modUser.data.data.phone,
+            token       : modUser.data.data.token
+          };
+    
+          this.setState({
+            message           : "Info has been updated.",
+            classNameMessage  : "messageSuccess",
+            disableEdit       : true
+          });
+    
+          this.props.dispatchLogin({ user });
+    
+        } else if (modUser.data.error) {
+          this.setState({
+            disableEdit       : true,
+            message           : modUser.data.error,
+            classNameMessage  : "messageFailure"
+          });
+        }
+    
+      } catch(error) {
+        console.log("catch error: ", error.message);
+        this.setState({
+          disableEdit       : true,
+          message           : error.message,
+          classNameMessage  : "messageFailure"
+        });
+      }
     } else {
       if (!this.state.name && this.state.email) {
         this.setState({
@@ -63,65 +120,6 @@ class Home extends Component {
 
         this.textInput1.focus();
       }
-
-      this.clearMessage();
-    }
-
-    const url         = `user/${this.state.userId}`;    // this is dev setting
-    const changeUser  = {
-      name        : this.state.name,
-      email       : this.state.email,
-      address     : this.state.address,
-      city        : this.state.city,
-      postalCode  : this.state.postalCode,
-      phone       : this.state.phone
-    }
-
-    try {
-      const modUser = await axios.patch( 
-        url,
-        changeUser,
-        {  
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization" : `Bearer ${this.props.storeToken}` }
-      });
-
-      if (modUser.data.message) {
-        const user = {
-          id          : this.props.storeId,
-          name        : modUser.data.data.name,
-          email       : modUser.data.data.email,
-          city        : modUser.data.data.city,
-          address     : modUser.data.data.address,
-          postalCode  : modUser.data.data.postalCode,
-          phone       : modUser.data.data.phone,
-          token       : modUser.data.data.token
-        };
-
-        this.setState({
-          message           : "Info has been updated.",
-          classNameMessage  : "messageSuccess",
-          disableEdit       : true
-        });
-
-        this.props.dispatchLogin({ user });
-
-      } else if (modUser.data.error) {
-        this.setState({
-          disableEdit       : true,
-          message           : modUser.data.error,
-          classNameMessage  : "messageFailure"
-        });
-      }
-
-    } catch(error) {
-      console.log("catch error: ", error.message);
-      this.setState({
-        disableEdit       : true,
-        message           : error.message,
-        classNameMessage  : "messageFailure"
-      });
     }
 
     this.clearMessage();
@@ -211,6 +209,35 @@ class Home extends Component {
   // }
 
   handleChange = e => {
+    if (e.key === "Enter")
+      switch(e.target.name) {
+        case "name":
+          if (this.state.name !== "")
+            this.textInput3.focus();
+          break;
+        // case "email":
+        //   if (this.state.email !== "")
+        //     this.textInput3.focus();
+        //   break;
+        case "address":
+          if (this.state.address !== "")
+            this.textInput4.focus();
+          break;
+        case "city":
+          if (this.state.city !== "")
+            this.textInput5.focus();
+          break;
+        // case "postalCode":
+        //   if (this.state.postalCode !== "")
+        //     this.textInput6.focus();
+        //   break;
+        case "phone":
+          if (this.state.phone !== "")
+            this.buttonSave.click();
+          break;
+        default:
+      }
+
     if (e.target.name !== "postalCode") {
       this.setState({
         [e.target.name]: e.target.value
@@ -241,15 +268,15 @@ class Home extends Component {
 
           <Form className="formPosition">
             <Form.Group as={Row} controlId="formId">
-              <Form.Label column sm={2} className="cardLabel">Id</Form.Label>
+              <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Id</Form.Label>
               <Col >
-                <Form.Label column sm={8} >{this.state.userId}</Form.Label>
+                <Form.Label column m={8} style={{paddingLeft: "0px"}}>{this.state.userId}</Form.Label>
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formName">
-              <Form.Label column sm={2} className="cardLabel">Name</Form.Label>
-              <Col sm={8}>
+              <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Name</Form.Label>
+              <Col sm={8} style={{paddingLeft: "0px"}}>
                 <Form.Control
                   disabled      = {this.state.disableEdit}
                   type          = "text"
@@ -257,15 +284,15 @@ class Home extends Component {
                   onChange      = {this.handleChange}
                   placeholder   = {this.state.name}
                   value         = {this.state.name}
-                  // onKeyPress    = {this.handleChange}
+                  onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput1 = input }
                 />
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formEmail">
-              <Form.Label column sm={2} className="cardLabel">Email</Form.Label>
-              <Col sm={8}>
+              <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Email</Form.Label>
+              <Col sm={8} style={{paddingLeft: "0px"}}>
                 <Form.Control
                   // disabled      = {this.state.disableEdit}
                   disabled      = { true }
@@ -274,15 +301,15 @@ class Home extends Component {
                   onChange      = {this.handleChange}
                   placeholder   = {this.state.email}
                   value         = {this.state.email}
-                  // onKeyPress    = {this.handleChange}
+                  onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput2 = input }
                 />
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formAddress">
-              <Form.Label column sm={2} className="cardLabel">Address</Form.Label>
-              <Col sm={8}>
+              <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Address</Form.Label>
+              <Col sm={8} style={{paddingLeft: "0px"}}>
                 <Form.Control
                   disabled      = {this.state.disableEdit}
                   placeholder   = {this.state.address}
@@ -290,15 +317,15 @@ class Home extends Component {
                   name          = "address"
                   onChange      = {this.handleChange}
                   value         = {this.state.address}
-                  // onKeyPress    = {this.handleChange}
+                  onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput3 = input }
                 />
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formCity">
-              <Form.Label column sm={2} className="cardLabel">City:</Form.Label>
-              <Col sm={8}>
+              <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>City:</Form.Label>
+              <Col sm={8} style={{paddingLeft: "0px"}}>
                 <Form.Control
                   disabled      = {this.state.disableEdit}
                   type          = "text"
@@ -306,15 +333,15 @@ class Home extends Component {
                   onChange      = {this.handleChange}
                   placeholder   = {this.state.city}
                   value         = {this.state.city}
-                  // onKeyDown    = {this.handleK}
+                  onKeyDown     = {this.handleChange}
                   ref           = {input => this.textInput4 = input }
                 />
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formPostalCode">
-              <Form.Label column sm={2} className="cardLabel">Postal Code</Form.Label>
-              <Col sm={4}>
+              <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Postal Code</Form.Label>
+              <Col sm={5} style={{paddingLeft: "0px"}}>
                 <Form.Control
                   disabled      = {this.state.disableEdit}
                   type          = "text"
@@ -322,15 +349,15 @@ class Home extends Component {
                   onChange      = {this.handleChange}
                   value         = {this.state.postalCode}
                   placeholder   = {this.state.postalCode}
-                  // onKeyDown    = {this.handleK}
+                  onKeyDown     = {this.handleChange}
                   ref           = {input => this.textInput5 = input }
                 />
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formPhone">
-              <Form.Label column sm={2} className="cardLabel">Phone</Form.Label>
-              <Col sm={4}>
+              <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Phone</Form.Label>
+              <Col sm={5} style={{paddingLeft: "0px"}}>
                 {/* <Form.Control
                   disabled      = {this.state.disableEdit}
                   type          = "text"
@@ -372,9 +399,10 @@ class Home extends Component {
               ?
                 <ButtonGroup className="mt-3">
                   <Button
-                    variant   = "success"
+                    variant = "success"
                     style   = { btnStyle }
-                    onClick   = { this.handleSubmit }
+                    onClick = { this.handleSubmit }
+                    ref     = { input => this.buttonSave = input }
                   >Save </Button>
                   <Button 
                     variant = "danger"

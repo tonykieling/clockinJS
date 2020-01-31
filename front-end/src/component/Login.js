@@ -19,8 +19,8 @@ class Login extends Component {
       [e.target.name]: e.target.value
     });
     
-    if (e.key === "Enter" && this.state.email !== "") {
-      if (e.target.name === "email")
+    if (e.key === "Enter" && e.target.name === "email") {
+      if (this.state.email !== "")
         this.textInput2.focus();
     }
   }
@@ -131,7 +131,7 @@ class Login extends Component {
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput2 = input }
               />
-              {/* <p id="errorMsg">{ this.state.errorMsg }</p> */}
+
             </Form.Group>
             <p><a href={window.location.hash} onClick={this.openModal}>Forget password</a></p>
 

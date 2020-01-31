@@ -7,7 +7,6 @@ import MaskedInput from 'react-text-mask';
 // import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import MessageModal from "./MessageModal.js";
 
 class ClientNew extends Component {
 
@@ -25,9 +24,7 @@ class ClientNew extends Component {
       cPhone          : "",
       cEmail          : "",
       defaultRate     : "",
-      message         : "",
-
-      test            : ""
+      message         : ""
     }
 
   handleChange = e => {
@@ -41,17 +38,51 @@ class ClientNew extends Component {
           if (this.state.nickname !== "")
             this.textInput3.focus();
           break;
-        case "password":
-          if (this.state.password !== "")
-            this.textInput5.focus();
+        case "birthday":
+          if (this.state.birthday !== "")
+            this.textInput4.focus();
           break;
-        case "confirmPassword":
-          if (this.state.confirmPassword !== "")
-            this.setState({ btnType: "submit" });
+        // case "mother":
+        //   if (this.state.mother !== "")
+        //     this.textInput5.focus(); /////// need to fix ref - react-text-mask
+        //     this.setState({ btnType: "submit" });
+        //   break;
+        case "mPhone":
+          if (this.state.mPhone !== "")
+            this.textInput6.focus();
           break;
-        default:                     
+        case "mEmail":
+          if (this.state.mEmail !== "")
+            this.textInput7.focus();
+          break;
+        // case "father":
+        //   if (this.state.father !== "")
+        //     this.textInput8.focus(); /////// need to fix ref - react-text-mask
+        //   break;
+        case "fPhone":
+          if (this.state.fPhone !== "")
+            this.textInput9.focus();
+          break;
+        case "fEmail":
+          if (this.state.fEmail !== "")
+            this.textInput10.focus();
+          break;
+        // case "consultant":
+        //   if (this.state.consultant !== "")
+        //     this.textInput11.focus(); /////// need to fix ref - react-text-mask
+        //     this.setState({ btnType: "submit" });
+        //   break;
+        case "cPhone":
+          if (this.state.cPhone !== "")
+            this.textInput12.focus();
+          break;
+        case "cEmail":
+          if (this.state.cEmail !== "")
+            this.textInput13.focus();
+          break;
+        default:
       }
-console.log("e.target.name", e.target.name, "e.target.value", e.target.value);
+      
       this.setState({
         [e.target.name]: e.target.value
       });
@@ -59,7 +90,7 @@ console.log("e.target.name", e.target.name, "e.target.value", e.target.value);
 
   handleSubmit = async e => {
     e.preventDefault();
-    this.setState({ test: true });
+console.log("this.state", this.state);
     return;
 
     // if (this.state.name.length > 60) {
@@ -184,7 +215,7 @@ console.log("client added:", addClient.data);
         <Card className="card-settings">
           <Form
             autoComplete  = "off"
-            onSubmit      = {this.handleSubmit}
+            // onSubmit      = {this.handleSubmit}
             className     = "formPosition"  >
 
             <Form.Group controlId="formName">
@@ -256,10 +287,10 @@ console.log("client added:", addClient.data);
                 placeholder = "Mother's phone number"
                 name        = "mPhone"
                 id="mPhone"
-                onBlur={e => this.afterChange(e)}
-                value       = {this.state.mPhone}
-                onKeyPress  = {() => this.handleChange}
-                ref         = {input => this.textInput5 = input } />
+                onBlur      = { e => this.afterChange(e)}
+                value       = { this.state.mPhone}
+                onKeyPress  = { this.handleChange}
+                ref         = { input => this.textInput5 = input } />
             </Form.Group>
 
             <Form.Group controlId="formMEmail">
@@ -293,11 +324,10 @@ console.log("client added:", addClient.data);
                 className   = "form-control"
                 placeholder = "Father's phone number"
                 name        = "fPhone"
-                // guide={false}
                 id          = "fPhone"
                 onBlur      = {e => this.afterChange(e)}
                 value       = {this.state.fPhone}
-                onKeyPress  = {() => this.handleChange}
+                onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput8 = input } />
             </Form.Group>
 
@@ -332,11 +362,10 @@ console.log("client added:", addClient.data);
                 className   = "form-control"
                 placeholder = "Consultant's phone number"
                 name        = "cPhone"
-                // guide={false}
                 id          = "cPhone"
                 onBlur      = {e => this.afterChange(e)}
                 value       = {this.state.cPhone}
-                onKeyPress  = {() => this.handleChange}
+                onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput11 = input } />
             </Form.Group>
 
@@ -363,36 +392,25 @@ console.log("client added:", addClient.data);
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput13 = input }  />
             </Form.Group>
-
-            <Card.Header className="cardTitle message">          
-              { this.state.message
-                ? this.state.message
-                : <span className="noMessage">.</span> }
-            </Card.Header>
-
-            <div className="d-flex flex-column">
-              <Button 
-                variant = "primary" 
-                type    = "submit"
-                >
-                Save
-              </Button>
-            </div>
           </Form>
+
+          <Card.Header className="cardTitle message">          
+            { this.state.message
+              ? this.state.message
+              : <span className="noMessage">.</span> }
+          </Card.Header>
+
+          <div className="d-flex flex-column">
+            <Button 
+              variant = "primary" 
+              type    = "submit"
+              >
+              Save
+            </Button>
+          </div>
         </Card>
         <br></br>
         <br></br>
-
-        {this.state.test
-          ? <MessageModal 
-              openModal = { this.state.test}
-              message   = { "teste for one button" }
-              yesMethod = { false }
-              noMethod  = { () => this.setState({ test: false}) }
-              color     = "info"
-            />
-          : ""
-        }
       </div>
     )
   }
