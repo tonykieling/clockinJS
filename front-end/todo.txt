@@ -146,7 +146,7 @@ review user
     Xset message from server's colors
     Xalert message should be a modal
       Xput in as card message instead of modal or alert
-    check postal code
+    Xcheck postal code
       Xpostalcode lenght limited to 6
       set a algorithm to accep only letter + number + letter   number + letter + number and capital letter + format with "-" in the middle
     Xcheck phone
@@ -155,6 +155,11 @@ review user
   Xreset password
   todo: mask input data improvement, such as Postal Code and Dates. Phone is working but not its ref
   todo: set strong password for users
+* created and it is working a ConfirmModal component to be used in a general way, when needed a message + two buttons
+sysheader
+  XConfirmModal applied to sysheader + 
+  XMenu is controlled by onStateChange. isOpen is load just at the begging, to change need to be made by onStateChange.
+    need to act about clicking outside menu and closing it.
 review client page
 review closkin
 review invoice

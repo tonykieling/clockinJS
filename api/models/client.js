@@ -5,8 +5,8 @@ const clientSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   
   name: {
-    type: String
-    // required: true
+    type: String,
+    required: true
   },
 
   nickname: {

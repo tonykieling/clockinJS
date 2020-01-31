@@ -12,7 +12,7 @@ const sendEmail     = require("../helpers/send-email.js");
  * @return {User} List of all Users.
  */
 const get_all = async (req, res) => {
-console.log("inside USER get_all");
+console.log("*** inside USER get_all");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
   if (!userAdmin)
@@ -49,7 +49,7 @@ console.log("inside USER get_all");
  * @return {number} Data about one specific User.
  */
 const get_one = async (req, res) => {
-console.log("inside USER get_one");
+console.log("*** inside USER get_one");
 
   const userAdmin       = req.userData.admin;
   const userId          = req.userData.userId;
@@ -84,7 +84,7 @@ console.log("inside USER get_one");
 
 // it creates an user account
 const signup = async (req, res) => {
-console.log("inside USER signup");
+console.log("*** inside USER signup");
   const {
     name,
     email,
@@ -163,7 +163,7 @@ console.log("inside USER signup");
 // 1- need to check what to send as within token and user - for instance, password
 // 2- need to create a function to change only password
 const login = async (req, res) => {
-console.log("inside LOGIN - req.body:", req.body);
+console.log("*** inside LOGIN - req.body:", req.body);
   const email     = req.body.email;
   const password  = req.body.password;
 
@@ -219,11 +219,7 @@ console.log("inside LOGIN - req.body:", req.body);
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
 const modify_user = async (req, res) => {
-console.log("inside modify_user");
-  // if (!req.userData.admin)
-  //   return res.status(200).json({
-  //     error: `EMU01: User <${req.userData.email} is not an Admin.`
-  //   });
+console.log("*** inside modify_user");
 
   const user  = req.params.userId;
   const { name,
@@ -348,7 +344,7 @@ const delete_user = async (req, res) => {
  * @param {*} res 
  */
 const forget_password = async (req, res) => {
-  console.log("@@@ inside FORGET PASSWORD");
+console.log("*** inside FORGET PASSWORD");
   const user  = req.body.data.email;
 
   try {
@@ -423,7 +419,7 @@ const forget_password = async (req, res) => {
  * @param {*} res 
  */
 const reset_password = async (req, res) => {
-  // console.log("*****************\n inside RESET PASSWORD");
+console.log("*** inside RESET PASSWORD");
   const code  = req.params;
   const {
     userId, 
@@ -514,6 +510,7 @@ const reset_password = async (req, res) => {
  * @param {*} res 
  */
 const get_by_code = async (req, res) => {
+console.log("*** inside get_by_code")  ;
   const code  = req.params.code;
 
   try {

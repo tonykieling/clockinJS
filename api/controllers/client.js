@@ -6,10 +6,9 @@ const Client    = require("../models/client.js");
 // it is an Admin action
 // TODO: apply the Authorization method
 const get_all = async (req, res) => {
-console.log("getting clients");
+console.log("inside client get_all");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
-console.log("userAdmin", userAdmin, "userId", userId);
 
   try {
     let allClients = null;
@@ -44,6 +43,8 @@ console.log("userAdmin", userAdmin, "userId", userId);
 
 // it gets one user
 const get_one = async (req, res) => {
+console.log("inside client get_one");
+
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;  
@@ -80,7 +81,8 @@ const get_one = async (req, res) => {
 
 // it creates a client register
 const client_add = async (req, res) => {
-console.log("---inside addclient");
+console.log("inside client add");
+
   const {
         name,
         nickname, 
@@ -157,6 +159,8 @@ console.log("birthday: ", birthday);
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
 const client_modify = async (req, res) => {
+console.log("inside client modify");
+
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
@@ -187,7 +191,6 @@ console.log("++req.body from client_modify", req.body);
       error: "ECM01: Something got wrong."
     });
   }
-
 
   const {
     name,
@@ -260,6 +263,8 @@ console.log("clientModified", clientModified);
 // need to check whether there is clockin for that invoice to be deleted
 // implement soft deletion
 const client_delete = async (req, res) => {
+console.log("inside client delete");
+
   if (!req.userData.admin)
     return res.status(401).json({
       error: `Client <${req.userData.email} is not an Admin.`

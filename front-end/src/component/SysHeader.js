@@ -1,32 +1,32 @@
 import React, { useState } from 'react'
-import { Navbar, Nav, NavDropdown, Button, Modal, ButtonGroup } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 // import { slide as Menu } from "react-burger-menu";
 import Menu from "react-burger-menu/lib/menus/slide";
 import "../burguer.css";
+import MessageModal from "./MessageModal.js";
 
-// class SysHeader extends Component {
 function SysHeader(props) {
-
   const [showModal, setShowModal] = useState(false);
-  const [showMenu, setShowMenu] = useState();
+  const [showMenu, setShowMenu] = useState(false);
   
 
   const logout = (e) => {
     e.preventDefault();
-    // if (window.confirm("Are you sure you wanna leave?")) {
-    //   props.noUser();
-    //   return <Redirect to = "/land" />
-    // }
-    setShowMenu(!!false);
-    setShowModal(!!true);
+
+    setShowMenu(false);
+    setShowModal(true);
   };
 
 
-  const quiting = () => {
-    console.log("inside quiting function");
+  const menuStateChange = state => {
+    setShowMenu(state.isOpen);
+  }
+
+
+  const yesLeave = () => {
     setShowModal(false);
     props.noUser();
     return <Redirect to = "/land" />
@@ -35,47 +35,12 @@ function SysHeader(props) {
 
   const noLeave = e => {
     e.preventDefault();
-console.log("stillllllll", e);
-    setShowMenu(true);
+    setShowMenu(false);
     setShowModal(false);
   };
 
 
-  const leaveModal =         
-    <Modal
-      show    = { showModal }
-      onHide  = { noLeave }
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Clockin.js</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>Are you sure you wanna leave?</Modal.Body>
-      <Modal.Footer>
-        <ButtonGroup 
-          className = "mt-3"
-          style     = {{ width: "50%" }} >
-          <Button 
-            variant   = "primary" 
-            onClick   = { () => quiting() } 
-            style     = {{width: "50%"}} >
-            Yes
-          </Button>
-          <Button 
-            variant   = "danger" 
-            onClick   = { noLeave } 
-            style     = {{ width: "50%"}} >
-            No
-          </Button>
-        </ButtonGroup>
-      </Modal.Footer>
-    </Modal>;
-
-
-  // const isMenuOpen = (state) => {
-  //   console.log("Menus state = ", state);
-  // }
-
-// example of prevState
+// example of prevState for class components
   // toggleCollapse = collapseID => () => {
   //   this.setState(prevState => ({
   //     collapseID: prevState.collapseID !== collapseID ? collapseID : ''
@@ -126,9 +91,9 @@ console.log("stillllllll", e);
             <Link to="/user" className="nav-link">{props.storeEmail}</Link>
             <Menu 
               right
-              isOpen  = { showMenu }
-              // onStateChange = { isMenuOpen }
-              >
+              isOpen        = { showMenu }
+              onStateChange = { state => menuStateChange(state) }
+            >
 
               <NavDropdown title="Clients" id="basic-nav-dropdown1" className="menu-item">
                 <NavDropdown.Item href="clientNew" className="menu-item">Add New One</NavDropdown.Item>
@@ -185,8 +150,13 @@ console.log("stillllllll", e);
         }
 
         {showModal
-          ? leaveModal
-          : console.log("showModal is OFF")
+          ? <MessageModal 
+              openModal = { showModal}
+              message   = { "Are you sure you want to leave?" }
+              yesMethod = { yesLeave }
+              noMethod  = { noLeave }
+            />
+          : ""
         }
 
       </div>

@@ -3,7 +3,7 @@ import { Card, Form, Col, Row, Button, ButtonGroup } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import axios from "axios";
 import MaskedInput from "react-text-mask";
-import ConfirmModal from "./ConfirmModal.js";
+import MessageModal from "./MessageModal.js";
 
 const btnStyle = {
   width : "50%",
@@ -405,7 +405,7 @@ class Home extends Component {
         <br></br>
 
         {this.state.showModal
-          ? <ConfirmModal
+          ? <MessageModal
               openModal   = { true }
               message     = { this.state.modalMessage }
               noMethod    = { () => this.setState({ showModal: false }) }

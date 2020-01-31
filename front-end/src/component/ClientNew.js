@@ -7,6 +7,8 @@ import MaskedInput from 'react-text-mask';
 // import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+import MessageModal from "./MessageModal.js";
+
 class ClientNew extends Component {
 
   state = {
@@ -23,31 +25,33 @@ class ClientNew extends Component {
       cPhone          : "",
       cEmail          : "",
       defaultRate     : "",
-      message         : ""
+      message         : "",
+
+      test            : ""
     }
 
   handleChange = e => {
-    // if (e.key === "Enter")
-    //   switch(e.target.name) {
-    //     case "name":
-    //       if (this.state.name !== "")
-    //         this.textInput2.focus();
-    //       break;
-    //     case "email":
-    //       if (this.state.email !== "")
-    //         this.textInput4.focus();
-    //       break;
-    //     case "password":
-    //       if (this.state.password !== "")
-    //         this.textInput5.focus();
-    //       break;
-    //     case "confirmPassword":
-    //       if (this.state.confirmPassword !== "")
-    //         this.setState({ btnType: "submit" });
-    //       break;
-    //     default:                     
-    //   }
-// console.log("e.target.name", e.target.name, "e.target.value", e.target.value);
+    if (e.key === "Enter")
+      switch(e.target.name) {
+        case "name":
+          if (this.state.name !== "")
+            this.textInput2.focus();
+          break;
+        case "nickname":
+          if (this.state.nickname !== "")
+            this.textInput3.focus();
+          break;
+        case "password":
+          if (this.state.password !== "")
+            this.textInput5.focus();
+          break;
+        case "confirmPassword":
+          if (this.state.confirmPassword !== "")
+            this.setState({ btnType: "submit" });
+          break;
+        default:                     
+      }
+console.log("e.target.name", e.target.name, "e.target.value", e.target.value);
       this.setState({
         [e.target.name]: e.target.value
       });
@@ -55,6 +59,8 @@ class ClientNew extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
+    this.setState({ test: true });
+    return;
 
     // if (this.state.name.length > 60) {
     //   alert("Name's maximun length is 60 characters.");
@@ -249,7 +255,6 @@ console.log("client added:", addClient.data);
                 className   = "form-control"
                 placeholder = "Mother's phone number"
                 name        = "mPhone"
-                // guide={false}
                 id="mPhone"
                 onBlur={e => this.afterChange(e)}
                 value       = {this.state.mPhone}
@@ -377,6 +382,17 @@ console.log("client added:", addClient.data);
         </Card>
         <br></br>
         <br></br>
+
+        {this.state.test
+          ? <MessageModal 
+              openModal = { this.state.test}
+              message   = { "teste for one button" }
+              yesMethod = { false }
+              noMethod  = { () => this.setState({ test: false}) }
+              color     = "info"
+            />
+          : ""
+        }
       </div>
     )
   }
