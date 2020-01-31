@@ -13,6 +13,7 @@ import { Modal, ButtonGroup, Button } from "react-bootstrap";
  *  - color: to the butto
  */
 export default function MessageModal(props) {
+
   return (
     <div>
       <Modal
@@ -24,7 +25,6 @@ export default function MessageModal(props) {
         </Modal.Header>
         <Modal.Body>{props.message}</Modal.Body>
         <Modal.Footer>
-{console.log("props.yesMethod", props.yesMethod)}
           {props.yesMethod
             ?
               <ButtonGroup 

@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import axios from "axios";
+import MessageModal from "./MessageModal.js";
 
 import MaskedInput from 'react-text-mask';
 // import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+// import "react-datepicker/dist/react-datepicker.css";
 
 
 class ClientNew extends Component {
@@ -24,7 +25,10 @@ class ClientNew extends Component {
       cPhone          : "",
       cEmail          : "",
       defaultRate     : "",
-      message         : ""
+      message         : "",
+      setModal        : false,
+      className       : "",
+      validForm       : false
     }
 
   handleChange = e => {
@@ -80,6 +84,10 @@ class ClientNew extends Component {
           if (this.state.cEmail !== "")
             this.textInput13.focus();
           break;
+        case "defaultRate":
+          if (this.state.defaultRate !== "")
+            this.buttonSave.click();
+          break;
         default:
       }
       
@@ -88,29 +96,18 @@ class ClientNew extends Component {
       });
   }
 
-  handleSubmit = async e => {
-    e.preventDefault();
-console.log("this.state", this.state);
-    return;
 
-    // if (this.state.name.length > 60) {
-    //   alert("Name's maximun length is 60 characters.");
-    //   this.textInput1.focus();
-    // } else if (this.state.email.length > 60) {
-    //   alert("Email's maximun length is 60 characters.");
-    //   this.textInput2.focus();
-    // } else if (this.state.email !== "" && this.state.name !== "" && this.state.password !== "" && this.state.confirmPassword !== "") {
-    //   if (this.state.password !== this.state.confirmPassword) {
-    //     alert("Password and \nConfirm Password fields\n\nMUST be the same.");
-    //     this.setState({
-    //       password        : "",
-    //       confirmPassword : ""
-    //     })
-    //     this.textInput4.focus();
-      // } else {
-      if (this.state.name && this.state.nickname) {
+  handleSubmit = async e => {
+      if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
+        this.setState({ setModal: true});
+        if (!this.state.name)
+          this.textInput1.focus();
+        else if (!this.state.nickname)
+          this.textInput2.focus();
+        else
+          this.textInput13.focus();
+      } else {
         const url = "/client";
-        // const url         = "http://localhost:3333/client";    // this is dev setting
         const createClient  = {
           name        : this.state.name,
           nickname    : this.state.nickname,
@@ -126,7 +123,7 @@ console.log("this.state", this.state);
           cEmail      : this.state.cEmail,
           defaultRate : this.state.defaultRate
         }
-console.log("client sent: ", createClient);
+
         try {
           const addClient = await axios.post( 
             url, 
@@ -138,9 +135,10 @@ console.log("client sent: ", createClient);
           });
 
           if (addClient.data.message) {
-console.log("client added:", addClient.data);  
+
             this.setState({
-              message: addClient.data.message,
+              message     : <p>Client &lt;{this.state.nickname}&gt; has been created.</p>,
+              className   : "messageSuccess",
 
               name        : "",
               nickname    : "",
@@ -159,24 +157,20 @@ console.log("client added:", addClient.data);
 
           } else if (addClient.data.error) {
             this.setState({
-              message : addClient.data.error });
+              message   : addClient.data.error,
+              className : "messageFailure" });
             }
             
-          this.clearMessage();
-
         } catch(err) {
           this.setState({
-            message : err.message });
-
-          this.clearMessage();
+            message : err.message,
+            className : "messageFailure"
+          });
+          
         }
-      } else {
-        if (!this.state.name)
-          this.textInput1.focus();
-        else
-          this.textInput2.focus();
+        this.clearMessage();
       }
-    }
+  }
 
 
   //it clears the error message after 3.5s
@@ -190,23 +184,12 @@ console.log("client added:", addClient.data);
   }
 
 
-  handleChangeDate = incomingDate => {
-    // Im not able to grab e.targe.name and e.target.value
-    // console.log("e",e)
-    // console.log("e", e.target.name, e.target.selected);
-    // console.log("date", date);
-    this.setState({
-      birthday: incomingDate
-    });
-    this.textInput4.focus();
-  }
-
-
   afterChange = event => {
     this.setState({
       [event.target.name]: event.target.value
     })
   }
+
 
   render() {
     return (
@@ -215,12 +198,13 @@ console.log("client added:", addClient.data);
         <Card className="card-settings">
           <Form
             autoComplete  = "off"
-            // onSubmit      = {this.handleSubmit}
+            onSubmit      = {this.handleSubmit}
             className     = "formPosition"  >
 
             <Form.Group controlId="formName">
               <Form.Label className="cardLabel">Name</Form.Label>
               <Form.Control
+                required
                 autoFocus   = {true}
                 type        = "text"
                 placeholder = "Client's name"
@@ -229,11 +213,15 @@ console.log("client added:", addClient.data);
                 value       = {this.state.name}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput1 = input } />
+              <Form.Control.Feedback type="invalid">
+                Please provide Client's name.
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group controlId="formNickname">
               <Form.Label className="cardLabel">Nickname</Form.Label>
               <Form.Control
+                required
                 type        = "text"
                 placeholder = "Client's nickname"
                 name        = "nickname"
@@ -253,18 +241,6 @@ console.log("client added:", addClient.data);
                 value       = {this.state.birthday}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput3 = input } />
-                {/* <br />
-                <DatePicker
-                  selected  = {this.state.birthday}
-                  onSelect  ={this.handleChangeDate}
-                  // dateFormat="dd/MM/yyyy"
-                  // dateFormat = "MMMM eeee d, yyyy h:mm aa"
-                  dateFormat = "MMMM d, yyyy"
-                  // onChange = {this.handleChangeDate}
-                  className = "form-control"
-                  disabled  = {this.state.disableEditForm}
-                />
-                <br /> */}
             </Form.Group>
 
             <Form.Group controlId="formMother">
@@ -293,16 +269,21 @@ console.log("client added:", addClient.data);
                 ref         = { input => this.textInput5 = input } />
             </Form.Group>
 
-            <Form.Group controlId="formMEmail">
+            <Form.Group controlId="formBasicEmail">
               <Form.Label className="cardLabel">Mother's Email address</Form.Label>
               <Form.Control
                 type        = "email"
+                minLength = {20}
+                pattern="/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" required
                 placeholder = "Mother's email"
                 name        = "mEmail"
                 onChange    = {this.handleChange}
                 value       = {this.state.mEmail}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput6 = input } />
+              <Form.Control.Feedback type="invalid">
+                Please EMAIl.
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group controlId="formFather">
@@ -384,6 +365,7 @@ console.log("client added:", addClient.data);
             <Form.Group controlId="formDefaultRate">
               <Form.Label className="cardLabel">Rate</Form.Label>
               <Form.Control
+                required
                 type        = "number"
                 placeholder = "Hourly rate - CAD$"
                 name        = "defaultRate"
@@ -394,23 +376,49 @@ console.log("client added:", addClient.data);
             </Form.Group>
           </Form>
 
-          <Card.Header className="cardTitle message">          
+          <Card.Header className={ this.state.className }>          
             { this.state.message
               ? this.state.message
-              : <span className="noMessage">.</span> }
+              : <br /> }
           </Card.Header>
 
           <div className="d-flex flex-column">
             <Button 
               variant = "primary" 
               type    = "submit"
-              >
+              onClick = { this.handleSubmit }
+              ref     = {input => this.buttonSave = input}
+            >
               Save
             </Button>
           </div>
         </Card>
         <br></br>
         <br></br>
+
+        { this.state.setModal
+          ?
+            <MessageModal
+              openModal = { this.state.setModal }
+              message   = {
+                <div>Please, fill at least:
+                  <ol>
+                    <li>
+                      <b>Name</b>,
+                    </li>
+                    <li>
+                      <b>Nickname</b> and 
+                    </li>
+                    <li>
+                      <b>Rate($).</b>
+                    </li>
+                  </ol>
+                </div>
+              }
+              noMethod  = { () => this.setState({ setModal: false })}
+            />
+          : ""
+        }
       </div>
     )
   }

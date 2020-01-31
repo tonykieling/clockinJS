@@ -151,7 +151,7 @@ class Login extends Component {
             <Button variant="primary" type="submit">
               Submit
             </Button>
-            <Container className="msgcolor">
+            <Container className="messageFailure">
               {this.state.errorMsg}
             </Container>
           </Form>

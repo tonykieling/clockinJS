@@ -99,18 +99,17 @@ console.log("inside client add");
      } = req.body;
   const userId = req.userData.userId
   const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : null;
-console.log("userId", userId);
-console.log("req.body.birthday ", req.body.birthday);
-console.log("birthday: ", birthday);
-
+// console.log("===> req.body.birthday ", req.body.birthday, "typeof:", typeof req.body.birthday);
+// console.log("===> birthday: ", birthday, "typeof:", typeof birthday);
+// if (1) return res.send({message: "OK"});
   // it checks whether the name and nickname are already been used by an user account
   // if so, it returns an error message
   try {
     const clientExist = await Client
-      .find({ name, nickname: nickname });
+      .find({ name, nickname });
   
     if (clientExist.length > 0)
-      return res.status(200).json({ error: `User <name: ${name} nickname: ${nickname}> alread exists.`});
+      return res.status(200).json({ error: `User <name: ${name} or nickname: ${nickname}> alread exists.`});
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(200).json({
@@ -120,34 +119,34 @@ console.log("birthday: ", birthday);
 
   try {
     const client = new Client({
-      _id: new mongoose.Types.ObjectId(),
-      name: name || "",
-      nickname: nickname || "", 
-      birthday: birthday || "", 
-      mother: mother || "", 
-      mphone: mPhone || "", 
-      memail: mEmail || "", 
-      father: father || "", 
-      fphone: fPhone || "", 
-      femail: fEmail || "", 
-      consultant: consultant || "", 
-      cphone: cPhone || "", 
-      cemail: cEmail || "", 
-      default_rate: defaultRate || "",
-      user_id: userId
+      _id           : new mongoose.Types.ObjectId(),
+      name          : name || "",
+      nickname      : nickname || "", 
+      birthday      : birthday || "", 
+      mother        : mother || "", 
+      mphone        : mPhone || "", 
+      memail        : mEmail || "", 
+      father        : father || "", 
+      fphone        : fPhone || "", 
+      femail        : fEmail || "", 
+      consultant    : consultant || "", 
+      cphone        : cPhone || "", 
+      cemail        : cEmail || "", 
+      default_rate  : defaultRate || "",
+      user_id       : userId
     });
 
     await client.save();
 
     client.id = client._id;
-    res.json({
+    return res.json({
       message: `Client <${client.name}> has been created.`,
       client
     });
 
   } catch(err) {
-    console.trace("Error: ", err.message);
-    res.status(200).json({
+    console.trace("Error ECAD02: ", err.message);
+    return res.status(200).json({
       error: "ECAD02: Something wrong with client's data."
     });
   };
@@ -164,7 +163,6 @@ console.log("inside client modify");
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
-console.log("++req.body from client_modify", req.body);
   
   // this try is for check is the clientId passed from the frontend is alright (exists in database), plus
   //  check whether either the client to be changed belongs for the user or the user is admin - if not, not allowed to change client's data
@@ -174,21 +172,21 @@ console.log("++req.body from client_modify", req.body);
 
     if (!client || client.length < 1)
       return res.status(200).json({
-        error: `Client <id: ${clientId}> does not exist.`
+        error: `Error CM01: Client <id: ${clientId}> does not exist.`
       });
     if (userId.toString() !== client.user_id.toString() && !userAdmin)
       return res.status(200).json({
-        error: `Client <id: ${clientId}> belongs to another user.`
+        error: `Error CM02: Client <id: ${clientId}> belongs to another user.`
       });
 
   } catch(err) {
     console.log("Error => ", err.message);
     if (clientId.length !== 24)
       return res.status(200).json({
-        error: "ClientId mystyped."
+        error: "Error ECM01: ClientId mystyped."
       });  
-    res.status(200).json({
-      error: "ECM01: Something got wrong."
+    return res.status(200).json({
+      error: "Error ECM02: Something got wrong."
     });
   }
 
@@ -246,13 +244,13 @@ console.log("clientModified", clientModified);
       });
     } else
       res.status(200).json({
-        error: `Client NOT changed.`
+        error: `Error CM03: Client NOT changed.`
       });
 
   } catch(err) {
-    console.trace("Error: ", err.message);
+    console.trace("Error CM01: ", err.message);
     res.status(200).json({
-      error: "ECM02: Something bad"
+      error: "Error CM04: Something bad"
     });
   }
 }
