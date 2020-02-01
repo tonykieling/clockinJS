@@ -1,9 +1,18 @@
+
+/**
+ * 
+ * It shows a date in a string format
+ * It receives a date
+ * It returns a date in a string format such as Feb, 05, 2019
+ * 
+ */
 const show = incomingDate => {
 
-// console.log("INSIDE formatDate component");
+console.log("WWWWWWWWWWWWINSIDE formatDate component", incomingDate, typeof incomingDate);
     // console.log(">>>>>> incomingDate", incomingDate);
         const date = new Date(incomingDate);
     // console.log("===", date, "=", date.toUTCString());
+console.log("WWWWWWWWWWWWWW date", date);
     // the error is because month is taking the date before convert it to UTC
     // solved with the below code
     // need to create a function componenet to have this as a pattern for each date in the system, i.e. "Jan 01, 2020"

@@ -98,6 +98,8 @@ class ClientNew extends Component {
 
 
   handleSubmit = async e => {
+console.log("this.state.birthday", this.state.birthday, typeof this.state.birthday);
+if (1) return;
       if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
         this.setState({ setModal: true});
         if (!this.state.name)

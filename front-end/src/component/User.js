@@ -267,13 +267,13 @@ class Home extends Component {
           <Card.Header className="cardTitle">User Information</Card.Header>
 
           <Form className="formPosition">
-            <Form.Group as={Row} controlId="formId">
+            {/* <Form.Group as={Row} controlId="formId">
               <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Id</Form.Label>
               <Col >
-                <Form.Label column m={8} style={{paddingLeft: "0px"}}>{this.state.userId}</Form.Label>
+                <Form.Label column m={8} style={{paddingLeft: "0px", paddingRight: "0px"}}>{this.state.userId}</Form.Label>
               </Col>
-            </Form.Group>
-
+            </Form.Group> */}
+            <br />
             <Form.Group as={Row} controlId="formName">
               <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Name</Form.Label>
               <Col sm={8} style={{paddingLeft: "0px"}}>

@@ -10,7 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import GetClients from "./aux/GetClients.js";
 import * as formatDate from "./aux/formatDate.js";
-
+import * as handlingDate from "./aux/handlingDT.js";
 
 
 class ClientsList extends Component {
@@ -51,37 +51,15 @@ class ClientsList extends Component {
       tmp_cEmail          : "",
       tmp_default_rate    : "",
 
-      typeDate            : "text"
+      className           : ""
     }
   }
 
 
   handleChange = event => {
-console.log("=", event.target);
-    if (event.target.name === "birthday") {
-      console.log("birthday field VALUE=", event.target.value);
-console.log("=====", typeof event.target.value);
-      this.setState({
-        birthday: new Date(event.target.value)
-      });
-    } else
       this.setState({
         [event.target.name]: event.target.value || ""
       });
-  }
-
-
-  handleChangeDate = incomingDate => {
-console.log("incomingDate", incomingDate);
-    const newDate = ((incomingDate.getUTCMonth() + 1) + "-" + incomingDate.getUTCDate() + "-" + incomingDate.getUTCFullYear()) + "00:00";
-console.log("newDate", newDate.parseISO());
-    // Im not able to grab e.targe.name and e.target.value
-    // console.log("e",e)
-    // console.log("e", e.target.name, e.target.selected);
-    // console.log("date", date);
-    this.setState({
-      birthday: newDate.parseISO()
-    });
   }
 
 
@@ -104,7 +82,7 @@ console.log("newDate", newDate.parseISO());
       cEmail        : this.state.cEmail,
       default_rate  : this.state.default_rate
     };
-console.log("sending to save: ", data.birthday);
+// console.log("sending to save: ", data.birthday);
     const url = `/client/${data.clientId}`;
 
     try {
@@ -117,15 +95,13 @@ console.log("sending to save: ", data.birthday);
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
       if (newClientData.data.message) {
-        const date = new Date(newClientData.data.newData.birthday);
-        const birthday = date ? 
-          new Date((date.getUTCMonth() + 1) + "-" + date.getUTCDate() + "-" + date.getUTCFullYear())
-          : "";
+        // const birthday = newClientData.data.newData.birthday ? handlingDate.receivingDate(newClientData.data.newData.birthday) : "";
         this.setState({
           message:      `${newClientData.data.newData.nickname} has been changed`,
           name          : newClientData.data.newData.name,
           nickname      : newClientData.data.newData.nickname,
-          birthday,
+          birthday      : newClientData.data.newData.birthday ? handlingDate.receivingDate(newClientData.data.newData.birthday) : "",
+          // birthday      : newClientData.data.newData.birthday,
           // birthday      : new Date(newClientData.data.newData.birthday.toLocaleString('en-US', { timeZone: "UTC" })),
           mother        : newClientData.data.newData.mother,
           mPhone        : newClientData.data.newData.mPhone,
@@ -136,26 +112,31 @@ console.log("sending to save: ", data.birthday);
           cPhone        : newClientData.data.newData.cPhone,
           cEmail        : newClientData.data.newData.cEmail,
           consultant    : newClientData.data.newData.consultant,
-          default_rate  : newClientData.data.newData.default_rate
+          default_rate  : newClientData.data.newData.default_rate,
+
+          className     : "messageSuccess",
+          typeDate      : "text"
         });
       } else if (newClientData.data.error)
         this.setState({
-          message: newClientData.data.error
+          message   : newClientData.data.error,
+          className : "messageFailure"
         });
-
-      this.cleanForm();
       
     } catch(err) {
       this.setState({
-        message: err.message });
-      
+        message   : err.message,
+        className : "messageFailure"
+      });
     }
+
+    this.clearMessage();
   }
 
 
-  cleanForm = () => {
+  clearMessage = () => {
     this.setState({
-      disableEditForm: true
+      disableEditForm : true
     });
 
     setTimeout(() => {
@@ -167,47 +148,29 @@ console.log("sending to save: ", data.birthday);
 
 
   getClientInfo = client => {
-// console.log("client", client);
-    this.populateForm(client);
-  }
-
-
-  populateForm = client => {
 console.log("inside populateForm, client: ", client);
     const {
-      _id, name, nickname,  mother, mPhone, mEmail, father, fPhone, fEmail, 
-      consultant, cPhone, cEmail, default_rate } = client;
-    // const birthday = new Date(client.birthday);
-    // let utcDate = new Date(birthday.toLocaleString('en-US', { timeZone: "UTC" }));
-console.log("client.birthday: ", client.birthday);
-    // const birthday = client.birthday ? new Date(client.birthday.toLocaleString('en-US', { timeZone: "UTC" })) : "";
-    // const birthday = client.birthday ? new Date(client.birthday).toUTCString() : "";
-    const date = client.birthday ? new Date(client.birthday) : "";
-console.log("date", date);
-    const birthday = date ? 
-      new Date((date.getUTCMonth() + 1) + "-" + date.getUTCDate() + "-" + date.getUTCFullYear())
-      : "";
+      _id, name, nickname,  mother, father, consultant, default_rate 
+    } = client;
 
-console.log("birthday: ", birthday);
-    this.setState({
-      clientId: _id,
-      name,
-      nickname,
-      // birthday: utcDate,
-      birthday,
-      mother,
-      mPhone,
-      mEmail,
-      father,
-      fPhone,
-      fEmail,
-      consultant,
-      cPhone,
-      cEmail,
-      default_rate,
+      this.setState({
+        clientId: _id,
+        name,
+        nickname,
+        birthday: client.birthday ? handlingDate.receivingDate(client.birthday) : "",
+        mother,
+        mPhone: client.mphone,
+        mEmail: client.memail,
+        father,
+        fPhone: client.fphone,
+        fEmail: client.femail,
+        consultant,
+        cPhone: client.cphone,
+        cEmail: client.cemail,
+        default_rate,
 
-      disableEditForm: true
-    });
+        disableEditForm: true
+      });
   }
 
 
@@ -227,7 +190,9 @@ console.log("birthday: ", birthday);
       tmp_consultant      : this.state.consultant,
       tmp_cPhone          : this.state.cPhone,
       tmp_cEmail          : this.state.cEmail,
-      tmp_default_rate    : this.state.default_rate
+      tmp_default_rate    : this.state.default_rate,
+
+      // typeDate        : "text"
     });
   }
 
@@ -248,7 +213,7 @@ console.log("birthday: ", birthday);
       consultant      : this.state.tmp_consultant,
       cPhone          : this.state.tmp_cPhone,
       cEmail          : this.state.tmp_cEmail,
-      default_rate    : this.state.tmp_default_rate      
+      default_rate    : this.state.tmp_default_rate
     });
   }
 
@@ -256,26 +221,42 @@ console.log("birthday: ", birthday);
   afterChange = event => {
     this.setState({
       [event.target.name]: event.target.value
-    })
+    });
   }
 
 
   onFocusDate = () => {
     this.setState({ typeDate: "date"});
-    this.textInput3.click();
-console.log("date clicked");
+    console.log("on focus typedate11", this.state.typeDate);
+    setTimeout(() => {
+      console.log("on focus typedate", this.state.typeDate);
+    }, 0);
+    // this.birthday.click();
+// console.log("date clicked");
   }
 
 
   onBlurDate = () => {
-    this.setState({ typeDate: "text"});
-console.log("onBlur Date");
+// console.log("===========inside onblurBirthday", this.state.birthday);
+    // const birthday = new Date(this.state.birthday);
+    this.setState({
+      typeDate: "text"
+    });
+console.log("brithdayPlaceholder", this.state.birthdayPlaceholder, 'typedate', this.state.typeDate);
+
+    setTimeout(() => {
+      this.setState({
+        birthdayPlaceholder: formatDate.show(this.state.birthday)
+      });
+      console.log("brithdayPlaceholder", this.state.birthdayPlaceholder, 'typedate', this.state.typeDate);
+    }, 0);
+// console.log("this.state.birthday", this.state.birthday)
+// console.log("onBlur Date");
   }
 
 
   render() {
 console.log("render ===> this.state", this.state);
-// console.log("moment:", moment(this.state.birthday).format("D/M/YYYY"));
 
     return (
       <div className="formPosition">
@@ -286,7 +267,8 @@ console.log("render ===> this.state", this.state);
         <Card.Body>
           <Card.Title>Clients:</Card.Title>
 
-         <GetClients getClientInfo = { this.getClientInfo } />     { /* mount the Dropbox Button with all clients for the user */ }
+         <GetClients 
+          getClientInfo = { this.getClientInfo } />     { /* mount the Dropbox Button with all clients for the user */ }
          {/* <GetClients 
               client        = { this.state.client }
               getClientInfo = { this.getClientInfo } /> */}
@@ -334,17 +316,23 @@ console.log("render ===> this.state", this.state);
                 <Form.Group controlId="formBirthday">
                   <Form.Label className="cardLabel">Birthday</Form.Label>
                   <Form.Control
-                    type        = { this.state.typeDate }
-                    placeholder = { formatDate.show(this.state.birthday) }
+                    // type        = { this.state.typeDate }
+                    type        = "date"
+                    // placeholder = { formatDate.show(this.state.birthday) }
+                    // placeholder = { () => formatDate.show(this.state.birthday) }
+                    // placeholder = { this.state.birthdayPlaceholder }
+                    // placeholder = { this.state.birthday }
                     name        = "birthday"
                     onChange    = {this.handleChange}
-                    // value       = {this.state.birthday}
+                    // onClick     = { () => this.setState({typeDate: "date"})}
+                    // onClick     = { this.state.typeDate === "date" () => console.log("YYYY")}
+                    value       = {this.state.birthday}
                     // value       = { formatDate.show(this.state.birthday) }
                     // onFocus     = { this.onFocusDate }
                     // onBlur      = { this.onBlurDate }
                     // onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
-                    ref         = {input => this.textInput3 = input } />                  
+                    ref         = {input => this.birthday = input } />                  
                   <br />
                   {/* <DatePicker
                     selected  = {this.state.birthday}
@@ -379,10 +367,10 @@ console.log("render ===> this.state", this.state);
                     className   = "form-control"
                     placeholder = "Enter mother's phone number"
                     name        = "mPhone"
-                    id          = "mPhone"
+                    // id          = "mPhone"
                     onBlur      = {e => this.afterChange(e)}
                     value       = {this.state.mPhone}
-                    onKeyPress  = {() => this.handleChange}
+                    onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput5 = input } />
                 </Form.Group>
@@ -421,7 +409,7 @@ console.log("render ===> this.state", this.state);
                     placeholder = "Enter father's phone number"
                     name        = "fPhone"
                     id          = "fPhone"
-                    onBlur      = {e => this.afterChange(e)}
+                    // onBlur      = {e => this.afterChange(e)}
                     value       = {this.state.fPhone}
                     onKeyPress  = {() => this.handleChange}
                     disabled    = {this.state.disableEditForm}
@@ -461,11 +449,10 @@ console.log("render ===> this.state", this.state);
                     className   = "form-control"
                     placeholder = "Enter consultant's phone number"
                     name        = "cPhone"
-                    // guide={false}
                     id          = "cPhone"
                     onBlur      = {e => this.afterChange(e)}
                     value       = {this.state.cPhone}
-                    onKeyPress  = {() => this.handleChange}
+                    onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput11 = input } />
                 </Form.Group>
@@ -497,10 +484,10 @@ console.log("render ===> this.state", this.state);
                 </Form.Group>
 
 
-          <Card.Header className="cardTitle message">          
+          <Card.Header className={this.state.className}>
             { this.state.message
               ? this.state.message
-              : <span className="noMessage">.</span> }
+              : <br /> }
           </Card.Header>
 
           <div className="d-flex flex-column">

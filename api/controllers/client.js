@@ -28,13 +28,15 @@ console.log("inside client get_all");
         message: `No clients at all.`
       });
     
-    res.status(200).json({
+console.log("allclients", allClients[0].birthday, typeof allClients[0].birthday);
+// should return birthday as a string yyyy-mm-dd
+    return res.status(200).json({
       count: allClients.length,
       message: allClients
     });
   } catch(err) {
     console.log("Error => ", err.message);
-    res.status(200).json({
+    return res.status(200).json({
       error: "ECGO01: Something got wrong."
     });
   }
