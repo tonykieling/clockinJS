@@ -28,7 +28,8 @@ class ClientNew extends Component {
       message         : "",
       setModal        : false,
       className       : "",
-      validForm       : false
+      validForm       : false,
+      formValidated   : false
     }
 
   handleChange = e => {
@@ -99,7 +100,18 @@ class ClientNew extends Component {
 
   handleSubmit = async e => {
 console.log("this.state.birthday", this.state.birthday, typeof this.state.birthday);
+
+// const form = e.currentTarget;
+// if (form.checkValidity() === false) {
+//   e.preventDefault();
+//   e.stopPropagation();
+//   console.log("form not valid!!")
+//   return;
+// }
+// console.log("form VALIDATED")
+// this.setState({formValidated: true});
 if (1) return;
+
       if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
         this.setState({ setModal: true});
         if (!this.state.name)
@@ -201,7 +213,10 @@ if (1) return;
           <Form
             autoComplete  = "off"
             onSubmit      = {this.handleSubmit}
-            className     = "formPosition"  >
+            className     = "formPosition"  
+            // noValidate 
+            // validated     = {this.state.formValidated}
+          >
 
             <Form.Group controlId="formName">
               <Form.Label className="cardLabel">Name</Form.Label>
@@ -214,10 +229,11 @@ if (1) return;
                 onChange    = {this.handleChange}
                 value       = {this.state.name}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput1 = input } />
+                ref         = {input => this.textInput1 = input } />              
+              {/* <Form.Control.Feedback>Looks good.</Form.Control.Feedback>
               <Form.Control.Feedback type="invalid">
                 Please provide Client's name.
-              </Form.Control.Feedback>
+              </Form.Control.Feedback> */}
             </Form.Group>
 
             <Form.Group controlId="formNickname">
@@ -231,6 +247,10 @@ if (1) return;
                 value       = {this.state.nickname}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput2 = input } />
+              <Form.Control.Feedback>Looks good.</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                Please provide Client's nickname.
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group controlId="formBirthday">
@@ -275,17 +295,19 @@ if (1) return;
               <Form.Label className="cardLabel">Mother's Email address</Form.Label>
               <Form.Control
                 type        = "email"
-                minLength = {20}
-                pattern="/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" required
+                // minLength = {20}
+                pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" 
                 placeholder = "Mother's email"
                 name        = "mEmail"
                 onChange    = {this.handleChange}
                 value       = {this.state.mEmail}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput6 = input } />
+                ref         = {input => this.textInput6 = input } 
+                />
+              {/* <Form.Control.Feedback>Looks good.</Form.Control.Feedback>
               <Form.Control.Feedback type="invalid">
-                Please EMAIl.
-              </Form.Control.Feedback>
+                Please provide Client's name.
+              </Form.Control.Feedback> */}
             </Form.Group>
 
             <Form.Group controlId="formFather">
@@ -376,7 +398,7 @@ if (1) return;
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput13 = input }  />
             </Form.Group>
-          </Form>
+          {/* </Form> */}
 
           <Card.Header className={ this.state.className }>          
             { this.state.message
@@ -394,7 +416,9 @@ if (1) return;
               Save
             </Button>
           </div>
+          </Form>
         </Card>
+
         <br></br>
         <br></br>
 
