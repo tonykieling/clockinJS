@@ -44,7 +44,7 @@ class Home extends Component {
     e.preventDefault();
 
     if (this.state.name && this.state.email) {
-      const url         = `user/${this.state.userId}`;    // this is dev setting
+      const url         = `user/${this.state.userId}`;
       const changeUser  = {
         name        : this.state.name,
         email       : this.state.email,

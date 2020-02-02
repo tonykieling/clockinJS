@@ -44,7 +44,8 @@ export default function MessageModal(props) {
                 </Button>
               </ButtonGroup>
             :
-              <Button 
+              <Button
+                autoFocus = { true }
                 variant   = { props.color || "primary" }
                 onClick   = { props.noMethod } 
                 style     = {{ width: "50%"}} >

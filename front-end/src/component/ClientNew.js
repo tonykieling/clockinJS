@@ -29,7 +29,8 @@ class ClientNew extends Component {
       setModal        : false,
       className       : "",
       validForm       : false,
-      formValidated   : false
+      formValidated   : false,
+      saveButtonType  : undefined
     }
 
   handleChange = e => {
@@ -86,8 +87,10 @@ class ClientNew extends Component {
             this.textInput13.focus();
           break;
         case "defaultRate":
-          if (this.state.defaultRate !== "")
+          if (this.state.defaultRate !== "") {
+            // this.setState({ saveButtonType: "submit" });
             this.buttonSave.click();
+          }
           break;
         default:
       }
@@ -101,16 +104,6 @@ class ClientNew extends Component {
   handleSubmit = async e => {
 console.log("this.state.birthday", this.state.birthday, typeof this.state.birthday);
 
-// const form = e.currentTarget;
-// if (form.checkValidity() === false) {
-//   e.preventDefault();
-//   e.stopPropagation();
-//   console.log("form not valid!!")
-//   return;
-// }
-// console.log("form VALIDATED")
-// this.setState({formValidated: true});
-if (1) return;
 
       if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
         this.setState({ setModal: true});
@@ -151,7 +144,7 @@ if (1) return;
           if (addClient.data.message) {
 
             this.setState({
-              message     : <p>Client &lt;{this.state.nickname}&gt; has been created.</p>,
+              message     : <p>Client <b>{this.state.nickname}</b> has been created.</p>,
               className   : "messageSuccess",
 
               name        : "",
@@ -212,16 +205,13 @@ if (1) return;
         <Card className="card-settings">
           <Form
             autoComplete  = "off"
-            onSubmit      = {this.handleSubmit}
-            className     = "formPosition"  
-            // noValidate 
-            // validated     = {this.state.formValidated}
+            // onSubmit      = {this.handleSubmit}
+            className     = "formPosition"
           >
 
             <Form.Group controlId="formName">
               <Form.Label className="cardLabel">Name</Form.Label>
               <Form.Control
-                required
                 autoFocus   = {true}
                 type        = "text"
                 placeholder = "Client's name"
@@ -229,17 +219,12 @@ if (1) return;
                 onChange    = {this.handleChange}
                 value       = {this.state.name}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput1 = input } />              
-              {/* <Form.Control.Feedback>Looks good.</Form.Control.Feedback>
-              <Form.Control.Feedback type="invalid">
-                Please provide Client's name.
-              </Form.Control.Feedback> */}
+                ref         = {input => this.textInput1 = input } />
             </Form.Group>
 
             <Form.Group controlId="formNickname">
               <Form.Label className="cardLabel">Nickname</Form.Label>
               <Form.Control
-                required
                 type        = "text"
                 placeholder = "Client's nickname"
                 name        = "nickname"
@@ -247,10 +232,6 @@ if (1) return;
                 value       = {this.state.nickname}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput2 = input } />
-              <Form.Control.Feedback>Looks good.</Form.Control.Feedback>
-              <Form.Control.Feedback type="invalid">
-                Please provide Client's nickname.
-              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group controlId="formBirthday">
@@ -295,7 +276,6 @@ if (1) return;
               <Form.Label className="cardLabel">Mother's Email address</Form.Label>
               <Form.Control
                 type        = "email"
-                // minLength = {20}
                 pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" 
                 placeholder = "Mother's email"
                 name        = "mEmail"
@@ -304,10 +284,6 @@ if (1) return;
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput6 = input } 
                 />
-              {/* <Form.Control.Feedback>Looks good.</Form.Control.Feedback>
-              <Form.Control.Feedback type="invalid">
-                Please provide Client's name.
-              </Form.Control.Feedback> */}
             </Form.Group>
 
             <Form.Group controlId="formFather">
@@ -389,7 +365,6 @@ if (1) return;
             <Form.Group controlId="formDefaultRate">
               <Form.Label className="cardLabel">Rate</Form.Label>
               <Form.Control
-                required
                 type        = "number"
                 placeholder = "Hourly rate - CAD$"
                 name        = "defaultRate"
@@ -398,7 +373,6 @@ if (1) return;
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput13 = input }  />
             </Form.Group>
-          {/* </Form> */}
 
           <Card.Header className={ this.state.className }>          
             { this.state.message
@@ -409,11 +383,12 @@ if (1) return;
           <div className="d-flex flex-column">
             <Button 
               variant = "primary" 
-              type    = "submit"
+              // type    = { this.state.saveButtonType }
+              // type    = "submit"
               onClick = { this.handleSubmit }
               ref     = {input => this.buttonSave = input}
             >
-              Save
+            Save
             </Button>
           </div>
           </Form>
