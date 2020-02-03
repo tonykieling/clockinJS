@@ -65,24 +65,31 @@ class Home extends Component {
         });
     
         if (modUser.data.message) {
-          const user = {
-            id          : this.props.storeId,
-            name        : modUser.data.data.name,
-            email       : modUser.data.data.email,
-            city        : modUser.data.data.city,
-            address     : modUser.data.data.address,
-            postalCode  : modUser.data.data.postalCode,
-            phone       : modUser.data.data.phone,
-            token       : modUser.data.data.token
-          };
-    
-          this.setState({
-            message           : "Info has been updated.",
-            classNameMessage  : "messageSuccess",
-            disableEdit       : true
-          });
-    
-          this.props.dispatchLogin({ user });
+          if (modUser.data.newData) {
+            const user = {
+              id          : this.props.storeId,
+              name        : modUser.data.newData.name,
+              email       : modUser.data.newData.email,
+              city        : modUser.data.newData.city,
+              address     : modUser.data.newData.address,
+              postalCode  : modUser.data.newData.postalCode,
+              phone       : modUser.data.newData.phone,
+              token       : modUser.data.newData.token
+            };
+      
+            this.setState({
+              message           : "Info has been updated.",
+              classNameMessage  : "messageSuccess",
+              disableEdit       : true
+            });
+      
+            this.props.dispatchLogin({ user });
+          } else 
+            this.setState({
+              disableEdit       : true,
+              message           : modUser.data.message,
+              classNameMessage  : "messageSuccess"
+            });          
     
         } else if (modUser.data.error) {
           this.setState({
@@ -103,19 +110,22 @@ class Home extends Component {
     } else {
       if (!this.state.name && this.state.email) {
         this.setState({
-          message: "Please, name should be filled."
+          message: "Please, name should be filled.",
+          classNameMessage  : "messageFailure"
         });
 
         this.textInput1.focus();
       } else if (!this.state.email && this.state.name) {
         this.setState({
-          message: "Please, email should be filled."
+          message: "Please, email should be filled.",
+          classNameMessage  : "messageFailure"
         });
 
         this.textInput2.focus();
       } else if (!this.state.name && !this.state.email) {
         this.setState({
-          message: "Please, at least name and email should be filled."
+          message: "Please, at least name and email should be filled.",
+          classNameMessage  : "messageFailure"
         });
 
         this.textInput1.focus();
@@ -282,8 +292,8 @@ class Home extends Component {
                   type          = "text"
                   name          = "name"
                   onChange      = {this.handleChange}
-                  placeholder   = {this.state.name}
-                  value         = {this.state.name}
+                  placeholder   = "Your name"
+                  value         = {this.state.name || ""}
                   onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput1 = input }
                 />
@@ -299,7 +309,7 @@ class Home extends Component {
                   type          = "text"
                   name          = "email"
                   onChange      = {this.handleChange}
-                  placeholder   = {this.state.email}
+                  placeholder   = {"Your email"}
                   value         = {this.state.email}
                   onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput2 = input }
@@ -312,11 +322,11 @@ class Home extends Component {
               <Col sm={8} style={{paddingLeft: "0px"}}>
                 <Form.Control
                   disabled      = {this.state.disableEdit}
-                  placeholder   = {this.state.address}
+                  placeholder   = "Type your address"
                   type          = "text"
                   name          = "address"
                   onChange      = {this.handleChange}
-                  value         = {this.state.address}
+                  value         = {this.state.address || ""}
                   onKeyPress    = {this.handleChange}
                   ref           = {input => this.textInput3 = input }
                 />
@@ -331,8 +341,8 @@ class Home extends Component {
                   type          = "text"
                   name          = "city"
                   onChange      = {this.handleChange}
-                  placeholder   = {this.state.city}
-                  value         = {this.state.city}
+                  placeholder   = {"Your city, please"}
+                  value         = {this.state.city || ""}
                   onKeyDown     = {this.handleChange}
                   ref           = {input => this.textInput4 = input }
                 />
@@ -347,8 +357,8 @@ class Home extends Component {
                   type          = "text"
                   name          = "postalCode"
                   onChange      = {this.handleChange}
-                  value         = {this.state.postalCode}
-                  placeholder   = {this.state.postalCode}
+                  value         = {this.state.postalCode || ""}
+                  placeholder   = {"Type your Postal Code"}
                   onKeyDown     = {this.handleChange}
                   ref           = {input => this.textInput5 = input }
                 />
@@ -376,7 +386,7 @@ class Home extends Component {
                   // guide={false}
                   // id          = "fPhone"
                   onBlur      = { e => this.handleChange(e)}
-                  value       = { this.state.phone}
+                  value       = { this.state.phone || ""}
                   onKeyPress  = { this.handleChange}
                   disabled    = { this.state.disableEdit}
                   ref         = { input => this.textInput6 = input }

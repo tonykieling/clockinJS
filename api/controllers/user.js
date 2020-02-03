@@ -272,21 +272,21 @@ console.log("*** inside modify_user");
       const returnUser = {
         name, email, city, address, postalCode, phone, token
       }
-
-      res.json({
+      
+      return res.json({
         message : `User <${modifiedUser.email}> has been modified.`,
-        data    : returnUser
+        newData    : returnUser
       });
 
     } else
-      res.status(200).json({
-        error: `EMU04: User <${user}> not changed.`
+      return res.status(200).json({
+        message: `User <${email}> not changed- no new data`
       });
 
   } catch(err) {
     console.trace("Error: ", err.message);
     res.status(200).json({
-      error: "EMU05: Something bad"
+      error: "EMU05: Something bad happened. Try again."
     });
   }
 }
