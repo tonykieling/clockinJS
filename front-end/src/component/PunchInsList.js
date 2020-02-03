@@ -227,12 +227,13 @@ console.log(getClockins.data.allClockins);
   render() {
     return (
       <div className="formPosition">
-        <h3>List of Punch ins</h3>
+        <br />
 
         {/* <Card style={{ width: '40rem' }}> */}
         <Card className="card-settings">
+          <Card.Header>List of PunchIns</Card.Header>
           <Card.Body>
-
+            
           { /* mount the Dropbox Button with all clients for the user */ }
           <div className="gridClientBtContainer">
             <GetClients

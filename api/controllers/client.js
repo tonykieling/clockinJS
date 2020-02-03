@@ -206,9 +206,9 @@ console.log("inside client modify");
     cEmail, 
     default_rate
  } = req.body;
-console.log("req.body==>", req.body);
+
  const birthday = new Date(req.body.birthday);
-console.log("birthday", birthday);
+
   try {
     const clientToBeChanged = await Client
       .updateOne({
@@ -233,13 +233,13 @@ console.log("birthday", birthday);
       }, {
         runValidators: true
       });
-console.log("clientToBeChanged", clientToBeChanged);
+
     if (clientToBeChanged.nModified) {
       const clientModified = await Client
         .findById({ _id: clientId})
         .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
       clientModified.birthday = Date.parse(clientModified.birthday);
-console.log("clientModified", clientModified.nModified);
+
       return res.json({
         message: `Client <${clientModified.nickname}> has been modified.`,
         newData: clientModified

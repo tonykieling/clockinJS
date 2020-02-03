@@ -11,11 +11,10 @@ export default function About() {
   return (
     <div className="page-general twoThirds">
       <br />
-      <h1 className="main-title">ClockinJS</h1>
+      <h1 className="main-title">Clockin.js</h1>
 
       <div className="content-general">
-        <p>p.s. Under construction</p>
-        <p>The system is aimed to allow register clock-ins and generate invoices.</p>
+        <p>The system is aimed to allow you to have all your clients data, their clockins and invoices, in one place. It is easy to manage and track your work with them.</p>
         <a href="https://github.com/tonykieling/clockinJS" target="_blank" rel="noopener noreferrer">GitHub Project at https://github.com/tonykieling/clockinJS</a> 
 
         <h2 className="sub-title">Some of its functionalities are:</h2>
@@ -47,7 +46,7 @@ export default function About() {
               List, Check and Edit clock-ins data,
             </li>
             <li>
-              Generate invoice and control their status (generated, sent and received),
+              Generate invoice and manage their status (generated, delivered and received),
             </li>
             <li>
               List and Check invoices.
@@ -59,27 +58,27 @@ export default function About() {
         <h2 className="sub-title">System main actors</h2>
         <ol>
           <li>
-            <span className="strong">User:</span>
+            <span className="strong">User: </span>
               People who have clients and want to register their worked hours.
           </li>
           <li>
-            <span className="strong">Client:</span>
+            <span className="strong">Client: </span>
               People or organizations which the users provide their service.
           </li>
           <li>
-            <span className="strong">Clock-in:</span>
+            <span className="strong">Clock-in: </span>
               It is the start and end time in which the users worked for a client.
           </li>
           <li>
-            <span className="strong">Invoice:</span>
-              It is one or a set of clock-ins for a particular client that a user wants to generate. It will contain information about the user, the client, the description of hours worked, and the total amount of money accumulated for the user regarding that specific client. The invoice can be generated according to the user's necessity ( weekly, monthly).
-              The invoice format is complained to the Government of Canada...
+            <span className="strong">Invoice: </span>
+              It is a set of one or more clock-ins for a particular client and period that a user wants to generate. It will contain information about the user, the client, the description of hours worked, and the total amount of money earned for the user regarding that specific client. The invoice can be generated according to the user's necessity (weekly, monthly, etc).
+              The invoice format is complained to the Government of Canada.
           </li>
         </ol>
 
         <h2 className="sub-title">Motivation</h2>
         <p>
-          I have been developing the ClockinJS to help my wife to register data and control their worked hours for her behavior intervention clients. The system facilitates the administration of the data (hours, invoice, clients) of her clients and allows a fast and reliable emission of a monthly invoice addressed to the Autism BC.
+          I have been developing the Clockin.js application to help my wife to register data and control their worked hours for her behavior intervention clients. The system facilitates the administration of the data (hours, invoice, clients) of her clients and allows a fast and reliable emission of a monthly invoice addressed to the Autism BC.
         </p>
         <p>
           The system will be used for my wife to help her to control her work hours plus will automate the invoice´s generation. However, this is not necessary or asked for her clients or any governmental agency of any country. It is for her own control, but it can be used for anyone. The invoices that this system will generate are complained to a public format and can be reached on the internet.
@@ -94,49 +93,19 @@ export default function About() {
         </p>
 
         <h2 className="sub-title">Todo list and Releases</h2>
-        <p>The system is in production and being used by my wife to record and list their hours for her clients.</p>
-        <p>Features under developing are:</p>
+        <p>The system is in production and being used for my wife to manage her clients' works.</p>
+        <br />
+        <p>Even though it is running, some improvements and features are being developed.</p>
         <ul>
-          <li>CSS styling, specilially for mobiles</li>
-          <li>Change password (being logged and not - both done)</li>
-          <li>Forget password (captcha + send by email (done) -)</li>
-          <li>Edit Clockin</li>
-          <li>Generate Invoices</li>
-          <li>Review invoice backend code,</li>
-          <li>Generate invoice's UI,</li>
-          <li>Process (control invoice's status),</li>
-          <li>Adapt pdf to receive data from the system.</li>
+          <li>Better styling for some components</li>
+          <li>Edit and Delete Clockin</li>
+          <li>Edit and Delete Invoice</li>
+          <li>Reports</li>
+          <li>Generate a Invoice's pdf file from the system.</li>
         </ul>
 
         <h3 className="sub-title">Contact us</h3>
           <p> Tony Kieling's: </p>
-            {/* <ul>
-              <li className="iconLine">
-                <a href="mailto:tony.kieling@gmail.com" target="_top" >
-                  <img src={gmailIcon} alt="gmail"/> Gmail- tony.kieling@gmail.com
-                </a> 
-              </li>
-
-              <li className="iconLine">
-                <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank" rel="noopener noreferrer">
-                  <img src={linkedinIcon} className="iconSettings" alt="linkedin"/> LinkedIn - https://www.linkedin.com/in/tony-kieling
-                </a>
-              </li>
-
-              <li className="iconLine">
-                <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">
-                  <img src={githubIcon} className="iconSettings" alt="linkedin"/> GitHub https://github.com/tonykieling/clockinJS
-                </a>
-              </li>
-
-              <li className="iconLine">
-                <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">
-                  <img src={resumeIcon} alt="resume"/> Resume On-Line
-                </a>
-                <br />
-              </li>
-
-            </ul> */}
               <div className="iconLine">
                 <a href="mailto:tony.kieling@gmail.com" target="_top" >
                   <img src={gmailIcon} alt="gmail" className="iconSettings" />

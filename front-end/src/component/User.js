@@ -270,8 +270,8 @@ class Home extends Component {
     return (
       <div className="formPosition">
         <br />
-        <h3 className="htitle">User's Home Page</h3>
-        <br />
+        {/* <h3 className="htitle">User's Home Page</h3>
+        <br /> */}
 
         <Card className="card-settings">
           <Card.Header className="cardTitle">User Information</Card.Header>

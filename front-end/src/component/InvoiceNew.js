@@ -235,15 +235,14 @@ renderDataTable = (clockins) => {
   render() {
     return (
       <div className="formPosition">
-        <h3>Invoice generator</h3>
-        <p>Select client and period to get the clockins.</p>
-
+        <br />
         <Card className="card-settings">
-        <Card.Body>
+          <Card.Header>Invoice Generator</Card.Header>
+          <Card.Body>
 
-         <GetClients 
-              client        = { this.state.client }
-              getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
+          <GetClients 
+                client        = { this.state.client }
+                getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
 
           <br></br>
           <Form onSubmit={this.handleGetClockins} >

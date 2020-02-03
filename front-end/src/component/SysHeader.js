@@ -54,13 +54,13 @@ function SysHeader(props) {
       <div>
         <Navbar bg="primary showNormalMenu" >
           <Navbar.Brand>
-            <Link to = "/" className="navbar-brand"> ClockinJS </Link>
+            <Link to = "/" className="navbar-brand"> Clockin.js </Link>
           </Navbar.Brand>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Link to="/user" className="nav-link">{props.storeEmail} is logged</Link>
+              <Link to="/user" className="nav-link">{props.storeEmail}</Link>
               <NavDropdown title="Clients" id="basic-nav-dropdown1">
                 <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item>
                 <NavDropdown.Divider />
@@ -87,7 +87,7 @@ function SysHeader(props) {
 
         <div className="showHamburguer">
           <Navbar bg="info">
-            <Link to="/" className="nav-link">ClockinJS</Link>
+            <Link to="/" className="nav-link">Clockin.js</Link>
             <Link to="/user" className="nav-link">{props.storeEmail}</Link>
             <Menu 
               right
@@ -130,7 +130,7 @@ function SysHeader(props) {
   const notLoggedHeader = () => {
     return (
       <Navbar bg="dark" variant="dark">
-        <Navbar.Brand href="/">ClockinJS</Navbar.Brand>
+        <Navbar.Brand href="/">Clockin.js</Navbar.Brand>
         <Nav>
           <Link to="/login" className="nav-link">Login</Link>
           <Link to="/register" className="nav-link">Register</Link>

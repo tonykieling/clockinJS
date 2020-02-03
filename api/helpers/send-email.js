@@ -94,7 +94,7 @@ const welcomeEmail = (user, to) => {
 const generalSender = async (to, subject, html) => {
   try {
     await transporter.sendMail({
-      from  : "Clockin JS<clockin.js@gmail.com>",
+      from  : "Clockin.js<clockin.js@gmail.com>",
       to,
       subject,
       html,

@@ -140,6 +140,13 @@
   text-align: center;
 }
 
+.homeBack {
+  background-color: gainsboro;
+}
+
+.card-header {
+  font-size: x-large;
+}
 
 @media only screen and (max-width: 800px){
 
@@ -181,7 +188,7 @@
   }
 
   .formPosition {
-    margin: 0 2rem 0 2rem;
+    margin: 0 1rem 0 1rem;
   }
 
 }

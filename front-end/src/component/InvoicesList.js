@@ -175,9 +175,7 @@ renderDataTable = (invoices) => {
   render() {
     return (
       <div className="formPosition">
-        <h3>Invoice's List and Edit</h3>
-        <p>.</p>
-
+        <br />
         {this.state.openInvoiceModal ?
           <InvoiceModal
             invoice           = { this.state.invoice }
@@ -187,13 +185,13 @@ renderDataTable = (invoices) => {
             openInvoiceModal  = { this.state.openInvoiceModal }
          />
         : "" }
-
+        
         <Card className="card-settings">
-        <Card.Body>
-
-         <GetClients 
-              client        = { this.state.client }
-              getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
+          <Card.Header>Invoice's List and Edit</Card.Header>
+          <Card.Body>
+          <GetClients 
+                client        = { this.state.client }
+                getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
 
           <br></br>
           <Form onSubmit={this.handleGetInvoices} >

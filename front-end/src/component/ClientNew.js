@@ -102,9 +102,6 @@ class ClientNew extends Component {
 
 
   handleSubmit = async e => {
-console.log("this.state.birthday", this.state.birthday, typeof this.state.birthday);
-
-
       if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
         this.setState({ setModal: true});
         if (!this.state.name)
@@ -201,8 +198,11 @@ console.log("this.state.birthday", this.state.birthday, typeof this.state.birthd
   render() {
     return (
       <div className="formPosition">
-        <h3>New Client Page</h3>
+        <br />
+        {/* <h3>New Client Page</h3>
+        <br /> */}
         <Card className="card-settings">
+          <Card.Header>New Client</Card.Header>
           <Form
             autoComplete  = "off"
             // onSubmit      = {this.handleSubmit}
@@ -210,6 +210,7 @@ console.log("this.state.birthday", this.state.birthday, typeof this.state.birthd
           >
 
             <Form.Group controlId="formName">
+              <br />
               <Form.Label className="cardLabel">Name</Form.Label>
               <Form.Control
                 autoFocus   = {true}

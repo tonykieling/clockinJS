@@ -95,7 +95,6 @@ class ClientsList extends Component {
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
       if (newClientData.data.message) {
-console.log("SERVER", newClientData.data);
         if (newClientData.data.newData)
           this.setState({
             message:      `${newClientData.data.newData.nickname} has been changed`,
@@ -259,17 +258,15 @@ console.log("inside populateForm, client: ", client);
 
 
   render() {
-console.log("render ===> this.state", this.state);
-
     return (
       <div className="formPosition">
-        <h3> Your clients' list </h3>
-        <p>Select the client to check or modify their data.</p>
+        <br />
+        {/* <h3> Your clients' list </h3>
+        <p>Select the client to check or modify their data.</p> */}
 
         <Card className="card-settings">
+          <Card.Header>Your Client's list</Card.Header>
         <Card.Body>
-          <Card.Title>Clients:</Card.Title>
-
          <GetClients 
           getClientInfo = { this.getClientInfo } />     { /* mount the Dropbox Button with all clients for the user */ }
          {/* <GetClients 

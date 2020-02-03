@@ -152,23 +152,22 @@ class PunchInNew extends Component {
   render() {
     return (
       <div className="formPosition">
-        <h3>PunchIn</h3>
+        <br />
 
         {/* <Card style={{ width: '40rem' }}> */}
         <Card className="card-settings">
-        <Card.Body>
-          { /* mount the Dropbox Button with all clients for the user */ }
-          <div className="gridClientBtContainer">
-            <GetClients 
-              client        = { this.state.client }
-              getClientInfo = { this.getClientInfo } />
-              
-            <span>
-              { this.state.message ? this.state.message : "" }
-            </span>
-          </div>
-
-
+          <Card.Header>PunchIn</Card.Header>
+          <Card.Body>
+            { /* mount the Dropbox Button with all clients for the user */ }
+            <div className="gridClientBtContainer">
+              <GetClients 
+                client        = { this.state.client }
+                getClientInfo = { this.getClientInfo } />
+                
+              <span>
+                { this.state.message ? this.state.message : "" }
+              </span>
+            </div>
           <br></br>
           <Form onSubmit={this.handleSubmit} >
 
