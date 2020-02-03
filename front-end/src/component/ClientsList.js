@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 // import moment from "moment";
 
 import GetClients from "./aux/GetClients.js";
-import * as formatDate from "./aux/formatDate.js";
+// import * as formatDate from "./aux/formatDate.js";
 import * as handlingDate from "./aux/handlingDT.js";
 
 
@@ -95,28 +95,33 @@ class ClientsList extends Component {
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
       if (newClientData.data.message) {
-        // const birthday = newClientData.data.newData.birthday ? handlingDate.receivingDate(newClientData.data.newData.birthday) : "";
-        this.setState({
-          message:      `${newClientData.data.newData.nickname} has been changed`,
-          name          : newClientData.data.newData.name,
-          nickname      : newClientData.data.newData.nickname,
-          birthday      : newClientData.data.newData.birthday ? handlingDate.receivingDate(newClientData.data.newData.birthday) : "",
-          // birthday      : newClientData.data.newData.birthday,
-          // birthday      : new Date(newClientData.data.newData.birthday.toLocaleString('en-US', { timeZone: "UTC" })),
-          mother        : newClientData.data.newData.mother,
-          mPhone        : newClientData.data.newData.mPhone,
-          mEmail        : newClientData.data.newData.mEmail,
-          father        : newClientData.data.newData.father,
-          fPhone        : newClientData.data.newData.fPhone,
-          fEmail        : newClientData.data.newData.fEmail,
-          cPhone        : newClientData.data.newData.cPhone,
-          cEmail        : newClientData.data.newData.cEmail,
-          consultant    : newClientData.data.newData.consultant,
-          default_rate  : newClientData.data.newData.default_rate,
+console.log("SERVER", newClientData.data);
+        if (newClientData.data.newData)
+          this.setState({
+            message:      `${newClientData.data.newData.nickname} has been changed`,
+            name          : newClientData.data.newData.name,
+            nickname      : newClientData.data.newData.nickname,
+            birthday      : newClientData.data.newData.birthday ? handlingDate.receivingDate(newClientData.data.newData.birthday) : "",
+            // birthday      : newClientData.data.newData.birthday,
+            // birthday      : new Date(newClientData.data.newData.birthday.toLocaleString('en-US', { timeZone: "UTC" })),
+            mother        : newClientData.data.newData.mother,
+            mPhone        : newClientData.data.newData.mphone,
+            mEmail        : newClientData.data.newData.memail,
+            father        : newClientData.data.newData.father,
+            fPhone        : newClientData.data.newData.fphone,
+            fEmail        : newClientData.data.newData.femail,
+            cPhone        : newClientData.data.newData.cphone,
+            cEmail        : newClientData.data.newData.cemail,
+            consultant    : newClientData.data.newData.consultant,
+            default_rate  : newClientData.data.newData.default_rate,
 
-          className     : "messageSuccess",
-          typeDate      : "text"
-        });
+            className     : "messageSuccess"
+          });
+        else
+          this.setState({
+            message   : newClientData.data.message,
+            className : "messageSuccess"
+          });        
       } else if (newClientData.data.error)
         this.setState({
           message   : newClientData.data.error,
@@ -190,9 +195,7 @@ console.log("inside populateForm, client: ", client);
       tmp_consultant      : this.state.consultant,
       tmp_cPhone          : this.state.cPhone,
       tmp_cEmail          : this.state.cEmail,
-      tmp_default_rate    : this.state.default_rate,
-
-      // typeDate        : "text"
+      tmp_default_rate    : this.state.default_rate
     });
   }
 
@@ -225,34 +228,34 @@ console.log("inside populateForm, client: ", client);
   }
 
 
-  onFocusDate = () => {
-    this.setState({ typeDate: "date"});
-    console.log("on focus typedate11", this.state.typeDate);
-    setTimeout(() => {
-      console.log("on focus typedate", this.state.typeDate);
-    }, 0);
-    // this.birthday.click();
-// console.log("date clicked");
-  }
+//   onFocusDate = () => {
+//     this.setState({ typeDate: "date"});
+//     console.log("on focus typedate11", this.state.typeDate);
+//     setTimeout(() => {
+//       console.log("on focus typedate", this.state.typeDate);
+//     }, 0);
+//     // this.birthday.click();
+// // console.log("date clicked");
+//   }
 
 
-  onBlurDate = () => {
-// console.log("===========inside onblurBirthday", this.state.birthday);
-    // const birthday = new Date(this.state.birthday);
-    this.setState({
-      typeDate: "text"
-    });
-console.log("brithdayPlaceholder", this.state.birthdayPlaceholder, 'typedate', this.state.typeDate);
+//   onBlurDate = () => {
+// // console.log("===========inside onblurBirthday", this.state.birthday);
+//     // const birthday = new Date(this.state.birthday);
+//     this.setState({
+//       typeDate: "text"
+//     });
+// console.log("brithdayPlaceholder", this.state.birthdayPlaceholder, 'typedate', this.state.typeDate);
 
-    setTimeout(() => {
-      this.setState({
-        birthdayPlaceholder: formatDate.show(this.state.birthday)
-      });
-      console.log("brithdayPlaceholder", this.state.birthdayPlaceholder, 'typedate', this.state.typeDate);
-    }, 0);
-// console.log("this.state.birthday", this.state.birthday)
-// console.log("onBlur Date");
-  }
+//     setTimeout(() => {
+//       this.setState({
+//         birthdayPlaceholder: formatDate.show(this.state.birthday)
+//       });
+//       console.log("brithdayPlaceholder", this.state.birthdayPlaceholder, 'typedate', this.state.typeDate);
+//     }, 0);
+// // console.log("this.state.birthday", this.state.birthday)
+// // console.log("onBlur Date");
+//   }
 
 
   render() {
@@ -289,10 +292,10 @@ console.log("render ===> this.state", this.state);
                   <Form.Control
                     // autoFocus   = {true}
                     type        = "text"
-                    placeholder = {this.state.name || "Type the client's name"}
+                    placeholder = {"Type the client's name"}
                     name        = "name"
                     onChange    = {this.handleChange}
-                    value       = {this.state.name}
+                    value       = {this.state.name || ""}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     // ref         = {input => this.textInput1 = input }
@@ -303,10 +306,10 @@ console.log("render ===> this.state", this.state);
                   <Form.Label className="cardLabel">Nickname</Form.Label>
                   <Form.Control
                     type        = "text"
-                    placeholder = {this.state.nickname || "Type the client's nickname"}
+                    placeholder = {"Type the client's nickname"}
                     name        = "nickname"
                     onChange    = {this.handleChange}
-                    value       = {this.state.nickname}
+                    value       = {this.state.nickname || ""}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     // ref         = {input => this.textInput2 = input } 
@@ -326,7 +329,7 @@ console.log("render ===> this.state", this.state);
                     onChange    = {this.handleChange}
                     // onClick     = { () => this.setState({typeDate: "date"})}
                     // onClick     = { this.state.typeDate === "date" () => console.log("YYYY")}
-                    value       = {this.state.birthday}
+                    value       = {this.state.birthday || ""}
                     // value       = { formatDate.show(this.state.birthday) }
                     // onFocus     = { this.onFocusDate }
                     // onBlur      = { this.onBlurDate }
@@ -351,10 +354,10 @@ console.log("render ===> this.state", this.state);
                   <Form.Label className="cardLabel">Mother</Form.Label>
                   <Form.Control
                     type        = "text"
-                    placeholder = { this.state.mother || "Type the client's mother name"}
+                    placeholder = { "Type the client's mother name"}
                     name        = "mother"
                     onChange    = {this.handleChange}
-                    value       = {this.state.mother}
+                    value       = {this.state.mother || ""}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput4 = input } />
@@ -369,7 +372,7 @@ console.log("render ===> this.state", this.state);
                     name        = "mPhone"
                     // id          = "mPhone"
                     onBlur      = {e => this.afterChange(e)}
-                    value       = {this.state.mPhone}
+                    value       = {this.state.mPhone || ""}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput5 = input } />
@@ -379,10 +382,10 @@ console.log("render ===> this.state", this.state);
                   <Form.Label className="cardLabel">Mother's Email address</Form.Label>
                   <Form.Control
                     type        = "email"
-                    placeholder = {this.state.mEmail || "Type the mother's email"}
+                    placeholder = {"Type the mother's email"}
                     name        = "mEmail"
                     onChange    = {this.handleChange}
-                    value       = {this.state.mEmail}
+                    value       = {this.state.mEmail || ""}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput6 = input } />
@@ -392,10 +395,10 @@ console.log("render ===> this.state", this.state);
                   <Form.Label className="cardLabel">Father</Form.Label>
                   <Form.Control
                     type        = "text"
-                    placeholder = {this.state.father || "Type the client's father name"}
+                    placeholder = {"Type the client's father name"}
                     name        = "father"
                     onChange    = {this.handleChange}
-                    value       = {this.state.father}
+                    value       = {this.state.father || ""}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput7 = input } />
@@ -409,8 +412,8 @@ console.log("render ===> this.state", this.state);
                     placeholder = "Enter father's phone number"
                     name        = "fPhone"
                     id          = "fPhone"
-                    // onBlur      = {e => this.afterChange(e)}
-                    value       = {this.state.fPhone}
+                    onBlur      = {e => this.afterChange(e)}
+                    value       = {this.state.fPhone || ""}
                     onKeyPress  = {() => this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput8 = input } />
@@ -420,10 +423,10 @@ console.log("render ===> this.state", this.state);
                   <Form.Label className="cardLabel">Father's Email address</Form.Label>
                   <Form.Control
                     type        = "email"
-                    placeholder = {this.state.fEmail || "Type the father's email"}
+                    placeholder = {"Type the father's email"}
                     name        = "fEmail"
                     onChange    = {this.handleChange}
-                    value       = {this.state.fEmail}
+                    value       = {this.state.fEmail || ""}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput9 = input } />
@@ -433,10 +436,10 @@ console.log("render ===> this.state", this.state);
                   <Form.Label className="cardLabel">Consultant</Form.Label>
                   <Form.Control
                     type        = "text"
-                    placeholder = {this.state.consultant || "Type the consultant's name"}
+                    placeholder = {"Type the consultant's name"}
                     name        = "consultant"
                     onChange    = {this.handleChange}
-                    value       = {this.state.consultant}
+                    value       = {this.state.consultant || ""}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput10 = input }  />
@@ -451,7 +454,7 @@ console.log("render ===> this.state", this.state);
                     name        = "cPhone"
                     id          = "cPhone"
                     onBlur      = {e => this.afterChange(e)}
-                    value       = {this.state.cPhone}
+                    value       = {this.state.cPhone || ""}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput11 = input } />
@@ -461,10 +464,10 @@ console.log("render ===> this.state", this.state);
                   <Form.Label className="cardLabel">Consultant's Email address</Form.Label>
                   <Form.Control
                     type        = "email"
-                    placeholder = {this.state.cEmail || "Type the consultant's email"}
+                    placeholder = {"Type the consultant's email"}
                     name        = "cEmail"
                     onChange    = {this.handleChange}
-                    value       = {this.state.cEmail}
+                    value       = {this.state.cEmail || ""}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput12 = input }  />
@@ -474,10 +477,10 @@ console.log("render ===> this.state", this.state);
                   <Form.Label className="cardLabel">Rate</Form.Label>
                   <Form.Control
                     type        = "text"
-                    placeholder = {this.state.default_rate || "Type the hourly rate - CAD$"}
+                    placeholder = {"Type the hourly rate - CAD$"}
                     name        = "default_rate"
                     onChange    = {this.handleChange}
-                    value       = {this.state.default_rate}
+                    value       = {this.state.default_rate || ""}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
                     ref         = {input => this.textInput13 = input }  />

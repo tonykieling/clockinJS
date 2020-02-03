@@ -239,14 +239,14 @@ console.log("clientToBeChanged", clientToBeChanged);
         .findById({ _id: clientId})
         .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
       clientModified.birthday = Date.parse(clientModified.birthday);
-console.log("clientModified", clientModified);
+console.log("clientModified", clientModified.nModified);
       return res.json({
         message: `Client <${clientModified.nickname}> has been modified.`,
         newData: clientModified
       });
     } else
       res.status(200).json({
-        error: `Error CM03: Client NOT changed.`
+        message: `Client NOT changed - no new data.`
       });
 
   } catch(err) {
