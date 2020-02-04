@@ -28,8 +28,6 @@ class PunchInNew extends Component {
     this.setState({
       [event.target.name]: event.target.value
     });
-
-    this.cleanMessage();
   }
 
 
@@ -44,21 +42,12 @@ class PunchInNew extends Component {
       notes     : this.state.notes ? this.state.notes : undefined,
       clientId  : this.state.client._id,
     };
-console.log("sending clocking", data);
-      // let sendTime = new Date(2019, 12, 5, 16, 30);
 
-      // console.log(`  
-      //               client = ${data.clientId}
-      //               date = ${data.date}
-      //                 ts  = ${data.timeStart}
-      //                 te  = ${data.timeEnd}
-      //               rate = ${data.rate} `);
-    if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate){
+    if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate) {
       this.messageValidationMethod();
     }
-    // if (1===2){}
+
     else {
-// console.log("xxxxxxxx")    
       const url = "/clockin";
       try {
         const addClockin = await axios.post( 
@@ -80,35 +69,36 @@ console.log("sending clocking", data);
             message   : addClockin.data.error,
             className : "messageFailure"
           });
-
-        this.clearForm();
         
       } catch(err) {
         this.setState({
           message   : err.message,
           className : "messageFailure"
         });
-        this.clearForm();
       }
+
+      this.clearForm();
     }
   }
 
 
   messageValidationMethod = () => {
     this.setState({
-      message: (Object.entries(this.state.client).length === 0) ? "Please, select client." : "Please fill the fields."
+      message   : (Object.entries(this.state.client).length === 0) ? "Please, select client." : "Please fill the fields.",
+      className : "messageFailure"
     });
 
-    setTimeout(() => {
-      this.cleanMessage();
-    }, 3000);
+    this.clearMessage();
   }
 
 
-  cleanMessage = () => {
+  clearMessage = () => {
+    setTimeout(() => {
       this.setState({
         message: ""
       });
+    }, 3000);
+
   }
 
 
@@ -128,9 +118,9 @@ console.log("sending clocking", data);
 
 
   showTotalTime = () => {
-    const time1 = Date.parse(`01 Jan 1970 ${(this.state.startingTime)}:00 GMT`);
-    const time2 = Date.parse(`01 Jan 1970 ${this.state.endingTime}:00 GMT`);
-    const tt = ((time2 - time1) / (60 * 60 * 1000));
+    const time1     = Date.parse(`01 Jan 1970 ${(this.state.startingTime)}:00 GMT`);
+    const time2     = Date.parse(`01 Jan 1970 ${this.state.endingTime}:00 GMT`);
+    const tt        = ((time2 - time1) / (60 * 60 * 1000));
     const totalTime = parseFloat(Math.round(tt * 100) / 100).toFixed(2)
     
     return(

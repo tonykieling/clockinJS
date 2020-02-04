@@ -1,7 +1,7 @@
 const mongoose  = require("mongoose");
 
 const Clockin   = require("../models/clockin.js");
-const User      = require("../models/user.js");
+// const User      = require("../models/user.js");
 const Client    = require("../models/client.js");
 // const Invoice   = require("../models/invoice.js");
 const Email = require("../helpers/send-email.js");
@@ -155,6 +155,7 @@ console.log("inside clockins get_one");
 }
 
 
+
 // it creates a client register
 // Need:
 // 1- Check userId and clientId
@@ -162,7 +163,7 @@ console.log("inside clockins get_one");
 //   user_id && client_id
 //   date >= date_start && date <= date_end
 //   !invoice_id
-// it will gice an array of clockins
+// it will give an array of clockins
 // foreach:
 //   1- Sum up total time (time_end-time_start) * rate
 //   2- flag invoice_id to it
@@ -170,9 +171,28 @@ console.log("inside clockins get_one");
 //   write down invoice (it needs to be before 2)
 const clockin_add = async (req, res) => {
 console.log("inside clockins ADD");
-console.log("req.body", req.body);
 
-  const formatDT = require("../helpers/formatDT.js");
+  const userId      = req.userData.userId;
+  const checkUser   = require("../helpers/user-h.js");
+
+  // it checks whether user is OK and grab info about them which will be used later
+  const temp_user   = await checkUser.check(userId);
+  if (!temp_user.result)
+    return res.send({
+      error: temp_user.message
+    });
+  const userExist   = temp_user.checkUser;
+
+
+  // it checks whether client is OK and grab info about them which will be used later
+  const client_id     = req.body.clientId;
+  const checkClient   = require("../helpers/client-h.js");
+  const temp_client   = await checkClient.check(client_id, userId);
+  if (!temp_client.result)
+    return res.send({
+      error: temp_client.message || temp_client.text
+    });
+  const clientExist   = temp_client.checkClient;
 
   const {
     rate,
@@ -183,63 +203,11 @@ console.log("req.body", req.body);
     d   = new Date(req.body.date).getTime();
     t1  = (Number(req.body.timeStart.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.timeStart.split(':')[1]) * 60 * 1000);
     t2  = (Number(req.body.timeEnd.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.timeEnd.split(':')[1]) * 60 * 1000);
-    client_id   = req.body.clientId;
 
-  const userId = req.userData.userId;
-  const time_start = new Date(d + t1);
-  const time_end   = new Date(d + t2);
-  const date = new Date(d);
-// console.log("date:", date);
-// console.log("ts:", time_start, "te:", time_end);
-// return res.send({message: "OK"});
+  const time_start  = new Date(d + t1);
+  const time_end    = new Date(d + t2);
+  const date        = new Date(d);
 
-/**
- * TODO:
- *    have a unique file to validate User and Client and just call it when necessary.
- * 
- * for now, just not considering this checking - figure to insert in all interactions when there is user and client to be sure
- */
-
-  // // check for the User
-  // let userExist = "";
-  // try {
-  //   userExist = await User
-  //     .findOne({ _id: userId });
-
-  //   if (!userExist)
-  //     return res.status(200).json({
-  //       error: `ECKA01: User <${userId}> does not exist`
-  //     });
-  // } catch(err) {
-  //   console.trace("Error: ", err.message);
-  //   return res.status(200).json({
-  //     error: `ECKA02: Something got wrong`
-  //   });
-  // }
-
-  // // check for the Client
-  // // admin is able to insert a clockin for another user
-  // let clientExist = "";
-  // try {
-  //   clientExist = await Client
-  //     .findOne({ _id: client_id });
-  //   if (!clientExist)
-  //     return res.status(200).json({
-  //       error: `ECKA03: Client <${client_id}> does not exist`
-  //     });
-
-  //   // check whether the Client belongs to the User
-  //   // later on allow the admin create a clockin for another user
-  //   if (clientExist.user_id != userId)
-  //     return res.status(200).json({
-  //       error: `ECKA04: Client <${clientExist.name}> does not belong to User <${userExist.name}>.`
-  //     });    
-  // } catch(err) {
-  //   console.trace("Error: ", err.message);
-  //   return res.status(200).json({
-  //     error: `ECKA05: Something got wrong`
-  //   });
-  // }
 
   // lets record clockin after User and Client validation
   try {
@@ -257,14 +225,15 @@ console.log("req.body", req.body);
 
     await newClockin.save();
 
+    const formatDT = require("../helpers/formatDT.js");
     Email.sendClockinEmail(`Clockin added - 
               ${clientExist.nickname}: ${formatDT.showDate(newClockin.date)} - ${formatDT.showTime(newClockin.time_start)}`, 
               newClockin, userExist, clientExist);
     
     return res.json({
-      message: "Clockin has been created.",
-      user: userExist.name,
-      client: clientExist.name
+      message : "Clockin has been created.",
+      user    : userExist.name,
+      client  : clientExist.name
     });
 
   } catch(err) {
