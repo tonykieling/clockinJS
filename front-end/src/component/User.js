@@ -398,11 +398,11 @@ class Home extends Component {
 
           
           {/* <Card.Header className="cardTitle message">           */}
-          <Card.Header className= { this.state.classNameMessage}>          
+          <Card.Footer className= { this.state.classNameMessage}>          
             { this.state.message
               ? this.state.message
               : <br /> }
-          </Card.Header>
+          </Card.Footer>
 
           <div className="d-flex flex-column">
             { !this.state.disableEdit

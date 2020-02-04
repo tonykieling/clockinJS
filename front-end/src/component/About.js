@@ -14,8 +14,12 @@ export default function About() {
       <h1 className="main-title">Clockin.js</h1>
 
       <div className="content-general">
-        <p>The system is aimed to allow you to have all your clients data, their clockins and invoices, in one place. It is easy to manage and track your work with them.</p>
-        <a href="https://github.com/tonykieling/clockinJS" target="_blank" rel="noopener noreferrer">GitHub Project at https://github.com/tonykieling/clockinJS</a> 
+        <p>Clockin.js allows you to have all your clients data, their clockins and invoices, in one place. It is easy to manage and track your work with them.</p>
+        <p>The system is aimed to be responsive, providing a good visualization in both small (mobile devices) and big screens (regular computers).</p>
+        <p>It also carries out some safety features, such as password encryption and Two-factor authentication for some of its procedures. Plus, some operations send email, which warranties a safe copy of them, just in case. </p>
+        <p>The project and its source code is kept at <a href="https://github.com/tonykieling/clockinJS" target="_blank" rel="noopener noreferrer">GitHub - Clockin.js</a>
+
+        </p>
 
         <h2 className="sub-title">Some of its functionalities are:</h2>
 
@@ -93,7 +97,7 @@ export default function About() {
         </p>
 
         <h2 className="sub-title">Todo list and Releases</h2>
-        <p>The system is in production and being used for my wife to manage her clients' works.</p>
+        <p>The system is in production and being used by my wife to manage her work time to her clients.</p>
         <br />
         <p>Even though it is running, some improvements and features are being developed.</p>
         <ul>

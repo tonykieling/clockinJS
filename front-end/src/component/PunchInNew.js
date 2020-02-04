@@ -19,7 +19,8 @@ class PunchInNew extends Component {
     rate          : "",
     notes         : "",
     message       : "",
-    client        : {}
+    client        : {},
+    className     : ""
   }
 
 
@@ -36,19 +37,14 @@ class PunchInNew extends Component {
     event.preventDefault();
 
     const data = { 
-      // date      : (new Date(this.state.date).getTime()),
-      // date      : new Date(this.state.date.toLocaleString('en-US', { timeZone: "UTC" })),
-      // date      : new Date().toLocaleDateString({timeZone: "America/Vancouver"}),
-      // date      : moment(d).format("L"),
       date      : this.state.date,
       timeStart : this.state.startingTime,
       timeEnd   : this.state.endingTime,
       rate      : this.state.rate,
-      notes     : this.state.notes,
+      notes     : this.state.notes ? this.state.notes : undefined,
       clientId  : this.state.client._id,
-      // test      : new Date() 
     };
-
+console.log("sending clocking", data);
       // let sendTime = new Date(2019, 12, 5, 16, 30);
 
       // console.log(`  
@@ -76,20 +72,23 @@ class PunchInNew extends Component {
 
         if (addClockin.data.message) {
           this.setState({
-            message : `Punched in!`,
-            rate    : ""
+            message   : `Punched in!`,
+            className : "messageSuccess"
           });
         } else if (addClockin.data.error)
           this.setState({
-            message: addClockin.data.error
+            message   : addClockin.data.error,
+            className : "messageFailure"
           });
 
-        this.cleanForm();
+        this.clearForm();
         
       } catch(err) {
         this.setState({
-          message: err.message });
-        this.cleanForm();
+          message   : err.message,
+          className : "messageFailure"
+        });
+        this.clearForm();
       }
     }
   }
@@ -113,7 +112,7 @@ class PunchInNew extends Component {
   }
 
 
-  cleanForm = () => {
+  clearForm = () => {
     setTimeout(() => {
       this.setState({
         date          : "",
@@ -164,7 +163,7 @@ class PunchInNew extends Component {
                 client        = { this.state.client }
                 getClientInfo = { this.getClientInfo } />
                 
-              <span>
+              <span className={this.state.className}>
                 { this.state.message ? this.state.message : "" }
               </span>
             </div>
@@ -213,11 +212,11 @@ class PunchInNew extends Component {
                   disabled    = {( this.state.rate === "" ) ? true : false } />
               </Col>
 
-              <Col sm="6">
+              {/* <Col sm="6"> */}
                 { (this.state.endingTime && this.state.startingTime)
                   ? this.showTotalTime()
                   : null }
-              </Col>
+              {/* </Col> */}
 
               
             </Form.Group>

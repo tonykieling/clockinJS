@@ -293,11 +293,11 @@ class Register extends Component {
               </Form.Group>
 
 
-            <Card.Header className= { this.state.classNameMessage}>          
+            <Card.Footer className= { this.state.classNameMessage}>          
               { this.state.message
                 ? this.state.message
                 : <br /> }
-            </Card.Header>
+            </Card.Footer>
 
             <div className="d-flex flex-column">
               <br />

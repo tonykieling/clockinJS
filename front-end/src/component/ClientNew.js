@@ -375,11 +375,11 @@ class ClientNew extends Component {
                 ref         = {input => this.textInput13 = input }  />
             </Form.Group>
 
-          <Card.Header className={ this.state.className }>          
+          <Card.Footer className={ this.state.className }>          
             { this.state.message
               ? this.state.message
               : <br /> }
-          </Card.Header>
+          </Card.Footer>
 
           <div className="d-flex flex-column">
             <Button 

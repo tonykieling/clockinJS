@@ -1,18 +1,21 @@
-# **Clockin**
+# **Clockin.js**
+More information, please, check at https://clockinjs.herokuapp.com/about
 ### **The project**
 This project is aimed to have a system with users, clients, clockins and invoices. It will allow:
  - register clients
  - punch work times
- - generate invoice and control them
+ - generate invoice and manage them
 
 ### **Dependencies:**
   - express
   - nodemon
   - body-parser
-  - morgan
   - mongoose
   - bcrypt
   - jsonwebtoken
+  - nodemailer
+  - react-bootstrap
+  - react-redux
 
   *p.s.1: the database used is MongoDB and its connections settings are based on nodemon.js file.*  
   *p.s.2: the nodemon.js file has the following variables.*  
@@ -27,4 +30,4 @@ This project is aimed to have a system with users, clients, clockins and invoice
   `# npm start`    
 
   **How to use:**  
-  Backend..
+  Please, check at https://clockinjs.herokuapp.com/about

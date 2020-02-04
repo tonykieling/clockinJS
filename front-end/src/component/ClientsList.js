@@ -332,8 +332,7 @@ console.log("inside populateForm, client: ", client);
                     // onBlur      = { this.onBlurDate }
                     // onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
-                    ref         = {input => this.birthday = input } />                  
-                  <br />
+                    ref         = {input => this.birthday = input } />
                   {/* <DatePicker
                     selected  = {this.state.birthday}
                     onSelect  ={this.handleChangeDate}
@@ -344,7 +343,6 @@ console.log("inside populateForm, client: ", client);
                     className = "form-control"
                     disabled  = {this.state.disableEditForm}
                   /> */}
-                  <br />
                 </Form.Group>
 
                 <Form.Group controlId="formMother">
@@ -484,11 +482,11 @@ console.log("inside populateForm, client: ", client);
                 </Form.Group>
 
 
-          <Card.Header className={this.state.className}>
+          <Card.Footer className={this.state.className}>
             { this.state.message
               ? this.state.message
               : <br /> }
-          </Card.Header>
+          </Card.Footer>
 
           <div className="d-flex flex-column">
             { !this.state.disableEditForm

@@ -9,7 +9,7 @@ const Email = require("../helpers/send-email.js");
 
 // it gets all users from the system - on purpose with no auth
 const get_all = async (req, res) => {
-console.log("clockins ALLLLLLL")  
+console.log("inside clockins get_all");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
 
@@ -39,7 +39,6 @@ console.log("clockins ALLLLLLL")
         //   client_id: clientId
         // })
         // .select(" date time_start time_end rate notes invoice_id client_id user_id ");
-console.log("dt=>", userId, dateStart, dateEnd, clientId);
       allClockins = await Clockin
         .aggregate([
           { $match: 
@@ -121,6 +120,7 @@ console.log("ALLCLOCKINS", allClockins);
 
 // it gets one user - on purpose with no auth
 const get_one = async (req, res) => {
+console.log("inside clockins get_one");
   const clockinId  = req.params.clockinId;
   const userAdmin  = req.userData.admin;
   const userId     = req.userData.userId;  
@@ -169,8 +169,10 @@ const get_one = async (req, res) => {
 // and
 //   write down invoice (it needs to be before 2)
 const clockin_add = async (req, res) => {
-  const formatDT = require("../helpers/formatDT.js");
+console.log("inside clockins ADD");
+console.log("req.body", req.body);
 
+  const formatDT = require("../helpers/formatDT.js");
 
   const {
     rate,
@@ -187,48 +189,57 @@ const clockin_add = async (req, res) => {
   const time_start = new Date(d + t1);
   const time_end   = new Date(d + t2);
   const date = new Date(d);
-  // const date = new Date().toLocaleString('en-UK', {timeZone: "America/Vancouver"});
+// console.log("date:", date);
+// console.log("ts:", time_start, "te:", time_end);
+// return res.send({message: "OK"});
 
-  // check for the User
-  let userExist = "";
-  try {
-    userExist = await User
-      .findOne({ _id: userId });
+/**
+ * TODO:
+ *    have a unique file to validate User and Client and just call it when necessary.
+ * 
+ * for now, just not considering this checking - figure to insert in all interactions when there is user and client to be sure
+ */
 
-    if (!userExist)
-      return res.status(200).json({
-        error: `ECKA01: User <${userId}> does not exist`
-      });
-  } catch(err) {
-    console.trace("Error: ", err.message);
-    return res.status(200).json({
-      error: `ECKA02: Something got wrong`
-    });
-  }
+  // // check for the User
+  // let userExist = "";
+  // try {
+  //   userExist = await User
+  //     .findOne({ _id: userId });
 
-  // check for the Client
-  // admin is able to insert a clockin for another user
-  let clientExist = "";
-  try {
-    clientExist = await Client
-      .findOne({ _id: client_id });
-    if (!clientExist)
-      return res.status(200).json({
-        error: `ECKA03: Client <${client_id}> does not exist`
-      });
+  //   if (!userExist)
+  //     return res.status(200).json({
+  //       error: `ECKA01: User <${userId}> does not exist`
+  //     });
+  // } catch(err) {
+  //   console.trace("Error: ", err.message);
+  //   return res.status(200).json({
+  //     error: `ECKA02: Something got wrong`
+  //   });
+  // }
 
-    // check whether the Client belongs to the User
-    // later on allow the admin create a clockin for another user
-    if (clientExist.user_id != userId)
-      return res.status(200).json({
-        error: `ECKA04: Client <${clientExist.name}> does not belong to User <${userExist.name}>.`
-      });    
-  } catch(err) {
-    console.trace("Error: ", err.message);
-    return res.status(200).json({
-      error: `ECKA05: Something got wrong`
-    });
-  }
+  // // check for the Client
+  // // admin is able to insert a clockin for another user
+  // let clientExist = "";
+  // try {
+  //   clientExist = await Client
+  //     .findOne({ _id: client_id });
+  //   if (!clientExist)
+  //     return res.status(200).json({
+  //       error: `ECKA03: Client <${client_id}> does not exist`
+  //     });
+
+  //   // check whether the Client belongs to the User
+  //   // later on allow the admin create a clockin for another user
+  //   if (clientExist.user_id != userId)
+  //     return res.status(200).json({
+  //       error: `ECKA04: Client <${clientExist.name}> does not belong to User <${userExist.name}>.`
+  //     });    
+  // } catch(err) {
+  //   console.trace("Error: ", err.message);
+  //   return res.status(200).json({
+  //     error: `ECKA05: Something got wrong`
+  //   });
+  // }
 
   // lets record clockin after User and Client validation
   try {
@@ -246,10 +257,11 @@ const clockin_add = async (req, res) => {
 
     await newClockin.save();
 
-    Email.sendClockinEmail(`Clockin added - ${clientExist.nickname}: 
-              ${formatDT.showDate(newClockin.date)} - ${formatDT.showTime(newClockin.time_start)}`, newClockin, userExist, clientExist);
+    Email.sendClockinEmail(`Clockin added - 
+              ${clientExist.nickname}: ${formatDT.showDate(newClockin.date)} - ${formatDT.showTime(newClockin.time_start)}`, 
+              newClockin, userExist, clientExist);
     
-    res.json({
+    return res.json({
       message: "Clockin has been created.",
       user: userExist.name,
       client: clientExist.name
@@ -257,7 +269,7 @@ const clockin_add = async (req, res) => {
 
   } catch(err) {
     console.trace("Error: ", err.message);
-    res.status(200).json({
+    return res.status(200).json({
       error: "ECKA06: Something wrong with clockin's data."
     });
   };
