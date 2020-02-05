@@ -148,6 +148,10 @@
   font-size: x-large;
 }
 
+.modal-content {
+  background-color: gainsboro;
+}
+
 @media only screen and (max-width: 800px){
 
   .showNormalMenu {

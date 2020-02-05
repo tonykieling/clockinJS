@@ -31,13 +31,13 @@ export default function MessageModal(props) {
                 className = "mt-3"
                 style     = {{ width: "50%" }} >
                 <Button 
-                  variant   = { props.color || "primary" }
+                  variant   = { props.colorBtn1 || "primary" }
                   onClick   = { props.yesMethod } 
                   style     = {{width: "50%"}} >
                   Yes
                 </Button>
                 <Button 
-                  variant   = { props.color || "danger" }
+                  variant   = { props.colorBtn2 || "danger" }
                   onClick   = { props.noMethod } 
                   style     = {{ width: "50%"}} >
                   No

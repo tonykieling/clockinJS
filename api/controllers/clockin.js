@@ -84,7 +84,7 @@ console.log("inside clockins get_all");
         ])
         .sort({date: 1});
     }
-console.log("ALLCLOCKINS", allClockins);
+// console.log("ALLCLOCKINS", allClockins);
     if (!allClockins || allClockins.length < 1) {
       return res.status(200).json({
         message: `No clockins at all.`
@@ -170,7 +170,7 @@ console.log("inside clockins get_one");
 // and
 //   write down invoice (it needs to be before 2)
 const clockin_add = async (req, res) => {
-console.log("inside clockins ADD");
+// console.log("inside clockins ADD");
 
   const userId      = req.userData.userId;
   const checkUser   = require("../helpers/user-h.js");
@@ -194,6 +194,8 @@ console.log("inside clockins ADD");
     });
   const clientExist   = temp_client.checkClient;
 
+
+  // lets record clockin after User and Client validation
   const {
     rate,
     notes
@@ -208,8 +210,6 @@ console.log("inside clockins ADD");
   const time_end    = new Date(d + t2);
   const date        = new Date(d);
 
-
-  // lets record clockin after User and Client validation
   try {
     const newClockin = new Clockin({
       _id: new mongoose.Types.ObjectId(),
@@ -225,18 +225,18 @@ console.log("inside clockins ADD");
 
     await newClockin.save();
 
+    // send email to the user about the information just punched
     const formatDT = require("../helpers/formatDT.js");
-    Email.sendClockinEmail(`Clockin added - 
-              ${clientExist.nickname}: ${formatDT.showDate(newClockin.date)} - ${formatDT.showTime(newClockin.time_start)}`, 
-              newClockin, userExist, clientExist);
+    Email.sendClockinEmail(`Clockin added - ${clientExist.nickname}: ${formatDT.showDate(newClockin.date)} - ${formatDT.showTime(newClockin.time_start)}`, newClockin, userExist, clientExist);
     
+    // everything is ok, so lets fe knows it
     return res.json({
       message : "Clockin has been created.",
       user    : userExist.name,
       client  : clientExist.name
     });
 
-  } catch(err) {
+  } catch(err) {    // if some trouble happens
     console.trace("Error: ", err.message);
     return res.status(200).json({
       error: "ECKA06: Something wrong with clockin's data."
