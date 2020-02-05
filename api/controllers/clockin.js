@@ -376,12 +376,13 @@ console.log("inside CLOCKIN DELETE");
   try {
     const clockinDeleted = await Clockin.deleteOne({ _id: clockinId});
 
-    if (clockinDeleted.deletedCount)
+    if (clockinDeleted.deletedCount) {      
       return res.send({
         message: `Clockin has been deleted`
       });
-    else
+    } else
       throw (`ECKD04: Something bad with Clockin id <${clockinId}>`);
+
   } catch (err) {
     return res.send({
       error: err

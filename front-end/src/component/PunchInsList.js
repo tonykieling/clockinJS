@@ -16,20 +16,20 @@ class PunchInsList extends Component {
   constructor(props) {
     super(props);
 
-  this.state = {
-    dateStart         : "",
-    dateEnd           : "",
-    clientId          : "",
-    clockinList       : [],
-    clockInListTable  : "",
-    tableVisibility   : false,
-    message           : "",
-    client            : {},
-    cleanButton       : false,
+    this.state = {
+      dateStart         : "",
+      dateEnd           : "",
+      clientId          : "",
+      clockinList       : [],
+      clockInListTable  : "",
+      tableVisibility   : false,
+      message           : "",
+      client            : {},
+      cleanButton       : false,
 
-    showModal         : false,
-    clockinToModal    : {}
-  }
+      showModal         : false,
+      clockinToModal    : {}
+    };
 }
 
 
@@ -89,55 +89,6 @@ class PunchInsList extends Component {
   }
 
 
-  handleDelete = async (clockinId, key) => {
-    if (window.confirm("Are you sure you wanna delete this clockin?")) {
-      const url = `/clockin`;
-
-      try {
-        const deleteClockin = await axios.delete( 
-          url,
-          {
-            data: {
-              clockinId
-            },
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization" : `Bearer ${this.props.storeToken}` }
-        });
-
-        if (deleteClockin.data.error) {
-          this.setState({
-            message: deleteClockin.data.error
-          });
-        } else {
-          const array = this.state.clockInListTable;
-          const newList = array.filter(row => Number(row.key) !== Number(key));
-
-          this.setState({
-            clockInListTable: newList,
-            message: deleteClockin.data.message
-          });
-        }
-
-        this.handleSubmit();
-        setTimeout(() => {
-          this.clearMessage();
-        }, 3000);
-
-      } catch(err) {
-        console.log(err.message);
-        this.setState({
-          message: err.message
-        });
-
-        setTimeout(() => {
-          this.clearMessage();
-        }, 2000);
-      }
-    }
-  }
-
-
   editClockin = data => {
     this.setState({
       showModal       : true,
@@ -166,7 +117,7 @@ class PunchInsList extends Component {
         timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
         rate        : clockin.rate,
         totalTime   : ((te - ts) / ( 60 * 60 * 1000)).toFixed(2),
-        totalCad    : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)).toFixed(2),
+        totalCad    : (((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate))).toFixed(2),
         invoice     : clockin.invoice_id ? clockin.invoice.code : "not yet"
       };
 
@@ -193,15 +144,6 @@ class PunchInsList extends Component {
             {/* <td>{clockinsToSend.rate}</td> */}
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.total}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-            {/* <td>
-              <Button
-                variant   = "danger"
-                onClick   = {() => this.handleDelete(clockin._id, clockinsToSend.num)}
-                // variant   = "info"
-                // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the clockin without invoice related to
-                // data-user = {JSON.stringify(userToSend)}
-              > Delete</Button>
-            </td> */}
           </tr>
         );
       }
@@ -209,7 +151,7 @@ class PunchInsList extends Component {
   }  
 
 
-  cleanForm = () => {
+  clearForm = () => {
     this.setState({
       date            : "",
       timeStart       : "",
@@ -322,7 +264,7 @@ class PunchInsList extends Component {
 
               { this.state.cleanButton
                 ? 
-                  <Button variant="info" onClick = { this.cleanForm }>
+                  <Button variant="info" onClick = { this.clearForm }>
                     Clean
                   </Button>
                 : null }

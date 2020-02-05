@@ -152,7 +152,7 @@ class ClientsList extends Component {
 
 
   getClientInfo = client => {
-console.log("inside populateForm, client: ", client);
+// console.log("inside populateForm, client: ", client);
     const {
       _id, name, nickname,  mother, father, consultant, default_rate 
     } = client;

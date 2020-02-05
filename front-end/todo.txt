@@ -168,7 +168,11 @@ review clockin
     XModal
     XDelete
     Xbetter styling in the table
+  send email when clocking got deleted
+    also, do not delete, but check a field "removed" and keep it (soft delete), instead of hard delete
 review invoice
   review clockin delete when there is invoice (its not able to be delete - dissable button delete on the modal)
 redo all try/catch to throw an error instead of dealing with failure (example at PunchInModal.js line 51 or clockin.delete (be))
-
+fix the auth ECA01 message when system is reseted, going directly to the login page instead of showing that
+date start and date end in the same line (so it will fill better the screen)
+organize all messages to be displayed on the top of the last button (like user's page)

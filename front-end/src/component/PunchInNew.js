@@ -21,7 +21,7 @@ class PunchInNew extends Component {
     message       : "",
     client        : {},
     className     : ""
-  }
+  };
 
 
   handleChange = event => {
@@ -64,6 +64,8 @@ class PunchInNew extends Component {
             message   : `Punched in!`,
             className : "messageSuccess"
           });
+          // this.headerRef.focus();
+          window.scrollTo(0,0); // goes to the top of the screen and can see the message
         } else if (addClockin.data.error)
           this.setState({
             message   : addClockin.data.error,
@@ -145,7 +147,8 @@ class PunchInNew extends Component {
 
         {/* <Card style={{ width: '40rem' }}> */}
         <Card className="card-settings">
-          <Card.Header>PunchIn</Card.Header>
+          <Card.Header 
+          >PunchIn</Card.Header>
           <Card.Body>
             { /* mount the Dropbox Button with all clients for the user */ }
             <div className="gridClientBtContainer">
@@ -202,11 +205,11 @@ class PunchInNew extends Component {
                   disabled    = {( this.state.rate === "" ) ? true : false } />
               </Col>
 
-              {/* <Col sm="6"> */}
+              <Col sm="4">
                 { (this.state.endingTime && this.state.startingTime)
                   ? this.showTotalTime()
                   : null }
-              {/* </Col> */}
+              </Col>
 
               
             </Form.Group>
