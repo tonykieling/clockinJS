@@ -49,7 +49,8 @@ class InvoicesList extends Component {
 
     if (!this.state.clientId) {
       this.setState({
-        message: "Select a client."
+        message           : "Select a client.",
+        classNameMessage  : "messageFailure"
       });
       // this.clearMessage();
     } else {
@@ -69,23 +70,21 @@ class InvoicesList extends Component {
             invoiceList       : getInvoices.data.allInvoices,
             invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
             tableVisibility   : true,
-            clientId,
-            // clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(getInvoices.data.allInvoices)
+            clientId
           });
         } else {
           this.setState({
-            message: "No Invoices for this period."
+            message           : "No Invoices for this period.",
+            classNameMessage  : "messageFailure"
           });
-
-          // this.clearMessage();
         }
 
 
       } catch(err) {
         this.setState({
-          message: err.message });
-        
-        // this.clearMessage();
+          message           : err.message,
+          classNameMessage  : "messageFailure"
+       });
       }
     }
     this.clearMessage();
@@ -108,7 +107,7 @@ renderDataTable = (invoices) => {
       <tr key={invoiceToSend.num} onClick={() => this.invoiceEdit(invoice)}>
         <td>{invoiceToSend.num}</td>
         <td>{invoiceToSend.date}</td>
-        <td>${invoiceToSend.totalCad}</td>
+        <td>{invoiceToSend.totalCad.toFixed(2)}</td>
         <td>{invoiceToSend.code}</td>
         <td>{invoiceToSend.status}</td>
         {/* <td>
@@ -139,13 +138,6 @@ renderDataTable = (invoices) => {
       disabledIPBtn   : false,
       tableVisibility : false
     });
-  }
-
-
-
-  checkIfThereIsInvoiceCode = (listOfClockins) => {
-    const check = listOfClockins.filter(invoice => invoice.invoice);
-    return((check.length > 0) ? true : false)
   }
 
 
@@ -220,6 +212,13 @@ renderDataTable = (invoices) => {
               </Col>
             </Form.Group>
 
+          <Card.Footer className= { this.state.classNameMessage}>          
+            { this.state.message
+              ? this.state.message
+              : <br /> }
+          </Card.Footer>
+          <br />
+
           <Button 
             variant   = "primary" 
             type      = "submit" 
@@ -228,9 +227,9 @@ renderDataTable = (invoices) => {
             Get Invoices
           </Button>
 
-          <span className="invoiceGenMsg">
+          {/* <span className="invoiceGenMsg">
             {this.state.message}
-          </span>
+          </span> */}
 
             
           </Form>
@@ -241,21 +240,26 @@ renderDataTable = (invoices) => {
       { this.state.tableVisibility
           ?
             <Card className="cardInvoiceGenListofInvoices card">
-              <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label>
+              {/* <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label> */}
+              <Card.Header style={{textAlign: "center"}}>
+                Client: <b>{this.state.client.nickname}</b>, {`  `}
+                <b>{this.state.invoiceList.length}</b> {this.state.invoiceList.length > 1 ? "Invoices" : "Invoice"}
+              </Card.Header>
+
               {(this.state.invoiceList.length > 0) 
                 ? 
                   <div>
                     <Table striped bordered hover size="sm" responsive>
                       <thead>
-                        <tr>
+                        <tr style={{textAlign: "center", verticalAlign: "middle"}}>
                           <th>#</th>
                           <th>Date</th>
-                          <th>Total CAD$</th>
+                          <th>CAD$</th>
                           <th>Code</th>
                           <th>Status</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody style={{textAlign: "center"}}>
                         {this.state.invoiceListTable}
                       </tbody>
                     </Table>

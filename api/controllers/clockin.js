@@ -170,7 +170,7 @@ console.log("inside clockins get_one");
 // and
 //   write down invoice (it needs to be before 2)
 const clockin_add = async (req, res) => {
-// console.log("inside clockins ADD");
+console.log("inside clockins ADD");
 
   const userId      = req.userData.userId;
   const checkUser   = require("../helpers/user-h.js");

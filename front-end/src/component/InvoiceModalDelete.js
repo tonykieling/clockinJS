@@ -57,7 +57,7 @@ return;
     <div>
         <Modal
           show    = { showModalDeleteInvoice }
-          onHide  = { () => console.log("onExit Modal") } >
+          onHide  = { handleClose } >
 
           <Modal.Header closeButton>
             <Modal.Title>Delete Invoice</Modal.Title>

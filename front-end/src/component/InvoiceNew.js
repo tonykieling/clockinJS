@@ -32,13 +32,15 @@ class InvoiceNew extends Component {
     clockinWithInvoiceCode: false,
 
     showModal         : false,
-    clockinToModal    : ""
+    clockinToModal    : "",
+    classNameMessage  : ""
   }
 
 
   handleChange = event => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name] : event.target.value,
+      message             : ""
     });
   }
 
@@ -72,21 +74,23 @@ class InvoiceNew extends Component {
           clientId,
           clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(getClockins.data.allClockins)
         });
-      } else {
-        this.setState({
-          message: "No clockins for this period."
-        });
 
-        this.clearMessage();
-      }
+        this.textCode.scrollIntoView({ behavior: "smooth" });
+      } else
+        this.setState({
+          message           : "No clockins for this period.",
+          classNameMessage  : "messageFailure"
+        });
 
 
     } catch(err) {
       this.setState({
-        message: err.message });
-      
-      // this.clearMessage();
+        message           : err.message,
+        classNameMessage  : "messageFailure"
+      });
     }
+
+    this.clearMessage();
   }
 
 
@@ -97,7 +101,10 @@ class InvoiceNew extends Component {
     event.preventDefault();
 
     if (!this.state.invoiceCode || this.state.invoiceCode === "") {
-      alert("Please, provide Invoice's Code.");
+      this.setState({
+        message           : "Please, provide Invoice's Code.",
+        classNameMessage  : "messageFailure"
+      });
       this.textCode.focus();
     } else {
       const data = {
@@ -119,24 +126,30 @@ class InvoiceNew extends Component {
                 "Content-Type": "application/json",
                 "Authorization" : `Bearer ${this.props.storeToken}` }
           });
-
+console.log("invoice data", Invoice.data);
           if (Invoice.data.message) {
             this.setState({
-              message : `Invoice Generated!`
+              message                 : `Invoice has been Generated!`,
+              classNameMessage        : "messageSuccess",
+              clockinWithInvoiceCode  : true
             });
 
             // reload clockins after creating invoice
             this.getClockinsBtn.click();
 
-          } else if (Invoice.data.error)
-            this.setState({
-              message: Invoice.data.error
-            });
-          this.clearMessage();
-          
+          } else
+            throw (Invoice.data.error);
+            // this.setState({
+            //   message: Invoice.data.error
+            // });
+
         } catch(err) {
+console.log("errrr", err)          
           this.setState({
-            message: err.message });
+            message           : err,
+            classNameMessage  : "messageFailure"
+          });
+
           this.clearMessage();
         }
       }
@@ -233,17 +246,18 @@ class InvoiceNew extends Component {
   }
 
 
+  handleEnter = (e) => {
+    if (e.key === "Enter")
+      if (e.target.name === "invoiceCode")
+        this.generatorBtn.click();
+  }
 
-  checkIfThereIsInvoiceCode = (listOfClockins) => {
+
+  checkIfThereIsInvoiceCode = listOfClockins => {
     const check = listOfClockins.filter(clockin => clockin.invoice);
     return((check.length > 0) ? true : false)
   }
 
-
-
-  test = () => {
-    console.log("YUP!!!! \n\n NEED TO ADD A MODAL TO EDIT DATA OR DELETE THE CLOCKINS ROW ");
-  }
 
   render() {
     return (
@@ -284,18 +298,23 @@ class InvoiceNew extends Component {
               </Col>
             </Form.Group>
 
+          <Card.Footer className= { this.state.classNameMessage}>          
+            { this.state.message
+              ? this.state.message
+              : <br /> }
+          </Card.Footer>
+          <br />
+
           <Button 
             variant   = "primary" 
             type      = "submit" 
             disabled  = { (this.state.dateStart && this.state.dateEnd && this.state.client) ? false : true }
             onClick   = { this.handleGetClockins } 
-            ref       = {input => this.getClockinsBtn = input }  >
+            ref       = {input => this.getClockinsBtn = input }  
+          >
             Get Clockins
           </Button>
 
-          <span className="invoiceGenMsg">
-            {this.state.message}
-          </span>
 
             
           </Form>
@@ -313,38 +332,87 @@ class InvoiceNew extends Component {
 {/* {console.log("this.state", this.state)} */}
               {(this.state.clockinList.length > 0)
                 ? thinScreen 
-                ? <Table striped bordered hover size="sm" responsive>
-                    <thead style={{textAlign: "center"}}>
-                      <tr>
-                        <th style={{verticalAlign: "middle"}}>#</th>
-                        <th style={{verticalAlign: "middle"}}>Date</th>
-                        <th style={{verticalAlign: "middle"}}>Time Start</th>
-                        <th style={{verticalAlign: "middle"}}>CAD$</th>
-                        <th style={{verticalAlign: "middle"}}>Invoice</th>
-                      </tr>
-                    </thead>
-                    <tbody style={{textAlign: "center"}}>
-                      {this.state.clockInListTable}
-                    </tbody>
-                  </Table> 
-                : <Table striped bordered hover size="sm" responsive>
-                    <thead style={{textAlign: "center"}}>
-                      <tr>
-                        <th style={{verticalAlign: "middle"}}>#</th>
-                        <th style={{verticalAlign: "middle"}}>Date</th>
-                        <th style={{verticalAlign: "middle"}}>Time Start</th>
-                        <th style={{verticalAlign: "middle"}}>Total Time</th>
-                        <th style={{verticalAlign: "middle"}}>CAD$</th>
-                        <th style={{verticalAlign: "middle"}}>Invoice</th>
-                      </tr>
-                    </thead>
-                    <tbody style={{textAlign: "center"}}>
-                      {this.state.clockInListTable}
-                    </tbody>
-                  </Table> 
+                  ? <Table striped bordered hover size="sm" responsive>
+                      <thead style={{textAlign: "center"}}>
+                        <tr>
+                          <th style={{verticalAlign: "middle"}}>#</th>
+                          <th style={{verticalAlign: "middle"}}>Date</th>
+                          <th style={{verticalAlign: "middle"}}>Time Start</th>
+                          <th style={{verticalAlign: "middle"}}>CAD$</th>
+                          <th style={{verticalAlign: "middle"}}>Invoice</th>
+                        </tr>
+                      </thead>
+                      <tbody style={{textAlign: "center"}}>
+                        {this.state.clockInListTable}
+                      </tbody>
+                    </Table> 
+                  : <Table striped bordered hover size="sm" responsive>
+                      <thead style={{textAlign: "center"}}>
+                        <tr>
+                          <th style={{verticalAlign: "middle"}}>#</th>
+                          <th style={{verticalAlign: "middle"}}>Date</th>
+                          <th style={{verticalAlign: "middle"}}>Time Start</th>
+                          <th style={{verticalAlign: "middle"}}>Total Time</th>
+                          <th style={{verticalAlign: "middle"}}>CAD$</th>
+                          <th style={{verticalAlign: "middle"}}>Invoice</th>
+                        </tr>
+                      </thead>
+                      <tbody style={{textAlign: "center"}}>
+                        {this.state.clockInListTable}
+                      </tbody>
+                    </Table> 
                 : null }
+
+              <Form.Group as={Row} controlId="invoiceCode">
+                <Form.Label column sm="3" className="cardLabel">
+                  Code:
+                  {/* Code: <b style={{color: "red", paddingLeft: "1rem"}}>{this.state.messageCode}</b> */}
+                </Form.Label>
+                    {/* <Form.Label style={{paddingLeft: "1rem", maxWidth: "15%"}}><b>Code:</b></Form.Label> */}
+                    {/* <Form.Label column sm={2} className="cardLabel" style={{paddingLeft: "2rem"}}>Code: </Form.Label> */}
+                <Col sm="4">
+                  <Form.Control sm={2}
+                    type        = "text"
+                    name        = "invoiceCode"
+                    placeholder = "Type Invoice's code"
+                    onKeyPress  = {this.handleEnter}
+                    onChange    = {this.handleChange}
+                    value       = {this.state.invoiceCode}
+                    disabled    = {this.state.clockinWithInvoiceCode}
+                    ref         = {input => this.textCode = input }
+                    />
+                </Col>
+              </Form.Group>
+
+              {/* <Form style={{paddingLeft: "1rem"}}>
+                    <Row>
+                      <Col sm={3}>
+                        <Form.Label column className="cardLabel" style={{paddingLeft: "1rem"}}>Date</Form.Label>
+                      </Col>
+                      <Col sm={4}>
+                        <Form.Control 
+                          disabled      = { true}
+                          value         = { "test"}
+                        />
+                      </Col>
+                    </Row>
+              </Form> */}
+
+              <Button 
+                variant   = "primary" 
+                type      = "submit"
+                disabled  = {this.state.clockinWithInvoiceCode}
+                onClick   = { this.handleInvoiceGenerator } 
+                ref       = { input => this.generatorBtn = input}
+              >
+                Invoice's Generator
+              </Button>
+
+              <br />
+
             </Card>
-          : null }
+          : null 
+        }
 
         {this.state.showModal
           ? <PunchInModal 
@@ -356,7 +424,8 @@ class InvoiceNew extends Component {
               closeModal    = { this.closeClockinModal}
               thinScreen    = { thinScreen}
             />
-          : ""}
+          : ""
+        }
 
 
 

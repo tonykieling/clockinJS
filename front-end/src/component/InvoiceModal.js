@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import { Card, Button, ButtonGroup, Form, Col, Table } from "react-bootstrap";
+import { Card, Button, ButtonGroup, Form, Table } from "react-bootstrap";
 
 import InvoiceChangeStatusModal from "./InvoiceChangeStatusModal.js";
 import ReactModal from "react-modal";
 import * as formatDate from "./aux/formatDate.js";
 import InvoiceModalDelete from "./InvoiceModalDelete.js";
 
-ReactModal.setAppElement('#root');
+// ReactModal.setAppElement('#root');
 
 const customStyles = window.innerWidth < 800 
   ? { 
       content : {
-        // width: "50%",
-        height: "95%",
+        width: "95%",
+        height: "90%",
         // left: "0",
         // top: "0"
         top                   : '50%',
@@ -28,7 +28,7 @@ const customStyles = window.innerWidth < 800
     }
   : { 
       content : {
-        // width: "50%",
+        width: "75%",
         height: "80%",
         // left: "0",
         // top: "0"
@@ -112,7 +112,7 @@ class InvoiceModal extends Component {
             tableVisibility   : true
           });
         } else {
-          //////////////////it's not suppose to happen and I need to get ride of it
+          //////////////////just in case
           this.setState({
             message         : getClockins.data.message,
             tableVisibility : false
@@ -178,22 +178,19 @@ class InvoiceModal extends Component {
         timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
         timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
         totalTime   : ((te - ts) / ( 60 * 60 * 1000)),
-        total       : ((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate)),
+        total       : (((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate))).toFixed(2),
         invoice     : clockin.invoice_id ? clockin.invoice_id : "not yet"
       }
 // console.log(index, "clockin data: ", clockinsToSend.date);
 
       return (
         <tr key={clockinsToSend.num}>
-          <td>{clockinsToSend.num}</td>
-          {/* <td>{client}</td> */}
-          <td>{clockinsToSend.date}</td>
-          <td>{clockinsToSend.timeStart}</td>
-          <td>{clockinsToSend.timeEnd}</td>
-          <td>{clockinsToSend.totalTime}</td>
-          {/* <td>{clockinsToSend.rate}</td> */}
-          <td>{clockinsToSend.total}</td>
-          {/* <td>{clockinsToSend.invoice}</td> */}
+          <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+          <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+          <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
+          <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeEnd}</td>
+          {/* <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td> */}
+          <td style={{verticalAlign: "middle"}}>{clockinsToSend.total}</td>
           {/*
           ////////////////////MAYBE in the future I can allow delete clocking by this point of the process
           <td>
@@ -260,31 +257,28 @@ class InvoiceModal extends Component {
         <Card>
           <Card.Header as="h3">Invoice: { this.props.invoice.code }</Card.Header>
           <Card.Body>
-            <Card.Title> Client: { this.props.client.nickname }</Card.Title>
+            <Card.Title style={{fontWeight: "bold", fontSize: "large"}}> Client: { this.props.client.nickname }</Card.Title>
+            {/* <Card.Footer style={{fontWeight: "bold", fontSize: "large"}}>
+              Client: {this.props.client.nickname}
+            </Card.Footer> */}
 
             <Form>
-              <Form.Row>
-                <Form.Group as={Col} >
-                  <Form.Label> Total: ${ this.props.invoice.total_cad }</Form.Label>
-                </Form.Group>
-                <Form.Group>
-                {/* <Form.Label> Date: { this.formatDate(this.props.invoice.date) } */}
-                <Form.Label> Date: { formatDate.show(this.props.invoice.date) }
-                </Form.Label>
-                </Form.Group>
-              </Form.Row>
+              <Form.Label style={{left: "2rem"}}> 
+                <b>Total: $</b>{ this.props.invoice.total_cad.toFixed(2) }
+              </Form.Label>
+              <br />
+              <Form.Label style={{left: "2rem"}}> 
+                <b>Date Generated:</b> { formatDate.show(this.props.invoice.date) }
+              </Form.Label>
+              <br />
+              <Form.Label style={{left: "2rem"}}> 
+                <b>Date Start: </b> { formatDate.show(this.props.invoice.date_start) }
+              </Form.Label>
+              <br />
+              <Form.Label> 
+                <b>Date End: </b> { formatDate.show(this.props.invoice.date_end) }
+              </Form.Label>
 
-              <Form.Row>
-              <Form.Group as={Col} >
-                {/* <Form.Label> From: { this.formatDate(this.props.invoice.date_start) }</Form.Label> */}
-                <Form.Label> From: { formatDate.show(this.props.invoice.date_start) }</Form.Label>
-              </Form.Group>
-              <Form.Group>
-                {/* <Form.Label> To: { this.formatDate(this.props.invoice.date_end) } */}
-                <Form.Label> To: { formatDate.show(this.props.invoice.date_end) }
-                </Form.Label>
-              </Form.Group>
-              </Form.Row>
 
               <div className="d-flex flex-column">
                 <ButtonGroup className="mt-3">
@@ -322,21 +316,21 @@ class InvoiceModal extends Component {
         {this.state.tableVisibility 
           ?
             <Card className="cardInvoiceGenListofClockins card">
+            <Card.Footer style={{fontSize: "x-large", textAlign: "center", fontWeight: "bold"}}>
+              Invoice's Clockins List:
+            </Card.Footer>
               <Table striped bordered hover size="sm" responsive>
                 <thead>
-                  <tr>
-                    <th>#</th>
-                    {/* <th>Client</th> */}
-                    <th>Date</th>
-                    <th>Time Start</th>
-                    <th>Time End</th>
-                    <th>Total Time</th>
-                    {/* <th>Rate</th> */}
-                    <th>Total CAD$</th>
-                    {/* <th>Invoice</th> */}
+                  <tr style={{textAlign: "center"}}>
+                    <th style={{verticalAlign: "middle"}}>#</th>
+                    <th style={{verticalAlign: "middle"}}>Date</th>
+                    <th style={{verticalAlign: "middle"}}>Time Start</th>
+                    <th style={{verticalAlign: "middle"}}>Time End</th>
+                    {/* <th style={{verticalAlign: "middle"}}>Total Time</th> */}
+                    <th style={{verticalAlign: "middle"}}>CAD$</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style={{textAlign: "center"}}>
                   {this.state.clockInListTable}
                 </tbody>
               </Table>

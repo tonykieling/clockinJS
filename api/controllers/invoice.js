@@ -119,8 +119,8 @@ const date1 = new Date();
 console.log("date1 =", date1);
 console.log("req.userData", req.userData);
 console.log("req.body:", req.body);
-// res.send("OK");
-// return;
+// return res.send({ error: "OK"});
+
   const {
     date,
     dateStart,
@@ -232,13 +232,13 @@ console.log("req.body:", req.body);
         _id: newInvoice._id
       }, {
         $set: {
-          total_cad: totalCadTmp
+          total_cad: totalCadTmp.toFixed(2)
         }
       });
 const date2 = new Date()
 console.log("date2 =", date2);
 console.log("total time = ", (date2 - date1) / 1000);
-    res.json({
+    return res.json({
       message: `Invoice <${newInvoice._id}> has been created.`,
       user: userExist.name,
       client: clientExist.name
