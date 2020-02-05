@@ -12,16 +12,12 @@ import axios from "axios";
 function PunchInModal(props) {
   const [showClockinModal, setShowClockinModal] = useState(props.showModal);
 
-  // const [confirmDelete, setconfirmDelete] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [notPossibleDelete, setNotPossibleDelete] = useState(false);
   const [message, setMessage] = useState("");
   const [classNameMessage, setClassNameMessage] = useState("");
 
   const letfSpace = (props.thinScreen ? "1rem" : "3rem");
-
-console.log("props.clockinData", props)
-
 
   const handleClose = () => {
     setShowClockinModal(false);
@@ -38,48 +34,36 @@ console.log("props.clockinData", props)
 
 
   const yesDelete = async () => {
-console.log("yes delete");
-      setOpenModal(false);
-      const url = `/clockin`;
-      try {
-        const deleteClockin = await axios.delete( 
-          url,
-          {
-            data: {
-              clockinId: props.clockinData.id
-            },
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization" : `Bearer ${props.storeToken}` }
-        });
-console.log("deleteClockin", deleteClockin);
-        if (deleteClockin.data.error) {
-console.log("handle error msg")
-          setClassNameMessage("messageFailure");
-          setMessage(deleteClockin.data.error);
-        } else {
-          setClassNameMessage("messageSuccess");
-          setMessage("Clocking has been deleted.");
-          setTimeout(() => {
-            props.deleteClockin(props.clockinData.id);
-            props.closeModal();
-          }, 2500);
-        }
-      } catch(err) {
-        console.log(err.message);
-        console.log("handle error msg")
-        setClassNameMessage("messageFailure"); 
-        setMessage("Error to delete clockin.");
-
+    setOpenModal(false);
+    const url = `/clockin`;
+    try {
+      const deleteClockin = await axios.delete( 
+        url,
+        {
+          data: {
+            clockinId: props.clockinData.id
+          },
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization" : `Bearer ${props.storeToken}` }
+      });
+      
+      if (deleteClockin.data.error)
+        throw (deleteClockin.data.error);
+      else {
+        setClassNameMessage("messageSuccess");
+        setMessage("Clocking has been deleted.");
         setTimeout(() => {
-          // clear message
-        }, 3000);
+          props.deleteClockin(props.clockinData.id);
+          props.closeModal();
+        }, 2500);
       }
-
-
-
-
-}
+    } catch(err) {
+      console.log(err);
+      setClassNameMessage("messageFailure"); 
+      setMessage(err);
+    }
+  }
 
 
   return (

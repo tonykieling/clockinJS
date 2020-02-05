@@ -161,6 +161,14 @@ sysheader
   XMenu is controlled by onStateChange. isOpen is load just at the begging, to change need to be made by onStateChange.
     need to act about clicking outside menu and closing it.
 review client page
-  add client back and front review. tried to insert HTML/bootstrap validation, but it did not work. Vlidation checking this.state variables and modal is working.
+  add client back and front review. tried to insert HTML/bootstrap validation, but it did not work. Vlidation checking this.state variables Xand modal is working.
 review clockin
+  XAdd PunchIn
+  XList PunchIn
+    XModal
+    XDelete
+    Xbetter styling in the table
 review invoice
+  review clockin delete when there is invoice (its not able to be delete - dissable button delete on the modal)
+redo all try/catch to throw an error instead of dealing with failure (example at PunchInModal.js line 51 or clockin.delete (be))
+

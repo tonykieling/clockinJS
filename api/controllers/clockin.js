@@ -354,7 +354,6 @@ client_modify = async (req, res) => {
 
 const clockin_delete = async (req, res) => {
 console.log("inside CLOCKIN DELETE");
-  // const clockinId = req.params.clockinId;
   const clockinId = req.body.clockinId;
   const userId    = req.userData.userId;
   const userAdmin = req.userData.admin;
@@ -363,17 +362,14 @@ console.log("inside CLOCKIN DELETE");
     const clockinToBeDeleted = await Clockin
       .findById(clockinId);
     if (!clockinToBeDeleted || clockinToBeDeleted.length < 1)
-      return res.status(409).json({
-        error: `ECKD01: Clockin <${clockinId} NOT found.`
-      });
+      throw (`ECKD01: Clockin NOT found.`);
 
     if ((userId != clockinToBeDeleted.user_id) && (!userAdmin))
-      return res.status(200).json({
-        error: `ECKD02: Clockin <${clockinId}> does not belong to User <${userId}>.`
-      });
+      throw (`ECKD02: Clockin does not belong to your User.`);
+
   } catch(err) {
-    return res.status(409).json({
-      error: `ECKD03: Something went wrong.`
+    return res.send({
+      error: err
     });
   }
 
@@ -381,14 +377,14 @@ console.log("inside CLOCKIN DELETE");
     const clockinDeleted = await Clockin.deleteOne({ _id: clockinId});
 
     if (clockinDeleted.deletedCount)
-      return res.status(200).json({
+      return res.send({
         message: `Clockin has been deleted`
       });
     else
-      throw Error;
+      throw (`ECKD04: Something bad with Clockin id <${clockinId}>`);
   } catch (err) {
-    res.status(404).json({
-      error: `ECKD04: Something bad with Clockin id <${clockinId}>`
+    return res.send({
+      error: err
     })
   }
 }
