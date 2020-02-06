@@ -51,7 +51,7 @@ class InvoiceNew extends Component {
     const
       dateStart = this.state.dateStart,
       dateEnd   = this.state.dateEnd,
-      clientId  = this.state.clientId ;
+      clientId  = this.state.clientId;
 
 
     const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
@@ -64,7 +64,7 @@ class InvoiceNew extends Component {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
       });
-      
+console.log("getClockins.data", getClockins.data);
       if (getClockins.data.allClockins){
         this.setState({
           clockinList       : getClockins.data.allClockins,

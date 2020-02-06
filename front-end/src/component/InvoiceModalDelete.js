@@ -1,7 +1,7 @@
 import React, { useState} from "react";
 import { Modal, Button, ButtonGroup } from "react-bootstrap";
 import { connect } from 'react-redux'
-// import axios from "axios";
+import axios from "axios";
 
 /**
  * 
@@ -14,42 +14,45 @@ function InvoiceModalDelete(props) {
   const initialMessage = `Deleting the invoice will set all its clockins to no invoice. Are you sure you want to delete it?`
   const [message, setMessage] = useState(initialMessage);
 
-  const [done, setDone] = useState(false)
+  const [done, setDone] = useState(false);
+  const [deleted, setDeleted] = useState(false);
 
 
   const handleClose = () => {
+    if (deleted) props.confirmDeletion();
     setShowModalDeleteInvoice(false);
     props.closeDeleteModal();
   }
 
 
   const handleDelete = async () => {
-    // const url = `/invoice/${props.invoiceCode}`;
-
+    const url = `/invoice/${props.invoiceId}`;
+console.log("props", props)
 ////////////////////this is temp
-setMessage("missing back-end. Soon will be done.");
-setDone(true);
-return;
-    // try {
-    //   const deleteInvoice = await axios.delete( 
-    //     url,
-    //     {
-    //       headers: { 
-    //         "Content-Type": "application/json",
-    //         "Authorization" : `Bearer ${props.storeToken}` }
-    //   });
+// setMessage("missing back-end. Soon will be done.");
+// setDone(true);
+// return;
+    try {
+      const deleteInvoice = await axios.delete( 
+        url,
+        {
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization" : `Bearer ${props.storeToken}` }
+      });
 
-    //   if (deleteInvoice.data.message) {
-    //     setMessage(`Invoice ${props.invoiceCode} has been delete`);
-    //   } else {
-    //     console.log("ERROR is present")
-    //     setMessage(deleteInvoice.data.error + "!!!");
-    //   }
-    // } catch(err) {
-    //   console.log(err.message);
-    //   setMessage(err.message);
-    // }
-    // setDone(true);
+      if (deleteInvoice.data.message) {
+        setMessage(`Invoice ${props.invoiceCode} has been delete`);
+        setDeleted(true);
+      } else {
+        console.log("ERROR is present")
+        setMessage(deleteInvoice.data.error + "!!!");
+      }
+    } catch(err) {
+      console.log(err.message);
+      setMessage(err.message);
+    }
+    setDone(true);
   }
 
 

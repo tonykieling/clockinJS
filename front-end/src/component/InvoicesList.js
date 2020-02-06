@@ -75,7 +75,8 @@ class InvoicesList extends Component {
         } else {
           this.setState({
             message           : "No Invoices for this period.",
-            classNameMessage  : "messageFailure"
+            classNameMessage  : "messageFailure",
+            tableVisibility   : false
           });
         }
 

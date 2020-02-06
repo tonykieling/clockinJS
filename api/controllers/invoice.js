@@ -328,25 +328,41 @@ const invoice_modify_status = async (req, res) => {
 // FIRST it needs to check whether the user is admin or the clockin belongs to the user which is proceeding
 const invoice_delete = async (req, res) => {
   const invoiceId = req.params.invoiceId;
-  const userId    = req.userData.userId;
-  const userAdmin = req.userData.admin;
-console.log("bingo")  
-return res.send({error: "bingo!!"});
+  // const userId    = req.userData.userId;
+  // const userAdmin = req.userData.admin;
+console.log("-----------------------");
+console.log(invoiceId);
+// return res.send({message: "deleted!!"});
   try {
+    // const invoiceToBeDeleted;
     const invoiceToBeDeleted = await Invoice
-      .findById(invoiceId);
+      .deleteOne({ _id: invoiceId});
+console.log("invoiceToBeDeleted", invoiceToBeDeleted);
 
-    if (!invoiceToBeDeleted || invoiceToBeDeleted.length < 1)
-      return res.status(409).json({
-        error: `EIDE01: Invoice <${invoiceId} NOT found.`
-      });
+    const clockinsUpdated = await Clockin
+      .updateMany(
+        { invoice_id: invoiceId}, 
+        { $unset: 
+          { invoice_id: 1}
+        }
+      );
+console.log("clockinsUpdated==>", clockinsUpdated.n, clockinsUpdated.nModified);
 
-    if ((userId != invoiceToBeDeleted.user_id) && (!userAdmin))
-        return res.status(409).json({
-          error: `EIDE02: Invoice <${invoiceId}> does not belong to User <${userId}>.`
-        });
+    // if (!invoiceToBeDeleted || invoiceToBeDeleted.length < 1)
+    //   return res.send({
+    //     error: `Error EIDE01: Invoice <${invoiceId} NOT found.`
+    //   });
+
+    // if ((userId != invoiceToBeDeleted.user_id) && (!userAdmin))
+    //     return res.send({
+    //       error: `Error EIDE02: Invoice <${invoiceId}> does not belong to User <${userId}>.`
+    //     });
+
+    return res.send({message: "OK"});
+
   } catch(err) {
-    return res.status(409).json({
+    console.log("Error:", err.message);
+    return res.send({
       error: `EIDE03: Something went wrong.`
     });
   }

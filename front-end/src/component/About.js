@@ -101,9 +101,9 @@ export default function About() {
         <br />
         <p>Even though it is running, some improvements and features are being developed.</p>
         <ul>
-          <li>Better styling for some components</li>
-          <li>Edit and Delete Clockin</li>
-          <li>Edit and Delete Invoice</li>
+          <li>Better styling for some components - it is going</li>
+          <li>Edit and Delete Clockin - done</li>
+          <li>Edit and Delete Invoice - done</li>
           <li>Reports</li>
           <li>Generate a Invoice's pdf file from the system.</li>
         </ul>

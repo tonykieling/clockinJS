@@ -64,7 +64,9 @@ class InvoiceModal extends Component {
     changeStatusModal : false,
     currentStatus     : this.props.invoice.status,
     updateYN          : false,
-    showModalDeleteInvoice: false
+    showModalDeleteInvoice: false,
+
+    invoiceDeleted    : false
   };
 
 
@@ -224,7 +226,14 @@ class InvoiceModal extends Component {
 
 
   backToThePrevious = () => {
-    this.state.updateYN ? this.props.updateScreen() : this.props.closeModal();
+    // this.state.updateYN
+    //   ? this.props.updateScreen() 
+    //   : this.state.invoiceDeleted
+    //     ? this.props.updateScreen(this.props.invoice._id)
+    //     : this.props.closeModal();
+    (this.state.updateYN || this.state.invoiceDeleted)
+      ? this.props.updateScreen() 
+      : this.props.closeModal();
   }
 
 
@@ -242,9 +251,14 @@ class InvoiceModal extends Component {
   }
 
 
-  render() {
+  confirmDeletion = () => {
+    this.setState({
+      invoiceDeleted: true
+    });
+  }
 
-  // const [showModalDeleteInvoice, setShowModalDeleteInvoice] = useState(false);
+
+  render() {
     return (
       <ReactModal
         isOpen  = { this.props.openInvoiceModal }
@@ -281,21 +295,33 @@ class InvoiceModal extends Component {
 
 
               <div className="d-flex flex-column">
-                <ButtonGroup className="mt-3">
-                  <Button
-                    style     = { { width: "50%" }}
-                    variant   = "info"
-                    disabled  = { this.state.currentStatus === "Received" ? true : false }
-                    onClick   = { this.handleChangeInvoiceStatus }
-                  >{ this.state.currentStatus }</Button>
-                  <Button
-                    style     = { { width: "50%" }}
-                    variant   = "danger"
-                    disabled  = { this.state.currentStatus === "Received" ? true : false }
-                    // onClick   = { this.handleDeleteInvoice }
-                    onClick   = { this.setShowModalDeleteInvoice }
-                  > Delete </Button>
-                </ButtonGroup>
+                {this.state.invoiceDeleted
+                  ?
+                    <Button
+                      style     = { { width: "100%" }}
+                      variant   = "warning"
+                      disabled  = {true}
+                      // onClick   = { () => console.log("hanlde with filter in the bellow screnn") }
+                    >
+                      Invoice already deleted.
+                    </Button>
+                  :
+                    <ButtonGroup className="mt-3">
+                      <Button
+                        style     = { { width: "50%" }}
+                        variant   = "info"
+                        disabled  = { this.state.currentStatus === "Received" ? true : false }
+                        onClick   = { this.handleChangeInvoiceStatus }
+                      >{ this.state.currentStatus }</Button>
+                      <Button
+                        style     = { { width: "50%" }}
+                        variant   = "danger"
+                        disabled  = { this.state.currentStatus === "Received" ? true : false }
+                        // onClick   = { this.handleDeleteInvoice }
+                        onClick   = { this.setShowModalDeleteInvoice }
+                      > Delete </Button>
+                    </ButtonGroup>
+                }
               </div>
             </Form>
 
@@ -315,7 +341,7 @@ class InvoiceModal extends Component {
 
         {this.state.tableVisibility 
           ?
-            <Card className="cardInvoiceGenListofClockins card">
+            <Card className="cardInvoiceGenListofClockinsModal card">
             <Card.Footer style={{fontSize: "x-large", textAlign: "center", fontWeight: "bold"}}>
               Invoice's Clockins List:
             </Card.Footer>
@@ -356,6 +382,8 @@ class InvoiceModal extends Component {
               initialState      = { this.state.showModalDeleteInvoice }
               closeDeleteModal  = { this.closeShowModalDeleteInvoice }
               invoiceCode       = { this.props.invoice.code }
+              invoiceId         = { this.props.invoice._id }
+              confirmDeletion   = { this.confirmDeletion }
               />
           : ""
         }
