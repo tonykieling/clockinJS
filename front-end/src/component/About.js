@@ -6,6 +6,7 @@ import resumeIcon from "../icons/resume.svg";
 import linkedinIcon from "../icons/linkedin.png";
 import githubIcon from "../icons/github.png";
 
+const ml = window.innerWidth < 800 ? "1rem" : "5rem";
 
 export default function About() {
   return (
@@ -20,8 +21,19 @@ export default function About() {
         <p>The project and its source code is kept at <a href="https://github.com/tonykieling/clockinJS" target="_blank" rel="noopener noreferrer">GitHub - Clockin.js</a>
 
         </p>
+        <h2 className="sub-title" style={{ fontWeight: "bold"}}>
+          Contents
+        </h2>
+        <div style={{marginLeft: ml}}>
+          <a href="#id1"><h3>- Functionalities</h3></a>
+          <a href="#id2"><h3>- System main actors</h3></a>
+          <a href="#id3"><h3>- Motivation</h3></a>
+          <a href="#id4"><h3>- Tech Stack</h3></a>
+          <a href="#id5"><h3>- Todo list and Releases</h3></a>
+          <a href="#id6"><h3>- Contact</h3></a>
+        </div>
 
-        <h2 className="sub-title">Some of its functionalities are:</h2>
+        <h2 className="sub-title" id="id1">Some of its functionalities</h2>
 
         <ul>
           <li>
@@ -59,7 +71,7 @@ export default function About() {
         </ul>
 
 
-        <h2 className="sub-title">System main actors</h2>
+        <h2 className="sub-title" id="id2">System main actors</h2>
         <ol>
           <li>
             <span className="strong">User: </span>
@@ -80,7 +92,7 @@ export default function About() {
           </li>
         </ol>
 
-        <h2 className="sub-title">Motivation</h2>
+        <h2 className="sub-title" id="id3">Motivation</h2>
         <p>
           I have been developing the Clockin.js application to help my wife to register data and control their worked hours for her behavior intervention clients. The system facilitates the administration of the data (hours, invoice, clients) of her clients and allows a fast and reliable emission of a monthly invoice addressed to the Autism BC.
         </p>
@@ -91,24 +103,25 @@ export default function About() {
           In a general view, the system has two process: Punch-in and Invoice's generation. The first one independ to the second. It means it can be used without generate invoices, only to registering the puch-ins. The second on (invoice's process) depend on the clock-ins recorded in the system.
         </p>
 
-        <h2 className="sub-title">Teck stack</h2>
+        <h2 className="sub-title" id="id4">Teck stack</h2>
         <p>
           MERN - MongoDB, Express, React and Node, plus Redux, JWT, Bootstrap, Bcrypt, Axios, Mongoose and Nodemailer are the main technologies used.
         </p>
 
-        <h2 className="sub-title">Todo list and Releases</h2>
+        <h2 className="sub-title" id="id5">Todo list and Releases</h2>
         <p>The system is in production and being used by my wife to manage her work time to her clients.</p>
         <br />
         <p>Even though it is running, some improvements and features are being developed.</p>
         <ul>
-          <li>Better styling for some components - it is going</li>
+          <li>Better styling for some components - almost done</li>
           <li>Edit and Delete Clockin - done</li>
           <li>Edit and Delete Invoice - done</li>
+          <li>Img at Land and Quick Guidance - done</li>
           <li>Reports</li>
           <li>Generate a Invoice's pdf file from the system.</li>
         </ul>
 
-        <h3 className="sub-title">Contact us</h3>
+        <h3 className="sub-title" id="id6">Contact us</h3>
           <p> Tony Kieling's: </p>
               <div className="iconLine">
                 <a href="mailto:tony.kieling@gmail.com" target="_top" >

@@ -11,6 +11,7 @@ import MessageModal from "./MessageModal.js";
 function SysHeader(props) {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [goLand, setGoLand] = useState(false);
   
 
   const logout = (e) => {
@@ -29,7 +30,7 @@ function SysHeader(props) {
   const yesLeave = () => {
     setShowModal(false);
     props.noUser();
-    return <Redirect to = "/land" />
+    setGoLand(true);
   };
 
 
@@ -79,6 +80,7 @@ function SysHeader(props) {
                 <NavDropdown.Item href="invoicesList">List, Check and Edit</NavDropdown.Item>
               </NavDropdown>            
 
+              <Link to="/guidance" className="nav-link">Guidance</Link>
               <Link to="/about" className="nav-link">About</Link>
             </Nav>
             <Button onClick={logout} className="logoutBtn">Logout</Button>
@@ -115,6 +117,8 @@ function SysHeader(props) {
               </NavDropdown>            
 
               <br />
+              <a id="guidance" className="menu-item" href="/guidance">Guidance</a>
+              <br />
               <a id="about" className="menu-item" href="/about">About</a>
               <br />
               <a onClick={ logout } className="menu-item--small" href="/">Logout</a>
@@ -134,6 +138,7 @@ function SysHeader(props) {
         <Nav>
           <Link to="/login" className="nav-link">Login</Link>
           <Link to="/register" className="nav-link">Sign Up</Link>
+          <Link to="/guidance" className="nav-link">Guidance</Link>
           <Link to="/about" className="nav-link">About</Link>
         </Nav>
       </Navbar>
@@ -144,9 +149,9 @@ function SysHeader(props) {
     return(
       <div>
   
-        {(props.storeEmail) ?
-              loggedHeader() :
-              notLoggedHeader()
+        {(props.storeEmail) 
+          ? loggedHeader() 
+          : notLoggedHeader()
         }
 
         {showModal
@@ -156,6 +161,11 @@ function SysHeader(props) {
               yesMethod = { yesLeave }
               noMethod  = { noLeave }
             />
+          : ""
+        }
+
+        { goLand
+          ? <Redirect to = "/land" />
           : ""
         }
 

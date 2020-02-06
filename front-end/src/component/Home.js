@@ -16,7 +16,7 @@ function Home(props) {
             With Clockin.js you are able to have all your clients data, their clockins and invoices, in one system.
             It is easy to manage and track your work with them.
             <br />
-            More information at <Link to="/about">About Clockin.js</Link>.
+            More information at <Link to="/about">About Clockin.js</Link> or <Link to="/guidance">Guidance</Link>.
             <br /><br />
             Enjoy and good work!!
             <br /><br /><br />

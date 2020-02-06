@@ -21,6 +21,7 @@ import InvoiceNew     from "./component/InvoiceNew.js";
 import About          from "./component/About.js";
 import InvoicesList   from "./component/InvoicesList.js";
 import ResetPassword  from "./component/ResetPassword.js";
+import Guidance       from "./component/Guidance.js";
 
 
 class App extends Component {
@@ -128,6 +129,10 @@ class App extends Component {
 
             <Route exact path = "/about" >
               <About />
+            </Route>
+
+            <Route exact path = "/guidance" >
+              <Guidance />
             </Route>
 
             <Route component = { NoPage } />
