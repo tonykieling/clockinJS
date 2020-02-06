@@ -187,7 +187,10 @@ class Register extends Component {
                 />
               </Form.Group>
 
-              <Form.Group controlId="formBasicEmail">
+              <Form.Group 
+                controlId="formBasicEmail"
+                style       = {{marginBottom: "5px"}}
+              >
                 <Form.Label>Email address</Form.Label>
                 <Form.Control
                   type        = "email"
@@ -199,7 +202,13 @@ class Register extends Component {
                   ref         = {input => this.textInput2 = input }
                 />
               </Form.Group>
-
+              <Form.Text className="text-muted" style={{marginTop: "2px"}}>
+                We'll never share your email with anyone else.
+              </Form.Text>
+              <Form.Text className="text-muted" style={{marginTop: "0px", marginBottom: "16px"}}>
+                Set a real email so you will receive emails from Clockin.js.
+              </Form.Text>
+              
               <Form.Group controlId="formCity">
                 <Form.Label>City</Form.Label>
                 <Form.Control
@@ -299,8 +308,8 @@ class Register extends Component {
                 : <br /> }
             </Card.Footer>
 
+            <br />
             <div className="d-flex flex-column">
-              <br />
               <Button 
                 variant = "primary" 
                 type    = {this.state.btnType}

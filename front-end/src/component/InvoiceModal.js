@@ -28,8 +28,8 @@ const customStyles = window.innerWidth < 800
     }
   : { 
       content : {
-        width: "75%",
-        height: "80%",
+        width: "40%",
+        height: "75%",
         // left: "0",
         // top: "0"
         top                   : '50%',

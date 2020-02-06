@@ -34,7 +34,7 @@ function SysHeader(props) {
 
 
   const noLeave = e => {
-    e.preventDefault();
+    // e.preventDefault();
     setShowMenu(false);
     setShowModal(false);
   };

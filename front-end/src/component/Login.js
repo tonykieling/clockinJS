@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Card, Container } from 'react-bootstrap';
+import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import ForgetPasswordModal from "./LoginForgetPasswordModal.js";
 
@@ -31,7 +31,6 @@ class Login extends Component {
 
       if (this.state.email !== "" && this.state.password !== "") {
         const url = "/user/login";
-        // const url = window.location.origin + "/login";
         fetch( url, {  
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -55,9 +54,6 @@ class Login extends Component {
               password  : ""
             });
 
-            // when login fails, it focus in the email field
-            this.textInput1.focus();
-
             //it clears the error message after 3.5s
             this.clearMsg();
           }
@@ -74,7 +70,9 @@ class Login extends Component {
     setTimeout(() => {
       this.setState({
         errorMsg: ""
-      })
+      });
+
+      this.textInput1.focus();
     }, 3500);
   }
 
@@ -118,7 +116,10 @@ class Login extends Component {
               </Form.Text>
             </Form.Group>
 
-            <Form.Group controlId="formBasicPassword">
+            <Form.Group 
+              controlId   = "formBasicPassword"
+              style       = {{marginBottom: "5px"}}
+            >
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type        = "password"
@@ -129,9 +130,15 @@ class Login extends Component {
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput2 = input }
               />
-
             </Form.Group>
-            <p><a href={window.location.hash} onClick={this.openModal}>Forget password</a></p>
+
+            <p style = {{
+              marginBottom  : "20px", 
+              fontStyle     : "italic",
+              fontSize      : "0.9rem",
+              paddingLeft   : "1rem"}}>
+                <a href={window.location.hash} onClick={this.openModal}>
+                  Forget password</a></p>
 
 
             {this.state.forgetPasswordModal
@@ -146,12 +153,18 @@ class Login extends Component {
               : ""
             }
             
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-            <Container className="messageFailure">
-              {this.state.errorMsg}
-            </Container>
+            <Card.Footer className= "messageFailure">
+              { this.state.errorMsg
+                ? this.state.errorMsg
+                : <br /> }
+            </Card.Footer>
+
+            <div className="d-flex flex-column">
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </div>
+
           </Form>
           </Card>
       </div>
