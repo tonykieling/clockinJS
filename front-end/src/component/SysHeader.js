@@ -8,6 +8,7 @@ import Menu from "react-burger-menu/lib/menus/slide";
 import "../burguer.css";
 import MessageModal from "./MessageModal.js";
 
+// const smallDevice = window.innerWidth < 800 ? true : false;
 function SysHeader(props) {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -53,7 +54,7 @@ function SysHeader(props) {
   const loggedHeader = () => {
     return (
       <div>
-        <Navbar bg="primary showNormalMenu" >
+        <Navbar bg="primary showNormalMenu" sticky="top" >
           <Navbar.Brand>
             <Link to = "/" className="navbar-brand"> Clockin.js </Link>
           </Navbar.Brand>
@@ -88,7 +89,7 @@ function SysHeader(props) {
         </Navbar>
 
         <div className="showHamburguer">
-          <Navbar bg="info">
+          <Navbar bg="info" sticky="top">
             <Link to="/" className="nav-link">Clockin.js</Link>
             <Link to="/user" className="nav-link">{props.storeEmail}</Link>
             <Menu 
@@ -117,7 +118,7 @@ function SysHeader(props) {
               </NavDropdown>            
 
               <br />
-              <a id="guidance" className="menu-item" href="/guidance">Guidance</a>
+              <a id="guidance" className="menu-item" href="/guidance">Guide</a>
               <br />
               <a id="about" className="menu-item" href="/about">About</a>
               <br />
@@ -133,12 +134,13 @@ function SysHeader(props) {
 
   const notLoggedHeader = () => {
     return (
-      <Navbar bg="dark" variant="dark">
+      // <Navbar bg="dark" variant="dark" style={{position: "sticky", top: 0}}>
+      <Navbar bg="dark" variant="dark" className="sticky-top">
         <Navbar.Brand href="/">Clockin.js</Navbar.Brand>
         <Nav>
           <Link to="/login" className="nav-link">Login</Link>
           <Link to="/register" className="nav-link">Sign Up</Link>
-          <Link to="/guidance" className="nav-link">Guidance</Link>
+          <Link to="/guidance" className="nav-link">Guide</Link>
           <Link to="/about" className="nav-link">About</Link>
         </Nav>
       </Navbar>

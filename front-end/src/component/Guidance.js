@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 
 export default function Guidance() {
   return (
-    <div className="page-general twoThirds">
+    <div className="page-general">
 
-      <Card>
+      <Card style={{backgroundColor: "aliceblue"}}>
         <Card.Header style={{textAlign: "center"}}>
           Quick Guidance
         </Card.Header>

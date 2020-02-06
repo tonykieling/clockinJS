@@ -6,11 +6,11 @@ import resumeIcon from "../icons/resume.svg";
 import linkedinIcon from "../icons/linkedin.png";
 import githubIcon from "../icons/github.png";
 
-const ml = window.innerWidth < 800 ? "1rem" : "5rem";
+const ml = window.innerWidth < 800 ? "2rem" : "5rem";
 
 export default function About() {
   return (
-    <div className="page-general twoThirds">
+    <div className="page-general twoThirds" style={{backgroundColor: "aliceblue"}}>
       <br />
       <h1 className="main-title">Clockin.js</h1>
 
@@ -25,12 +25,12 @@ export default function About() {
           Contents
         </h2>
         <div style={{marginLeft: ml}}>
-          <a href="#id1"><h3>- Functionalities</h3></a>
-          <a href="#id2"><h3>- System main actors</h3></a>
-          <a href="#id3"><h3>- Motivation</h3></a>
-          <a href="#id4"><h3>- Tech Stack</h3></a>
-          <a href="#id5"><h3>- Todo list and Releases</h3></a>
-          <a href="#id6"><h3>- Contact</h3></a>
+          <a href="#id1" style={{paddingTop: "1.5rem"}}><h5>- Functionalities</h5></a>
+          <a href="#id2" style={{paddingTop: "0.9rem"}}><h5>- System main actors</h5></a>
+          <a href="#id3" style={{paddingTop: "0.9rem"}}><h5>- Motivation</h5></a>
+          <a href="#id4" style={{paddingTop: "0.9rem"}}><h5>- Tech Stack</h5></a>
+          <a href="#id5" style={{paddingTop: "0.9rem"}}><h5>- Todo list and Releases</h5></a>
+          <a href="#id6" style={{paddingTop: "0.9rem"}}><h5>- Contact</h5></a>
         </div>
 
         <h2 className="sub-title" id="id1">Some of its functionalities</h2>
