@@ -4,14 +4,13 @@ import Logo from "../img/clockinjs.png";
 import { Link } from "react-router-dom";
 
 export default function Land() {
-  console.log("window.width", window.innerWidth);
   const imgWidth = window.innerWidth;
   return (
     // <div className="twoThirds">
     <div className="formPosition">
       <br />
       <h5>
-        It is easy to track your worked times and manage invoices with Clockin.js.
+        It is easy to track your worked hours and manage invoices with Clockin.js.
       </h5>
       <p>You just need to Sign Up and enjoy.</p>
       <p> It is free. ;)</p>

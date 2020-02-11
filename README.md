@@ -1,10 +1,12 @@
 # **Clockin.js**
-More information, please, check at https://clockinjs.herokuapp.com/about
+More information, please, check at https://clockinjs.herokuapp.com/about  
+  
+  
 ### **The project**
 This project is aimed to have a system with users, clients, clockins and invoices. It will allow:
  - register clients
- - punch work times
- - generate invoice and manage them
+ - punch in work hours
+ - generate invoices and manage them
 
 ### **Dependencies:**
   - express

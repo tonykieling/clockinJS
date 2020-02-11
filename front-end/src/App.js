@@ -28,7 +28,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div>
+        {/* <div> */}
           <SysHeader />
           <Switch>
             <Route exact path = "/" 
@@ -137,7 +137,7 @@ class App extends Component {
 
             <Route component = { NoPage } />
           </Switch>
-        </div>
+        {/* </div> */}
       </Router>
     );
   }

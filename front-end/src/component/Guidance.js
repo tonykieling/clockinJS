@@ -12,7 +12,7 @@ export default function Guidance() {
         </Card.Header>
         <Card.Body>
           <Card.Title style={{backgroundColor: ""}}>
-            With Clockin.js you are able to manage data about your clients, work times and invoices.
+            With Clockin.js you are able to manage data about your clients, work hours and invoices.
           </Card.Title>
             Each set of actions described below are reached by its own menu.
 

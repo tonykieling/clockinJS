@@ -53,8 +53,9 @@ function SysHeader(props) {
   // when a user is logged
   const loggedHeader = () => {
     return (
+      // <div style={{position: "sticky", top: "0px", width: "100%"}}>
       <div>
-        <Navbar bg="primary showNormalMenu" sticky="top" >
+        <Navbar bg="primary showNormalMenu">
           <Navbar.Brand>
             <Link to = "/" className="navbar-brand"> Clockin.js </Link>
           </Navbar.Brand>
@@ -89,7 +90,7 @@ function SysHeader(props) {
         </Navbar>
 
         <div className="showHamburguer">
-          <Navbar bg="info" sticky="top">
+          <Navbar bg="info">
             <Link to="/" className="nav-link">Clockin.js</Link>
             <Link to="/user" className="nav-link">{props.storeEmail}</Link>
             <Menu 
