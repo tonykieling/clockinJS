@@ -25,119 +25,118 @@ import Guidance       from "./component/Guidance.js";
 
 
 class App extends Component {
+
   render() {
     return (
       <Router>
-        {/* <div> */}
-          <SysHeader />
-          <Switch>
-            <Route exact path = "/" 
-              render = {() => {
-                if(!this.props.storeEmail) {
-                  return <Redirect to = "/land" />
-                }
-                else
-                  return <Home />
-              }} />
+        <SysHeader />
+        <Switch>
+          <Route exact path = "/" 
+            render = {() => {
+              if(!this.props.storeEmail) {
+                return <Redirect to = "/land" />
+              }
+              else
+                return <Home />
+            }} />
 
-          <Route exact path = "/user" 
-              render = {() => {
-                if(!this.props.storeEmail) {
-                  return <Redirect to = "/land" />
-                }
-                else
-                  return <User />
-              }} />
+        <Route exact path = "/user" 
+            render = {() => {
+              if(!this.props.storeEmail) {
+                return <Redirect to = "/land" />
+              }
+              else
+                return <User />
+            }} />
 
-            <Route exact path = "/land" 
-              render = {() => {
-                if (!this.props.storeEmail)
-                  return <Land />
-                else
-                  return <Redirect to = "/" />
-              }} />
+          <Route exact path = "/land" 
+            render = {() => {
+              if (!this.props.storeEmail)
+                return <Land />
+              else
+                return <Redirect to = "/" />
+            }} />
 
-            <Route exact path = "/register" 
-              render = {() => {
-                if (!this.props.storeEmail)
-                  return <Register />
-                else
-                  return <Redirect to = "/" />
-              }} />
-            
-            <Route exact path = "/login" 
-              render = {() => {
-                if (!this.props.storeEmail)
-                  return <Login />
-                else
-                  return <Redirect to = "/" />
-              }} />
-            
-            <Route exact path = "/clientNew" 
-              render = {() => {
-                // const token = decodeToken(this.props.storeToken);
-                // if(!token) {
-                if (!this.props.storeEmail)
-                  return <Login />
-                else
-                  return <ClientNew />
-              }} />
+          <Route exact path = "/register" 
+            render = {() => {
+              if (!this.props.storeEmail)
+                return <Register />
+              else
+                return <Redirect to = "/" />
+            }} />
+          
+          <Route exact path = "/login" 
+            render = {() => {
+              if (!this.props.storeEmail)
+                return <Login />
+              else
+                return <Redirect to = "/" />
+            }} />
+          
+          <Route exact path = "/clientNew" 
+            render = {() => {
+              // const token = decodeToken(this.props.storeToken);
+              // if(!token) {
+              if (!this.props.storeEmail)
+                return <Login />
+              else
+                return <ClientNew />
+            }} />
 
-            <Route exact path = "/clientList" 
-              render = {() => {
-                if (!this.props.storeEmail)
-                  return <Login />
-                else
-                  return <ClientList />
-              }} />
+          <Route exact path = "/clientList" 
+            render = {() => {
+              if (!this.props.storeEmail)
+                return <Login />
+              else
+                return <ClientList />
+            }} />
 
-            <Route exact path = "/punchInNew" 
-              render = {() => {
-                if (!this.props.storeEmail)
-                  return <Login />
-                else
-                  return <PunchInNew />
-              }} />
+          <Route exact path = "/punchInNew" 
+            render = {() => {
+              if (!this.props.storeEmail)
+                return <Login />
+              else
+                return <PunchInNew />
+            }} />
 
-            <Route exact path = "/punchInsList" 
-              render = {() => {
-                if (!this.props.storeEmail)
-                  return <Login />
-                else
-                  return <PunchInsList />
-              }} />
-            
-            <Route exact path = "/invoiceNew" 
-              render = {() => {
-                if (!this.props.storeEmail)
-                  return <Login />
-                else
-                  return <InvoiceNew />
-              }} />
-            
-            <Route exact path = "/invoicesList" 
-              render = {() => {
-                if (!this.props.storeEmail)
-                  return <Login />
-                else
-                  return <InvoicesList />
-              }} />
+          <Route exact path = "/punchInsList" 
+            render = {() => {
+              if (!this.props.storeEmail)
+                return <Login />
+              else
+                return <PunchInsList />
+            }} />
+          
+          <Route exact path = "/invoiceNew" 
+            render = {() => {
+              if (!this.props.storeEmail)
+                return <Login />
+              else
+                return <InvoiceNew />
+            }} />
+          
+          <Route exact path = "/invoicesList" 
+            render = {() => {
+              if (!this.props.storeEmail)
+                return <Login />
+              else
+                return <InvoicesList />
+            }} />
 
-            <Route path = "/reset_password" >
-              <ResetPassword />
-            </Route>
+          <Route path = "/reset_password" >
+            <ResetPassword />
+          </Route>
 
-            <Route exact path = "/about" >
-              <About />
-            </Route>
+          <Route exact path = "/about" >
+            <About />
+          </Route>
 
-            <Route exact path = "/guidance" >
-              <Guidance />
-            </Route>
+          <Route exact path = "/guidance" >
+            <Guidance />
+          </Route>
 
-            <Route component = { NoPage } />
-          </Switch>
-        {/* </div> */}
+          <Route component = { NoPage } />
+        </Switch>
       </Router>
     );
   }

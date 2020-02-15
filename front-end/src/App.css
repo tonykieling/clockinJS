@@ -48,8 +48,9 @@
 
 .formPosition {
   max-width: 700px;
-  margin-left: 5rem;
-  margin-right: 8rem;
+  margin: auto;
+  /* margin-left: 5rem;
+  margin-right: 8rem; */
 }
 
 
@@ -152,6 +153,10 @@
   background-color: gainsboro;
 }
 
+.landPosition {
+  margin-left: 4rem;
+}
+
 @media only screen and (max-width: 800px){
 
   .showNormalMenu {
@@ -197,7 +202,8 @@
   }
 
   .formPosition {
-    margin: 0 1rem 0 1rem;
+    max-width: 88%;
+    margin: auto;
   }
 
 }

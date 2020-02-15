@@ -3,12 +3,13 @@ import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
-// import { slide as Menu } from "react-burger-menu";
+// import { slide as Menu } from "react-burger-menu"; // line bellow is better due to load only what is needed
 import Menu from "react-burger-menu/lib/menus/slide";
 import "../burguer.css";
 import MessageModal from "./MessageModal.js";
 
-// const smallDevice = window.innerWidth < 800 ? true : false;
+const smallDevice = window.innerWidth < 800 ? true : false;
+
 function SysHeader(props) {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -53,46 +54,57 @@ function SysHeader(props) {
   // when a user is logged
   const loggedHeader = () => {
     return (
-      // <div style={{position: "sticky", top: "0px", width: "100%"}}>
-      <div>
-        <Navbar bg="primary showNormalMenu">
-          <Navbar.Brand>
-            <Link to = "/" className="navbar-brand"> Clockin.js </Link>
-          </Navbar.Brand>
+      !smallDevice
+        ?
+          <div style={{all: "unset"}}>
+            <Navbar 
+              bg="primary" 
+              className="showNormalMenu"
+              sticky  = {"top"}
+            >
+              <Navbar.Brand>
+                <Link to = "/" className="navbar-brand"> Clockin.js </Link>
+              </Navbar.Brand>
 
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-              <Link to="/user" className="nav-link">{props.storeEmail}</Link>
-              <NavDropdown title="Clients" id="basic-nav-dropdown1">
-                <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="/clientList"> List </NavDropdown.Item>
-              </NavDropdown>
+              <Navbar.Toggle aria-controls="basic-navbar-nav" />
+              <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="mr-auto">
+                  <Link to="/user" className="nav-link">{props.storeEmail}</Link>
+                  <NavDropdown title="Clients" id="basic-nav-dropdown1">
+                    <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="/clientList"> List </NavDropdown.Item>
+                  </NavDropdown>
 
-              <NavDropdown title="Clockins" id="basic-nav-dropdown2">
-                <NavDropdown.Item href="punchInNew"> Punch in </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="punchInsList">List them all</NavDropdown.Item>
-              </NavDropdown>
+                  <NavDropdown title="Clockins" id="basic-nav-dropdown2">
+                    <NavDropdown.Item href="punchInNew"> Punch in </NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="punchInsList">List them all</NavDropdown.Item>
+                  </NavDropdown>
 
-              <NavDropdown title="Invoices" id="basic-nav-dropdown3">
-                <NavDropdown.Item href="invoiceNew">Generate a brand new one</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="invoicesList">List, Check and Edit</NavDropdown.Item>
-              </NavDropdown>            
+                  <NavDropdown title="Invoices" id="basic-nav-dropdown3">
+                    <NavDropdown.Item href="invoiceNew">Generate a brand new one</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="invoicesList">List, Check and Edit</NavDropdown.Item>
+                  </NavDropdown>            
 
-              <Link to="/guidance" className="nav-link">Guidance</Link>
-              <Link to="/about" className="nav-link">About</Link>
-            </Nav>
-            <Button onClick={logout} className="logoutBtn">Logout</Button>
-          </Navbar.Collapse>
-        </Navbar>
-
-        <div className="showHamburguer">
-          <Navbar bg="info">
+                  <Link to="/guidance" className="nav-link">Guidance</Link>
+                  <Link to="/about" className="nav-link">About</Link>
+                </Nav>
+                <Button onClick={logout} className="logoutBtn">Logout</Button>
+              </Navbar.Collapse>
+            </Navbar>
+          </div>
+        :
+          <Navbar bg="info" 
+            sticky={"top"}
+            role="navigation"
+            // style={{position: "sticky", top: 0, zIndex: 999}}
+          >
             <Link to="/" className="nav-link">Clockin.js</Link>
             <Link to="/user" className="nav-link">{props.storeEmail}</Link>
+
+          <div className="showHamburguer">
             <Menu 
               right
               isOpen        = { showMenu }
@@ -125,32 +137,36 @@ function SysHeader(props) {
               <br />
               <a onClick={ logout } className="menu-item--small" href="/">Logout</a>
             </Menu>
-          </Navbar>
-        </div>
-   </div>
-
+          </div>
+        </Navbar>
     );
   }
 
 
   const notLoggedHeader = () => {
     return (
-      // <Navbar bg="dark" variant="dark" style={{position: "sticky", top: 0}}>
-      <Navbar bg="dark" variant="dark" className="sticky-top">
-        <Navbar.Brand href="/">Clockin.js</Navbar.Brand>
-        <Nav>
-          <Link to="/login" className="nav-link">Login</Link>
-          <Link to="/register" className="nav-link">Sign Up</Link>
-          <Link to="/guidance" className="nav-link">Guide</Link>
-          <Link to="/about" className="nav-link">About</Link>
-        </Nav>
-      </Navbar>
+      <div style={{all: "unset"}}>
+        <Navbar 
+          bg="dark" variant="dark"
+          sticky  = {"top"}
+          // style={{position: "sticky", top: 0, zIndex: 999}}
+          // className="navbar navbar-default navbar-fixed-top"
+        >
+          <Navbar.Brand href="/">Clockin.js</Navbar.Brand>
+          <Nav>
+            <Link to="/login" className="nav-link">Login</Link>
+            <Link to="/register" className="nav-link">Sign Up</Link>
+            <Link to="/guidance" className="nav-link">Guide</Link>
+            <Link to="/about" className="nav-link">About</Link>
+          </Nav>
+        </Navbar>
+      </div>
     );
   }
 
 
     return(
-      <div>
+      <div style={{all: "unset"}}>
   
         {(props.storeEmail) 
           ? loggedHeader() 

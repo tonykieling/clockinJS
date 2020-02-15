@@ -4,16 +4,19 @@ import { Link } from "react-router-dom";
 
 export default function Guidance() {
   return (
-    <div className="page-general">
+    // <div style={{all: "unset"}} className="page-general">
+    <div style={{all: "unset"}} className="formPosition">
 
       <Card style={{backgroundColor: "aliceblue"}}>
         <Card.Header style={{textAlign: "center"}}>
-          Quick Guidance
+          <h1>Quick Guidance</h1>
         </Card.Header>
         <Card.Body>
-          <Card.Title style={{backgroundColor: ""}}>
+          <Card.Title >
             With Clockin.js you are able to manage data about your clients, work hours and invoices.
           </Card.Title>
+
+          <br />
             Each set of actions described below are reached by its own menu.
 
           <Card style={{marginTop: "1rem"}}>
@@ -104,13 +107,6 @@ export default function Guidance() {
           </Card.Body>
 
         </Card.Body>
-
-
-
-
-
-
-
 
       </Card>
     </div>

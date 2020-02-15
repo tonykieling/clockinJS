@@ -10,7 +10,7 @@ const ml = window.innerWidth < 800 ? "2rem" : "5rem";
 
 export default function About() {
   return (
-    <div className="page-general twoThirds" style={{backgroundColor: "aliceblue"}}>
+    <div style={{all: "unset"}} className="formPosition">
       <br />
       <h1 className="main-title">Clockin.js</h1>
 

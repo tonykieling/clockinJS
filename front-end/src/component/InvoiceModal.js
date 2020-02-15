@@ -14,10 +14,10 @@ const customStyles = window.innerWidth < 800
   ? { 
       content : {
         width: "95%",
-        height: "90%",
+        height: "85%",
         // left: "0",
         // top: "0"
-        top                   : '50%',
+        top                   : '60%',
         left                  : '50%',
         right                 : 'auto',
         bottom                : 'auto',
@@ -28,7 +28,8 @@ const customStyles = window.innerWidth < 800
     }
   : { 
       content : {
-        width: "40%",
+        width: "70%",
+        maxWidth: "650px",
         height: "75%",
         // left: "0",
         // top: "0"
