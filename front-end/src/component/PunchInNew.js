@@ -1,7 +1,15 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import {  Card, Button, Form, Row, Col } from "react-bootstrap";
+import Card       from "react-bootstrap/Card";
+import Form       from "react-bootstrap/Form";
+import Button     from "react-bootstrap/Button";
+import Row        from "react-bootstrap/Row";
+import Col        from "react-bootstrap/Col";
+import Container  from "react-bootstrap/Container";
+import { Link} from "react-router-dom";
+// import {  Card, Button, Form, Row, Col } from "react-bootstrap";
+// import {  Card, Button, Form, Row, Col } from "react-bootstrap";
 // import moment from "moment";
 // import DatePicker from "react-datepicker";
 // import "react-datepicker/dist/react-datepicker.css";
@@ -20,7 +28,11 @@ class PunchInNew extends Component {
     notes         : "",
     message       : "",
     client        : {},
-    className     : ""
+    addBreak      : false,
+    startingBreak : "",
+    endingBreak   : "",
+    validBreak    : true,
+    classNameMessage  : ""
   };
 
 
@@ -33,21 +45,27 @@ class PunchInNew extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
-
+// console.log("validBreak", this.state.validBreak);
     const data = { 
-      date      : this.state.date,
-      timeStart : this.state.startingTime,
-      timeEnd   : this.state.endingTime,
-      rate      : this.state.rate,
-      notes     : this.state.notes ? this.state.notes : undefined,
-      clientId  : this.state.client._id,
+      date          : this.state.date,
+      timeStart     : this.state.startingTime,
+      timeEnd       : this.state.endingTime,
+      rate          : this.state.rate,
+      notes         : this.state.notes || "",
+      clientId      : this.state.client._id,
+      startingBreak : this.state.startingBreak || "",
+      endingBreak   : this.state.endingBreak || ""
     };
-
-    if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate) {
+    
+    if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak) {
       this.messageValidationMethod();
+// console.log("data", data);
+// if (1) return;
     }
 
     else {
+// console.log("data", data);
+// if (1) return;
       const url = "/clockin";
       try {
         const addClockin = await axios.post( 
@@ -61,21 +79,22 @@ class PunchInNew extends Component {
 
         if (addClockin.data.message) {
           this.setState({
-            message   : `Punched in!`,
-            className : "messageSuccess"
+            message          : `Punched in!`,
+            classNameMessage : "messageSuccess",
+            addBreak         : false
           });
           // this.headerRef.focus();
           window.scrollTo(0,0); // goes to the top of the screen and can see the message
         } else if (addClockin.data.error)
           this.setState({
-            message   : addClockin.data.error,
-            className : "messageFailure"
+            message          : addClockin.data.error,
+            classNameMessage : "messageFailure"
           });
         
       } catch(err) {
         this.setState({
-          message   : err.message,
-          className : "messageFailure"
+          message          : err.message,
+          classNameMessage : "messageFailure"
         });
       }
 
@@ -86,8 +105,8 @@ class PunchInNew extends Component {
 
   messageValidationMethod = () => {
     this.setState({
-      message   : (Object.entries(this.state.client).length === 0) ? "Please, select client." : "Please fill the fields.",
-      className : "messageFailure"
+      message          : (Object.entries(this.state.client).length === 0) ? "Please, select client." : "Please fill or correct the fields.",
+      classNameMessage : "messageFailure"
     });
 
     this.clearMessage();
@@ -119,16 +138,16 @@ class PunchInNew extends Component {
   }
 
 
-  showTotalTime = () => {
-    const time1     = Date.parse(`01 Jan 1970 ${(this.state.startingTime)}:00 GMT`);
-    const time2     = Date.parse(`01 Jan 1970 ${this.state.endingTime}:00 GMT`);
+  showTotalTime = (from, to) => {
+    const time1     = Date.parse(`01 Jan 1970 ${(from)}:00 GMT`);
+    const time2     = Date.parse(`01 Jan 1970 ${to}:00 GMT`);
     const tt        = ((time2 - time1) / (60 * 60 * 1000));
     const totalTime = parseFloat(Math.round(tt * 100) / 100).toFixed(2)
     
     return(
-      <Form.Group as={Row} controlId="formTotal">
-        <Form.Label column sm="9" >Total time: {totalTime} hr</Form.Label>
-      </Form.Group>
+      <span>
+        {totalTime}
+      </span>
     )
   }
 
@@ -140,12 +159,47 @@ class PunchInNew extends Component {
   }
 
 
+  handleAddBreak = () => {
+    this.setState({ 
+      addBreak      : !this.state.addBreak,
+      startingBreak : this.state.startingBreak && "",
+      endingBreak   : this.state.endingBreak && "",
+      message       : this.state.message && ""
+    });
+  }
+
+
+  checkBreakIsValid = event => {
+    if (this.state.startingBreak || this.state.endingBreak)
+      if ((this.state.endingBreak <= this.state.startingBreak)
+            || (this.state.startingBreak <= this.state.startingTime)
+            || (event.target.name !== "startingBreak" && (this.state.endingTime <= this.state.endingBreak)))
+        this.setState({ 
+          message         : "Break is incorrect.",
+          classNameMessage: "messageFailure",
+          validBreak      : false
+        });
+      else
+        this.setState({ 
+          message     : "",
+          validBreak  : true
+        });
+  }
+
+
+  checkOnFocusEndingBreak = () => {
+    this.setState({ 
+      message     : "",
+      validBreak  : true
+    });
+  }
+
+
   render() {
     return (
       <div className="formPosition">
         <br />
 
-        {/* <Card style={{ width: '40rem' }}> */}
         <Card className="card-settings">
           <Card.Header 
           >PunchIn</Card.Header>
@@ -156,15 +210,12 @@ class PunchInNew extends Component {
                 client        = { this.state.client }
                 getClientInfo = { this.getClientInfo } />
                 
-              <span className={this.state.className}>
-                { this.state.message ? this.state.message : "" }
-              </span>
             </div>
           <br></br>
           <Form onSubmit={this.handleSubmit} >
 
             <Form.Group as={Row} controlId="formDate">
-              <Form.Label column sm="3" className="cardLabel">Date:</Form.Label>
+              <Form.Label column sm="3" className="cardLabel">Worked in</Form.Label>
               <Col sm="6">
                 <Form.Control 
                   type        = "date"
@@ -172,47 +223,111 @@ class PunchInNew extends Component {
                   onChange    = {this.handleChange}
                   value       = {this.state.date}
                   onKeyPress  = {this.handleChange}
-                  disabled    = {( this.state.rate === "" ) ? true : false } />
+                />
               </Col>
             </Form.Group>
 
-            <Form.Group as={Row} controlId="formST">
-              <Form.Label column sm="3" className="cardLabel">Time Start:</Form.Label>
-              <Col sm="3">
-                <Form.Control
-                  type        = "time"
-                  placeholder = "Starting Time"
-                  name        = "startingTime"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.startingTime}
-                  onKeyPress  = {this.handleChange}
-                  disabled    = {( this.state.rate === "" ) ? true : false } />
-              </Col>
-            </Form.Group>
 
-            <Form.Group as={Row} controlId="formET">
-              <Col sm="3">
-                <Form.Label className="cardLabel">Time End:</Form.Label>
-              </Col>
-              <Col sm="3">
-                <Form.Control                
-                  type        = "time"
-                  placeholder = "Ending Time"
-                  name        = "endingTime"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.endingTime}
-                  onKeyPress  = {this.handleChange}
-                  disabled    = {( this.state.rate === "" ) ? true : false } />
-              </Col>
+            <Container style={{paddingLeft: 0}}>
+              <Row style={{paddingLeft: 0}}>
+                <Col>
+                  <Form.Label className="cardLabel" >Starting</Form.Label>
+                </Col>
+                <Col>
+                  <Form.Label className="cardLabel" >Ending</Form.Label>
+                </Col>
+                <Col>
+                  <Form.Label className="cardLabel" >Total</Form.Label>
+                </Col>
+              </Row>
 
-              <Col sm="4">
-                { (this.state.endingTime && this.state.startingTime)
-                  ? this.showTotalTime()
-                  : null }
-              </Col>
+              <Row style={{paddingLeft: 0}}>
+                <Col>
+                  <Form.Control
+                    style       = {{padding: "6px 2px"}}
+                    type        = "time"
+                    name        = "startingTime"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.startingTime}
+                    onKeyPress  = {this.handleChange}
+                    onBlur      = { this.checkBreakIsValid}
+                  />
+                </Col>
+                <Col>
+                  <Form.Control
+                    style       = {{padding: "6px 2px"}}
+                    type        = "time"
+                    name        = "endingTime"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.endingTime}
+                    onKeyPress  = {this.handleChange}
+                    onBlur      = { this.checkBreakIsValid}
+                 />
+                </Col>
+                <Col>
+                  { (this.state.endingTime && this.state.startingTime)
+                        ? this.showTotalTime(this.state.startingTime, this.state.endingTime)
+                        : null }
+                </Col>
+              </Row>
+            </Container>
 
-              
-            </Form.Group>
+            <Link to={window.location} onClick= { this.handleAddBreak} >Add Break</Link>
+
+
+            { this.state.addBreak
+              &&
+                <Card className="card-settings">
+                  <Container style={{paddingLeft: 0}}>
+                    <Row style={{paddingLeft: 0}}>
+                      <Col>
+                        <Form.Label className="cardLabel" >From</Form.Label>
+                      </Col>
+                      <Col>
+                        <Form.Label className="cardLabel" >To</Form.Label>
+                      </Col>
+                      <Col>
+                        <Form.Label className="cardLabel" >Total</Form.Label>
+                      </Col>
+                    </Row>
+
+                    <Row style={{paddingLeft: 0}}>
+                      <Col style={{paddingRight: 0}}>
+                        <Form.Control
+                          style       = {{padding: "6px 0"}}
+                          type        = "time"
+                          name        = "startingBreak"
+                          onChange    = {this.handleChange}
+                          value       = {this.state.startingBreak}
+                          onKeyPress  = {this.handleChange}
+                          onBlur      = { this.checkBreakIsValid}
+                        />
+                      </Col>
+                      <Col>
+                        <Form.Control
+                          style       = {{padding: "6px 0"}}
+                          type        = "time"
+                          name        = "endingBreak"
+                          onChange    = {this.handleChange}
+                          value       = {this.state.endingBreak}
+                          onKeyPress  = {this.handleChange}
+                          onBlur      = { this.checkBreakIsValid}
+                          onFocus     = { this.checkOnFocusEndingBreak}
+                        />
+                      </Col>
+                      <Col>
+                        { (this.state.endingBreak && this.state.startingBreak)
+                              ? this.showTotalTime(this.state.startingBreak, this.state.endingBreak)
+                              : null }
+                      </Col>
+                    </Row>
+                  </Container>
+                </Card>
+            }
+            <br />
+
+
+
 
             <Form.Group as={Row} controlId="formRate">
               <Form.Label column sm="3" className="cardLabel" >Rate</Form.Label>
@@ -224,7 +339,7 @@ class PunchInNew extends Component {
                   onChange    = {this.handleChange}
                   onKeyPress  = {this.handleChange}
                   value       = {this.state.rate}
-                  disabled    = {( this.state.rate === "" ) ? true : false } />
+                />
               </Col>
             </Form.Group>
 
@@ -239,19 +354,23 @@ class PunchInNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.notes}
                 onKeyPress  = {this.handleChange}
-                disabled    = {( this.state.rate === "" ) ? true : false } />
+              />
             </Form.Group>
 
-            <Button 
-              variant="primary" 
-              type= "submit" 
-              onClick = { this.handleSubmit } >
-              Submit
-            </Button>            
-            
-            {/* <span>
-              { this.state.message ? this.state.message : "" }
-            </span> */}
+            <Card.Footer className= { this.state.classNameMessage}>          
+              { this.state.message
+                ? this.state.message
+                : <br /> }
+            </Card.Footer>
+
+            <div className="d-flex flex-column">
+              <Button
+                variant="primary" 
+                type= "submit" 
+                onClick = { this.handleSubmit } >
+                Submit
+              </Button>
+            </div>
 
           </Form>
         </Card.Body>
