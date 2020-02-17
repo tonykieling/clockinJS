@@ -5,23 +5,23 @@ const clockinSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
 
   date: {
-    type: Date,
-    required: true
+    type      : Date,
+    required  : true
   },
   
   time_start: {
-    type: Date,
-    required: true
+    type      : Date,
+    required  : true
   },
   
   time_end: {
-    type: Date,
-    required: true
+    type      : Date,
+    required  : true
   },
   
   rate: {
-    type: Number,
-    required: true
+    type      : Number,
+    required  : true
   },
   
   notes: {
@@ -29,23 +29,37 @@ const clockinSchema = mongoose.Schema({
   },
   
   invoice_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Invoice",
-    required: false
+    type      : mongoose.Schema.Types.ObjectId,
+    ref       : "Invoice",
+    required  : false
     // type: String
   },
   
   client_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Client",
-    required: true
+    type      : mongoose.Schema.Types.ObjectId,
+    ref       : "Client",
+    required  : true
   },
   
   user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
+    type      : mongoose.Schema.Types.ObjectId,
+    ref       : "User",
+    required  : true
+  },
+
+  worked_hours: {
+    type      : Number,
+    required  : true
+  },
+
+  break_start: {
+    type      : Date
+  },
+
+  break_end: {
+    type      : Date
   }
+
 });
 
 module.exports = mongoose.model("Clockin", clockinSchema);

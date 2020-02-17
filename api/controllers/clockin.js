@@ -170,7 +170,7 @@ console.log("inside clockins get_one");
 // and
 //   write down invoice (it needs to be before 2)
 const clockin_add = async (req, res) => {
-console.log("inside clockins ADD");
+console.log("inside clockins ADD", req.body);
 
   const userId      = req.userData.userId;
   const checkUser   = require("../helpers/user-h.js");
@@ -202,13 +202,25 @@ console.log("inside clockins ADD");
      } = req.body;
 
   const 
-    d   = new Date(req.body.date).getTime();
-    t1  = (Number(req.body.timeStart.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.timeStart.split(':')[1]) * 60 * 1000);
+    d   = new Date(req.body.date).getTime(),
+    t1  = (Number(req.body.timeStart.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.timeStart.split(':')[1]) * 60 * 1000),
     t2  = (Number(req.body.timeEnd.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.timeEnd.split(':')[1]) * 60 * 1000);
+  
+  const breakStart  = req.body.startingBreak 
+    ? (Number(req.body.startingBreak.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.startingBreak.split(':')[1]) * 60 * 1000)
+    : "";
+  const breakEnd    = req.body.startingBreak
+    ? (Number(req.body.endingBreak.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.endingBreak.split(':')[1]) * 60 * 1000)
+    : "";
 
   const time_start  = new Date(d + t1);
   const time_end    = new Date(d + t2);
   const date        = new Date(d);
+  const break_start = new Date(breakStart + d);
+  const break_end   = new Date(breakEnd + d);
+  const workedHours = (time_end - time_start) - (breakEnd - breakStart);
+  console.log("horkedhours:", workedHours, time_start, time_end, breakStart, breakEnd);
+  // if (1) return res.send({message:"OK"});
 
   try {
     const newClockin = new Clockin({
@@ -220,7 +232,10 @@ console.log("inside clockins ADD");
       notes,
       client_id,
       user_id: userId,
-      invoice_id: null
+      invoice_id: null,
+      break_start,
+      break_end,
+      worked_hours: workedHours
     });
 
     await newClockin.save();

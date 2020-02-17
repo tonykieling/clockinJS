@@ -56,16 +56,10 @@ class PunchInNew extends Component {
       startingBreak : this.state.startingBreak || "",
       endingBreak   : this.state.endingBreak || ""
     };
-    
-    if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak) {
-      this.messageValidationMethod();
-// console.log("data", data);
-// if (1) return;
-    }
-
+console.log("data sent", data);
+    if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak)
+      !this.state.validBreak ? this.checkBreakIsValid() : this.messageValidationMethod();
     else {
-// console.log("data", data);
-// if (1) return;
       const url = "/clockin";
       try {
         const addClockin = await axios.post( 
@@ -83,8 +77,6 @@ class PunchInNew extends Component {
             classNameMessage : "messageSuccess",
             addBreak         : false
           });
-          // this.headerRef.focus();
-          window.scrollTo(0,0); // goes to the top of the screen and can see the message
         } else if (addClockin.data.error)
           this.setState({
             message          : addClockin.data.error,
@@ -98,7 +90,7 @@ class PunchInNew extends Component {
         });
       }
 
-      this.clearForm();
+      // this.clearForm();
     }
   }
 
@@ -118,8 +110,9 @@ class PunchInNew extends Component {
       this.setState({
         message: ""
       });
+      // this.headerRef.focus();
+      window.scrollTo(0,0); // goes to the top of the screen and can see the message
     }, 3000);
-
   }
 
 

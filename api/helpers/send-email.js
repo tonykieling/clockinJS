@@ -22,6 +22,13 @@ const sendClockinEmail = (subject, clockin, user, client) => {
       <p> <b>- Date: <i>${formatDT.showDate(clockin.date)} </i></b></p>
       <p> <b>- Time start: <i>${formatDT.showTime(clockin.time_start)} </i></b></p>
       <p> <b>- Time end: <i>${formatDT.showTime(clockin.time_end)} </i></b></p>
+      ${clockin.break_start 
+        ? `<p> <b>- Break Start: <i>${formatDT.showTime(clockin.break_start)} </i></b></p>`
+        : ""}
+      ${clockin.break_end 
+        ? `<p> <b>- Break End: <i>${formatDT.showTime(clockin.break_end)} </i></b></p>`
+        : ""}
+      <p> <b>- Worked hours: <i>${formatDT.showTime(clockin.worked_hours)} </i></b></p>
       <p> <b>- Rate: <i>${clockin.rate} </i></b></p>
       <p> <b>- Notes: <i>${clockin.notes ? clockin.notes : "&lt;empty&gt;"} </i></b></p>
       <br>
