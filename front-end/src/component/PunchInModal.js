@@ -10,6 +10,7 @@ import axios from "axios";
  */
 
 function PunchInModal(props) {
+
   const [showClockinModal, setShowClockinModal] = useState(props.showModal);
 
   const [openModal, setOpenModal] = useState(false);
@@ -86,7 +87,7 @@ function PunchInModal(props) {
                   <Form style={{paddingLeft: letfSpace}}>
                     <Row>
                       <Col>
-                        <Form.Label column sm={3} className="cardLabel" style={{paddingLeft: "0px"}}>Date</Form.Label>
+                        <Form.Label column className="cardLabel" style={{paddingLeft: "0px"}}>Date</Form.Label>
                       </Col>
                       <Col>
                         <Form.Control
@@ -98,7 +99,7 @@ function PunchInModal(props) {
 
                     <Row>
                       <Col>
-                        <Form.Label column sm={3} className="cardLabel" style={{paddingLeft: "0px"}}>Time Start</Form.Label>
+                        <Form.Label column className="cardLabel" style={{paddingLeft: "0px"}}>Time Start</Form.Label>
                       </Col>
                       <Col>
                         <Form.Control
@@ -110,7 +111,7 @@ function PunchInModal(props) {
 
                     <Row>
                       <Col>
-                        <Form.Label column sm={3} className="cardLabel" style={{paddingLeft: "0px"}}>Time End</Form.Label>
+                        <Form.Label column className="cardLabel" style={{paddingLeft: "0px"}}>Time End</Form.Label>
                       </Col>
                       <Col>
                         <Form.Control
@@ -120,9 +121,53 @@ function PunchInModal(props) {
                       </Col>
                     </Row>
 
+
+                    { props.clockinData.breakStart
+                    ?
+                      <div>
+                        <Row>
+                          <Col>
+                            <Form.Label column className="cardLabel" style={{paddingLeft: "0px"}}>Break Start</Form.Label>
+                          </Col>
+                          <Col>
+                            <Form.Control
+                              disabled      = { true}
+                              value         = { props.clockinData.breakStart || "break start"}
+                            />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <Form.Label column className="cardLabel" style={{paddingLeft: "0px"}}>Break End</Form.Label>
+                          </Col>
+                          <Col>
+                            <Form.Control
+                              disabled      = { true}
+                              value         = { props.clockinData.breakEnd || "break end"}
+                            />
+                          </Col>
+                        </Row>
+                      </div>
+                    : ""
+                  }
+
+
+
                     <Row>
                       <Col>
-                        <Form.Label column sm={3} className="cardLabel" style={{paddingLeft: "0px"}}>Rate</Form.Label>
+                        <Form.Label column className="cardLabel" style={{paddingLeft: "0px"}}>Total Time</Form.Label>
+                      </Col>
+                      <Col>
+                        <Form.Control
+                          disabled      = { true}
+                          value         = { !!props.clockinData.workedHours ? props.clockinData.workedHours : props.clockinData.totalTime }
+                        />
+                      </Col>
+                    </Row>
+
+                    <Row>
+                      <Col>
+                        <Form.Label column className="cardLabel" style={{paddingLeft: "0px"}}>Rate</Form.Label>
                       </Col>
                       <Col>
                         <Form.Control
@@ -134,19 +179,7 @@ function PunchInModal(props) {
 
                     <Row>
                       <Col>
-                        <Form.Label column sm={3} className="cardLabel" style={{paddingLeft: "0px"}}>Total Time</Form.Label>
-                      </Col>
-                      <Col>
-                        <Form.Control
-                          disabled      = { true}
-                          value         = { props.clockinData.totalTime || "totaltime"}
-                        />
-                      </Col>
-                    </Row>
-
-                    <Row>
-                      <Col>
-                        <Form.Label column sm={3} className="cardLabel" style={{paddingLeft: "0px"}}>Total CAD$</Form.Label>
+                        <Form.Label column className="cardLabel" style={{paddingLeft: "0px"}}>Total CAD$</Form.Label>
                       </Col>
                       <Col>
                         <Form.Control
@@ -158,7 +191,7 @@ function PunchInModal(props) {
 
                     <Row>
                       <Col>
-                        <Form.Label column sm={3} className="cardLabel" style={{paddingLeft: "0px"}}>Invoice</Form.Label>
+                        <Form.Label column className="cardLabel" style={{paddingLeft: "0px"}}>Invoice</Form.Label>
                       </Col>
                       <Col>
                         <Form.Control
@@ -207,6 +240,42 @@ function PunchInModal(props) {
                           />
                         </Col>
                     </Form.Group>
+                    
+                  { props.clockinData.breakStart
+                    ?
+                      <div>
+                        <Form.Group as={Row} controlId="formTt" style={{marginBottom: 0}}>
+                            <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Break Start</Form.Label>
+                            <Col sm={5} style={{paddingLeft: "0px"}}>
+                              <Form.Control
+                                disabled      = { true}
+                                value         = { props.clockinData.breakStart || "totaltime"}
+                                />
+                            </Col>
+                        </Form.Group>
+
+                        <Form.Group as={Row} controlId="formTt" style={{marginBottom: 0}}>
+                            <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Break End</Form.Label>
+                            <Col sm={5} style={{paddingLeft: "0px"}}>
+                              <Form.Control
+                                disabled      = { true}
+                                value         = { props.clockinData.breakEnd || "totaltime"}
+                                />
+                            </Col>
+                        </Form.Group>
+                      </div>
+                    : ""
+                  }
+
+                    <Form.Group as={Row} controlId="formTt" style={{marginBottom: 0}}>
+                        <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Total Time</Form.Label>
+                        <Col sm={5} style={{paddingLeft: "0px"}}>
+                          <Form.Control
+                            disabled      = { true}
+                            value         = { !!props.clockinData.workedHours ? props.clockinData.workedHours : props.clockinData.totalTime }
+                          />
+                        </Col>
+                    </Form.Group>
 
                     <Form.Group as={Row} controlId="formRate" style={{marginBottom: 0}}>
                         <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Rate</Form.Label>
@@ -214,16 +283,6 @@ function PunchInModal(props) {
                           <Form.Control
                             disabled      = { true}
                             value         = { props.clockinData.rate || "rate"}
-                          />
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} controlId="formTt" style={{marginBottom: 0}}>
-                        <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Total Time</Form.Label>
-                        <Col sm={5} style={{paddingLeft: "0px"}}>
-                          <Form.Control
-                            disabled      = { true}
-                            value         = { props.clockinData.totalTime || "totaltime"}
                           />
                         </Col>
                     </Form.Group>

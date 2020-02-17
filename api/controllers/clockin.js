@@ -97,21 +97,21 @@ console.log("inside clockins get_all");
       const client = await Client
         .findById( clientId )
         .select(" nickname ");
-
+        
       return res.status(200).json({
         count: allClockins.length,
         allClockins,
         client: client.nickname });
       }
 
-    res.status(200).json({
+    return res.status(200).json({
       count: allClockins.length,
       allClockins
     });
   
   } catch(err) {
     console.log("Error => ", err.message);
-    res.status(422).json({
+    return res.status(422).json({
       error: "EACK02: Something got wrong."
     });
   }
@@ -220,7 +220,7 @@ console.log("inside clockins ADD", req.body);
   const break_end   = new Date(breakEnd + d);
   const workedHours = (time_end - time_start) - (breakEnd - breakStart);
   console.log("horkedhours:", workedHours, time_start, time_end, breakStart, breakEnd);
-  // if (1) return res.send({message:"OK"});
+
 
   try {
     const newClockin = new Clockin({

@@ -56,7 +56,7 @@ class PunchInNew extends Component {
       startingBreak : this.state.startingBreak || "",
       endingBreak   : this.state.endingBreak || ""
     };
-console.log("data sent", data);
+    
     if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak)
       !this.state.validBreak ? this.checkBreakIsValid() : this.messageValidationMethod();
     else {
@@ -90,7 +90,7 @@ console.log("data sent", data);
         });
       }
 
-      // this.clearForm();
+      this.clearForm();
     }
   }
 
@@ -131,10 +131,13 @@ console.log("data sent", data);
   }
 
 
-  showTotalTime = (from, to) => {
-    const time1     = Date.parse(`01 Jan 1970 ${(from)}:00 GMT`);
-    const time2     = Date.parse(`01 Jan 1970 ${to}:00 GMT`);
-    const tt        = ((time2 - time1) / (60 * 60 * 1000));
+  showTotalTime = () => {
+    const time1     = Date.parse(`01 Jan 1970 ${(this.state.startingTime)}:00 GMT`);
+    const time2     = Date.parse(`01 Jan 1970 ${this.state.endingTime}:00 GMT`);
+    const break1    = this.state.startingBreak ? Date.parse(`01 Jan 1970 ${this.state.startingBreak}:00 GMT`) : 0;
+    const break2    = this.state.endingBreak ? Date.parse(`01 Jan 1970 ${this.state.endingBreak}:00 GMT`) : 0;
+    const tb        = break2 - break1;
+    const tt        = (((time2 - time1) - tb) / (60 * 60 * 1000));
     const totalTime = parseFloat(Math.round(tt * 100) / 100).toFixed(2)
     
     return(
@@ -259,13 +262,13 @@ console.log("data sent", data);
                 </Col>
                 <Col>
                   { (this.state.endingTime && this.state.startingTime)
-                        ? this.showTotalTime(this.state.startingTime, this.state.endingTime)
+                        ? this.showTotalTime()
                         : null }
                 </Col>
               </Row>
             </Container>
 
-            <Link to={window.location} onClick= { this.handleAddBreak} >Add Break</Link>
+            <Link to={window.location} onClick= { this.handleAddBreak} >{this.state.addBreak ? "Remove break" : "Add Break"}</Link>
 
 
             { this.state.addBreak
@@ -278,9 +281,6 @@ console.log("data sent", data);
                       </Col>
                       <Col>
                         <Form.Label className="cardLabel" >To</Form.Label>
-                      </Col>
-                      <Col>
-                        <Form.Label className="cardLabel" >Total</Form.Label>
                       </Col>
                     </Row>
 
@@ -307,11 +307,6 @@ console.log("data sent", data);
                           onBlur      = { this.checkBreakIsValid}
                           onFocus     = { this.checkOnFocusEndingBreak}
                         />
-                      </Col>
-                      <Col>
-                        { (this.state.endingBreak && this.state.startingBreak)
-                              ? this.showTotalTime(this.state.startingBreak, this.state.endingBreak)
-                              : null }
                       </Col>
                     </Row>
                   </Container>

@@ -177,3 +177,5 @@ redo all try/catch to throw an error instead of dealing with failure (example at
 fix the auth ECA01 message when system is reseted, going directly to the login page instead of showing that
 date start and date end in the same line at punchin (so it will fill better the screen)
 organize all messages to be displayed on the top of the last button (like user's page)
+added break 
+  missing invoice consider worked_hours field in the db

@@ -1,7 +1,15 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import {  Card, Button, Form, Row, Col, Table } from "react-bootstrap";
+import Card   from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import Form   from "react-bootstrap/Form";
+import Row    from "react-bootstrap/Row";
+import Col    from "react-bootstrap/Col";
+import Table  from "react-bootstrap/Table";
+
+// , Button, Form, Row, Col, Table } from "react-bootstrap";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 // import moment from "moment";
 
 import GetClients from "./aux/GetClients.js";
@@ -24,6 +32,7 @@ class PunchInsList extends Component {
       clockInListTable  : "",
       tableVisibility   : false,
       message           : "",
+      classNameMessage  : "",
       client            : {},
       cleanButton       : false,
 
@@ -51,41 +60,54 @@ class PunchInsList extends Component {
     const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
     if (clientId) {
-      try {
-        const getClockins = await axios.get( 
-          url,
-          {  
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization" : `Bearer ${this.props.storeToken}` }
-        });
-        
-        if (getClockins.data.allClockins){
-          this.setState({
-            clockinList       : getClockins.data.allClockins,
-            // client            : getClockins.data.client,
-            clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
-            tableVisibility   : true,
-            cleanButton       : true
-          });
-        } else {
-          this.setState({
-            message         : getClockins.data.message,
-            tableVisibility : false
-          });
+      const a = new Date(dateStart).getTime();
+      const b = new Date(dateEnd).getTime();
 
-          setTimeout(() => {
-            this.clearMessage();
-          }, 3000);
-        }
-      } catch(err) {
+      if (a > b)
         this.setState({
-          message: err.message
+          message   : "Check your dates",
+          classNameMessage  : "messageFailure"
         });
+      else
+        try {
+          const getClockins = await axios.get( 
+            url,
+            {  
+              headers: { 
+                "Content-Type": "application/json",
+                "Authorization" : `Bearer ${this.props.storeToken}` }
+          });
+          
+          if (getClockins.data.allClockins){
+            this.setState({
+              clockinList       : getClockins.data.allClockins,
+              // client            : getClockins.data.client,
+              clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
+              tableVisibility   : true,
+              cleanButton       : true
+            });
+          } else {
+            this.setState({
+              message         : getClockins.data.message,
+              classNameMessage: "messageFailure",
+              tableVisibility : false
+            });
+
+            // setTimeout(() => {
+            //   this.clearMessage();
+            // }, 3000);
+          }
+        } catch(err) {
+          this.setState({
+            message           : err.message,
+            classNameMessage  : "messageFailure"
+          });
         
       }
     } else
       this.messageValidationMethod();
+
+    this.clearMessage();
   }
 
 
@@ -106,19 +128,35 @@ class PunchInsList extends Component {
 
   renderDataTable = (clockins) => {
     return clockins.map((clockin, index) => {
-      const ts = new Date(clockin.time_start);
-      const te = new Date(clockin.time_end);
+      const 
+        ts = new Date(clockin.time_start),
+        te = new Date(clockin.time_end),
+        bs = clockin.break_start ? new Date(clockin.break_start) : "",
+        be = clockin.break_end ? new Date(clockin.break_end) : "";
 
       const clockinsToSend = {
         id          : clockin._id,
         num         : index + 1,
         date        : formatDate.show(clockin.date),
-        timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
-        timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
+        timeStart   : (ts.getUTCHours() < 10 ? ("0" + ts.getUTCHours()) : ts.getUTCHours()) + ":" 
+                      + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
+        timeEnd     : (te.getUTCHours() < 10 ? ("0" + te.getUTCHours()) : te.getUTCHours()) + ":" 
+                      + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
+        breakStart  : bs
+                        ?
+                          (bs.getUTCHours() < 10 ? ("0" + bs.getUTCHours()) : bs.getUTCHours()) + ":" 
+                            + (bs.getUTCMinutes() < 10 ? ("0" + bs.getUTCMinutes()) : bs.getUTCMinutes())
+                        : "",
+        breakEnd    : be
+                        ?
+                          (be.getUTCHours() < 10 ? ("0" + be.getUTCHours()) : be.getUTCHours()) + ":" 
+                            + (be.getUTCMinutes() < 10 ? ("0" + be.getUTCMinutes()) : be.getUTCMinutes())
+                        : "",
         rate        : clockin.rate,
         totalTime   : ((te - ts) / ( 60 * 60 * 1000)).toFixed(2),
         totalCad    : (((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate))).toFixed(2),
-        invoice     : clockin.invoice_id ? clockin.invoice.code : "not yet"
+        invoice     : clockin.invoice_id ? clockin.invoice.code : "not yet",
+        workedHours : (clockin.worked_hours ? (clockin.worked_hours / (1000 * 60 * 60)).toFixed(2) : "")
       };
 
       if (thinScreen) {   // small devices
@@ -168,19 +206,22 @@ class PunchInsList extends Component {
 
   messageValidationMethod = () => {
     this.setState({
-      message: "Please, select client."
+      message           : "Please, select client.",
+      classNameMessage  : "messageFailure"
     });
 
-    setTimeout(() => {
-      this.clearMessage();
-    }, 3000);
+    // setTimeout(() => {
+    //   this.clearMessage();
+    // }, 3000);
   }
 
 
   clearMessage = () => {
+    setTimeout(() => {
       this.setState({
         message: ""
       });
+    }, 3000);
   }
 
 
@@ -221,9 +262,6 @@ class PunchInsList extends Component {
               client        = { this.state.client }
               getClientInfo = { this.getClientInfo } />
 
-            <span>
-              { this.state.message || "" }
-            </span>
           </div>
 
 
@@ -256,18 +294,34 @@ class PunchInsList extends Component {
                 </Col>
               </Form.Group>
 
-              <Button 
-                variant="primary" 
-                onClick = { this.handleSubmit } >
-                Get List
-              </Button>        
+              <Card.Footer className= { this.state.classNameMessage}>          
+                { this.state.message
+                  ? this.state.message
+                  : <br /> }
+              </Card.Footer>
+              <br />
 
-              { this.state.cleanButton
-                ? 
-                  <Button variant="info" onClick = { this.clearForm }>
-                    Clean
-                  </Button>
-                : null }
+              <div className="d-flex flex-column">
+                { this.state.cleanButton
+                  ? 
+                    <ButtonGroup className="mt-3">
+                      <Button 
+                        variant="primary" 
+                        onClick = { this.handleSubmit } >
+                        Get List
+                      </Button>
+                      <Button variant="info" onClick = { this.clearForm }>
+                        Clean
+                      </Button>
+                    </ButtonGroup>
+                  :
+                    <Button 
+                      variant="primary" 
+                      onClick = { this.handleSubmit } >
+                      Get List
+                    </Button>
+                }
+              </div>
             </Form>
           </Card.Body>
         </Card>
