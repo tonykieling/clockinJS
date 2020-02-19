@@ -7,24 +7,25 @@ export default function Guidance() {
     // <div style={{all: "unset"}} className="page-general">
     <div style={{all: "unset"}} className="formPosition">
 
-      <Card style={{backgroundColor: "aliceblue"}}>
+      {/* <Card style={{backgroundColor: "aliceblue"}}> */}
+      <Card className="bigCardPosition" >
         <Card.Header style={{textAlign: "center"}}>
           <h1>Quick Guidance</h1>
         </Card.Header>
         <Card.Body>
           <Card.Title >
-            With Clockin.js you are able to manage data about your clients, work hours and invoices.
+            With Clockin.js you are able to manage your clients data, work hours and invoices.
           </Card.Title>
 
           <br />
-            Each set of actions described below are reached by its own menu.
+            You can access the functions described below on the menu bar (computer) or menu icon on top right side (mobile).
 
           <Card style={{marginTop: "1rem"}}>
             <Card.Header style={{fontSize: "h4"}}>
               1- Sign Up
             </Card.Header>
             <Card.Body>
-              Here you you enter you info
+              Here you enter you info
             </Card.Body>
             <Card.Body style={{paddingTop: "0px"}}>
               If you set a real email you are going to receive emails when you punch in and set more security to your account - change data and password only occurs by receiving a code in your email.

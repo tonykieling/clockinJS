@@ -22,6 +22,7 @@ import About          from "./component/About.js";
 import InvoicesList   from "./component/InvoicesList.js";
 import ResetPassword  from "./component/ResetPassword.js";
 import Guidance       from "./component/Guidance.js";
+// import NewAbout       from "./component/NewAbout.js";
 
 
 class App extends Component {
@@ -134,6 +135,12 @@ class App extends Component {
           <Route exact path = "/guidance" >
             <Guidance />
           </Route>
+
+
+
+          {/* <Route exact path = "/new" >
+            <NewAbout />
+          </Route> */}
 
           <Route component = { NoPage } />
         </Switch>

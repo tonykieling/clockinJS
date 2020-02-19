@@ -53,6 +53,10 @@
   margin-right: 8rem; */
 }
 
+.contents { 
+  text-align: center;
+  margin-top: 50px;
+}
 
 
 
@@ -156,6 +160,36 @@
 .landPosition {
   margin-left: 4rem;
 }
+
+.bigCardPosition {
+  background-color: aliceblue;
+  max-width: 900px;
+  margin: auto;
+}
+
+.cardsPresentationPosition {
+  margin: 1rem;
+}
+
+.iconSettings {
+  height: 30px;
+  width: 30px;
+  /* margin: auto; */
+  /* margin-bottom: 10px;
+  margin-left: 12%; */
+}
+
+.strong {
+  font-weight: bold;
+  /* color: darkgreen; */
+  /* text-decoration: underline; */
+}
+
+a {
+  color: blue;
+}
+
+
 
 @media only screen and (max-width: 800px){
 

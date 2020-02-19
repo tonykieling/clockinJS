@@ -28,7 +28,7 @@ export default function Land() {
         More information at
       </div>
       <div style={{textAlign:"center"}}>
-        <Link to="/about">About Clockin.js</Link> or <Link to="/guidance">Guidance</Link>.
+        <Link to="/about">About</Link> or <Link to="/guidance">Guidance</Link>.
       </div>
       <br /><br />
 
