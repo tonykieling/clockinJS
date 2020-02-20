@@ -179,6 +179,12 @@
   margin-left: 12%; */
 }
 
+.iconSettingsOpacity {
+  height: 30px;
+  width: 30px;
+  opacity: 0.4;
+}
+
 .strong {
   font-weight: bold;
   /* color: darkgreen; */

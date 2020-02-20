@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Card } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
+import ContactFoot from "./ContactFoot.js";
 
 function Home(props) {
   return (
@@ -16,15 +17,19 @@ function Home(props) {
             With Clockin.js you are able to have all your clients data, their clockins and invoices, in one system.
             It is easy to manage and track your work with them.
             <br />
-            More information at <Link to="/about">About Clockin.js</Link> or <Link to="/guidance">Guidance</Link>.
+            More information at <Link to="/about">About Clockin.js</Link>, <Link to="/guidance">Guidance</Link> or <Link to="/contact">Contact</Link>.
             <br /><br />
             Enjoy and good work!!
             <br /><br /><br />
             <p>Kind regards from</p>
             <b>Clockin.js Team :)</b>
+          </Card.Body>
+        </Card>
 
-        </Card.Body>
-          </Card>
+        <ContactFoot
+          bckColor = "gainsboro" 
+          opac="iconSettingsOpacity"
+        />
     </div>
   )
 }

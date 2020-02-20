@@ -1,15 +1,7 @@
 import React from 'react'
 import Card from 'react-bootstrap/Card';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import ContactFoot  from "../component/ContactFoot.js";
 
-// import { Link } from "react-router-dom";
-
-import gmailIcon from "../icons/gmail.svg";
-import resumeIcon from "../icons/resume.svg";
-import linkedinIcon from "../icons/linkedin.png";
-import githubIcon from "../icons/github.png";
 
 const ml = window.innerWidth < 800 ? "2rem" : "3rem";
 
@@ -22,12 +14,12 @@ export default function Guidance() {
       {/* <Card style={{backgroundColor: "aliceblue"}}> */}
       <Card className="bigCardPosition" >
         <Card.Header style={{textAlign: "center"}}>
-          <h1>Clockin.js</h1>
+          <h1>About Page</h1>
         </Card.Header>
 
         <Card.Body>
           <br />
-          <p>Clockin.js allows you to have all your clients data, their clockins and invoices, in one place. It is easy to manage and track your work with them.</p>
+          <p><b>Clockin.js</b> allows you to have all your clients data, their clockins and invoices, in one place. It is easy to manage and track your work with them.</p>
           <p>The system is aimed to be responsive, providing a good visualization in both small (mobile devices) and big screens (regular computers).</p>
           <p>It also carries out some safety features, such as password encryption and Two-factor authentication for some of its procedures. Plus, some operations send email, which warranties a safe copy of them, just in case. </p>
           <p>The project and its source code is kept at <a href="https://github.com/tonykieling/clockinJS" target="_blank" rel="noopener noreferrer">GitHub - Clockin.js</a></p>
@@ -41,7 +33,6 @@ export default function Guidance() {
             <a href="#id3" style={{paddingTop: "0.9rem"}}><h5>3- Motivation</h5></a>
             <a href="#id4" style={{paddingTop: "0.9rem"}}><h5>4- Tech Stack</h5></a>
             <a href="#id5" style={{paddingTop: "0.9rem"}} id="id1" ><h5>5- Todo list and Releases</h5></a>
-            <a href="#id6" style={{paddingTop: "0.9rem"}}><h5>6- Contact</h5></a>
           </div>
         </Card.Body>
 
@@ -166,74 +157,17 @@ export default function Guidance() {
               <li>Add Guidance - done</li>
               <li>Reports</li>
               <li>Generate a Invoice's pdf file from the system.</li>
-              <div id="id6"></div>
             </ul>
           </Card.Body>
         </Card>
-
-        <Card className="cardsPresentationPosition" >
-          <Card.Header style={{fontSize: "h4", textAlign: "center"}}>
-            <h4>6- Contact us</h4>
-          </Card.Header>
-          <Card.Body>
-            <p> Tony Kieling's: </p>
-            {/* <div style={{margin: "auto", overflow: "auto"}}>
-              <div className="iconLine">
-                <a href="mailto:tony.kieling@gmail.com" target="_top" >
-                  <img src={gmailIcon} alt="gmail" className="iconSettings" />
-                </a>
-              </div>
-
-              <div className="iconLine">
-                <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank" rel="noopener noreferrer">
-                  <img src={linkedinIcon} className="iconSettings" alt="linkedin" />
-                </a>
-              </div>
-                
-              <div className="iconLine">
-                <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">
-                  <img src={githubIcon} className="iconSettings" alt="linkedin"/>
-                </a>
-              </div>
-
-              <div className="iconLine">
-                <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">
-                  <img src={resumeIcon} alt="resume" className="iconSettings" />
-                </a>
-              </div>
-            </div> */}
-
-            <Container >
-              <Row>
-                <Col style={{textAlign: "center"}}>
-                  <a href="mailto:tony.kieling@gmail.com" target="_top" >
-                    <img src={gmailIcon} alt="gmail" className="iconSettings" />
-                  </a>
-                </Col>
-                
-                <Col style={{textAlign: "center"}}>
-                  <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank" rel="noopener noreferrer">
-                    <img src={linkedinIcon} className="iconSettings" alt="linkedin" />
-                  </a>  
-                </Col>
-
-                <Col style={{textAlign: "center"}}>
-                  <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">
-                    <img src={githubIcon} className="iconSettings" alt="linkedin"/>
-                  </a>
-                </Col>
-
-                <Col style={{textAlign: "center"}}>
-                  <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">
-                    <img src={resumeIcon} alt="resume" className="iconSettings" />
-                  </a>
-                </Col>
-              </Row>
-            </Container>
-          </Card.Body>
-        </Card>
-        <br /><br /><br />
+        <br />
       </Card>
+
+      <ContactFoot
+        bckColor = {window.innerWidth < 800 ? "aliceblue" : "gainsboro"} 
+        opac="iconSettingsOpacity"
+      />
+
     </div>
   )
 }

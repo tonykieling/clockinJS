@@ -90,6 +90,8 @@ function SysHeader(props) {
 
                   <Link to="/guidance" className="nav-link">Guidance</Link>
                   <Link to="/about" className="nav-link">About</Link>
+                  <Link to="/contact" className="nav-link">Contact</Link>
+
                 </Nav>
                 <Button onClick={logout} className="logoutBtn">Logout</Button>
               </Navbar.Collapse>
@@ -135,6 +137,8 @@ function SysHeader(props) {
               <br />
               <a id="about" className="menu-item" href="/about">About</a>
               <br />
+              <a id="contact" className="menu-item" href="/contact">Contact</a>
+              <br />
               <a onClick={ logout } className="menu-item--small" href="/">Logout</a>
             </Menu>
           </div>
@@ -158,6 +162,10 @@ function SysHeader(props) {
             <Link to="/register" className="nav-link">Sign Up</Link>
             <Link to="/guidance" className="nav-link">Guide</Link>
             <Link to="/about" className="nav-link">About</Link>
+            { !smallDevice
+                ? <Link to="/contact" className="nav-link">Contact</Link>
+                : ""
+            }
           </Nav>
         </Navbar>
       </div>

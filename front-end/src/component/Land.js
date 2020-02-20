@@ -1,7 +1,9 @@
 import React from 'react'
 
 import Logo from "../img/clockinjs.png";
-import { Link } from "react-router-dom";
+import Link from "react-router-dom/Link";
+import ContactFoot  from "../component/ContactFoot.js";
+
 
 export default function Land() {
   const imgWidth = window.innerWidth;
@@ -28,9 +30,15 @@ export default function Land() {
         More information at
       </div>
       <div style={{textAlign:"center"}}>
-        <Link to="/about">About</Link> or <Link to="/guidance">Guidance</Link>.
+        <Link to="/about">About</Link>, <Link to="/guidance">Guidance</Link> or <Link to="/contact">Contact</Link>.
       </div>
       <br /><br />
+
+
+    <ContactFoot
+      bckColor = "gainsboro" 
+      opac="iconSettingsOpacity"
+    />
 
     </div>
   )

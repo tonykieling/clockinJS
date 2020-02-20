@@ -1,6 +1,8 @@
 import React from 'react'
-import { Card } from 'react-bootstrap';
-import { Link } from "react-router-dom";
+import Card      from 'react-bootstrap/Card';
+import Link from "react-router-dom/Link";
+import ContactFoot  from "../component/ContactFoot.js";
+
 
 export default function Guidance() {
   return (
@@ -108,8 +110,14 @@ export default function Guidance() {
           </Card.Body>
 
         </Card.Body>
-
+        <br />
       </Card>
+
+      <ContactFoot
+        bckColor = {window.innerWidth < 800 ? "aliceblue" : "gainsboro"} 
+        opac="iconSettingsOpacity"
+      />
+
     </div>
   )
 }
