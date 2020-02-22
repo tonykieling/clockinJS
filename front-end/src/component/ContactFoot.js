@@ -11,16 +11,31 @@ import linkedinIcon from "../icons/linkedin.png";
 import githubIcon from "../icons/github.png";
 
 export default function ContactFoot(props) {
+// function ContactFoot(props, ref) {
+  // const contactFootRef = useRef();
+
+  // useEffect(() => {
+  //   if (contactFootRef)
+  //     console.log("***fooTTT", contactFootRef.current.offsetHeight);
+  // }, [contactFootRef]);
+
   return (
     <div style={{all: "unset"}}>
+    
       <Card
         style={{
           backgroundColor: props.bckColor,
           position:"sticky",
           bottom:0
         }}
-        >
-          <Card.Body>
+        // ref = { contactFootRef}
+      >
+          <Card.Body
+            style = {{
+              paddingTop: "15px",
+              paddingBottom: "15px"
+            }}
+          >
             <Container >
               <Row 
                 className="justify-content-md-center"
@@ -77,3 +92,6 @@ export default function ContactFoot(props) {
     </div>
   )
 }
+
+// const forwardContactFoot = forwardRef(ContactFoot);
+// export default forwardContactFoot;

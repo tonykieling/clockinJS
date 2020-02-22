@@ -6,7 +6,8 @@ import ContactFoot from "./ContactFoot.js";
 
 function Home(props) {
   return (
-    <div>
+    <div style={{height: window.innerHeight - 56 - 62}}>
+{/* {console.log("window.innerHeight", window.innerHeight)      } */}
         {/* <Card className="card-settings"> */}
         <Card className="homeBack">
         <Card.Body>
@@ -17,7 +18,7 @@ function Home(props) {
             With Clockin.js you are able to have all your clients data, their clockins and invoices, in one system.
             It is easy to manage and track your work with them.
             <br />
-            More information at <Link to="/about">About Clockin.js</Link>, <Link to="/guidance">Guidance</Link> or <Link to="/contact">Contact</Link>.
+            More information at <Link to="/about">About</Link>, <Link to="/guidance">Guidance</Link> or <Link to="/contact">Contact</Link>.
             <br /><br />
             Enjoy and good work!!
             <br /><br /><br />

@@ -1,6 +1,6 @@
 import React from 'react'
 import Card      from 'react-bootstrap/Card';
-import Link from "react-router-dom/Link";
+import { Link} from "react-router-dom";
 import ContactFoot  from "../component/ContactFoot.js";
 
 

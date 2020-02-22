@@ -11,6 +11,22 @@ import MessageModal from "./MessageModal.js";
 const smallDevice = window.innerWidth < 800 ? true : false;
 
 function SysHeader(props) {
+
+  // const hh = useRef(null);
+
+  //     useEffect( () => {
+  // console.log("hhhh", hh.current);
+  //       // The 'current' property contains info of the reference:
+  //       // align, title, ... , width, height, etc.
+  //       if(hh.current){
+  //           const height = hh.current.offsetHeight;
+  //           const width  = hh.current.offsetWidth;
+  //           console.log("***header", height, width);
+  //       }
+  
+  //     }, [hh]);
+
+
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [goLand, setGoLand] = useState(false);
@@ -153,6 +169,7 @@ function SysHeader(props) {
         <Navbar 
           bg="dark" variant="dark"
           sticky  = {"top"}
+          // ref = { hh}
           // style={{position: "sticky", top: 0, zIndex: 999}}
           // className="navbar navbar-default navbar-fixed-top"
         >
@@ -164,8 +181,8 @@ function SysHeader(props) {
             <Link to="/about" className="nav-link">About</Link>
             { !smallDevice
                 ? <Link to="/contact" className="nav-link">Contact</Link>
-                : ""
-            }
+                 : ""
+             }
           </Nav>
         </Navbar>
       </div>
