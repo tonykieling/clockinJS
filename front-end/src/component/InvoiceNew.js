@@ -79,7 +79,8 @@ console.log("getClockins.data", getClockins.data);
       } else
         this.setState({
           message           : "No clockins for this period.",
-          classNameMessage  : "messageFailure"
+          classNameMessage  : "messageFailure",
+          tableVisibility   : false
         });
 
 
@@ -305,15 +306,17 @@ console.log("errrr", err)
           </Card.Footer>
           <br />
 
-          <Button 
-            variant   = "primary" 
-            type      = "submit" 
-            disabled  = { (this.state.dateStart && this.state.dateEnd && this.state.client) ? false : true }
-            onClick   = { this.handleGetClockins } 
-            ref       = {input => this.getClockinsBtn = input }  
-          >
-            Get Clockins
-          </Button>
+          <div className="d-flex flex-column">
+            <Button 
+              variant   = "primary" 
+              type      = "submit" 
+              disabled  = { (this.state.dateStart && this.state.dateEnd && this.state.client) ? false : true }
+              onClick   = { this.handleGetClockins } 
+              ref       = {input => this.getClockinsBtn = input }  
+            >
+              Get Clockins
+            </Button>
+          </div>
 
 
             
@@ -384,20 +387,6 @@ console.log("errrr", err)
                 </Col>
               </Form.Group>
 
-              {/* <Form style={{paddingLeft: "1rem"}}>
-                    <Row>
-                      <Col sm={3}>
-                        <Form.Label column className="cardLabel" style={{paddingLeft: "1rem"}}>Date</Form.Label>
-                      </Col>
-                      <Col sm={4}>
-                        <Form.Control 
-                          disabled      = { true}
-                          value         = { "test"}
-                        />
-                      </Col>
-                    </Row>
-              </Form> */}
-
               <Button 
                 variant   = "primary" 
                 type      = "submit"
@@ -407,7 +396,6 @@ console.log("errrr", err)
               >
                 Invoice's Generator
               </Button>
-
               <br />
 
             </Card>

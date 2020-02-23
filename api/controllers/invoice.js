@@ -216,7 +216,14 @@ console.log("req.body:", req.body);
 
     let totalCadTmp = 0;
     clockins.forEach(async clockin => {
-      totalCadTmp += ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
+      totalCadTmp += clockin.worked_hours 
+                      ? ((clockin.worked_hours / 3600000) * clockin.rate)
+                      : ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
+console.log("--> totalCadTmp", totalCadTmp);
+/**
+ * the line above should be changed for just take worked_hours whrn all current clockins hav generated invoices
+ * deadline = march-2020
+ */
       await Clockin
         .updateOne({
           _id: clockin._id

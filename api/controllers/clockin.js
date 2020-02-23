@@ -208,16 +208,16 @@ console.log("inside clockins ADD", req.body);
   
   const breakStart  = req.body.startingBreak 
     ? (Number(req.body.startingBreak.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.startingBreak.split(':')[1]) * 60 * 1000)
-    : "";
+    : null;
   const breakEnd    = req.body.startingBreak
     ? (Number(req.body.endingBreak.split(':')[0]) * 60 * 60 * 1000) + (Number(req.body.endingBreak.split(':')[1]) * 60 * 1000)
-    : "";
+    : null;
 
   const time_start  = new Date(d + t1);
   const time_end    = new Date(d + t2);
   const date        = new Date(d);
-  const break_start = new Date(breakStart + d);
-  const break_end   = new Date(breakEnd + d);
+  const break_start = breakStart ? new Date(breakStart + d) : null;
+  const break_end   = breakEnd ? new Date(breakEnd + d) : null;
   const workedHours = (time_end - time_start) - (breakEnd - breakStart);
   console.log("horkedhours:", workedHours, time_start, time_end, breakStart, breakEnd);
 

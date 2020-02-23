@@ -153,7 +153,7 @@ export default function Guidance() {
               <li>Edit and Delete Clockin - done</li>
               <li>Edit and Delete Invoice - done</li>
               <li>Img at Land and Quick Guidance - done</li>
-              <li>Add break - done, but need to change invoices</li>
+              <li>Add break - clockins and invoices are good</li>
               <li>Add Guidance - done</li>
               <li>Reports</li>
               <li>Generate a Invoice's pdf file from the system.</li>

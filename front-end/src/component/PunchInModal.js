@@ -292,7 +292,7 @@ function PunchInModal(props) {
                         <Col sm={5} style={{paddingLeft: "0px"}}>
                           <Form.Control
                             disabled      = { true}
-                            value         = { props.clockinData.total || "CAD$"}
+                            value         = { props.clockinData.totalCad || "CAD$"}
                           />
                         </Col>
                     </Form.Group>

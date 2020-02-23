@@ -48,7 +48,7 @@ console.log("this is edit");
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.total}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
           </tr>
         );

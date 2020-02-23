@@ -180,7 +180,7 @@ class PunchInsList extends Component {
             {/* <td>{clockinsToSend.timeEnd}</td> */}
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
             {/* <td>{clockinsToSend.rate}</td> */}
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.total}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
           </tr>
         );
