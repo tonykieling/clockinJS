@@ -156,7 +156,8 @@ class PunchInsList extends Component {
         totalTime   : ((te - ts) / ( 60 * 60 * 1000)).toFixed(2),
         totalCad    : (((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate))).toFixed(2),
         invoice     : clockin.invoice_id ? clockin.invoice.code : "not yet",
-        workedHours : (clockin.worked_hours ? (clockin.worked_hours / (1000 * 60 * 60)).toFixed(2) : "")
+        workedHours : (clockin.worked_hours ? (clockin.worked_hours / (1000 * 60 * 60)).toFixed(2) : ""),
+        notes       : clockin.notes || " "
       };
 
       if (thinScreen) {   // small devices

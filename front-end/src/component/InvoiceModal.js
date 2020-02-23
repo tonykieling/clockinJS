@@ -17,7 +17,7 @@ const customStyles = window.innerWidth < 800
         height: "85%",
         // left: "0",
         // top: "0"
-        top                   : '60%',
+        top                   : '50%',
         left                  : '50%',
         right                 : 'auto',
         bottom                : 'auto',
@@ -66,8 +66,10 @@ class InvoiceModal extends Component {
     currentStatus     : this.props.invoice.status,
     updateYN          : false,
     showModalDeleteInvoice: false,
+    invoiceDeleted    : false,
 
-    invoiceDeleted    : false
+    dateDelivered     : "",
+    dateReceived      : ""
   };
 
 
@@ -90,8 +92,22 @@ class InvoiceModal extends Component {
   }
 
 
+  updateInvoice = (status, date) => {
+    this.setState({
+      currentStatus :  status,
+      dateDelivered : status === "Delivered" ? date : "",
+      dateReceived  : status === "Received" ? date : "",
+      updateYN      : true
+    })
+  }
 
-  componentDidMount = async() => {
+
+  componentDidMount = () => {
+    this.takeClockinData();
+  }
+
+
+  takeClockinData = async() => {
     const
       dateStart = this.props.invoice.date_start,
       dateEnd   = this.props.invoice.date_end,
@@ -218,20 +234,15 @@ class InvoiceModal extends Component {
   }
 
 
-  receiveNewStatus = (newStatus) => {
-    this.setState({
-      currentStatus : newStatus,
-      updateYN      : true
-    });
-  }
+  // receiveNewStatus = (newStatus) => {
+  //   this.setState({
+  //     currentStatus : newStatus,
+  //     updateYN      : true
+  //   });
+  // }
 
 
   backToThePrevious = () => {
-    // this.state.updateYN
-    //   ? this.props.updateScreen() 
-    //   : this.state.invoiceDeleted
-    //     ? this.props.updateScreen(this.props.invoice._id)
-    //     : this.props.closeModal();
     (this.state.updateYN || this.state.invoiceDeleted)
       ? this.props.updateScreen() 
       : this.props.closeModal();
@@ -283,17 +294,33 @@ class InvoiceModal extends Component {
               </Form.Label>
               <br />
               <Form.Label style={{left: "2rem"}}> 
-                <b>Date Generated:</b> { formatDate.show(this.props.invoice.date) }
-              </Form.Label>
-              <br />
-              <Form.Label style={{left: "2rem"}}> 
                 <b>Date Start: </b> { formatDate.show(this.props.invoice.date_start) }
               </Form.Label>
               <br />
               <Form.Label> 
                 <b>Date End: </b> { formatDate.show(this.props.invoice.date_end) }
               </Form.Label>
+              <br />
+              <Form.Label style={{left: "2rem"}}> 
+                <b>Date Generated:</b> { formatDate.show(this.props.invoice.date) }
+              </Form.Label>
+              { console.log("props", this.props.invoice)}
 
+
+              { (this.props.invoice.date_delivered || this.state.dateDelivered) &&
+                  <div>
+                    <Form.Label style={{left: "2rem"}}> 
+                      <b>Date Delivered:</b> { formatDate.show(this.props.invoice.date_delivered || this.state.dateDelivered) }
+                    </Form.Label>
+                  </div>
+              }
+              { (this.props.invoice.date_received || this.state.dateReceived) &&
+                  <div>
+                    <Form.Label style={{left: "2rem"}}> 
+                      <b>Date Received:</b> { formatDate.show(this.props.invoice.date_received || this.state.dateReceived) }
+                    </Form.Label>
+                  </div>
+              }
 
               <div className="d-flex flex-column">
                 {this.state.invoiceDeleted
@@ -334,9 +361,10 @@ class InvoiceModal extends Component {
           <InvoiceChangeStatusModal
             invoice                 = { this.props.invoice }
             closeChangeModal        = { this.closeChangeModal }
-            receiveNewStatus        = { this.receiveNewStatus }
+            // receiveNewStatus        = { this.receiveNewStatus }
             currentStatus           = { this.state.currentStatus }
             openChangeInvoiceModal  = { this.state.changeStatusModal }
+            updateInvoice           = { this.updateInvoice}
           />
         : "" }
 
@@ -385,7 +413,7 @@ class InvoiceModal extends Component {
               invoiceCode       = { this.props.invoice.code }
               invoiceId         = { this.props.invoice._id }
               confirmDeletion   = { this.confirmDeletion }
-              />
+            />
           : ""
         }
 

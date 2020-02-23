@@ -66,7 +66,6 @@ function PunchInModal(props) {
     }
   }
 
-
   return (
     <div>
         <Modal
@@ -201,6 +200,18 @@ function PunchInModal(props) {
                       </Col>
                     </Row>
 
+                    <Row>
+                      <Col>
+                        <Form.Label column className="cardLabel" style={{paddingLeft: "0px"}}>Notes</Form.Label>
+                      </Col>
+                      <Col>
+                        <Form.Control
+                          disabled      = { true}
+                          value         = { props.clockinData.notes || " "}
+                        />
+                      </Col>
+                    </Row>
+
                   </Form>
                 </Card>
               </Modal.Body>
@@ -303,6 +314,16 @@ function PunchInModal(props) {
                           <Form.Control
                             disabled      = { true}
                             value         = { props.clockinData.invoice || "invoice"}
+                          />
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} controlId="formInvoice" style={{marginBottom: 0}}>
+                        <Form.Label column sm={4} className="cardLabel" style={{paddingLeft: "0px"}}>Notes</Form.Label>
+                        <Col sm={5} style={{paddingLeft: "0px"}}>
+                          <Form.Control
+                            disabled      = { true}
+                            value         = { props.clockinData.notes || " "}
                           />
                         </Col>
                     </Form.Group>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import { Card, Button, ButtonGroup, Form } from "react-bootstrap";
+import { Card, Button, ButtonGroup, Form, Row, Col } from "react-bootstrap";
 import ReactModal from "react-modal";
 
 
@@ -32,7 +32,10 @@ class InvoiceChangeStatusModal extends Component {
   state = {
     message         : "",
     newStatus       : this.props.currentStatus === "Generated" ? "Delivered" : "Received",
-    disableButtons  : false
+    disableButtons  : false,
+    classNameMessage: "",
+    dateDelivered   : "",
+    dateReceived    : ""
   };
 
 
@@ -46,44 +49,63 @@ class InvoiceChangeStatusModal extends Component {
   }
 
 
-  handleChangeInvoiceStatus = async () => {    
-    const data = {
-      newStatus: this.state.newStatus
-    };
-
-    const url = `/invoice/${this.props.invoice._id}`;
-    try {
-      const Invoice = await axios.patch( 
-        url,
-        data,
-        {  
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization" : `Bearer ${this.props.storeToken}` }
+  handleChangeInvoiceStatus = async () => {
+    if (!this.state.dateDelivered && !this.state.dateReceived)
+      this.setState({
+        message           : "Please, provide date.",
+        classNameMessage  : "messageFailure"
       });
+    else {
+      const data = {
+        newStatus     : this.state.newStatus,
+        dateDelivered : this.state.dateDelivered,
+        dateReceived  : this.state.dateReceived
+      };
 
-      if (Invoice.data.message) {
-        this.setState({
-          message       : `Invoice's status changed to ${this.state.newStatus}`,
-          disableButtons : true
+      const url = `/invoice/${this.props.invoice._id}`;
+      try {
+        const Invoice = await axios.patch( 
+          url,
+          data,
+          {  
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization" : `Bearer ${this.props.storeToken}` }
         });
 
-        this.props.receiveNewStatus(this.state.newStatus);
-        setTimeout(() => {
-          this.props.closeChangeModal();
-        }, 3500);
-      } else {
-        this.setState({
-          message: "Something wrong happened."
-        });
-        
+        if (Invoice.data.message) {
+          this.setState({
+            message           : `Invoice's status changed to ${this.state.newStatus}`,
+            disableButtons    : true,
+            classNameMessage  : "messageSuccess"
+          });
+
+          // this.props.receiveNewStatus(this.state.newStatus);
+          const tempDate = this.state.dateDelivered || this.state.dateReceived;
+          this.props.updateInvoice(this.state.newStatus, tempDate);
+          setTimeout(() => {
+            this.props.closeChangeModal();
+          }, 3500);
+        } else {
+          this.setState({
+            message           : "Something wrong happened.",
+            classNameMessage  : "messageFailure"
+          });
+          
+        }
+      } catch(err) {
+        console.log("Error:", err.message);
       }
-    } catch(err) {
-      console.log("Error:", err.message);
     }
 
     this.clearMessage();
+  }
 
+
+  handleChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
   }
 
 
@@ -126,9 +148,25 @@ class InvoiceChangeStatusModal extends Component {
               </ButtonGroup>
             </div>
 
-            <span className="invoiceGenMsg">
-              {this.state.message}
-            </span>
+
+            <br />
+            <Form.Group as={Row} controlId="formDT">
+              <Form.Label column sm="5" className="cardLabel">Date {this.state.newStatus}:</Form.Label>
+              <Col sm="7">
+                <Form.Control
+                  type        = "date"
+                  name        = {`date${this.state.newStatus}`}
+                  onChange    = {this.handleChange}
+                  value       = {this.state.newStatus === "Delivered" ? this.state.dateDelivered : this.state.dateReceived} />
+              </Col>
+            </Form.Group>
+
+
+            <Card.Footer className= { this.state.classNameMessage}>          
+              { this.state.message
+                ? this.state.message
+                : <br /> }
+            </Card.Footer>
 
             <div className="d-flex flex-column">
               <ButtonGroup className="mt-3">

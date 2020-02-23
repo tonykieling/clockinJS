@@ -95,6 +95,7 @@ class InvoicesList extends Component {
 
 renderDataTable = (invoices) => {
   // date date_start date_end notes total_cad status
+// console.log("invoices", invoices);
   return invoices.map((invoice, index) => {
     const invoiceToSend = {
       num         : index + 1,
@@ -220,18 +221,15 @@ renderDataTable = (invoices) => {
           </Card.Footer>
           <br />
 
-          <Button 
-            variant   = "primary" 
-            type      = "submit" 
-            onClick   = { this.handleGetInvoices } 
-            ref       = {input => this.getInvoicesBtn = input }  >
-            Get Invoices
-          </Button>
-
-          {/* <span className="invoiceGenMsg">
-            {this.state.message}
-          </span> */}
-
+          <div className="d-flex flex-column">
+            <Button 
+              variant   = "primary" 
+              type      = "submit" 
+              onClick   = { this.handleGetInvoices } 
+              ref       = {input => this.getInvoicesBtn = input }  >
+              Get Invoices
+            </Button>
+          </div>
             
           </Form>
         </Card.Body>

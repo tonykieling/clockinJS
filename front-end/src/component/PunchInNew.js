@@ -32,7 +32,8 @@ class PunchInNew extends Component {
     startingBreak : "",
     endingBreak   : "",
     validBreak    : true,
-    classNameMessage  : ""
+    classNameMessage  : "",
+    disabledBtn   : false
   };
 
 
@@ -44,6 +45,7 @@ class PunchInNew extends Component {
 
 
   handleSubmit = async event => {
+    this.setState({ disabledBtn: true });
     event.preventDefault();
 // console.log("validBreak", this.state.validBreak);
     const data = { 
@@ -125,7 +127,8 @@ class PunchInNew extends Component {
         rate          : "",
         notes         : "",
         message       : "",
-        client        : {}
+        client        : {},
+        disabled      : false
       });
     }, 3000);
   }
@@ -353,9 +356,10 @@ class PunchInNew extends Component {
 
             <div className="d-flex flex-column">
               <Button
-                variant="primary" 
-                type= "submit" 
-                onClick = { this.handleSubmit } >
+                disabled  = { this.state.disabledBtn}
+                variant   = "primary" 
+                type      = "submit" 
+                onClick   = { this.handleSubmit } >
                 Submit
               </Button>
             </div>

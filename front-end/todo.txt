@@ -179,3 +179,5 @@ date start and date end in the same line at punchin (so it will fill better the 
 organize all messages to be displayed on the top of the last button (like user's page)
 added break 
   missing invoice consider worked_hours field in the db
+
+*** test invoice generation with the two types of clockin (with break and whithout it)

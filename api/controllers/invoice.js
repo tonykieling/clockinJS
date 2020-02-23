@@ -45,7 +45,7 @@ console.log("GET_ALL Invoices");
             $lte: dateEnd
           },
         })
-        .select(" date date_start date_end notes total_cad status code")
+        // .select(" date date_start date_end notes total_cad status code")
         .sort({date: 1});
 
     if (!allInvoices || allInvoices.length < 1)
@@ -270,7 +270,8 @@ const invoice_modify_status = async (req, res) => {
   const invoiceId  = req.params.invoiceId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;  
-  
+console.clear();
+console.log("INVOICE BODY", req.body);
   // this try is for check is the invoiceId passed from the frontend is alright (exists in database), plus
   //  check whether either the invoice to be changed belongs for the user or the user is admin - if not, not allowed to change invoice's data
   let invoice = "";
@@ -303,17 +304,34 @@ const invoice_modify_status = async (req, res) => {
   const status = req.body.newStatus;
 
   try {
-    const invoiceToBeChanged = await Invoice
-      .updateOne({
-        _id: invoiceId
-      }, {
-        $set: {
-            status
-        }
-      }, {
-        runValidators: true
-      });
-    
+    const invoiceToBeChanged = req.body.dateDelivered
+      ?
+        await Invoice
+        .updateOne({
+          _id: invoiceId
+        }, {
+          $set: {
+              status,
+              date_delivered: req.body.dateDelivered
+          }
+        })
+        //  {
+        //   runValidators: true
+        // })
+      :
+        await Invoice
+        .updateOne({
+          _id: invoiceId
+        }, {
+          $set: {
+              status,
+              date_received: req.body.dateReceived
+          }
+        })
+        // , {
+        //   runValidators: true
+        // })
+
     if (invoiceToBeChanged.nModified) {
       return res.json({
         message: `Invoice <${invoice.code}> has been modified.`
