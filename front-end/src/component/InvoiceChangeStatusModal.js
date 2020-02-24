@@ -6,7 +6,7 @@ import ReactModal from "react-modal";
 
 
 
-ReactModal.setAppElement('#root');
+// ReactModal.setAppElement('#root');
 
 
 const customStyles = {
@@ -34,8 +34,8 @@ class InvoiceChangeStatusModal extends Component {
     newStatus       : this.props.currentStatus === "Generated" ? "Delivered" : "Received",
     disableButtons  : false,
     classNameMessage: "",
-    dateDelivered   : "",
-    dateReceived    : ""
+    dateDelivered   : this.props.invoice.date_delivered || this.props.dateDelivered || "",
+    dateReceived    : this.props.invoice.date_received || this.props.dateReceived || ""
   };
 
 
@@ -50,12 +50,30 @@ class InvoiceChangeStatusModal extends Component {
 
 
   handleChangeInvoiceStatus = async () => {
-    if (!this.state.dateDelivered && !this.state.dateReceived)
+console.log("this.props", this.props)
+console.log("this.state", this.state)
+    const newStatusTemp   = this.state.newStatus;
+    const dtGeneratedTemp = new Date(this.props.invoice.date.substring(0,10)).getTime();
+    const dtDeliveredTemp = this.state.dateDelivered ? new Date(this.state.dateDelivered.substring(0, 10)).getTime() : null;   
+    const dtReceivedTemp  = this.state.dateReceived ? new Date(this.state.dateReceived.substring(0, 10)).getTime() : null;   
+    if (!dtDeliveredTemp && !dtReceivedTemp) {
       this.setState({
         message           : "Please, provide date.",
         classNameMessage  : "messageFailure"
       });
-    else {
+    } else if 
+      (((newStatusTemp === "Delivered") && (dtDeliveredTemp < dtGeneratedTemp)) ||
+      ((newStatusTemp === "Received") && (dtReceivedTemp < dtDeliveredTemp))) {
+        this.setState({
+          message           : "Date is incorrect",
+          classNameMessage  : "messageFailure"
+        });
+    // } else if ((newStatusTemp === "Received") && (dtReceivedTemp < dtDeliveredTemp)) {
+    //     this.setState({
+    //       message           : "Date is incorrect",
+    //       classNameMessage  : "messageFailure"
+    //     });
+    } else {
       const data = {
         newStatus     : this.state.newStatus,
         dateDelivered : this.state.dateDelivered,
@@ -110,6 +128,8 @@ class InvoiceChangeStatusModal extends Component {
 
 
   render() {
+// console.log("this.props", this.props)
+// console.log("this.state", this.state)
     return (
       <ReactModal
         isOpen = { this.props.openChangeInvoiceModal }

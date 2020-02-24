@@ -93,12 +93,18 @@ class InvoiceModal extends Component {
 
 
   updateInvoice = (status, date) => {
-    this.setState({
-      currentStatus :  status,
-      dateDelivered : status === "Delivered" ? date : "",
-      dateReceived  : status === "Received" ? date : "",
-      updateYN      : true
-    })
+    if (status === "Delivered")
+      this.setState({
+        currentStatus :  status,
+        dateDelivered : status === "Delivered" ? date : "",
+        updateYN      : true
+      });
+    else if (status === "Received")
+      this.setState({
+        currentStatus :  status,
+        dateReceived  : status === "Received" ? date : "",
+        updateYN      : true
+      });
   }
 
 
@@ -304,8 +310,6 @@ class InvoiceModal extends Component {
               <Form.Label style={{left: "2rem"}}> 
                 <b>Date Generated:</b> { formatDate.show(this.props.invoice.date) }
               </Form.Label>
-              { console.log("props", this.props.invoice)}
-
 
               { (this.props.invoice.date_delivered || this.state.dateDelivered) &&
                   <div>
@@ -361,10 +365,11 @@ class InvoiceModal extends Component {
           <InvoiceChangeStatusModal
             invoice                 = { this.props.invoice }
             closeChangeModal        = { this.closeChangeModal }
-            // receiveNewStatus        = { this.receiveNewStatus }
             currentStatus           = { this.state.currentStatus }
             openChangeInvoiceModal  = { this.state.changeStatusModal }
             updateInvoice           = { this.updateInvoice}
+            dateDelivered           = { this.state.dateDelivered}
+            dateReceived            = { this.state.dateReceived}
           />
         : "" }
 

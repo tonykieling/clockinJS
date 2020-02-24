@@ -181,3 +181,5 @@ added break
   missing invoice consider worked_hours field in the db
 
 *** test invoice generation with the two types of clockin (with break and whithout it)
+check invoice generation with multiples situations (with break or not)
+Xreviewinvoicelistmodal to show date delivered too
