@@ -335,7 +335,7 @@ class InvoiceModal extends Component {
                       disabled  = {true}
                       // onClick   = { () => console.log("hanlde with filter in the bellow screnn") }
                     >
-                      Invoice already deleted.
+                      Invoice has already been deleted.
                     </Button>
                   :
                     <ButtonGroup className="mt-3">

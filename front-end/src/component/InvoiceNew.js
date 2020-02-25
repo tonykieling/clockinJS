@@ -48,48 +48,54 @@ class InvoiceNew extends Component {
   handleGetClockins = async event => {
     event.preventDefault();
 
-    const
-      dateStart = this.state.dateStart,
-      dateEnd   = this.state.dateEnd,
-      clientId  = this.state.clientId;
+    if (this.state.dateStart && this.state.dateEnd && this.state.client) {
+      const
+        dateStart = this.state.dateStart,
+        dateEnd   = this.state.dateEnd,
+        clientId  = this.state.clientId;
 
 
-    const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+      const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
-    try {
-      const getClockins = await axios.get( 
-        url,
-        {  
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization" : `Bearer ${this.props.storeToken}` }
-      });
-console.log("getClockins.data", getClockins.data);
-      if (getClockins.data.allClockins){
-        this.setState({
-          clockinList       : getClockins.data.allClockins,
-          clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
-          // clockInListTable  : PunchInTableEdit(getClockins.data.allClockins),
-          tableVisibility   : true,
-          clientId,
-          clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(getClockins.data.allClockins)
+      try {
+        const getClockins = await axios.get( 
+          url,
+          {  
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization" : `Bearer ${this.props.storeToken}` }
         });
+        
+        if (getClockins.data.allClockins){
+          this.setState({
+            clockinList       : getClockins.data.allClockins,
+            clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
+            // clockInListTable  : PunchInTableEdit(getClockins.data.allClockins),
+            tableVisibility   : true,
+            clientId,
+            clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(getClockins.data.allClockins)
+          });
 
-        this.textCode.scrollIntoView({ behavior: "smooth" });
-      } else
+          this.textCode.scrollIntoView({ behavior: "smooth" });
+        } else
+          this.setState({
+            message           : "No clockins for this period.",
+            classNameMessage  : "messageFailure",
+            tableVisibility   : false
+          });
+
+
+      } catch(err) {
         this.setState({
-          message           : "No clockins for this period.",
-          classNameMessage  : "messageFailure",
-          tableVisibility   : false
+          message           : err.message,
+          classNameMessage  : "messageFailure"
         });
-
-
-    } catch(err) {
+      }
+    } else 
       this.setState({
-        message           : err.message,
+        message           : "Please, select client and set dates.",
         classNameMessage  : "messageFailure"
       });
-    }
 
     this.clearMessage();
   }
@@ -127,7 +133,7 @@ console.log("getClockins.data", getClockins.data);
                 "Content-Type": "application/json",
                 "Authorization" : `Bearer ${this.props.storeToken}` }
           });
-console.log("invoice data", Invoice.data);
+          
           if (Invoice.data.message) {
             this.setState({
               message                 : `Invoice has been Generated!`,
@@ -145,7 +151,7 @@ console.log("invoice data", Invoice.data);
             // });
 
         } catch(err) {
-console.log("errrr", err)          
+          console.log("errrr", err);
           this.setState({
             message           : err,
             classNameMessage  : "messageFailure"
@@ -310,7 +316,7 @@ console.log("errrr", err)
             <Button 
               variant   = "primary" 
               type      = "submit" 
-              disabled  = { (this.state.dateStart && this.state.dateEnd && this.state.client) ? false : true }
+              // disabled  = { (this.state.dateStart && this.state.dateEnd && this.state.client) ? false : true }
               onClick   = { this.handleGetClockins } 
               ref       = {input => this.getClockinsBtn = input }  
             >

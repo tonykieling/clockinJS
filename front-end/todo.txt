@@ -182,4 +182,11 @@ added break
 
 *** test invoice generation with the two types of clockin (with break and whithout it)
 check invoice generation with multiples situations (with break or not)
+ the invoice's generator (backend) is correct. The thing is in the frontend, renderDataTable, both in Invoice's Generator as List of Punchins, it's incorrect:
+  solution, fix the algorith inserting worked_hours (see invoice.js, line 222)
+    have only one renderDataTable for both Punchin and Invoice generator
+  *** check clockin.js line 102
+
 Xreviewinvoicelistmodal to show date delivered too
+XInvoiceGenerator has to allow button and send a message if no date OR no cliente
+Xsubmit button enabled at Punchin after punched

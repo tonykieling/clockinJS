@@ -98,11 +98,25 @@ console.log("inside clockins get_all");
         .findById( clientId )
         .select(" nickname ");
         
+
+console.clear();
+console.log("--------------------------------------------------------");
+let totalCadTmp = 0;
+allClockins.forEach(async (clockin, i) => {
+// console.log(allClockins[i]);
+  const t = clockin.worked_hours 
+              ? ((clockin.worked_hours / 3600000) * clockin.rate)
+              : ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
+  totalCadTmp += t;
+console.log(i + 1 , t, "--> totalCadTmp", totalCadTmp, " - ", clockin.date);
+if (i === 4 || i === 5) console.log(clockin);
+});
+
       return res.status(200).json({
         count: allClockins.length,
         allClockins,
         client: client.nickname });
-      }
+      };
 
     return res.status(200).json({
       count: allClockins.length,

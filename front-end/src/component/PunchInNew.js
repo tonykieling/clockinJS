@@ -128,7 +128,7 @@ class PunchInNew extends Component {
         notes         : "",
         message       : "",
         client        : {},
-        disabled      : false
+        disabledBtn   : false
       });
     }, 3000);
   }
