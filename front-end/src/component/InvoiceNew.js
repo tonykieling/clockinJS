@@ -4,8 +4,10 @@ import { connect } from "react-redux";
 import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 
 import GetClients from "./aux/GetClients.js";
-import * as formatDate from "./aux/formatDate.js";
+// import * as formatDate from "./aux/formatDate.js";
 import PunchInModal from "./PunchInModal.js";
+import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
+
 
 
 /**
@@ -165,20 +167,7 @@ class InvoiceNew extends Component {
 
   renderDataTable = (clockins) => {
     return clockins.map((clockin, index) => {
-      const ts = new Date(clockin.time_start);
-      const te = new Date(clockin.time_end);
-
-      const clockinsToSend = {
-        id          : clockin._id,
-        num         : index + 1,
-        date        : formatDate.show(clockin.date),
-        timeStart   : ts.getUTCHours() + ":" + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
-        timeEnd     : te.getUTCHours() + ":" + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
-        rate        : clockin.rate,
-        totalTime   : ((te - ts) / ( 60 * 60 * 1000)).toFixed(2),
-        totalCad    : (((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate))).toFixed(2),
-        invoice     : clockin.invoice_id ? clockin.invoice.code : "not yet"
-      };
+      const clockinsToSend = renderClockinDataTable(clockin, index);
 
       if (thinScreen) {   // small devices
         return (
@@ -198,7 +187,7 @@ class InvoiceNew extends Component {
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.total}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
           </tr>
         );

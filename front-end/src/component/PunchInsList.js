@@ -13,8 +13,10 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 // import moment from "moment";
 
 import GetClients from "./aux/GetClients.js";
-import * as formatDate from "./aux/formatDate.js";
+// import * as formatDate from "./aux/formatDate.js";
 import PunchInModal from "./PunchInModal.js";
+
+import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
 
 
 const thinScreen = window.innerWidth < 800 ? true : false;
@@ -128,37 +130,7 @@ class PunchInsList extends Component {
 
   renderDataTable = (clockins) => {
     return clockins.map((clockin, index) => {
-      const 
-        ts = new Date(clockin.time_start),
-        te = new Date(clockin.time_end),
-        bs = clockin.break_start ? new Date(clockin.break_start) : "",
-        be = clockin.break_end ? new Date(clockin.break_end) : "";
-
-      const clockinsToSend = {
-        id          : clockin._id,
-        num         : index + 1,
-        date        : formatDate.show(clockin.date),
-        timeStart   : (ts.getUTCHours() < 10 ? ("0" + ts.getUTCHours()) : ts.getUTCHours()) + ":" 
-                      + (ts.getUTCMinutes() < 10 ? ("0" + ts.getUTCMinutes()) : ts.getUTCMinutes()),
-        timeEnd     : (te.getUTCHours() < 10 ? ("0" + te.getUTCHours()) : te.getUTCHours()) + ":" 
-                      + (te.getUTCMinutes() < 10 ? ("0" + te.getUTCMinutes()) : te.getUTCMinutes()),
-        breakStart  : bs
-                        ?
-                          (bs.getUTCHours() < 10 ? ("0" + bs.getUTCHours()) : bs.getUTCHours()) + ":" 
-                            + (bs.getUTCMinutes() < 10 ? ("0" + bs.getUTCMinutes()) : bs.getUTCMinutes())
-                        : "",
-        breakEnd    : be
-                        ?
-                          (be.getUTCHours() < 10 ? ("0" + be.getUTCHours()) : be.getUTCHours()) + ":" 
-                            + (be.getUTCMinutes() < 10 ? ("0" + be.getUTCMinutes()) : be.getUTCMinutes())
-                        : "",
-        rate        : clockin.rate,
-        totalTime   : ((te - ts) / ( 60 * 60 * 1000)).toFixed(2),
-        totalCad    : (((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate))).toFixed(2),
-        invoice     : clockin.invoice_id ? clockin.invoice.code : "not yet",
-        workedHours : (clockin.worked_hours ? (clockin.worked_hours / (1000 * 60 * 60)).toFixed(2) : ""),
-        notes       : clockin.notes || " "
-      };
+      const clockinsToSend = renderClockinDataTable(clockin, index);
 
       if (thinScreen) {   // small devices
         return (

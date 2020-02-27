@@ -219,7 +219,7 @@ console.log("req.body:", req.body);
       totalCadTmp += clockin.worked_hours 
                       ? ((clockin.worked_hours / 3600000) * clockin.rate)
                       : ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
-console.log(i + 1 , "--> totalCadTmp", totalCadTmp - clockin.date);
+// console.log(i + 1 , "--> totalCadTmp", totalCadTmp - clockin.date);
 /**
  * the line above should be changed for just take worked_hours whrn all current clockins hav generated invoices
  * deadline = march-2020
