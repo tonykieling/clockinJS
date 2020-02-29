@@ -238,7 +238,7 @@ renderDataTable = (invoices) => {
 
       { this.state.tableVisibility
           ?
-            <Card className="cardInvoiceGenListofInvoices card">
+            <Card className="cardInvoiceGenListofInvoices">
               {/* <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label> */}
               <Card.Header style={{textAlign: "center"}}>
                 Client: <b>{this.state.client.nickname}</b>, {`  `}

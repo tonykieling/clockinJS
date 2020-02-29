@@ -127,8 +127,14 @@
 }
 
 .cardInvoiceGenListofInvoices {
-  margin-left: 10%;
+  /* margin-left: 10%; */
   width: 100%;
+  /* top                   : '50%', */
+  /* left                  : '50%';
+  right                 : 'auto'; */
+  /* bottom                : 'auto'; */
+  /* margin-right           : '-50%';
+  transform             : 'translate(-50%, -50%)' */
 }
 
 .messageFailure {
@@ -238,10 +244,10 @@ a {
     width: 100%;
   }
 
-  .cardInvoiceGenListofInvoices {
+  /* .cardInvoiceGenListofInvoices {
     margin-left: 0%;
     width: 100%;
-  }
+  } */
 
   .formPosition {
     max-width: 88%;

@@ -341,25 +341,36 @@ function PunchInModal(props) {
           </Card.Footer>
 
         <Modal.Footer>
-          <ButtonGroup 
-            className = "mt-3"
-            style     = {{ width: "50%" }}
-          >
-            <Button 
-              variant   = "primary" 
-              onClick   = { handleClose } 
-              style     = {{width: "50%"}}
-            >
-              Close
-            </Button>
-            <Button 
-              variant   = "danger" 
-              onClick   = { handleDelete } 
-              style     = {{ width: "50%"}}
-            >
-              Delete
-            </Button>
-          </ButtonGroup>
+          { props.deleteClockin
+            ?
+              <ButtonGroup 
+                className = "mt-3"
+                style     = {{ width: "50%" }}
+              >
+                <Button 
+                  variant   = "primary" 
+                  onClick   = { handleClose } 
+                  style     = {{width: "50%"}}
+                >
+                  Close
+                </Button>
+                <Button 
+                  variant   = "danger" 
+                  onClick   = { handleDelete } 
+                  style     = {{ width: "50%"}}
+                >
+                  Delete
+                </Button>
+              </ButtonGroup>
+            :
+              <Button 
+                variant   = "primary" 
+                onClick   = { handleClose } 
+                style     = {{width: "50%"}}
+              >
+                Close
+              </Button>
+          }
         </Modal.Footer>
 
       </Modal>      

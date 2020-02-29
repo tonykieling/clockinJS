@@ -352,7 +352,6 @@ class PunchInsList extends Component {
               showModal     = { this.state.showModal}
               clockinData   = { this.state.clockinToModal}
               client        = { this.state.client.nickname}
-              // deleteClockin = { (clockinId) => console.log("clockin got deleted", clockinId)}
               deleteClockin = { (clockinId) => this.updateClockins(clockinId)}
               closeModal    = { this.closeClockinModal}
               thinScreen    = { thinScreen}

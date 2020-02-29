@@ -19,7 +19,7 @@ app.use(cors());
 // need it to deply purposes
 app.use(express.static('public'));
 
-console.log("+++process.env.DB", process.env.DB, process.env.JWT_KEY, process.env.JWT_expiration);
+// console.log("+++process.env.DB", process.env.DB, process.env.JWT_KEY, process.env.JWT_expiration);
 // connection to the database regarding the environment variable URI
 // mongoose.connect(process.env.URI_DB, { 
 try {
