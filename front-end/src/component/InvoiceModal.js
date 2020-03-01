@@ -384,7 +384,7 @@ class InvoiceModal extends Component {
           ?
             <Card className="cardInvoiceGenListofClockinsModal card">
             <Card.Footer style={{fontSize: "x-large", textAlign: "center", fontWeight: "bold"}}>
-              Invoice's Clockins List - 
+              Invoice's Clockins List
             </Card.Footer>
               <Table striped bordered hover size="sm" responsive>
                 <thead>

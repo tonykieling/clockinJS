@@ -114,6 +114,7 @@ list of actions:
  - write down the invoice_id in each clockin
 */
 const invoice_add = async (req, res) => {
+console.clear();
 console.log("Inside Invoice_add, body:", req.body);
 const date1 = new Date();
 console.log("date1 =", date1);
@@ -355,14 +356,14 @@ const invoice_delete = async (req, res) => {
   const invoiceId = req.params.invoiceId;
   // const userId    = req.userData.userId;
   // const userAdmin = req.userData.admin;
-console.log("-----------------------");
-console.log(invoiceId);
+// console.log("-----------------------");
+// console.log(invoiceId);
 // return res.send({message: "deleted!!"});
   try {
     // const invoiceToBeDeleted;
-    const invoiceToBeDeleted = await Invoice
+    await Invoice
       .deleteOne({ _id: invoiceId});
-console.log("invoiceToBeDeleted", invoiceToBeDeleted);
+// console.log("invoiceToBeDeleted", invoiceToBeDeleted);
 
     const clockinsUpdated = await Clockin
       .updateMany(
@@ -371,7 +372,7 @@ console.log("invoiceToBeDeleted", invoiceToBeDeleted);
           { invoice_id: 1}
         }
       );
-console.log("clockinsUpdated==>", clockinsUpdated.n, clockinsUpdated.nModified);
+// console.log("clockinsUpdated==>", clockinsUpdated.n, clockinsUpdated.nModified);
 
     // if (!invoiceToBeDeleted || invoiceToBeDeleted.length < 1)
     //   return res.send({
@@ -392,21 +393,21 @@ console.log("clockinsUpdated==>", clockinsUpdated.n, clockinsUpdated.nModified);
     });
   }
 
-  try {
-    const clockinDeleted = await Invoice
-      .deleteOne({ _id: invoiceId});
+  // try {
+  //   const clockinDeleted = await Invoice
+  //     .deleteOne({ _id: invoiceId});
 
-    if (clockinDeleted.deletedCount)
-      return res.status(200).json({
-        message: `Invoice <${invoiceId}> has been deleted`
-      });
-    else
-      throw Error;
-  } catch (err) {
-    res.status(404).json({
-      error: `EIDE04: Something bad with Invoice id <${invoiceId}>`
-    })
-  }
+  //   if (clockinDeleted.deletedCount)
+  //     return res.status(200).json({
+  //       message: `Invoice <${invoiceId}> has been deleted`
+  //     });
+  //   else
+  //     throw Error;
+  // } catch (err) {
+  //   res.status(404).json({
+  //     error: `EIDE04: Something bad with Invoice id <${invoiceId}>`
+  //   })
+  // }
 }
 
 

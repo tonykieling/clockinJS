@@ -22,8 +22,11 @@ const thinScreen = window.innerWidth < 800 ? true : false;
 class InvoiceNew extends Component {
 
   state = {
-    dateStart         : "",
-    dateEnd           : "",
+    // dateStart         : "",
+    // dateEnd           : "",
+
+    dateStart         : "2020-01-01",
+    dateEnd           : "2020-02-29",
     clientId          : "",
     clockinList       : [],
     client            : "",
@@ -35,7 +38,8 @@ class InvoiceNew extends Component {
 
     showModal         : false,
     clockinToModal    : "",
-    classNameMessage  : ""
+    classNameMessage  : "",
+    messageInvoice    : ""
   }
 
 
@@ -44,6 +48,9 @@ class InvoiceNew extends Component {
       [event.target.name] : event.target.value,
       message             : ""
     });
+
+    if (event.target.name === "invoiceCode")
+      this.setState({ messageInvoice: ""});
   }
 
 
@@ -111,10 +118,11 @@ class InvoiceNew extends Component {
 
     if (!this.state.invoiceCode || this.state.invoiceCode === "") {
       this.setState({
-        message           : "Please, provide Invoice's Code.",
+        messageInvoice    : "Please, provide Invoice's Code.",
         classNameMessage  : "messageFailure"
       });
-      this.textCode.focus();
+      // this.clearMessage();
+      // this.textCode.focus();
     } else {
       const data = {
         date      : new Date(),
@@ -138,11 +146,12 @@ class InvoiceNew extends Component {
           
           if (Invoice.data.message) {
             this.setState({
-              message                 : `Invoice has been Generated!`,
+              messageInvoice          : `Invoice has been Generated!`,
               classNameMessage        : "messageSuccess",
               clockinWithInvoiceCode  : true
             });
 
+            this.clearMessage();
             // reload clockins after creating invoice
             this.getClockinsBtn.click();
 
@@ -155,7 +164,7 @@ class InvoiceNew extends Component {
         } catch(err) {
           console.log("errrr", err);
           this.setState({
-            message           : err,
+            messageInvoice    : err,
             classNameMessage  : "messageFailure"
           });
 
@@ -225,8 +234,9 @@ class InvoiceNew extends Component {
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        message     : "",
-        invoiceCode : ""
+        message         : "",
+        messageInvoice  : "",
+        invoiceCode     : ""
       });
     }, 3500);
   }
@@ -268,7 +278,8 @@ class InvoiceNew extends Component {
                 getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
 
           <br></br>
-          <Form onSubmit={this.handleGetClockins} >
+          {/* <Form onSubmit={this.handleGetClockins} > */}
+          <Form>
 
             <Form.Group as={Row} controlId="formST">
               <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
@@ -359,26 +370,50 @@ class InvoiceNew extends Component {
                     </Table> 
                 : null }
 
-              <Form.Group as={Row} controlId="invoiceCode">
-                <Form.Label column sm="3" className="cardLabel">
-                  Code:
-                  {/* Code: <b style={{color: "red", paddingLeft: "1rem"}}>{this.state.messageCode}</b> */}
-                </Form.Label>
-                    {/* <Form.Label style={{paddingLeft: "1rem", maxWidth: "15%"}}><b>Code:</b></Form.Label> */}
-                    {/* <Form.Label column sm={2} className="cardLabel" style={{paddingLeft: "2rem"}}>Code: </Form.Label> */}
-                <Col sm="4">
-                  <Form.Control sm={2}
+              <Row >
+                <Col xs = "6">
+                  <Form.Label column  style = {{ paddingRight: 0, marginLeft: "1rem"}} ><strong>Code </strong> (must):</Form.Label>
+                </Col>
+              <Col xs = "5">
+                  <Form.Control
+                    autoComplete= { false}
                     type        = "text"
                     name        = "invoiceCode"
-                    placeholder = "Type Invoice's code"
+                    placeholder = "Invoice's code"
                     onKeyPress  = {this.handleEnter}
                     onChange    = {this.handleChange}
                     value       = {this.state.invoiceCode}
                     disabled    = {this.state.clockinWithInvoiceCode}
                     ref         = {input => this.textCode = input }
-                    />
+                  />
                 </Col>
-              </Form.Group>
+              </Row>
+
+              <Row >
+                <Col xs = "6">
+                  <Form.Label column style = {{ paddingRight: 0, marginLeft: "1rem"}}><strong>Date </strong> (optional):</Form.Label>
+                </Col>
+                <Col xs = "5" >
+                  <Form.Control
+                    type        = "date"
+                    name        = "invoiceDate"
+                    onKeyPress  = {this.handleEnter}
+                    onChange    = {this.handleChange}
+                    value       = {this.state.invoiceDate}
+                    disabled    = {this.state.clockinWithInvoiceCode}
+                    ref         = {input => this.textDate = input }
+                  />
+                </Col>
+              </Row>
+
+              <div style = {{  padding: "1rem", width: "100%"}}>
+                <Card.Footer className= { this.state.classNameMessage}>          
+                  { this.state.messageInvoice
+                    ? this.state.messageInvoice
+                    : <br /> }
+                </Card.Footer>
+              </div>
+
 
               <Button 
                 variant   = "primary" 
