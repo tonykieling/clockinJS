@@ -142,12 +142,12 @@ class InvoiceNew extends Component {
         });
         return;
       }
-      
+
       const data = {
-        date      : new Date(),
+        date      : dtGeneration || null,
         dateStart : this.state.dateStart,
         dateEnd   : this.state.dateEnd,
-        notes     : this.state.notes || "no notes at all",
+        notes     : this.state.notes,
         clientId  : this.state.clientId,
         code      : this.state.invoiceCode.toUpperCase()
       }
@@ -167,7 +167,8 @@ class InvoiceNew extends Component {
             this.setState({
               messageInvoice          : `Invoice has been Generated!`,
               classNameMessage        : "messageSuccess",
-              clockinWithInvoiceCode  : true
+              clockinWithInvoiceCode  : true,
+              invoiceDate             : ""
             });
 
             this.clearMessage();

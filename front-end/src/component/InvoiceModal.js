@@ -233,8 +233,9 @@ class InvoiceModal extends Component {
 
 
   backToThePrevious = () => {
+console.log("BEFORE: this.state", this.state);
     (this.state.updateYN || this.state.invoiceDeleted)
-      ? this.props.updateScreen() 
+      ? this.props.updateScreen(this.state.updateYN ? this.state.currentStatus : null)
       : this.props.closeModal();
   }
 
@@ -268,6 +269,8 @@ class InvoiceModal extends Component {
 
 
   render() {
+console.log("this.state", this.state)
+console.log("this.props", this.props)
     return (
       <ReactModal
         isOpen  = { this.props.openInvoiceModal }
@@ -368,17 +371,18 @@ class InvoiceModal extends Component {
         </Card>
 
         { this.state.changeStatusModal
-        ?
-          <InvoiceChangeStatusModal
-            invoice                 = { this.props.invoice }
-            closeChangeModal        = { this.closeChangeModal }
-            currentStatus           = { this.state.currentStatus }
-            openChangeInvoiceModal  = { this.state.changeStatusModal }
-            updateInvoice           = { this.updateInvoice}
-            dateDelivered           = { this.state.dateDelivered}
-            dateReceived            = { this.state.dateReceived}
-          />
-        : "" }
+          ?
+            <InvoiceChangeStatusModal
+              invoice                 = { this.props.invoice }
+              closeChangeModal        = { this.closeChangeModal }
+              currentStatus           = { this.state.currentStatus }
+              openChangeInvoiceModal  = { this.state.changeStatusModal }
+              updateInvoice           = { this.updateInvoice}
+              dateDelivered           = { this.state.dateDelivered}
+              dateReceived            = { this.state.dateReceived}
+            />
+          : "" 
+        }
 
         {this.state.tableVisibility 
           ?

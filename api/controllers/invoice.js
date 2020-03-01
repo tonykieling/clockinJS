@@ -114,62 +114,36 @@ list of actions:
  - write down the invoice_id in each clockin
 */
 const invoice_add = async (req, res) => {
-console.clear();
-console.log("Inside Invoice_add, body:", req.body);
-const date1 = new Date();
-console.log("date1 =", date1);
-console.log("req.userData", req.userData);
-console.log("req.body:", req.body);
-// return res.send({ error: "OK"});
+console.log("Inside Invoice_add");
 
   const {
-    date,
     dateStart,
     dateEnd,
     notes,
     clientId,
     code
   } = req.body;
-  const userId = req.userData.userId
+  const date = req.body.date ? new Date(req.body.date) : new Date();
 
-  // check for the User
-  let userExist = "";
-  try {
-    userExist = await User
-      .findOne({ _id: userId });
-    if (!userExist)
-      return res.status(403).json({
-        error: `EIADD01: User <${userId}> does not exist`
-      });
-  } catch(err) {
-    console.trace("Error: ", err.message);
-    return res.status(409).json({
-      error: `EIADD02: Something got wrong`
+  const userId      = req.userData.userId;
+  const checkUser   = require("../helpers/user-h.js");
+  // it checks whether user is OK and grab info about them which will be used later
+  const temp_user   = await checkUser.check(userId);
+  if (!temp_user.result)
+    return res.send({
+      error: temp_user.message
     });
-  }
+  const userExist   = temp_user.checkUser;
 
-  // check for the Client
-  // admin is able to insert a INVOICE for another user
-  let clientExist = "";
-  try {
-    clientExist = await Client
-      .findOne({ _id: clientId });
-    if (!clientExist)
-      return res.status(403).json({
-        error: `EIADD03: Client <${clientId}> does not exist`
-      });
-
-    // check whether the Client belongs to the User
-    if (clientExist.user_id != userId)
-      return res.status(403).json({
-        error: `EIADD04: Client <${clientExist.name}> does not belong to User <${userExist.name}>.`
-      });
-  } catch(err) {
-    console.trace("Error: ", err.message);
-    return res.status(409).json({
-      error: `EIADD05: Something got wrong.`
+  // it checks whether client is OK and grab info about them which will be used later
+  const client_id     = req.body.clientId;
+  const checkClient   = require("../helpers/client-h.js");
+  const temp_client   = await checkClient.check(client_id, userId);
+  if (!temp_client.result)
+    return res.send({
+      error: temp_client.message || temp_client.text
     });
-  }
+  const clientExist   = temp_client.checkClient;
 
 
   let clockins = [];
@@ -220,7 +194,6 @@ console.log("req.body:", req.body);
       totalCadTmp += clockin.worked_hours 
                       ? ((clockin.worked_hours / 3600000) * clockin.rate)
                       : ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
-// console.log(i + 1 , "--> totalCadTmp", totalCadTmp - clockin.date);
 /**
  * the line above should be changed for just take worked_hours whrn all current clockins hav generated invoices
  * deadline = march-2020
@@ -243,9 +216,7 @@ console.log("req.body:", req.body);
           total_cad: totalCadTmp.toFixed(2)
         }
       });
-const date2 = new Date()
-console.log("date2 =", date2);
-console.log("total time = ", (date2 - date1) / 1000);
+
     return res.json({
       message: `Invoice <${newInvoice._id}> has been created.`,
       user: userExist.name,
@@ -268,11 +239,11 @@ console.log("total time = ", (date2 - date1) / 1000);
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
 const invoice_modify_status = async (req, res) => {
+  console.log("inside modify Invoice");
   const invoiceId  = req.params.invoiceId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;  
-console.clear();
-console.log("INVOICE BODY", req.body);
+
   // this try is for check is the invoiceId passed from the frontend is alright (exists in database), plus
   //  check whether either the invoice to be changed belongs for the user or the user is admin - if not, not allowed to change invoice's data
   let invoice = "";

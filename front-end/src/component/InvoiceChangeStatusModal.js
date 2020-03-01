@@ -3,10 +3,7 @@ import axios from "axios";
 import { connect } from "react-redux";
 import { Card, Button, ButtonGroup, Form, Row, Col } from "react-bootstrap";
 import ReactModal from "react-modal";
-
-
-
-// ReactModal.setAppElement('#root');
+import * as formatDate from "./aux/formatDate.js";
 
 
 const customStyles = {
@@ -59,18 +56,19 @@ class InvoiceChangeStatusModal extends Component {
         message           : "Please, provide date.",
         classNameMessage  : "messageFailure"
       });
-    } else if 
-      (((newStatusTemp === "Delivered") && (dtDeliveredTemp < dtGeneratedTemp)) ||
-      ((newStatusTemp === "Received") && (dtReceivedTemp < dtDeliveredTemp))) {
+    } else if ((newStatusTemp === "Delivered") && (dtDeliveredTemp < dtGeneratedTemp)) {
+      // ((newStatusTemp === "Received") && (dtReceivedTemp < dtDeliveredTemp))) {
         this.setState({
-          message           : "Date is incorrect",
+          message           : `Delivered date should be greater or equal to ${formatDate.show(dtGeneratedTemp)}.`,
           classNameMessage  : "messageFailure"
         });
-    // } else if ((newStatusTemp === "Received") && (dtReceivedTemp < dtDeliveredTemp)) {
-    //     this.setState({
-    //       message           : "Date is incorrect",
-    //       classNameMessage  : "messageFailure"
-    //     });
+        return;
+    } else if ((newStatusTemp === "Received") && (dtReceivedTemp < dtDeliveredTemp)) {
+        this.setState({
+          message           : `Received date should be greater or equal to ${formatDate.show(dtDeliveredTemp)}`,
+          classNameMessage  : "messageFailure"
+        });
+        return;
     } else {
       const data = {
         newStatus     : this.state.newStatus,
@@ -120,7 +118,8 @@ class InvoiceChangeStatusModal extends Component {
 
   handleChange = e => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name] : e.target.value,
+      message         : ""
     });
   }
 

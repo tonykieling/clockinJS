@@ -159,11 +159,41 @@ renderDataTable = (invoices) => {
   }
 
 
-  updateScreen = () => {
-    this.closeModal();
-    this.getInvoicesBtn.click();
-  }
+  updateScreen = newStatus => {
+    /**
+     * NEED TO REVIEW WITH MORE THAN ONE INVOICES
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     */
+console.log("newStatus", newStatus)
+    let tempInvoices, tempInvoicesTable;
 
+    if (newStatus) {
+      tempInvoices = this.state.invoiceList.map(invoice => {
+        if (invoice._id === this.state.invoice._id)
+          invoice.status = newStatus;
+
+          return invoice;
+        });
+  console.log("NEWSTATUS - tempInvoice", tempInvoices)
+    } else {
+console.log("Only print if no newstatus (delete)")
+      const invoiceToRemove   = this.state.invoice._id;
+      tempInvoices      = this.state.invoiceList.filter( invoice => invoice._id !== invoiceToRemove);
+    }
+    
+    tempInvoicesTable = this.renderDataTable(tempInvoices);
+    this.setState({
+      invoiceList       : tempInvoices,
+      invoiceListTable  : tempInvoicesTable,
+      openInvoiceModal  : false
+    });
+  }
 
 
   render() {

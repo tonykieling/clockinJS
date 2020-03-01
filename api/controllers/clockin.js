@@ -188,7 +188,6 @@ console.log("inside clockins ADD", req.body);
 
   const userId      = req.userData.userId;
   const checkUser   = require("../helpers/user-h.js");
-
   // it checks whether user is OK and grab info about them which will be used later
   const temp_user   = await checkUser.check(userId);
   if (!temp_user.result)
