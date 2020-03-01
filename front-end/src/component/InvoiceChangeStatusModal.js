@@ -50,8 +50,6 @@ class InvoiceChangeStatusModal extends Component {
 
 
   handleChangeInvoiceStatus = async () => {
-console.log("this.props", this.props)
-console.log("this.state", this.state)
     const newStatusTemp   = this.state.newStatus;
     const dtGeneratedTemp = new Date(this.props.invoice.date.substring(0,10)).getTime();
     const dtDeliveredTemp = this.state.dateDelivered ? new Date(this.state.dateDelivered.substring(0, 10)).getTime() : null;   

@@ -34,6 +34,7 @@ class InvoiceNew extends Component {
     tableVisibility   : false,
     message           : "",
     invoiceCode       : "",
+    invoiceDate       : "",
     clockinWithInvoiceCode: false,
 
     showModal         : false,
@@ -46,10 +47,10 @@ class InvoiceNew extends Component {
   handleChange = event => {
     this.setState({
       [event.target.name] : event.target.value,
-      message             : ""
+      // message             : ""
     });
 
-    if (event.target.name === "invoiceCode")
+    if (event.target.name === "invoiceCode" || event.target.name === "invoiceDate")
       this.setState({ messageInvoice: ""});
   }
 
@@ -74,39 +75,48 @@ class InvoiceNew extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-        
+
         if (getClockins.data.allClockins){
+          const tempClockins = getClockins.data.allClockins;
           this.setState({
-            clockinList       : getClockins.data.allClockins,
-            clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
+            clockinList       : tempClockins,
+            clockInListTable  : this.renderDataTable(tempClockins),
             // clockInListTable  : PunchInTableEdit(getClockins.data.allClockins),
             tableVisibility   : true,
             clientId,
-            clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(getClockins.data.allClockins)
+            lastClockinDate   : new Date(tempClockins[tempClockins.length - 1].date.substring(0, 10)).getTime(),
+            clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(tempClockins)
           });
 
           this.textCode.scrollIntoView({ behavior: "smooth" });
-        } else
+        } else {
           this.setState({
             message           : "No clockins for this period.",
             classNameMessage  : "messageFailure",
             tableVisibility   : false
           });
 
+          this.clearMessage();
+        }
 
       } catch(err) {
         this.setState({
           message           : err.message,
           classNameMessage  : "messageFailure"
         });
+
+        this.clearMessage();
       }
-    } else 
+    } else {
       this.setState({
         message           : "Please, select client and set dates.",
         classNameMessage  : "messageFailure"
       });
 
-    this.clearMessage();
+      this.clearMessage();
+    }
+
+    // this.clearMessage();
   }
 
 
@@ -115,15 +125,24 @@ class InvoiceNew extends Component {
    */
   handleInvoiceGenerator = async event => {
     event.preventDefault();
-
+    
     if (!this.state.invoiceCode || this.state.invoiceCode === "") {
       this.setState({
         messageInvoice    : "Please, provide Invoice's Code.",
         classNameMessage  : "messageFailure"
       });
-      // this.clearMessage();
-      // this.textCode.focus();
+      
+      this.textCode.focus();
     } else {
+      const dtGeneration = new Date(this.state.invoiceDate).getTime();
+      if (dtGeneration < this.state.lastClockinDate) {
+        this.setState({
+          messageInvoice    : "Date should be greater or equal to the last clockin date.",
+          classNameMessage  : "messageFailure"
+        });
+        return;
+      }
+      
       const data = {
         date      : new Date(),
         dateStart : this.state.dateStart,
@@ -157,9 +176,6 @@ class InvoiceNew extends Component {
 
           } else
             throw (Invoice.data.error);
-            // this.setState({
-            //   message: Invoice.data.error
-            // });
 
         } catch(err) {
           console.log("errrr", err);
@@ -336,7 +352,6 @@ class InvoiceNew extends Component {
                 Client: <b>{this.state.client.nickname}</b>, <b>{this.state.clockinList.length}</b> clockins
               </Card.Header>
 
-{/* {console.log("this.state", this.state)} */}
               {(this.state.clockinList.length > 0)
                 ? thinScreen 
                   ? <Table striped bordered hover size="sm" responsive>
@@ -374,9 +389,9 @@ class InvoiceNew extends Component {
                 <Col xs = "6">
                   <Form.Label column  style = {{ paddingRight: 0, marginLeft: "1rem"}} ><strong>Code </strong> (must):</Form.Label>
                 </Col>
-              <Col xs = "5">
+                <Col xs = "5">
                   <Form.Control
-                    autoComplete= { false}
+                    autoComplete= { "off"}
                     type        = "text"
                     name        = "invoiceCode"
                     placeholder = "Invoice's code"
@@ -397,11 +412,11 @@ class InvoiceNew extends Component {
                   <Form.Control
                     type        = "date"
                     name        = "invoiceDate"
-                    onKeyPress  = {this.handleEnter}
+                    // onKeyPress  = {this.handleEnter}
                     onChange    = {this.handleChange}
                     value       = {this.state.invoiceDate}
                     disabled    = {this.state.clockinWithInvoiceCode}
-                    ref         = {input => this.textDate = input }
+                    // ref         = {input => this.textDate = input }
                   />
                 </Col>
               </Row>
@@ -418,7 +433,7 @@ class InvoiceNew extends Component {
               <Button 
                 variant   = "primary" 
                 type      = "submit"
-                disabled  = {this.state.clockinWithInvoiceCode}
+                disabled  = { this.state.clockinWithInvoiceCode}
                 onClick   = { this.handleInvoiceGenerator } 
                 ref       = { input => this.generatorBtn = input}
               >
@@ -443,9 +458,7 @@ class InvoiceNew extends Component {
           : ""
         }
 
-
-
-        </div>
+      </div>
     )
   }
 }

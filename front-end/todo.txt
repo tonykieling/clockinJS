@@ -192,3 +192,6 @@ function renderClockinDataTable was create and is being used by PunchInList.js a
 
 XInvoiceGenerator has to allow button and send a message if no date OR no cliente
 Xsubmit button enabled at Punchin after punched
+- enable dt generate to invoice
+  fe is done
+  be
