@@ -160,18 +160,7 @@ renderDataTable = (invoices) => {
 
 
   updateScreen = newStatus => {
-    /**
-     * NEED TO REVIEW WITH MORE THAN ONE INVOICES
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     */
-console.log("newStatus", newStatus)
-    let tempInvoices, tempInvoicesTable;
+    let tempInvoices;
 
     if (newStatus) {
       tempInvoices = this.state.invoiceList.map(invoice => {
@@ -180,14 +169,12 @@ console.log("newStatus", newStatus)
 
           return invoice;
         });
-  console.log("NEWSTATUS - tempInvoice", tempInvoices)
     } else {
-console.log("Only print if no newstatus (delete)")
       const invoiceToRemove   = this.state.invoice._id;
       tempInvoices      = this.state.invoiceList.filter( invoice => invoice._id !== invoiceToRemove);
     }
     
-    tempInvoicesTable = this.renderDataTable(tempInvoices);
+    const tempInvoicesTable = this.renderDataTable(tempInvoices);
     this.setState({
       invoiceList       : tempInvoices,
       invoiceListTable  : tempInvoicesTable,

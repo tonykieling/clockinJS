@@ -51,6 +51,7 @@ class InvoiceChangeStatusModal extends Component {
     const dtGeneratedTemp = new Date(this.props.invoice.date.substring(0,10)).getTime();
     const dtDeliveredTemp = this.state.dateDelivered ? new Date(this.state.dateDelivered.substring(0, 10)).getTime() : null;   
     const dtReceivedTemp  = this.state.dateReceived ? new Date(this.state.dateReceived.substring(0, 10)).getTime() : null;   
+
     if (!dtDeliveredTemp && !dtReceivedTemp) {
       this.setState({
         message           : "Please, provide date.",
@@ -125,8 +126,6 @@ class InvoiceChangeStatusModal extends Component {
 
 
   render() {
-// console.log("this.props", this.props)
-// console.log("this.state", this.state)
     return (
       <ReactModal
         isOpen = { this.props.openChangeInvoiceModal }
