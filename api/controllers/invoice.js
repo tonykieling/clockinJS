@@ -272,7 +272,6 @@ const invoice_modify_status = async (req, res) => {
     );
   }
 
-
   const status = req.body.newStatus;
 
   try {

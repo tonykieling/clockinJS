@@ -73,10 +73,10 @@ class InvoiceChangeStatusModal extends Component {
     } else {
       const data = {
         newStatus     : this.state.newStatus,
-        dateDelivered : this.state.dateDelivered,
+        dateDelivered : this.state.dateReceived ? null : this.state.dateDelivered,
         dateReceived  : this.state.dateReceived
       };
-
+      
       const url = `/invoice/${this.props.invoice._id}`;
       try {
         const Invoice = await axios.patch( 
