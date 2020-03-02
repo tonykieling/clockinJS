@@ -22,11 +22,11 @@ const thinScreen = window.innerWidth < 800 ? true : false;
 class InvoiceNew extends Component {
 
   state = {
-    // dateStart         : "",
-    // dateEnd           : "",
+    dateStart         : "",
+    dateEnd           : "",
 
-    dateStart         : "2020-01-01",
-    dateEnd           : "2020-02-29",
+    // dateStart         : "2020-01-01",
+    // dateEnd           : "2020-02-29",
     clientId          : "",
     clockinList       : [],
     client            : "",

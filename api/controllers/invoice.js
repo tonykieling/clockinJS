@@ -272,8 +272,10 @@ const invoice_modify_status = async (req, res) => {
     );
   }
 
-  const status = req.body.newStatus;
 
+  const status = req.body.newStatus;
+console.log("***req.body", req.body)
+// if (1) return res.send({message: "OK"});
   try {
     const invoiceToBeChanged = req.body.dateDelivered
       ?

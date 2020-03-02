@@ -96,7 +96,8 @@ class InvoiceChangeStatusModal extends Component {
           });
 
           // this.props.receiveNewStatus(this.state.newStatus);
-          const tempDate = this.state.dateDelivered || this.state.dateReceived;
+          const tempDate = data.dateDelivered || data.dateReceived;
+          // const tempDate = this.state.dateDelivered || this.state.dateReceived;
           this.props.updateInvoice(this.state.newStatus, tempDate);
           setTimeout(() => {
             this.props.closeChangeModal();
