@@ -46,10 +46,13 @@ export default function Land() {
         
       </div>
 
-      <ContactFoot
-        bckColor = "gainsboro" 
-        opac="iconSettingsOpacity"
-      />
+      {window.innerWidth < 800
+        &&
+          <ContactFoot
+            bckColor = "gainsboro" 
+            opac="iconSettingsOpacity"
+          />
+      }
 
     </div>
   )

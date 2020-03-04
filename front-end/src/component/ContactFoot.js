@@ -39,12 +39,14 @@ export default function ContactFoot(props) {
             <Container >
               <Row 
                 className="justify-content-md-center"
-                // style = {{maxWidth: "60%", textAlign: "center"}}
+                style = {{textAlign: "center"}}
+                // style = {{}}
                 >
                 <Col 
                   style={{
                     textAlign: "center", 
-                    // maxWidth: "4rem"
+                    // maxWidth: "4rem",
+                    // border: "1px black solid"
                     }}
                   xs sm="1"
                 >
@@ -54,9 +56,11 @@ export default function ContactFoot(props) {
                 </Col>
                 
                 <Col 
-                  style={{textAlign: "center", 
-                  // maxWidth: "4rem"
-                  }}
+                  style={{
+                    textAlign: "center", 
+                    // maxWidth: "4rem",
+                    // border: "1px black solid"
+                    }}
                   xs sm="1"
                 >
                   <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank" rel="noopener noreferrer">
@@ -65,9 +69,11 @@ export default function ContactFoot(props) {
                 </Col>
 
                 <Col 
-                  style={{textAlign: "center", 
-                  // maxWidth: "4rem"
-                  }}
+                  style={{
+                    textAlign: "center", 
+                    // maxWidth: "4rem",
+                    // border: "1px black solid"
+                    }}
                   xs sm="1"
                 >
                   <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">
@@ -76,9 +82,11 @@ export default function ContactFoot(props) {
                 </Col>
 
                 <Col 
-                  style={{textAlign: "center", 
-                  // maxWidth: "4rem"
-                  }}
+                  style={{
+                    textAlign: "center", 
+                    // maxWidth: "4rem",
+                    // border: "1px black solid"
+                    }}
                   xs sm="1"
                 >
                   <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">
