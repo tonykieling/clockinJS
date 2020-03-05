@@ -40,14 +40,9 @@ export default function ContactFoot(props) {
               <Row 
                 className="justify-content-md-center"
                 style = {{textAlign: "center"}}
-                // style = {{}}
                 >
                 <Col 
-                  style={{
-                    textAlign: "center", 
-                    // maxWidth: "4rem",
-                    // border: "1px black solid"
-                    }}
+                  style={{textAlign: "center", padding: "0 5px"}}
                   xs sm="1"
                 >
                   <a href="mailto:tony.kieling@gmail.com" target="_top" >
@@ -56,11 +51,7 @@ export default function ContactFoot(props) {
                 </Col>
                 
                 <Col 
-                  style={{
-                    textAlign: "center", 
-                    // maxWidth: "4rem",
-                    // border: "1px black solid"
-                    }}
+                  style={{textAlign: "center", padding: "0 5px"}}
                   xs sm="1"
                 >
                   <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank" rel="noopener noreferrer">
@@ -69,11 +60,7 @@ export default function ContactFoot(props) {
                 </Col>
 
                 <Col 
-                  style={{
-                    textAlign: "center", 
-                    // maxWidth: "4rem",
-                    // border: "1px black solid"
-                    }}
+                  style={{textAlign: "center", padding: "0 5px"}}
                   xs sm="1"
                 >
                   <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">
@@ -82,11 +69,7 @@ export default function ContactFoot(props) {
                 </Col>
 
                 <Col 
-                  style={{
-                    textAlign: "center", 
-                    // maxWidth: "4rem",
-                    // border: "1px black solid"
-                    }}
+                  style={{textAlign: "center", padding: "0 5px"}}
                   xs sm="1"
                 >
                   <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">

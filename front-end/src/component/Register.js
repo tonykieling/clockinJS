@@ -90,9 +90,9 @@ class Register extends Component {
           message           : "Password and \nConfirm Password fields\n\nMUST be the same\n and NOT empty.",
           password          : "",
           confirmPassword   : ""
-        })
+        });
         // this.textInput7.focus();
-        this.clearMessage();
+        // this.clearMessage();
       } else {
         const url = "/user/signup";
         const createUser  = {
@@ -128,17 +128,25 @@ class Register extends Component {
             this.setState({
               classNameMessage  : "messageFailure",
               message           : addUser.data.error });
-            this.clearMessage();
+            // this.clearMessage();
           }
 
         } catch(err) {
           this.setState({
             classNameMessage  : "messageFailure",
             message           : err.message });
-          this.clearMessage();
+          // this.clearMessage();
         }
       }
+    } else {
+      this.setState({
+        classNameMessage  : "messageFailure",
+        message           : "Please, entry at least Name, Email, Password and Confirm Password",
+        password          : "",
+        confirmPassword   : ""
+      });
     }
+    this.clearMessage();
   }
 
 
