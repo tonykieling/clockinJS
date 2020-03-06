@@ -96,10 +96,14 @@ class Login extends Component {
     return (
       <div className="formPosition">
         <br />
-        <h3>Login Page</h3>
+        {/* <h3>Login Page</h3> */}
         <Card className="card-settings">
+          <Card.Header>
+            <h2>Login</h2>
+          </Card.Header>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">
+              <br />
               <Form.Label>User's Email</Form.Label>
               <Form.Control
                 autoFocus   = {true}

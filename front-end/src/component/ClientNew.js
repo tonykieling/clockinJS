@@ -199,20 +199,23 @@ class ClientNew extends Component {
     return (
       <div className="formPosition">
         <br />
-        {/* <h3>New Client Page</h3>
-        <br /> */}
         <Card className="card-settings">
-          <Card.Header>New Client</Card.Header>
+        {/* <Card className="bigCardPosition"> */}
+          <Card.Header>
+            <h2>New Client</h2>
+          </Card.Header>
           <Form
-            autoComplete  = {"off"}
+            // autoComplete  = {"off"}
             // onSubmit      = {this.handleSubmit}
             className     = "formPosition"
+            style         = {{width: "30rem"}}
           >
 
             <Form.Group controlId="formName">
               <br />
               <Form.Label className="cardLabel">Name</Form.Label>
               <Form.Control
+                autoComplete= "off"
                 autoFocus   = {true}
                 type        = "text"
                 placeholder = "Client's name"
@@ -226,6 +229,7 @@ class ClientNew extends Component {
             <Form.Group controlId="formNickname">
               <Form.Label className="cardLabel">Nickname</Form.Label>
               <Form.Control
+                autoComplete= "off"
                 type        = "text"
                 placeholder = "Client's nickname"
                 name        = "nickname"

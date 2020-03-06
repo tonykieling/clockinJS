@@ -176,11 +176,15 @@ class Register extends Component {
       return (
         <div className="formPosition">
           <br />
-          <h3>User's Sign Up</h3>
-          {/* <Card className="frame register card"> */}
           <Card className="card-settings">
-            <Form onSubmit={this.handleSubmit}>
+            <Card.Header>
+              <h2>Sign Up</h2>
+            </Card.Header>
+            <Form 
+              onSubmit={this.handleSubmit} 
+              style = {{width: window.innerWidth < 800 || "70%", marginLeft: window.innerWidth < 800 || "15%"}}>
 
+              <br />
               <Form.Group controlId="formName">
                 <Form.Label>Name</Form.Label>
                 <Form.Control
