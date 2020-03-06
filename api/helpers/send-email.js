@@ -16,22 +16,91 @@ const sendClockinEmail = (subject, clockin, user, client) => {
   const content = (`
     <div>
       <p>Hi <b>${user.name.split(" ")[0]}</b></p>
-      <p>You have just punched in the following data:</p>
+      <p>You have just punched in.</p>
       <br>
-      <p> <b>- Client: <i>${client.nickname} </i></b></p>
-      <p> <b>- Date: <i>${formatDT.showDate(clockin.date)} </i></b></p>
-      <p> <b>- Time start: <i>${formatDT.showTime(clockin.time_start)} </i></b></p>
-      <p> <b>- Time end: <i>${formatDT.showTime(clockin.time_end)} </i></b></p>
+
+      <table style="border: 3px double blue; text-align: left; border-collapse: collapse">
+      <tr>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          <b>Client</b>
+        </td>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          ${client.nickname}
+        </td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          <b>Date</b>
+        </td>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          ${formatDT.showDate(clockin.date)}
+        </td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          <b>Time Start</b>
+        </td>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          ${formatDT.showTime(clockin.time_start)}
+        </td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          <b>Time End</b>
+        </td>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          ${formatDT.showTime(clockin.time_end)}
+        </td>
+      </tr>
       ${clockin.break_start 
-        ? `<p> <b>- Break Start: <i>${formatDT.showTime(clockin.break_start)} </i></b></p>`
+        ?
+          `<tr>
+            <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+              <b>Break Start</b>
+            </td>
+            <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+              ${formatDT.showTime(clockin.break_start)}
+            </td>
+          </tr>`
         : ""}
       ${clockin.break_end 
-        ? `<p> <b>- Break End: <i>${formatDT.showTime(clockin.break_end)} </i></b></p>`
+        ?
+          `<tr>
+            <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+              <b>Break End</b>
+            </td>
+            <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+              ${formatDT.showTime(clockin.break_end)}
+            </td>
+          </tr>`
         : ""}
-      <p> <b>- Worked hours: <i>${formatDT.showTime(clockin.worked_hours)} </i></b></p>
-      <p> <b>- Rate: <i>${clockin.rate} </i></b></p>
-      <p> <b>- Notes: <i>${clockin.notes ? clockin.notes : "&lt;empty&gt;"} </i></b></p>
-      <br>
+      <tr>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          <b>Worked Hours</b>
+        </td>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          ${formatDT.showTime(clockin.worked_hours)}
+        </td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          <b>Rate</b>
+        </td>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          ${clockin.rate}
+        </td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          <b>Notes</b>
+        </td>
+        <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
+          ${clockin.notes ? clockin.notes : ""}
+        </td>
+      </tr>
+    </table>
+    <br>
+
       <p>Kind regards from</p>
       <h4>Clockin.js Team :)</h4>
     </div>

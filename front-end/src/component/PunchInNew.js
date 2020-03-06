@@ -60,7 +60,7 @@ class PunchInNew extends Component {
     };
     
     if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak)
-      !this.state.validBreak ? this.checkBreakIsValid() : this.messageValidationMethod();
+      !this.state.validBreak ? this.checkBreakIsValid(event) : this.messageValidationMethod();
     else {
       const url = "/clockin";
       try {
@@ -110,10 +110,11 @@ class PunchInNew extends Component {
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        message: ""
+        message     : "",
+        disabledBtn : false
       });
       // this.headerRef.focus();
-      window.scrollTo(0,0); // goes to the top of the screen and can see the message
+      // window.scrollTo(0,0); // goes to the top of the screen and can see the message
     }, 3000);
   }
 
@@ -128,8 +129,11 @@ class PunchInNew extends Component {
         notes         : "",
         message       : "",
         client        : {},
-        disabledBtn   : false
+        disabledBtn   : false,
+        startingBreak : "",
+        endingBreak   : ""
       });
+      window.scrollTo(0,0); // goes to the top of the screen and can see the message
     }, 3000);
   }
 
@@ -139,7 +143,7 @@ class PunchInNew extends Component {
     const time2     = Date.parse(`01 Jan 1970 ${this.state.endingTime}:00 GMT`);
     const break1    = this.state.startingBreak ? Date.parse(`01 Jan 1970 ${this.state.startingBreak}:00 GMT`) : 0;
     const break2    = this.state.endingBreak ? Date.parse(`01 Jan 1970 ${this.state.endingBreak}:00 GMT`) : 0;
-    const tb        = break2 - break1;
+    const tb        = ((break1 && break2) && (break2 > break1)) ? break2 - break1 : 0;
     const tt        = (((time2 - time1) - tb) / (60 * 60 * 1000));
     const totalTime = parseFloat(Math.round(tt * 100) / 100).toFixed(2)
     
@@ -169,7 +173,7 @@ class PunchInNew extends Component {
 
 
   checkBreakIsValid = event => {
-    if (this.state.startingBreak || this.state.endingBreak)
+    if (this.state.startingBreak || this.state.endingBreak) {
       if ((this.state.endingBreak <= this.state.startingBreak)
             || (this.state.startingBreak <= this.state.startingTime)
             || (event.target.name !== "startingBreak" && (this.state.endingTime <= this.state.endingBreak)))
@@ -181,8 +185,13 @@ class PunchInNew extends Component {
       else
         this.setState({ 
           message     : "",
-          validBreak  : true
+          validBreak  : true,
+          disabledBtn : false
         });
+        this.clearMessage();
+    } else {
+      this.clearMessage();
+    }
   }
 
 
