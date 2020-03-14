@@ -8,6 +8,7 @@ import { show } from "./aux/formatDate.js";
 import InvoiceModalDelete from "./InvoiceModalDelete.js";
 import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
 import PunchInModal from "./PunchInModal.js";
+import InvoiceEditModal from "./InvoiceEditModal.js";
 
 
 const thinScreen = window.innerWidth < 800 ? true : false;
@@ -71,7 +72,8 @@ class InvoiceModal extends Component {
 
     dateDelivered     : "",
     dateReceived      : "",
-    showClockinModal  : ""
+    showClockinModal  : "",
+    showEditInvoiceModal : ""
   };
 
 
@@ -267,6 +269,7 @@ class InvoiceModal extends Component {
   }
 
 
+
   render() {
     return (
       <ReactModal
@@ -276,6 +279,43 @@ class InvoiceModal extends Component {
         // className = "ModalSettings"
         // overlayClassName="ModalSettings"
         >
+
+        {
+          this.state.showEditInvoiceModal
+            ?
+              <InvoiceEditModal
+                invoice               = { this.props.invoice}
+                showEditInvoiceModal  = { this.state.showEditInvoiceModal}
+                closeInvoiceEditModal = { () => this.setState({showEditInvoiceModal: false})}
+              />
+            : ""
+        }
+
+        { this.state.changeStatusModal
+          ?
+            <InvoiceChangeStatusModal
+              invoice                 = { this.props.invoice }
+              closeChangeModal        = { this.closeChangeModal }
+              currentStatus           = { this.state.currentStatus }
+              openChangeInvoiceModal  = { this.state.changeStatusModal }
+              updateInvoice           = { this.updateInvoice}
+              dateDelivered           = { this.state.dateDelivered}
+              dateReceived            = { this.state.dateReceived}
+            />
+          : "" 
+        }
+
+        {this.state.showModalDeleteInvoice
+          ? <InvoiceModalDelete
+              initialState      = { this.state.showModalDeleteInvoice }
+              closeDeleteModal  = { this.closeShowModalDeleteInvoice }
+              invoiceCode       = { this.props.invoice.code }
+              invoiceId         = { this.props.invoice._id }
+              confirmDeletion   = { this.confirmDeletion }
+            />
+          : ""
+        }
+
 
         {this.state.showClockinModal
           ? <PunchInModal 
@@ -293,47 +333,46 @@ class InvoiceModal extends Component {
         <Card>
           <Card.Header as="h3">Invoice: { this.props.invoice.code }</Card.Header>
           <Card.Body>
+
             <Card.Title style={{fontWeight: "bold", fontSize: "large"}}> Client: { this.props.client.nickname }</Card.Title>
-            {/* <Card.Footer style={{fontWeight: "bold", fontSize: "large"}}>
-              Client: {this.props.client.nickname}
-            </Card.Footer> */}
+              <Form>
+                <Form.Label style={{left: "2rem"}}> 
+                  <b>Total: $</b>{ this.props.invoice.total_cad.toFixed(2) }
+                </Form.Label>
+                <br />
+                <Form.Label style={{left: "2rem"}}> 
+                  <b>Date Start: </b> { show(this.props.invoice.date_start) }
+                </Form.Label>
+                <br />
+                <Form.Label> 
+                  <b>Date End: </b> { show(this.props.invoice.date_end) }
+                </Form.Label>
+                <br />
+                <Form.Label style={{left: "2rem"}}> 
+                  <b>Date Generated:</b> { show(this.props.invoice.date) }
+                </Form.Label>
 
-            <Form>
-              <Form.Label style={{left: "2rem"}}> 
-                <b>Total: $</b>{ this.props.invoice.total_cad.toFixed(2) }
-              </Form.Label>
-              <br />
-              <Form.Label style={{left: "2rem"}}> 
-                {/* <b>Date Start: </b> { formatDate.show(this.props.invoice.date_start) } */}
-                <b>Date Start: </b> { show(this.props.invoice.date_start) }
-              </Form.Label>
-              <br />
-              <Form.Label> 
-                {/* <b>Date End: </b> { formatDate.show(this.props.invoice.date_end) } */}
-                <b>Date End: </b> { show(this.props.invoice.date_end) }
-              </Form.Label>
-              <br />
-              <Form.Label style={{left: "2rem"}}> 
-                {/* <b>Date Generated:</b> { formatDate.show(this.props.invoice.date) } */}
-                <b>Date Generated:</b> { show(this.props.invoice.date) }
-              </Form.Label>
+                { (this.props.invoice.date_delivered || this.state.dateDelivered) &&
+                    <div>
+                      <Form.Label style={{left: "2rem"}}> 
+                        <b>Date Delivered:</b> { show(this.props.invoice.date_delivered || this.state.dateDelivered) }
+                      </Form.Label>
+                    </div>
+                }
+                { (this.props.invoice.date_received || this.state.dateReceived) &&
+                    <div>
+                      <Form.Label style={{left: "2rem"}}> 
+                        <b>Date Received:</b> { show(this.props.invoice.date_received || this.state.dateReceived) }
+                      </Form.Label>
+                    </div>
+                }
+              </Form>
 
-              { (this.props.invoice.date_delivered || this.state.dateDelivered) &&
-                  <div>
-                    <Form.Label style={{left: "2rem"}}> 
-                      {/* <b>Date Delivered:</b> { formatDate.show(this.props.invoice.date_delivered || this.state.dateDelivered) } */}
-                      <b>Date Delivered:</b> { show(this.props.invoice.date_delivered || this.state.dateDelivered) }
-                    </Form.Label>
-                  </div>
-              }
-              { (this.props.invoice.date_received || this.state.dateReceived) &&
-                  <div>
-                    <Form.Label style={{left: "2rem"}}> 
-                      {/* <b>Date Received:</b> { formatDate.show(this.props.invoice.date_received || this.state.dateReceived) } */}
-                      <b>Date Received:</b> { show(this.props.invoice.date_received || this.state.dateReceived) }
-                    </Form.Label>
-                  </div>
-              }
+              <Button
+                onClick = { () => this.setState({ showEditInvoiceModal: true})}
+              >
+                Edit Invoice
+              </Button>
 
               <div className="d-flex flex-column">
                 {this.state.invoiceDeleted
@@ -362,24 +401,11 @@ class InvoiceModal extends Component {
                     </ButtonGroup>
                 }
               </div>
-            </Form>
 
           </Card.Body>
         </Card>
 
-        { this.state.changeStatusModal
-          ?
-            <InvoiceChangeStatusModal
-              invoice                 = { this.props.invoice }
-              closeChangeModal        = { this.closeChangeModal }
-              currentStatus           = { this.state.currentStatus }
-              openChangeInvoiceModal  = { this.state.changeStatusModal }
-              updateInvoice           = { this.updateInvoice}
-              dateDelivered           = { this.state.dateDelivered}
-              dateReceived            = { this.state.dateReceived}
-            />
-          : "" 
-        }
+
 
         {this.state.tableVisibility 
           ?
@@ -419,16 +445,7 @@ class InvoiceModal extends Component {
         </Button>
 
 
-        {this.state.showModalDeleteInvoice
-          ? <InvoiceModalDelete
-              initialState      = { this.state.showModalDeleteInvoice }
-              closeDeleteModal  = { this.closeShowModalDeleteInvoice }
-              invoiceCode       = { this.props.invoice.code }
-              invoiceId         = { this.props.invoice._id }
-              confirmDeletion   = { this.confirmDeletion }
-            />
-          : ""
-        }
+
 
       </ReactModal>
     );
