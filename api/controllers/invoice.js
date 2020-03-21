@@ -335,10 +335,41 @@ const invoice_edit = async (req, res) => {
   console.log("======== inside edit Invoice");
   // const invoiceId  = req.params.invoiceId;
   const userAdmin = req.userData.admin;
-  const userId    = req.userData.userId;
+  const {
+    invoiceId,
+    code,
+    cad_adjustment,
+    reason_adjustment
+  } = req.body;
 
   console.log("req.body", req.body);
-  if (1) return res.send({ dataX: req.body});
+console.log("=>", invoiceId, code, cad_adjustment, reason_adjustment)
+
+  const userId      = req.userData.userId;
+  // const checkUser   = require("../helpers/user-h.js");
+  // // it checks whether user is OK and grab info about them which will be used later
+  // const temp_user   = await checkUser.check(userId);
+  // if (!temp_user.result)
+  //   return res.send({
+  //     error: temp_user.message
+  //   });
+  // const userExist   = temp_user.checkUser;
+// console.log("userExist", userExist)
+
+/**DO NOT NEED TO CHECK CLIENT */
+  // it checks whether client is OK and grab info about them which will be used later
+//   const client_id     = req.body.clientId;
+//   const checkClient   = require("../helpers/client-h.js");
+//   const temp_client   = await checkClient.check(client_id, userId);
+//   if (!temp_client.result)
+//     return res.send({
+//       error: temp_client.message || temp_client.text
+//     });
+//   const clientExist   = temp_client.checkClient;
+// console.log("clientExist", clientExist)
+
+  // if (1) return res.send({ error: `req.body`});
+
 
   // this try is for check is the invoiceId passed from the frontend is alright (exists in database), plus
   //  check whether either the invoice to be changed belongs for the user or the user is admin - if not, not allowed to change invoice's data
@@ -369,39 +400,24 @@ const invoice_edit = async (req, res) => {
   }
 
 
-  const status = req.body.newStatus;
-// console.log("***req.body", req.body)
+  
 // if (1) return res.send({message: "OK"});
   try {
-    const invoiceToBeChanged = req.body.dateDelivered
-      ?
-        await Invoice
+    const invoiceToBeEdited = await Invoice
         .updateOne({
           _id: invoiceId
         }, {
           $set: {
-              status,
-              date_delivered: req.body.dateDelivered
+              code,
+              cad_adjustment,
+              reason_adjustment,
           }
         })
         //  {
         //   runValidators: true
         // })
-      :
-        await Invoice
-        .updateOne({
-          _id: invoiceId
-        }, {
-          $set: {
-              status,
-              date_received: req.body.dateReceived
-          }
-        })
-        // , {
-        //   runValidators: true
-        // })
-
-    if (invoiceToBeChanged.nModified) {
+        
+    if (invoiceToBeEdited.nModified) {
       return res.json({
         message: `Invoice <${invoice.code}> has been modified.`
       });
@@ -413,7 +429,7 @@ const invoice_edit = async (req, res) => {
   } catch(err) {
     console.trace("Error: ", err.message);
     res.json({
-      error: "ECM02: Something bad"
+      error: "Error ECE02: Something bad"
     });
   }
 }

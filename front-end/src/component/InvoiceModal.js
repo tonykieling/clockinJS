@@ -286,7 +286,16 @@ class InvoiceModal extends Component {
               <InvoiceEditModal
                 invoice               = { this.props.invoice}
                 showEditInvoiceModal  = { this.state.showEditInvoiceModal}
-                closeInvoiceEditModal = { () => this.setState({showEditInvoiceModal: false})}
+                closeInvoiceEditModal = { (changes) => {
+                    console.log("changes", changes);
+
+                    changes 
+                      ?
+                        console.log("we got changes")
+                      :
+                        this.setState({showEditInvoiceModal: false})
+                  }
+                }
               />
             : ""
         }

@@ -29,58 +29,73 @@ function InvoiceEditModal(props) {
 
   const handleClose = () => {
     setShowEditInvoice(false);
-    props.closeInvoiceEditModal();
+    changes 
+      ? props.closeInvoiceEditModal({newInvoiceCode, newReceivedAmount, newReason})
+      : props.closeInvoiceEditModal();
   }
 
-  const [invoiceCode, setInvoiceCode] = useState(props.invoice.code);
+  const invoiceCode = props.invoice.code;
+  // const [invoiceCode, setInvoiceCode] = useState(props.invoice.code)
+  const [newInvoiceCode, setNewInvoiceCode] = useState(invoiceCode);
 
-  const [receivedAmount, setReceivedAmount] = useState("");
+  const receivedAmount = props.invoice.cad_adjustment || "";
+  const [newReceivedAmount, setNewReceivedAmount] = useState(receivedAmount);
 
-  const [reason, setReason] = useState("");
+  const reason = props.invoice.reason_adjustment || "";
+  const [newReason, setNewReason] = useState(reason);
 
   const [message, setMessage] = useState("");
   
   const [classNameMessage, setClassNameMessage] = useState("");
+
+  const [changes, setChanges] = useState(false);
+
   
   const handleSubmit = async () => {
-    console.log("code- ", invoiceCode)
-    console.log("receivedAmount- ", receivedAmount)
-    console.log("reason- ", !(!reason || !reason.trim()))
-console.log("xxXXx=", reason.trim(), " = ", !!(reason.trim()))
-console.log("ooooo", (reason !== ""))
-    if ((invoiceCode === props.invoice.code) && !receivedAmount && (!reason || !(reason.trim()))) {
+    console.log("NEWcode- ", newInvoiceCode)
+    console.log("NEWreceivedAmount- ", newReceivedAmount)
+    console.log("NEWreason", newReason)
+    // console.log("reason- ", !(!newReason || !newReason.trim()))
+// console.log("xxXXx=", reason.trim(), " = ", !!(reason.trim()))
+// console.log("ooooo", (reason !== ""))
+
+    // ((newReceivedAmount === "") && setNewReceivedAmount(""));
+    // ((newReason === "") && setNewReason(""));
+
+    // if ((invoiceCode === props.invoice.code) && !receivedAmount && (!reason || !(reason.trim()))) {
+    if ((invoiceCode === newInvoiceCode) && (receivedAmount === newReceivedAmount) && (reason === newReason)) {
       setClassNameMessage("messageFailure");
       setMessage("Nothing to be changed");
-      setReason("");
+      setNewReason("");
     } else {
-      if (invoiceCode === "") {
+      if (newInvoiceCode === "") {
         setClassNameMessage("messageFailure");
         setMessage("Missing Invoice's Code");
-      } else if ((receivedAmount !== "") && (reason === "" || !(reason.trim()))) {
+      } else if ((newReceivedAmount !== "") && (newReason === "" || !(newReason.trim()))) {
         setClassNameMessage("messageFailure");
         setMessage("Missing Reason");
-        setReason("");
-      } else if ((receivedAmount === "") && ((reason !== "") && !!(reason.trim()))) {
+        setNewReason("");
+      } else if ((newReceivedAmount === "") && ((newReason !== "") && !!(newReason.trim()))) {
         setClassNameMessage("messageFailure");
         setMessage("Missing Received Amount");
-      } else if (!(Number(receivedAmount))) {
+      } else if ((newReceivedAmount !== "") && !(Number(newReceivedAmount))) {
+        console.log("torF", (newReceivedAmount !== ""))
         setClassNameMessage("messageFailure");
         setMessage("'Received $' has to be a number.");
       } else {
         const data = {
-          invoiceId         : props.invoice_id,
-          code              : invoiceCode,
-          cad_adjustment    : receivedAmount,
-          reason_adjustment : reason
+          invoiceId         : props.invoice._id,
+          code              : newInvoiceCode,
+          cad_adjustment    : newReceivedAmount,
+          reason_adjustment : newReason
         };
-        console.log("sending data", data);
-        console.log("props invoice", props.invoice);
-        console.log("props", props);
+        // console.log("sending data", data);
+        // console.log("props invoice", props.invoice);
+        // console.log("props", props);
+        // console.log("data", data)
 
 
         // perform the action to send data to be recorded bu the server
-
-        // const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
         const url = `/invoice/edit`;
 
         try {
@@ -94,16 +109,22 @@ console.log("ooooo", (reason !== ""))
             
           });
   
-          console.log("received", updateInvoice)
+          console.log("updateInvoice", updateInvoice)
 
-          if (updateInvoice.data.dataX){
+          if (updateInvoice.data.message){
             console.log("2 received:", updateInvoice.data)
+            setClassNameMessage("messageSuccess");
+            setMessage("Invoice has been modified");
+            setChanges(true);
           } else {
-            //////////////////just in case
-            console.log("something wrong")
+            console.log("something wrong!!");
+            setClassNameMessage("messageFailure");
+            setMessage(updateInvoice.data.error);
           }
         } catch(err) {
-          console.log("ERRRRRRRRRRRRRRRRR")
+          console.log("ERRRRRRRRRRRRRRRRR");
+          setClassNameMessage("messageFailure");
+          setMessage(err.message);
         }
 
 
@@ -130,9 +151,6 @@ console.log("ooooo", (reason !== ""))
       show    = { showEditInvoice}
       onHide  = { handleClose }
     >
-      {/* <Modal.Header closeButton={handleClose}>
-        <Modal.Title>Invoice {props.invoice.code}</Modal.Title>
-      </Modal.Header> */}
 
       <Modal.Body>
         <Card className="card-settings" style={{marginLeft: 0, backgroundColor: "lightsteelblue"}}>
@@ -141,7 +159,7 @@ console.log("ooooo", (reason !== ""))
           </Card.Header>
           <br />
           <Form>
-            {/* { console.log("invoice:", props.invoice)} */}
+            { console.log("PROPS:", props)}
 
             <Row>
               <Col>
@@ -229,6 +247,11 @@ console.log("ooooo", (reason !== ""))
                 </div>
             }
 
+            {/* { receivedAmount ? console.log("receivedAmount", receivedAmount) : console.log("no received$")} */}
+
+            {/* { reason ? console.log("reason", reason) : console.log("no reason for now")} */}
+            
+
             <br />
             <Card>
               <Card.Header>
@@ -243,10 +266,10 @@ console.log("ooooo", (reason !== ""))
                     <Form.Control
                       style         = {{ textAlign: "right"}}
                       type        = "text"
-                      placeholder = "Invoice's Code"
-                      name        = "invoiceCode"
-                      onChange    = { (event) => setInvoiceCode(event.target.value)}
-                      value       = { invoiceCode }
+                      placeholder = { newInvoiceCode || "Invoice's Code"}
+                      name        = "newInvoiceCode"
+                      onChange    = { (event) => setNewInvoiceCode(event.target.value)}
+                      value       = { newInvoiceCode }
                     />
                   </Col>
                 </Row>
@@ -259,11 +282,11 @@ console.log("ooooo", (reason !== ""))
                     <Form.Control
                       style         = {{ textAlign: "right"}}
                       type        = "number"
-                      placeholder = "Actually $ received"
-                      name        = "receivedAmount"
-                      value       = { receivedAmount}
+                      placeholder = { newReceivedAmount || "Actually $ received"}
+                      name        = "newReceivedAmount"
+                      value       = { newReceivedAmount}
                       // onChange    = { (event) => Number(event.target.value) && setReceivedAmount(event.target.value)}
-                      onChange    = { event => setReceivedAmount(event.target.value)}
+                      onChange    = { event => setNewReceivedAmount(event.target.value)}
                     />
                   </Col>
                 </Row>
@@ -273,10 +296,10 @@ console.log("ooooo", (reason !== ""))
                   style         = {{ textAlign: "right"}}
                   as          = "textarea"
                   rows        = "3"
-                  placeholder = "Why the diff btw the Total CAD and Received Amount"
-                  name        = "reason"
-                  value       = { reason}
-                  onChange    = { (event) => setReason(event.target.value)}
+                  placeholder = { newReason || "Why the diff btw the Total CAD and Received Amount"}
+                  name        = "newReason"
+                  value       = { newReason}
+                  onChange    = { (event) => setNewReason(event.target.value)}
                 />
 
               </Card.Body>
