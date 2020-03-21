@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
-// import axios from "axios";
+import axios from "axios";
 import { connect } from "react-redux";
 import { Modal, Card, Button, ButtonGroup, Form, Row, Col } from "react-bootstrap";
 import { show } from "./aux/formatDate.js";
 
 
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
-  }
-};
+// const customStyles = {
+//   content : {
+//     top                   : '50%',
+//     left                  : '50%',
+//     right                 : 'auto',
+//     bottom                : 'auto',
+//     marginRight           : '-50%',
+//     transform             : 'translate(-50%, -50%)'
+//   }
+// };
+
+
 
 /**
  * how to use tooltips (TIPS)
@@ -44,10 +46,12 @@ function InvoiceEditModal(props) {
     console.log("code- ", invoiceCode)
     console.log("receivedAmount- ", receivedAmount)
     console.log("reason- ", !(!reason || !reason.trim()))
-
-    if ((invoiceCode === props.invoice.code) && !receivedAmount && !!(reason || reason.trim())) {
+console.log("xxXXx=", reason.trim(), " = ", !!(reason.trim()))
+console.log("ooooo", (reason !== ""))
+    if ((invoiceCode === props.invoice.code) && !receivedAmount && (!reason || !(reason.trim()))) {
       setClassNameMessage("messageFailure");
       setMessage("Nothing to be changed");
+      setReason("");
     } else {
       if (invoiceCode === "") {
         setClassNameMessage("messageFailure");
@@ -55,17 +59,56 @@ function InvoiceEditModal(props) {
       } else if ((receivedAmount !== "") && (reason === "" || !(reason.trim()))) {
         setClassNameMessage("messageFailure");
         setMessage("Missing Reason");
-      } else if ((receivedAmount === "") && ((reason !== "") || !!(reason.trim()))) {
+        setReason("");
+      } else if ((receivedAmount === "") && ((reason !== "") && !!(reason.trim()))) {
         setClassNameMessage("messageFailure");
         setMessage("Missing Received Amount");
+      } else if (!(Number(receivedAmount))) {
+        setClassNameMessage("messageFailure");
+        setMessage("'Received $' has to be a number.");
       } else {
         const data = {
+          invoiceId         : props.invoice_id,
           code              : invoiceCode,
           cad_adjustment    : receivedAmount,
           reason_adjustment : reason
         };
         console.log("sending data", data);
+        console.log("props invoice", props.invoice);
+        console.log("props", props);
+
+
         // perform the action to send data to be recorded bu the server
+
+        // const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+        const url = `/invoice/edit`;
+
+        try {
+          const updateInvoice = await axios.patch( 
+            url,
+            data,
+            {  
+              headers: { 
+                "Content-Type": "application/json",
+                "Authorization" : `Bearer ${props.storeToken}` },
+            
+          });
+  
+          console.log("received", updateInvoice)
+
+          if (updateInvoice.data.dataX){
+            console.log("2 received:", updateInvoice.data)
+          } else {
+            //////////////////just in case
+            console.log("something wrong")
+          }
+        } catch(err) {
+          console.log("ERRRRRRRRRRRRRRRRR")
+        }
+
+
+
+
 
       }
     }
@@ -98,7 +141,7 @@ function InvoiceEditModal(props) {
           </Card.Header>
           <br />
           <Form>
-            { console.log("invoice:", props.invoice)}
+            {/* { console.log("invoice:", props.invoice)} */}
 
             <Row>
               <Col>
@@ -219,7 +262,8 @@ function InvoiceEditModal(props) {
                       placeholder = "Actually $ received"
                       name        = "receivedAmount"
                       value       = { receivedAmount}
-                      onChange    = { (event) => Number(event.target.value) && setReceivedAmount(event.target.value)}
+                      // onChange    = { (event) => Number(event.target.value) && setReceivedAmount(event.target.value)}
+                      onChange    = { event => setReceivedAmount(event.target.value)}
                     />
                   </Col>
                 </Row>

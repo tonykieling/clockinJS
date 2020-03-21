@@ -100,8 +100,10 @@ app.get('/ping', (req, res) => {
 // });
 
 // pass these routes to your front end
-// need it to deply purposes
 app.get('*', (req, res) => {
+  console.log(`XXXXXXXX someone (${req.header('x-forwarded-for') || req.connection.remoteAddress}) is here XXXXXXXXXXX`);
+  console.log("1", req.ip);
+  console.log("2", req.connection.remoteAddress);
   res.sendFile(path.join(__dirname, './public', 'index.html'))
 });
 

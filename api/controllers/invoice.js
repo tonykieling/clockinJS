@@ -2,8 +2,8 @@ const mongoose  = require("mongoose");
 
 const Invoice   = require("../models/invoice.js");
 const Clockin   = require("../models/clockin.js");
-const User      = require("../models/user.js");
-const Client    = require("../models/client.js");
+// const User      = require("../models/user.js");
+// const Client    = require("../models/client.js");
 
 // https://youtu.be/YK-GurROGIg
 // @ts-check    // it makes the type checking mandatory for that piece of code
@@ -274,7 +274,7 @@ const invoice_modify_status = async (req, res) => {
 
 
   const status = req.body.newStatus;
-console.log("***req.body", req.body)
+// console.log("***req.body", req.body)
 // if (1) return res.send({message: "OK"});
   try {
     const invoiceToBeChanged = req.body.dateDelivered
@@ -321,6 +321,105 @@ console.log("***req.body", req.body)
     });
   }
 }
+
+
+
+
+// Jan 4th-DEFINITION: Invoice CANNOT be mofified. If something to change, delete and generate a new one.
+// ONLY to change Invoice's status (Generated, Delivered and Received)
+// change user data
+// input: token, which should be admin
+// TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
+// for now, only ADMIN is able to change any user's data
+const invoice_edit = async (req, res) => {
+  console.log("======== inside edit Invoice");
+  // const invoiceId  = req.params.invoiceId;
+  const userAdmin = req.userData.admin;
+  const userId    = req.userData.userId;
+
+  console.log("req.body", req.body);
+  if (1) return res.send({ dataX: req.body});
+
+  // this try is for check is the invoiceId passed from the frontend is alright (exists in database), plus
+  //  check whether either the invoice to be changed belongs for the user or the user is admin - if not, not allowed to change invoice's data
+  let invoice = "";
+  try {
+    invoice = await Invoice
+      .findById(invoiceId);
+    if (!invoice)
+      return res.json({
+        error: `Invoice <id: ${invoice.code}> does not exist.`
+      });
+      
+    if ((userId != invoice.user_id) && !userAdmin)
+      return res.json({
+        error: `Invoice <id: ${invoice.code}> belongs to another user.`
+      });
+
+  } catch(err) {
+    console.log("Error => ", err.message);
+    return((invoiceId.length !== 24) 
+      ? res.json({
+        error: "InvoiceId mystyped."
+      })
+      : res.json({
+        error: "EIMS: Something got wrong."
+      })
+    );
+  }
+
+
+  const status = req.body.newStatus;
+// console.log("***req.body", req.body)
+// if (1) return res.send({message: "OK"});
+  try {
+    const invoiceToBeChanged = req.body.dateDelivered
+      ?
+        await Invoice
+        .updateOne({
+          _id: invoiceId
+        }, {
+          $set: {
+              status,
+              date_delivered: req.body.dateDelivered
+          }
+        })
+        //  {
+        //   runValidators: true
+        // })
+      :
+        await Invoice
+        .updateOne({
+          _id: invoiceId
+        }, {
+          $set: {
+              status,
+              date_received: req.body.dateReceived
+          }
+        })
+        // , {
+        //   runValidators: true
+        // })
+
+    if (invoiceToBeChanged.nModified) {
+      return res.json({
+        message: `Invoice <${invoice.code}> has been modified.`
+      });
+    } else
+      res.json({
+        error: `Invoice <${invoice.code}> not changed.`
+      });
+
+  } catch(err) {
+    console.trace("Error: ", err.message);
+    res.json({
+      error: "ECM02: Something bad"
+    });
+  }
+}
+
+
+
 
 
 // FIRST it needs to check whether the user is admin or the clockin belongs to the user which is proceeding
@@ -388,5 +487,6 @@ module.exports = {
   get_one,
   invoice_add,
   invoice_modify_status,
+  invoice_edit,
   invoice_delete
 }

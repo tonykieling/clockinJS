@@ -16,11 +16,13 @@ router.get("/:invoiceId", checkAuth, invoiceController.get_one);
 // it creates an user account
 router.post("/", checkAuth, invoiceController.invoice_add);
 
-// // it modifies invoice's status
-router.patch("/:invoiceId", checkAuth, invoiceController.invoice_modify_status);
 
-// // // change password
-// // router.patch("password")
+// it modifies invoice's data
+router.patch("/edit", checkAuth, invoiceController.invoice_edit);
+
+
+// it modifies invoice's status
+router.patch("/:invoiceId", checkAuth, invoiceController.invoice_modify_status);
 
 
 // it deletes a user account
