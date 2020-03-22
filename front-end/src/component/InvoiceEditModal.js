@@ -35,7 +35,6 @@ function InvoiceEditModal(props) {
   }
 
   const invoiceCode = props.invoice.code;
-  // const [invoiceCode, setInvoiceCode] = useState(props.invoice.code)
   const [newInvoiceCode, setNewInvoiceCode] = useState(invoiceCode);
 
   const receivedAmount = props.invoice.cad_adjustment || "";
@@ -52,17 +51,6 @@ function InvoiceEditModal(props) {
 
   
   const handleSubmit = async () => {
-    console.log("NEWcode- ", newInvoiceCode)
-    console.log("NEWreceivedAmount- ", newReceivedAmount)
-    console.log("NEWreason", newReason)
-    // console.log("reason- ", !(!newReason || !newReason.trim()))
-// console.log("xxXXx=", reason.trim(), " = ", !!(reason.trim()))
-// console.log("ooooo", (reason !== ""))
-
-    // ((newReceivedAmount === "") && setNewReceivedAmount(""));
-    // ((newReason === "") && setNewReason(""));
-
-    // if ((invoiceCode === props.invoice.code) && !receivedAmount && (!reason || !(reason.trim()))) {
     if ((invoiceCode === newInvoiceCode) && (receivedAmount === newReceivedAmount) && (reason === newReason)) {
       setClassNameMessage("messageFailure");
       setMessage("Nothing to be changed");
@@ -79,7 +67,6 @@ function InvoiceEditModal(props) {
         setClassNameMessage("messageFailure");
         setMessage("Missing Received Amount");
       } else if ((newReceivedAmount !== "") && !(Number(newReceivedAmount))) {
-        console.log("torF", (newReceivedAmount !== ""))
         setClassNameMessage("messageFailure");
         setMessage("'Received $' has to be a number.");
       } else {
@@ -89,10 +76,6 @@ function InvoiceEditModal(props) {
           cad_adjustment    : newReceivedAmount,
           reason_adjustment : newReason
         };
-        // console.log("sending data", data);
-        // console.log("props invoice", props.invoice);
-        // console.log("props", props);
-        // console.log("data", data)
 
 
         // perform the action to send data to be recorded bu the server
@@ -109,10 +92,7 @@ function InvoiceEditModal(props) {
             
           });
   
-          console.log("updateInvoice", updateInvoice)
-
           if (updateInvoice.data.message){
-            console.log("2 received:", updateInvoice.data)
             setClassNameMessage("messageSuccess");
             setMessage("Invoice has been modified");
             setChanges(true);
@@ -126,11 +106,6 @@ function InvoiceEditModal(props) {
           setClassNameMessage("messageFailure");
           setMessage(err.message);
         }
-
-
-
-
-
       }
     }
 
@@ -159,7 +134,6 @@ function InvoiceEditModal(props) {
           </Card.Header>
           <br />
           <Form>
-            { console.log("PROPS:", props)}
 
             <Row>
               <Col>
@@ -246,11 +220,6 @@ function InvoiceEditModal(props) {
                   </Row>
                 </div>
             }
-
-            {/* { receivedAmount ? console.log("receivedAmount", receivedAmount) : console.log("no received$")} */}
-
-            {/* { reason ? console.log("reason", reason) : console.log("no reason for now")} */}
-            
 
             <br />
             <Card>

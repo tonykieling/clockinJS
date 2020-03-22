@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import { Card, Button, ButtonGroup, Form, Table } from "react-bootstrap";
+import { Card, Button, ButtonGroup, Form, Table, Col, Row } from "react-bootstrap";
 import InvoiceChangeStatusModal from "./InvoiceChangeStatusModal.js";
 import ReactModal from "react-modal";
 import { show } from "./aux/formatDate.js";
@@ -344,7 +344,14 @@ class InvoiceModal extends Component {
           <Card.Body>
 
             <Card.Title style={{fontWeight: "bold", fontSize: "large"}}> Client: { this.props.client.nickname }</Card.Title>
-              <Form>
+
+{/**
+            <div>
+              <div style={{width: "50%", border: "solid blue 1px", 
+              // display: thinScreen ? "" : "inline-block"
+              // display: "inline-block"
+              float: "left"
+              }}>
                 <Form.Label style={{left: "2rem"}}> 
                   <b>Total: $</b>{ this.props.invoice.total_cad.toFixed(2) }
                 </Form.Label>
@@ -375,13 +382,148 @@ class InvoiceModal extends Component {
                       </Form.Label>
                     </div>
                 }
-              </Form>
+              </div>
 
-              <Button
-                onClick = { () => this.setState({ showEditInvoiceModal: true})}
-              >
-                Edit Invoice
-              </Button>
+              { this.props.invoice.cad_adjustment &&
+                <div style={{width: "50%", border: "solid blue 1px", 
+                // display: "inline-block"
+                float: "left"
+                // clear: "left"
+                }}>
+                  <Form.Label style={{left: "2rem"}}> 
+                    <b>Received $:</b> { this.props.invoice.cad_adjustment }
+                  </Form.Label>
+                  <Form.Label style={{left: "2rem"}}> 
+                    <b>Reason:</b> { this.props.invoice.reason_adjustment }
+                  </Form.Label>
+                </div>
+              }
+            </div>
+            */}
+
+
+
+
+
+            { thinScreen
+              ? 
+                <div>
+                  <Form.Label style={{left: "2rem"}}> 
+                    <b>Total: $</b>{ this.props.invoice.total_cad.toFixed(2) }
+                  </Form.Label>
+                  <br />
+                  <Form.Label style={{left: "2rem"}}> 
+                    <b>Date Start: </b> { show(this.props.invoice.date_start) }
+                  </Form.Label>
+                  <br />
+                  <Form.Label> 
+                    <b>Date End: </b> { show(this.props.invoice.date_end) }
+                  </Form.Label>
+                  <br />
+                  <Form.Label style={{left: "2rem"}}> 
+                    <b>Date Generated:</b> { show(this.props.invoice.date) }
+                  </Form.Label>
+
+                  { (this.props.invoice.date_delivered || this.state.dateDelivered) &&
+                      <div>
+                        <Form.Label style={{left: "2rem"}}> 
+                          <b>Date Delivered:</b> { show(this.props.invoice.date_delivered || this.state.dateDelivered) }
+                        </Form.Label>
+                      </div>
+                  }
+                  { (this.props.invoice.date_received || this.state.dateReceived) &&
+                      <div>
+                        <Form.Label style={{left: "2rem"}}> 
+                          <b>Date Received:</b> { show(this.props.invoice.date_received || this.state.dateReceived) }
+                        </Form.Label>
+                      </div>
+                  }
+
+                  { this.props.invoice.cad_adjustment &&
+                    <div>
+                      <Form.Label style={{left: "2rem"}}> 
+                        <b>Received $:</b> { this.props.invoice.cad_adjustment }
+                      </Form.Label>
+                      <Form.Label style={{left: "2rem"}}> 
+                        <b>Reason:</b> { this.props.invoice.reason_adjustment }
+                      </Form.Label>
+                    </div>
+                  }
+                </div>
+              : 
+                <div>
+                  <Row>
+                    <Col style={{width: "50%"}}>
+                      <Form.Label style={{left: "2rem"}}> 
+                        <b>Total: $</b>{ this.props.invoice.total_cad.toFixed(2) }
+                      </Form.Label>
+                      <br />
+                      <Form.Label style={{left: "2rem"}}> 
+                        <b>Date Start: </b> { show(this.props.invoice.date_start) }
+                      </Form.Label>
+                      <br />
+                      <Form.Label> 
+                        <b>Date End: </b> { show(this.props.invoice.date_end) }
+                      </Form.Label>
+                      <br />
+                      <Form.Label style={{left: "2rem"}}> 
+                        <b>Date Generated:</b> { show(this.props.invoice.date) }
+                      </Form.Label>
+
+                      { (this.props.invoice.date_delivered || this.state.dateDelivered) &&
+                          <div>
+                            <Form.Label style={{left: "2rem"}}> 
+                              <b>Date Delivered:</b> { show(this.props.invoice.date_delivered || this.state.dateDelivered) }
+                            </Form.Label>
+                          </div>
+                      }
+                      { (this.props.invoice.date_received || this.state.dateReceived) &&
+                          <div>
+                            <Form.Label style={{left: "2rem"}}> 
+                              <b>Date Received:</b> { show(this.props.invoice.date_received || this.state.dateReceived) }
+                            </Form.Label>
+                          </div>
+                      }
+                    </Col>
+
+                    { this.props.invoice.cad_adjustment &&
+                        <Col style={{width: "50%"}}>
+                          <Form.Label style={{left: "2rem"}}> 
+                            <b>Received $:</b> { this.props.invoice.cad_adjustment }
+                          </Form.Label>
+                          <Form.Label style={{left: "2rem"}}> 
+                            <b>Reason:</b> { this.props.invoice.reason_adjustment }
+                          </Form.Label>
+                        </Col>
+                    }
+                  </Row>
+                </div>
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <Button
+              onClick = { () => this.setState({ showEditInvoiceModal: true})}
+            >
+              Edit Invoice
+            </Button>
+
 
               <div className="d-flex flex-column">
                 {this.state.invoiceDeleted
