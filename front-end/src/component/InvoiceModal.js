@@ -269,6 +269,11 @@ class InvoiceModal extends Component {
   }
 
 
+  closeEditModal = changes => {
+    this.props.changeInvoiceData(changes);
+    this.setState({showEditInvoiceModal: false});
+  }
+
 
   render() {
     return (
@@ -287,11 +292,9 @@ class InvoiceModal extends Component {
                 invoice               = { this.props.invoice}
                 showEditInvoiceModal  = { this.state.showEditInvoiceModal}
                 closeInvoiceEditModal = { (changes) => {
-                    console.log("changes", changes);
-
                     changes 
                       ?
-                        console.log("we got changes")
+                        this.closeEditModal(changes)
                       :
                         this.setState({showEditInvoiceModal: false})
                   }
@@ -345,65 +348,6 @@ class InvoiceModal extends Component {
 
             <Card.Title style={{fontWeight: "bold", fontSize: "large"}}> Client: { this.props.client.nickname }</Card.Title>
 
-{/**
-            <div>
-              <div style={{width: "50%", border: "solid blue 1px", 
-              // display: thinScreen ? "" : "inline-block"
-              // display: "inline-block"
-              float: "left"
-              }}>
-                <Form.Label style={{left: "2rem"}}> 
-                  <b>Total: $</b>{ this.props.invoice.total_cad.toFixed(2) }
-                </Form.Label>
-                <br />
-                <Form.Label style={{left: "2rem"}}> 
-                  <b>Date Start: </b> { show(this.props.invoice.date_start) }
-                </Form.Label>
-                <br />
-                <Form.Label> 
-                  <b>Date End: </b> { show(this.props.invoice.date_end) }
-                </Form.Label>
-                <br />
-                <Form.Label style={{left: "2rem"}}> 
-                  <b>Date Generated:</b> { show(this.props.invoice.date) }
-                </Form.Label>
-
-                { (this.props.invoice.date_delivered || this.state.dateDelivered) &&
-                    <div>
-                      <Form.Label style={{left: "2rem"}}> 
-                        <b>Date Delivered:</b> { show(this.props.invoice.date_delivered || this.state.dateDelivered) }
-                      </Form.Label>
-                    </div>
-                }
-                { (this.props.invoice.date_received || this.state.dateReceived) &&
-                    <div>
-                      <Form.Label style={{left: "2rem"}}> 
-                        <b>Date Received:</b> { show(this.props.invoice.date_received || this.state.dateReceived) }
-                      </Form.Label>
-                    </div>
-                }
-              </div>
-
-              { this.props.invoice.cad_adjustment &&
-                <div style={{width: "50%", border: "solid blue 1px", 
-                // display: "inline-block"
-                float: "left"
-                // clear: "left"
-                }}>
-                  <Form.Label style={{left: "2rem"}}> 
-                    <b>Received $:</b> { this.props.invoice.cad_adjustment }
-                  </Form.Label>
-                  <Form.Label style={{left: "2rem"}}> 
-                    <b>Reason:</b> { this.props.invoice.reason_adjustment }
-                  </Form.Label>
-                </div>
-              }
-            </div>
-            */}
-
-
-
-
 
             { thinScreen
               ? 
@@ -444,6 +388,7 @@ class InvoiceModal extends Component {
                       <Form.Label style={{left: "2rem"}}> 
                         <b>Received $:</b> { this.props.invoice.cad_adjustment }
                       </Form.Label>
+                      <br />
                       <Form.Label style={{left: "2rem"}}> 
                         <b>Reason:</b> { this.props.invoice.reason_adjustment }
                       </Form.Label>
@@ -491,6 +436,7 @@ class InvoiceModal extends Component {
                           <Form.Label style={{left: "2rem"}}> 
                             <b>Received $:</b> { this.props.invoice.cad_adjustment }
                           </Form.Label>
+                          <br />
                           <Form.Label style={{left: "2rem"}}> 
                             <b>Reason:</b> { this.props.invoice.reason_adjustment }
                           </Form.Label>
@@ -499,24 +445,6 @@ class InvoiceModal extends Component {
                   </Row>
                 </div>
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             <Button
               onClick = { () => this.setState({ showEditInvoiceModal: true})}

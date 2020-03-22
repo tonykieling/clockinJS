@@ -29,8 +29,9 @@ function InvoiceEditModal(props) {
 
   const handleClose = () => {
     setShowEditInvoice(false);
+    const invoiceId = props.invoice._id
     changes 
-      ? props.closeInvoiceEditModal({newInvoiceCode, newReceivedAmount, newReason})
+      ? props.closeInvoiceEditModal({ invoiceId, newInvoiceCode, newReceivedAmount, newReason})
       : props.closeInvoiceEditModal();
   }
 

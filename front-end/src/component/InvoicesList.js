@@ -94,13 +94,11 @@ class InvoicesList extends Component {
 
 
 renderDataTable = (invoices) => {
-  // date date_start date_end notes total_cad status
-// console.log("invoices", invoices);
   return invoices.map((invoice, index) => {
     const invoiceToSend = {
       num         : index + 1,
       date        : formatDate.show(invoice.date),
-      totalCad    : invoice.total_cad,
+      totalCad    : Number(invoice.cad_adjustment) || Number(invoice.total_cad),
       code        : invoice.code,
       status      : invoice.status
     }
@@ -183,6 +181,24 @@ renderDataTable = (invoices) => {
   }
 
 
+  updateInvoiceData = data => {
+    const tempInvoice = { ...this.state.invoice};
+    tempInvoice.code              = data.newInvoiceCode;
+    tempInvoice.cad_adjustment    = data.newReceivedAmount;
+    tempInvoice.reason_adjustment = data.newReason;
+
+    // update invoiceList
+    const newInvoiceList = this.state.invoiceList.map(invoice => (invoice._id === data.invoiceId) ? invoice = tempInvoice : invoice);
+
+    this.setState({
+      invoice           : tempInvoice,
+      invoiceList       : newInvoiceList,
+      invoiceListTable  : this.renderDataTable(newInvoiceList)
+    });
+
+  }
+
+
   render() {
     return (
       <div className="formPosition">
@@ -194,6 +210,7 @@ renderDataTable = (invoices) => {
             closeModal        = { this.closeModal }
             updateScreen      = { this.updateScreen }
             openInvoiceModal  = { this.state.openInvoiceModal }
+            changeInvoiceData = { data => this.updateInvoiceData(data)}
          />
         : "" }
         

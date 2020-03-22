@@ -342,9 +342,6 @@ const invoice_edit = async (req, res) => {
     reason_adjustment
   } = req.body;
 
-  console.log("req.body", req.body);
-console.log("=>", invoiceId, code, cad_adjustment, reason_adjustment)
-
   const userId      = req.userData.userId;
   // const checkUser   = require("../helpers/user-h.js");
   // // it checks whether user is OK and grab info about them which will be used later
