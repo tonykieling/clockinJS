@@ -173,31 +173,6 @@ class InvoiceModal extends Component {
   }
 
 
-
-  /**
-   // this call is an old one.
-   now it is being done by valling formatDate.show, importing from the file ../aux/formatDate.js
-   */
-
-//   formatDate = incomingDate => {
-// console.log("===> incomingDate", incomingDate);
-//     const date = new Date(incomingDate);
-// console.log("===", date, "=", date.toUTCString());
-// // the error is because month is taking the date before convert it to UTC
-// // solved with the below code
-// // need to create a function componenet to have this as a pattern for each date in the system, i.e. "Jan 01, 2020"
-//     // const month = date.toLocaleString('default', { month: 'short' });
-//     const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-// // console.log("month", month);
-//     const day = date.getUTCDate() > 9 ? date.getUTCDate() : `0${date.getUTCDate()}`;
-//     // return(date.getUTCDate() > 9
-//     //     ? `${month} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
-//     //     : `${month} 0${date.getUTCDate()}, ${date.getUTCFullYear()}` );
-//     return(`${month[date.getUTCMonth()]} ${day}, ${date.getUTCFullYear()}`);
-//     // return(`${date}`);
-//   }
-
-
   renderDataTable = clockins => {
     return clockins.map((clockin, index) => {
       const clockinsToSend = renderClockinDataTable(clockin, index);
@@ -446,11 +421,20 @@ class InvoiceModal extends Component {
                 </div>
             }
 
-            <Button
-              onClick = { () => this.setState({ showEditInvoiceModal: true})}
-            >
-              Edit Invoice
-            </Button>
+            { this.state.currentStatus === "Received"
+                ?
+                  <Button
+                    onClick = { () => this.setState({ showEditInvoiceModal: true})}
+                  >
+                    Edit Invoice
+                  </Button>
+                : 
+                  <Button
+                    onClick = { () => this.setState({ showEditInvoiceModal: true})}
+                  >
+                    Edit Invoice's Code
+                  </Button>
+            }
 
 
               <div className="d-flex flex-column">

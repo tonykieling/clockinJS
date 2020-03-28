@@ -250,12 +250,12 @@ function InvoiceEditModal(props) {
                   </Col>
                   <Col>
                     <Form.Control
-                      style         = {{ textAlign: "right"}}
+                      disabled    = { (props.invoice.status === "Received") ? false : true}
+                      style       = {{ textAlign: "right"}}
                       type        = "number"
-                      placeholder = { newReceivedAmount || "Actually $ received"}
+                      placeholder = { (props.invoice.status === "Received") ? "Actually $ received" : "disabled"}
                       name        = "newReceivedAmount"
                       value       = { newReceivedAmount}
-                      // onChange    = { (event) => Number(event.target.value) && setReceivedAmount(event.target.value)}
                       onChange    = { event => setNewReceivedAmount(event.target.value)}
                     />
                   </Col>
@@ -263,10 +263,13 @@ function InvoiceEditModal(props) {
 
                 <Form.Label column className="cardLabel" style={{paddingLeft: "0px"}}>Reason</Form.Label>
                 <Form.Control
+                  disabled    = { (props.invoice.status === "Received") ? false : true}
                   style         = {{ textAlign: "right"}}
                   as          = "textarea"
                   rows        = "3"
-                  placeholder = { newReason || "Why the diff btw the Total CAD and Received Amount"}
+                  placeholder = { (props.invoice.status === "Received") 
+                                ? "Why the diff btw the Total CAD and Received Amount" 
+                                : "Only enabled when Invoice's status is 'Received'"}
                   name        = "newReason"
                   value       = { newReason}
                   onChange    = { (event) => setNewReason(event.target.value)}

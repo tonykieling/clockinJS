@@ -13,11 +13,17 @@ const clockinRoutes   = require("./api/routes/clockin.js");
 const invoiceRoutes   = require("./api/routes/invoice.js");
 
 
+app.use((req, res, next) => {
+  // log the IP
+  next();
+});
+
 const cors = require('cors');
 app.use(cors());
 
 // need it to deply purposes
 app.use(express.static('public'));
+
 
 // console.log("+++process.env.DB", process.env.DB, process.env.JWT_KEY, process.env.JWT_expiration);
 // connection to the database regarding the environment variable URI
@@ -44,7 +50,7 @@ app.use(bodyParser.json());
 // here, it checks JSON malformatted messages
 app.use((err, req, res, next) => {
   if (err) {
-    res.status(409).json({
+    return res.status(409).json({
       error: err.message
     });
   }
@@ -86,6 +92,7 @@ app.use("/clockin", clockinRoutes);
 // it calls invoice routes
 app.use("/invoice", invoiceRoutes);
 
+
 app.get('/ping', (req, res) => {
   return res.send('pong');
 })
@@ -99,13 +106,18 @@ app.get('/ping', (req, res) => {
 //   res.status(400).send("Route NOT found!!");
 // });
 
-// pass these routes to your front end
-console.log("printing")
-app.get('*', (req, res) => {
-  console.log(`XXXXXXXX someone (${req.header('x-forwarded-for') || req.connection.remoteAddress}) is here XXXXXXXXXXX`);
+
+
+app.use((req, res, next) => {
+//   console.log(`===============> (${req.header('x-forwarded-for') || req.connection.remoteAddress}) is here <===============`);
   console.log("1", req.ip);
   console.log("2", req.connection.remoteAddress);
-  res.sendFile(path.join(__dirname, './public', 'index.html'))
+  next();
+});
+
+// pass these routes to your front end
+app.get('*', (req, res) => {
+  return res.sendFile(path.join(__dirname, './public', 'index.html'))
 });
 
 app.listen(PORT, () => console.log(`Server is running at ${PORT}`));
