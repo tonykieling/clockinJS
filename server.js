@@ -14,7 +14,8 @@ const invoiceRoutes   = require("./api/routes/invoice.js");
 
 
 app.use((req, res, next) => {
-  // log the IP
+  const logHandling = require("./api/helpers/log_handling.js");
+  logHandling(req.header('x-forwarded-for') || req.connection.remoteAddress || req.ip || req.connection.remoteAddress);
   next();
 });
 
@@ -107,13 +108,6 @@ app.get('/ping', (req, res) => {
 // });
 
 
-
-app.use((req, res, next) => {
-//   console.log(`===============> (${req.header('x-forwarded-for') || req.connection.remoteAddress}) is here <===============`);
-  console.log("1", req.ip);
-  console.log("2", req.connection.remoteAddress);
-  next();
-});
 
 // pass these routes to your front end
 app.get('*', (req, res) => {
