@@ -13,11 +13,12 @@ const clockinRoutes   = require("./api/routes/clockin.js");
 const invoiceRoutes   = require("./api/routes/invoice.js");
 
 
-app.use((req, res, next) => {
-  const logHandling = require("./api/helpers/log_handling.js");
-  logHandling(req.header('x-forwarded-for') || req.connection.remoteAddress || req.ip || req.connection.remoteAddress);
-  next();
-});
+// this is a middleware to log but now it is disabled
+// app.use((req, res, next) => {
+//   const logHandling = require("./api/helpers/log_handling.js");
+//   logHandling(req.header('x-forwarded-for') || req.connection.remoteAddress || req.ip || req.connection.remoteAddress);
+//   next();
+// });
 
 const cors = require('cors');
 app.use(cors());

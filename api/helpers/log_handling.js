@@ -1,7 +1,6 @@
 const Log    = require("../models/log.js");
 
 const add_log = async (id) => {
-  console.log("++++++++++++++INSIDE ADD_LOG")
   try {
     const newLog = new Log({
       id,

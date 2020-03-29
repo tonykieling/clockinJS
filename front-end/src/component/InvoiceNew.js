@@ -22,8 +22,8 @@ const thinScreen = window.innerWidth < 800 ? true : false;
 class InvoiceNew extends Component {
 
   state = {
-    dateStart         : "",
-    dateEnd           : "",
+    dateStart         : "2020-02-11",
+    dateEnd           : "2020-04-13",
 
     // dateStart         : "2020-01-01",
     // dateEnd           : "2020-02-29",
@@ -40,7 +40,8 @@ class InvoiceNew extends Component {
     showModal         : false,
     clockinToModal    : "",
     classNameMessage  : "",
-    messageInvoice    : ""
+    messageInvoice    : "",
+    disableInvGenBtn  : false
   }
 
 
@@ -142,6 +143,8 @@ class InvoiceNew extends Component {
         });
         return;
       }
+
+      this.setState({disableInvGenBtn: true});
 
       const data = {
         date      : dtGeneration || null,
@@ -253,7 +256,8 @@ class InvoiceNew extends Component {
       this.setState({
         message         : "",
         messageInvoice  : "",
-        invoiceCode     : ""
+        invoiceCode     : "",
+        disableInvGenBtn: false
       });
     }, 3500);
   }
@@ -430,11 +434,10 @@ class InvoiceNew extends Component {
                 </Card.Footer>
               </div>
 
-
               <Button 
                 variant   = "primary" 
                 type      = "submit"
-                disabled  = { this.state.clockinWithInvoiceCode}
+                disabled  = { this.state.clockinWithInvoiceCode || this.state.disableInvGenBtn }
                 onClick   = { this.handleInvoiceGenerator } 
                 ref       = { input => this.generatorBtn = input}
               >

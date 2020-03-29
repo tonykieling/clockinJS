@@ -30,7 +30,8 @@ class ClientNew extends Component {
       className       : "",
       validForm       : false,
       formValidated   : false,
-      saveButtonType  : undefined
+      saveButtonType  : undefined,
+      disableBtn      : false
     }
 
   handleChange = e => {
@@ -111,6 +112,8 @@ class ClientNew extends Component {
         else
           this.textInput13.focus();
       } else {
+        this.setState({ disableBtn: true });
+
         const url = "/client";
         const createClient  = {
           name        : this.state.name,
@@ -181,7 +184,8 @@ class ClientNew extends Component {
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        message         : ""
+        message     : "",
+        disableBtn  : false
       })
       this.textInput1.focus();
     }, 3500);
@@ -386,12 +390,11 @@ class ClientNew extends Component {
           </Card.Footer>
 
           <div className="d-flex flex-column">
-            <Button 
-              variant = "primary" 
-              // type    = { this.state.saveButtonType }
-              // type    = "submit"
-              onClick = { this.handleSubmit }
-              ref     = {input => this.buttonSave = input}
+            <Button
+              disabled  = { this.state.disableBtn }
+              variant   = "primary" 
+              onClick   = { this.handleSubmit }
+              ref       = {input => this.buttonSave = input}
             >
             Save
             </Button>
