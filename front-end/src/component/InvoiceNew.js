@@ -59,7 +59,12 @@ class InvoiceNew extends Component {
   handleGetClockins = async event => {
     event.preventDefault();
 
-    if (this.state.dateStart && this.state.dateEnd && this.state.client) {
+    if (this.state.dateEnd <= this.state.dateStart) {
+      this.setState({
+        message           : "Date End has to be greater than Date Start.",
+        classNameMessage  : "messageFailure"
+      });
+    } else if (this.state.dateStart && this.state.dateEnd && this.state.client) {
       const
         dateStart = this.state.dateStart,
         dateEnd   = this.state.dateEnd,
@@ -97,7 +102,7 @@ class InvoiceNew extends Component {
             tableVisibility   : false
           });
 
-          this.clearMessage();
+          // this.clearMessage();
         }
 
       } catch(err) {
@@ -106,7 +111,7 @@ class InvoiceNew extends Component {
           classNameMessage  : "messageFailure"
         });
 
-        this.clearMessage();
+        // this.clearMessage();
       }
     } else {
       this.setState({
@@ -114,10 +119,10 @@ class InvoiceNew extends Component {
         classNameMessage  : "messageFailure"
       });
 
-      this.clearMessage();
+      // this.clearMessage();
     }
 
-    // this.clearMessage();
+    this.clearMessage();
   }
 
 
