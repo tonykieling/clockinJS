@@ -2,11 +2,9 @@ import React, {useState} from "react";
 
 export default function PunchInTableEdit(props) {
 
-console.log("props are: ", props);
   const [returnTable, setReturnTable] = useState("")
 
   const editClockin = () => {
-console.log("this is edit");
   }
   
   const renderDataTable = () => {
