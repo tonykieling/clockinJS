@@ -23,6 +23,7 @@ import InvoicesList   from "./component/InvoicesList.js";
 import ResetPassword  from "./component/ResetPassword.js";
 import Guidance       from "./component/Guidance.js";
 import Contact        from "./component/Contact.js";
+import InvoiceIssue   from "./component/InvoiceIssue.js";
 
 
 class App extends Component {
@@ -122,6 +123,14 @@ class App extends Component {
                 return <Login />
               else
                 return <InvoicesList />
+            }} />
+
+          <Route exact path = "/invoiceIssue" 
+            render = {() => {
+              if (!this.props.storeEmail)
+                return <Login />
+              else
+                return <InvoiceIssue />
             }} />
 
           <Route path = "/reset_password" >

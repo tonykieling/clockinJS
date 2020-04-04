@@ -6,6 +6,7 @@
     "@types/react": "^16.9.27",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
+    "jspdf": "^1.5.3",
     "jwt-decode": "^2.2.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

@@ -102,7 +102,7 @@ const sendClockinEmail = (subject, clockin, user, client) => {
     <br>
 
       <p>Kind regards from</p>
-      <h4>Clockin.js Team :)</h4>
+      <h4><a href="https://clockinjs.herokuapp.com">Clockin.js</a> Team :)</h4>
     </div>
   `);
   
@@ -141,7 +141,7 @@ const gotNewUser = user => {
       <p><b>${user}</b></p>
       <br>
       <p>Kind regards from</p>
-      <h4>Clockin.js Team :)</h4>
+      <h4><a href="https://clockinjs.herokuapp.com">Clockin.js</a> Team :)</h4>
     </div>
   `);
 
@@ -156,10 +156,13 @@ const welcomeEmail = (user, to) => {
   const content = (`
     <div>
       <p>Hi ${user.split(" ")[0]}.</p>
-      <p>Welcome to Clockin.js</p>
+      <p>Welcome to <a href="https://clockinjs.herokuapp.com">Clockin.js</a></p>
       <br>
+      <p>Feel free to use the system, register your clients, punch your worked times and generated invoices.<p>
+      <br>
+      
       <p>Kind regards from</p>
-      <h4>Clockin.js Team :)</h4>
+      <h4><a href="https://clockinjs.herokuapp.com">Clockin.js</a> Team :)</h4>
     </div>
   `);
 

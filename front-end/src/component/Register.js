@@ -83,6 +83,7 @@ class Register extends Component {
     e.preventDefault();
 
     if (this.state.email !== "" && this.state.name !== "") { // && this.state.password !== "" && this.state.confirmPassword !== "") {
+      console.log("this.state.phone", this.state.phone)
       if ((this.state.password !== this.state.confirmPassword) || (this.state.password === "")) {
         // alert("Password and \nConfirm Password fields\n\nMUST be the same\n and NOT empty.");
         this.setState({
@@ -91,8 +92,16 @@ class Register extends Component {
           password          : "",
           confirmPassword   : ""
         });
-        // this.textInput7.focus();
+        this.textInput7.focus();
         // this.clearMessage();
+      } else if (this.state.phone !== "" 
+              &&  ((!Number(this.state.phone.substring(1,4)))
+                || (!Number(this.state.phone.substring(6,9))) 
+                || (!Number(this.state.phone.substring(10,14))))) { 
+        this.setState({
+          classNameMessage  : "messageFailure",
+          message           : "Phone has to have 10 numbers (i.e. 123 456 789) or empty.",
+        });
       } else {
         const url = "/user/signup";
         const createUser  = {

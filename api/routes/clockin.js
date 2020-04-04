@@ -10,8 +10,12 @@ const clockinController   = require("../controllers/clockin.js");
 router.get("/", checkAuth, clockinController.get_all);
 
 
-// it returns info about a particular user
+// it returns info about a particular clockin
 router.get("/:clockinId", checkAuth, clockinController.get_one);
+
+
+// // it returns info about a particular set of clockins, regarding a specific invoice
+// router.get("/clockinInvoice", checkAuth, clockinController.get_clockins_by_invoice);
 
 
 // it creates an user account
