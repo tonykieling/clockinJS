@@ -16,15 +16,20 @@ class GetClients extends Component {
 
   async componentDidMount() {
     const url = "/client";    // this is dev setting
+    const askInvoiceSample = this.props.askInvoiceSample || false;
+
     try {
       const getClients = await axios.get( 
         url, 
         {  
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization" : `Bearer ${this.props.storeToken}` }
-      });
-      
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization" : `Bearer ${this.props.storeToken}`,
+            "askinvoicesample" : askInvoiceSample
+          }
+        },
+      );
+
       if (getClients.data.count) {
         this.setState({
           clients: getClients.data.message

@@ -78,6 +78,10 @@ const clientSchema = mongoose.Schema({
   
   deleted: {
     type: Boolean
+  },
+  
+  invoice_sample: {
+    type: String
   }
   
 });

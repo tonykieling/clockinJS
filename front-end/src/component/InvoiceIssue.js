@@ -25,7 +25,8 @@ class InvoicesIssue extends Component {
     message           : "",
 
     openInvoiceModal  : false,
-    invoice           : ""
+    invoice           : "",
+    invoiceSample     : false
   }
 
 
@@ -62,14 +63,18 @@ class InvoicesIssue extends Component {
         });
 
         if (getInvoices.data.allInvoices){
+          const hasInvoiceSample = this.state.client.invoice_sample ? true : false;
+
           this.setState({
             invoiceList       : getInvoices.data.allInvoices,
             invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
             tableVisibility   : true,
             clientId,
 
-            classNameMessage  : "messageSuccess",
-            message           : "Click on the invoice to generate a pdf document and check your download folder."
+            classNameMessage  : `${hasInvoiceSample ? "messageSuccess" : "messageFailure"}`,
+            message           : `${hasInvoiceSample 
+              ? "Click on the invoice to generate a pdf document and check your download folder." 
+              : "Client does not have invoice sample registered. Please contact tony.kieling@gmail.com and ask for it."}`
           });
         } else {
           throw(getInvoices.data.message);
@@ -97,7 +102,7 @@ renderDataTable = (invoices) => {
     }
 
     return (
-      <tr key={invoiceToSend.num} onClick={() => this.issuePdf(invoice)}>
+      <tr key={invoiceToSend.num} onClick={this.state.client.invoice_sample ? () => this.issuePdf(invoice) : null}>
         <td>{invoiceToSend.num}</td>
         <td>{invoiceToSend.date}</td>
         <td>{invoiceToSend.totalCad.toFixed(2)}</td>
@@ -123,7 +128,8 @@ renderDataTable = (invoices) => {
       client,
       clientId        : client._id,
       disabledIPBtn   : false,
-      tableVisibility : false
+      tableVisibility : false,
+      message         : ""
     });
   }
 
@@ -147,8 +153,9 @@ renderDataTable = (invoices) => {
           <Card.Header>Generate a Pdf file</Card.Header>
           <Card.Body>
           <GetClients 
-                client        = { this.state.client }
-                getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
+                client            = { this.state.client }
+                getClientInfo     = { this.getClientInfo } 
+                askInvoiceSample  = { true } />
 
           <br></br>
           <Form onSubmit={this.handleGetInvoices} >

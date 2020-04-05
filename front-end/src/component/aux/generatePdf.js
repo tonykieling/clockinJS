@@ -1,7 +1,6 @@
 import axios from "axios";
 import jsPDF from 'jspdf';
 import { show } from "./formatDate.js";
-import { invoiceSample } from "./invoiceTemplate.js";
 
 
 const getClocinks = async (userToken, clientId, dateStart, dateEnd) => {
@@ -13,8 +12,10 @@ const getClocinks = async (userToken, clientId, dateStart, dateEnd) => {
       {  
         headers: { 
           "Content-Type": "application/json",
-          "Authorization" : `Bearer ${userToken}` }
-    });
+          "Authorization" : `Bearer ${userToken}`
+        }
+      }
+    );
 
     return(clockins.data.allClockins);
   } catch(err){
@@ -28,7 +29,6 @@ const generatePdf = async(props) => {
                                props.client._id, 
                                props.invoice.date_start.substring(0, 10), 
                                props.invoice.date_end.substring(0, 10));
-  
   const data = {
     invoiceDate         : props.invoice.date,
     invoiceNumber       : props.invoice.code,
@@ -42,12 +42,13 @@ const generatePdf = async(props) => {
     client              : props.client.name,
     typeOfService       : "Behaviour Intervention",
     clockins,
-    totalCad            : props.invoice.total_cad
+    totalCad            : props.invoice.total_cad,
+    invoiceSample       : props.client.invoice_sample
   };
   
   let doc = new jsPDF();
 
-  doc.addImage(invoiceSample, "JPEG", 0, 0, 210, 297);
+  doc.addImage(data.invoiceSample, "JPEG", 0, 0, 210, 297);
 
   doc.setTextColor(92, 76, 76);
   doc.setFontSize(12);

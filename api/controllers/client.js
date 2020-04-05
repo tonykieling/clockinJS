@@ -7,8 +7,9 @@ const Client    = require("../models/client.js");
 // TODO: apply the Authorization method
 const get_all = async (req, res) => {
 console.log("inside client get_all");
-  const userAdmin = req.userData.admin;
-  const userId    = req.userData.userId;
+  const userAdmin   = req.userData.admin;
+  const userId      = req.userData.userId;
+  const askInvoiceSample = req.headers.askinvoicesample || false;
 
   try {
     let allClients = null;
@@ -17,9 +18,12 @@ console.log("inside client get_all");
         .find();
         // .select(" name nickname mother consultant user_id ");
         // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
-    } else {
+    } else if (askInvoiceSample.toLowerCase() === "true") {
       allClients = await Client
         .find({ user_id: userId});      // it has to be for only that user
+    } else {
+      allClients = await Client
+        .find({ user_id: userId}, { invoice_sample: 0});      // it has to be for only that user
         // .select(" name nickname mother consultant ")
     }
 

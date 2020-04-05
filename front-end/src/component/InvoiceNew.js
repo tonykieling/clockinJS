@@ -58,7 +58,12 @@ class InvoiceNew extends Component {
   handleGetClockins = async event => {
     event.preventDefault();
 
-    if (this.state.dateEnd <= this.state.dateStart) {
+    if (!this.state.dateStart || !this.state.dateEnd) {
+      this.setState({
+        message           : "Please, select Client and set Date Start and Date End.",
+        classNameMessage  : "messageFailure"
+      });      
+    } else if (this.state.dateEnd <= this.state.dateStart) {
       this.setState({
         message           : "Date End has to be greater than Date Start.",
         classNameMessage  : "messageFailure"
