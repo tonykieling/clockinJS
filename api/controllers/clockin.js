@@ -232,7 +232,7 @@ console.log("inside clockins ADD", req.body);
   const break_start = breakStart ? new Date(breakStart + d) : null;
   const break_end   = breakEnd ? new Date(breakEnd + d) : null;
   const workedHours = (time_end - time_start) - (breakEnd - breakStart);
-  console.log("horkedhours:", workedHours, time_start, time_end, breakStart, breakEnd);
+  // console.log("horkedhours:", workedHours, time_start, time_end, breakStart, breakEnd);
 
 
   try {

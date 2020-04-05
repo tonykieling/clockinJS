@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 
 import GetClients from "./aux/GetClients.js";
-import PdfModal from "./PdfModal.js";
-import * as formatDate from "./aux/formatDate.js";
+import { generatePdf } from "./aux/generatePdf.js";
+import { show } from "./aux/formatDate.js";
 
 /**
  * how to use tooltips (TIPS)
@@ -49,7 +49,6 @@ class InvoicesIssue extends Component {
         message           : "Select a client.",
         classNameMessage  : "messageFailure"
       });
-      // this.clearMessage();
     } else {
       const url = `/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
@@ -67,25 +66,22 @@ class InvoicesIssue extends Component {
             invoiceList       : getInvoices.data.allInvoices,
             invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
             tableVisibility   : true,
-            clientId
+            clientId,
+
+            classNameMessage  : "messageSuccess",
+            message           : "Click on the invoice to generate a pdf document and check your download folder."
           });
         } else {
-          this.setState({
-            message           : "No Invoices for this period.",
-            classNameMessage  : "messageFailure",
-            tableVisibility   : false
-          });
+          throw(getInvoices.data.message);
         }
-
-
       } catch(err) {
         this.setState({
-          message           : err.message,
+          message           : err,
           classNameMessage  : "messageFailure"
-       });
+        });
+        this.clearMessage();
       }
     }
-    this.clearMessage();
   }
 
 
@@ -94,14 +90,14 @@ renderDataTable = (invoices) => {
   return invoices.map((invoice, index) => {
     const invoiceToSend = {
       num         : index + 1,
-      date        : formatDate.show(invoice.date),
+      date        : show(invoice.date),
       totalCad    : Number(invoice.cad_adjustment) || Number(invoice.total_cad),
       code        : invoice.code,
       status      : invoice.status
     }
 
     return (
-      <tr key={invoiceToSend.num} onClick={() => this.invoiceEdit(invoice)}>
+      <tr key={invoiceToSend.num} onClick={() => this.issuePdf(invoice)}>
         <td>{invoiceToSend.num}</td>
         <td>{invoiceToSend.date}</td>
         <td>{invoiceToSend.totalCad.toFixed(2)}</td>
@@ -133,39 +129,22 @@ renderDataTable = (invoices) => {
 
 
 
-  invoiceEdit = (invoice) => {
-    this.setState({
-      openInvoiceModal: true,
-      invoice
-    });
+  issuePdf = (invoice) => {
+    const data = {
+      invoice,
+      user      : this.props.user,
+      client    : this.state.client
+    };
+    generatePdf(data);
   }
-
-
-  closeModal = () => {
-    this.setState({
-      openInvoiceModal: false
-    });
-  }
-
-
 
 
   render() {
     return (
       <div className="formPosition">
-        <br />
-        {this.state.openInvoiceModal ?
-          <PdfModal
-            invoice           = { this.state.invoice }
-            client            = { this.state.client }
-            closeModal        = { this.closeModal }
-            user              = { this.props.user }
-            openInvoiceModal  = { this.state.openInvoiceModal }
-         />
-        : "" }
-        
+        <br />        
         <Card className="card-settings">
-          <Card.Header>Invoice's Issue</Card.Header>
+          <Card.Header>Generate a Pdf file</Card.Header>
           <Card.Body>
           <GetClients 
                 client        = { this.state.client }
