@@ -42,17 +42,16 @@ class GetClients extends Component {
           }
         },
       );
-console.log("token: ", this.props.storeToken);
+
       if (getClients.data.count) {
         this.setState({
           clients: getClients.data.message
         });
       } else if (getClients.data.error) {
         //call message modal to say the user needs to login again and redirect to /land
-console.log("it wont happen rn!");
-        // this.setState({
-        //   showModal: true
-        // });
+        this.setState({
+          showModal: true
+        });
       }
     } catch(err) {
       this.setState({
