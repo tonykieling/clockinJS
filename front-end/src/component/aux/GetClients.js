@@ -49,7 +49,7 @@ console.log("token: ", this.props.storeToken);
         });
       } else if (getClients.data.error) {
         //call message modal to say the user needs to login again and redirect to /land
-console.log("it wont happen rn");
+console.log("it wont happen rn!");
         // this.setState({
         //   showModal: true
         // });
