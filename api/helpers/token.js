@@ -29,10 +29,7 @@ const token_validation = (token) => {
     const decodedToken  = jwt.verify(token, process.env.JWT_KEY);
     return decodedToken;
   } catch(err) {
-    // console.trace("Error: ", err.message);   //no console message
-    return res.status(403).json({
-      error: "ETV01: Token is invalid"
-    });
+    return false;
   }
 }
 

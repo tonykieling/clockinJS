@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
 import { Dropdown } from "react-bootstrap";
+import MessageModal from "../MessageModal.js";
+import { Redirect } from "react-router-dom";
 
 
 class GetClients extends Component {
@@ -10,9 +12,20 @@ class GetClients extends Component {
     super(props);
     this.state = {
       clients       : undefined,
-      errorMsg      : undefined
+      errorMsg      : undefined,
+      goLand        : false,
+      showModal     : false
     }
   }
+
+  logout = () => {
+    this.props.noUser();
+    this.setState({
+      goLand    : true,
+      showModal : false
+    });
+  };
+
 
   async componentDidMount() {
     const url = "/client";    // this is dev setting
@@ -29,11 +42,17 @@ class GetClients extends Component {
           }
         },
       );
-
+console.log("token: ", this.props.storeToken);
       if (getClients.data.count) {
         this.setState({
           clients: getClients.data.message
         });
+      } else if (getClients.data.error) {
+        //call message modal to say the user needs to login again and redirect to /land
+console.log("it wont happen rn");
+        // this.setState({
+        //   showModal: true
+        // });
       }
     } catch(err) {
       this.setState({
@@ -65,28 +84,29 @@ class GetClients extends Component {
 
   changes = (event, incommingClient) => {
     event.preventDefault();
-// console.log("inside this.changes - GetClients.js");
-// console.log(event.target);
-// console.log("clients", this.state.clients);
-
-    // this.setState({
-    //   dropDownLabel: event.target.name
-    // });
-    // const client = JSON.parse(event.target.dataset.client);
-    // this.props.dispatchSetClient({ client });
-    // this.props.populateForm(client);
     this.props.getClientInfo(incommingClient);
   }
 
 
   render() {
-    // console.log("rendering GetList!!");
-    // console.log("this.state.clients", this.state.clients);
     return (
       <div>
+        { this.state.goLand && <Redirect to = "/land" /> }
+
+        { this.state.showModal
+            &&
+              <MessageModal
+                openModal = { this.state.showModal }
+                message   = "User needs to login again."
+                noMethod  = { this.logout }
+              />
+        }
+
         { this.state.clients
-        ? this.populateDropbox()
-        : "No clients at all" }
+          ? this.populateDropbox()
+          : "No clients at all" 
+        }
+
       </div>
     )
   }
@@ -100,4 +120,10 @@ const mapStateToProps = store => {
 };
 
 
-export default connect(mapStateToProps, null)(GetClients);
+const mapDispatchToProps = dispatch => {
+  return {
+    noUser: () => dispatch({type:"LOGOUT"})
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(GetClients);

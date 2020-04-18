@@ -28,8 +28,8 @@ function SysHeader(props) {
 
 
   const [showModal, setShowModal] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const [goLand, setGoLand] = useState(false);
+  const [showMenu, setShowMenu]   = useState(false);
+  const [goLand, setGoLand]       = useState(false);
   
 
   const logout = (e) => {
@@ -73,8 +73,8 @@ function SysHeader(props) {
       !smallDevice
         ?
           <div style={{all: "unset"}}>
-            <Navbar 
-              bg="primary" 
+            <Navbar
+              bg="info"
               className="showNormalMenu"
               sticky  = {"top"}
             >
