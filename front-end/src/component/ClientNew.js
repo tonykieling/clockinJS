@@ -9,7 +9,7 @@ import MaskedInput from 'react-text-mask';
 // import "react-datepicker/dist/react-datepicker.css";
 
 
-class ClientNew extends Component {
+class KidClientNew extends Component {
 
   state = {
       name            : "",
@@ -206,7 +206,7 @@ class ClientNew extends Component {
         <Card className="card-settings">
         {/* <Card className="bigCardPosition"> */}
           <Card.Header>
-            <h2>New Client</h2>
+            <h2>New Kid Client</h2>
           </Card.Header>
           <Form
             // autoComplete  = {"off"}
@@ -441,4 +441,4 @@ const mapStateToProps = store => {
 };
 
 
-export default connect(mapStateToProps, null)(ClientNew)
+export default connect(mapStateToProps, null)(KidClientNew)

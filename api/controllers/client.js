@@ -101,7 +101,15 @@ console.log("inside client add");
         consultant, 
         cPhone, 
         cEmail, 
-        defaultRate
+        defaultRate,
+
+        email,
+        phone,
+        address,
+        city,
+        province,
+        postalCode,
+        typeOfService
      } = req.body;
   const userId = req.userData.userId
   const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : null;
@@ -139,7 +147,14 @@ console.log("inside client add");
       cphone        : cPhone || "", 
       cemail        : cEmail || "", 
       default_rate  : defaultRate || "",
-      user_id       : userId
+      user_id       : userId,
+
+      email,
+      city,
+      address,
+      province,
+      postal_code   : postalCode,
+      type_of_service : typeOfService
     });
 
     await client.save();

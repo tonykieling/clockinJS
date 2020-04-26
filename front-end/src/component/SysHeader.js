@@ -3,7 +3,6 @@ import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
-// import { slide as Menu } from "react-burger-menu"; // line bellow is better due to load only what is needed
 import Menu from "react-burger-menu/lib/menus/slide";
 import "../burguer.css";
 import MessageModal from "./MessageModal.js";
@@ -87,9 +86,14 @@ function SysHeader(props) {
                 <Nav className="mr-auto">
                   <Link to="/user" className="nav-link">{props.storeEmail}</Link>
                   <NavDropdown title="Clients" id="basic-nav-dropdown1">
-                    <NavDropdown.Item href="clientNew">Add New One</NavDropdown.Item>
+                    <NavDropdown title="Add a New One" id="basic-nav-submenu" drop="right">
+                        <NavDropdown.Item href="clientNew">Kids</NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item href="clientGeneralNew">General</NavDropdown.Item>
+                    </NavDropdown>
+
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="/clientList"> List </NavDropdown.Item>
+                    <NavDropdown.Item href="/clientList"> List & Edit</NavDropdown.Item>
                   </NavDropdown>
 
                   <NavDropdown title="Clockins" id="basic-nav-dropdown2">
@@ -119,7 +123,6 @@ function SysHeader(props) {
           <Navbar bg="info" 
             sticky={"top"}
             role="navigation"
-            // style={{position: "sticky", top: 0, zIndex: 999}}
           >
             <Link to="/" className="nav-link">Clockin.js</Link>
             <Link to="/user" className="nav-link">{props.storeEmail}</Link>
@@ -132,11 +135,33 @@ function SysHeader(props) {
             >
 
               <NavDropdown title="Clients" id="basic-nav-dropdown1" className="menu-item">
-                <NavDropdown.Item href="clientNew" className="menu-item">Add New One</NavDropdown.Item>
-                {/* <Link to = "/clientNew" className="dropdown-item"> Add New Client</Link> */}
+
+                <NavDropdown title="Add a New One" id="basic-nav-submenu" drop="down">
+                  <NavDropdown.Item href="clientNew">Kids</NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item href="clientGeneralNew">General</NavDropdown.Item>
+                </NavDropdown>
+
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="clientList"> List </NavDropdown.Item>
+                <NavDropdown.Item href="/clientList"> List & Edit</NavDropdown.Item>
+
+                {/* <NavDropdown.Item href="clientNew" className="menu-item">Add New One</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="clientList"> List & Edit</NavDropdown.Item> */}
               </NavDropdown>
+
+              {/* <NavDropdown title="Clients" id="basic-nav-dropdown1">
+                <NavDropdown title="Add a New One" id="basic-nav-submenu" id="submenu-item" drop="right">
+                    <NavDropdown.Item href="clientNew">Kids</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="clientNew">General</NavDropdown.Item>
+                </NavDropdown>
+
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="/clientList"> List & Edit</NavDropdown.Item>
+              </NavDropdown> */}
+
+
               <br />
               <NavDropdown title="Clockins" id="basic-nav-dropdown2">
                 <NavDropdown.Item href="punchInNew"> Punch in </NavDropdown.Item>
@@ -162,6 +187,7 @@ function SysHeader(props) {
               <a onClick={ logout } className="menu-item--small" href="/">Logout</a>
             </Menu>
           </div>
+
         </Navbar>
     );
   }
@@ -173,9 +199,6 @@ function SysHeader(props) {
         <Navbar 
           bg="dark" variant="dark"
           sticky  = {"top"}
-          // ref = { hh}
-          // style={{position: "sticky", top: 0, zIndex: 999}}
-          // className="navbar navbar-default navbar-fixed-top"
         >
           <Navbar.Brand href="/">Clockin.js</Navbar.Brand>
           <Nav>

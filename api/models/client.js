@@ -82,6 +82,36 @@ const clientSchema = mongoose.Schema({
   
   invoice_sample: {
     type: String
+  },
+
+
+  
+  email: {
+    type: String
+  },
+
+  address: {
+    type: String
+  },
+
+  city: {
+    type: String
+  },
+
+  province: {
+    type: String
+  },
+
+  postal_code: {
+    type: String
+  },
+
+  phone: {
+    type: String
+  },
+
+  type_of_service: {
+    type: String
   }
   
 });

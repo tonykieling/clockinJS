@@ -6,6 +6,7 @@ import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 import GetClients from "./aux/GetClients.js";
 import { generatePdf } from "./aux/generatePdf.js";
 import { show } from "./aux/formatDate.js";
+import InvoicePdfModal from "./InvoicePdfModal";
 
 /**
  * how to use tooltips (TIPS)
@@ -24,9 +25,8 @@ class InvoicesIssue extends Component {
     tableVisibility   : false,
     message           : "",
 
-    openInvoiceModal  : false,
     invoice           : "",
-    invoiceSample     : false
+    openInvoicePdfModal  : false
   }
 
 
@@ -74,7 +74,8 @@ class InvoicesIssue extends Component {
             classNameMessage  : `${hasInvoiceSample ? "messageSuccess" : "messageFailure"}`,
             message           : `${hasInvoiceSample 
               ? "Click on the invoice to generate a pdf document and check your download folder." 
-              : "Client does not have invoice sample registered. Please contact tony.kieling@gmail.com and ask for it."}`
+              // : "Client does not have invoice sample registered. Please contact tony.kieling@gmail.com and ask for it."}`
+              : "Click in the invoice to a general pdf invoice. Please, contact tony.kieling@gmail.com for any format changes."}`
           });
         } else {
           throw(getInvoices.data.message);
@@ -102,7 +103,10 @@ renderDataTable = (invoices) => {
     }
 
     return (
-      <tr key={invoiceToSend.num} onClick={this.state.client.invoice_sample ? () => this.issuePdf(invoice) : null}>
+      <tr key={invoiceToSend.num} onClick={this.state.client.invoice_sample 
+                        ? () => this.issuePdf(invoice) 
+                        : () => this.setState({ openInvoicePdfModal: true })}>
+      {/* <tr key={invoiceToSend.num} onClick={() => this.setState({ openInvoicePdfModal: true })}> */}
         <td>{invoiceToSend.num}</td>
         <td>{invoiceToSend.date}</td>
         <td>{invoiceToSend.totalCad.toFixed(2)}</td>
@@ -136,19 +140,34 @@ renderDataTable = (invoices) => {
 
 
   issuePdf = (invoice) => {
-    const data = {
-      invoice,
-      user      : this.props.user,
-      client    : this.state.client
-    };
-    generatePdf(data);
+    if (this.state.client.invoice_sample) {
+      const data = {
+        invoice,
+        user      : this.props.user,
+        client    : this.state.client
+      };
+      generatePdf(data);
+    } else {
+      console.log("NO INVOICESAMPLE!");
+
+    }
   }
 
 
   render() {
     return (
       <div className="formPosition">
-        <br />        
+        {this.state.openInvoicePdfModal 
+          &&
+            <InvoicePdfModal
+              user        = { this.props.user}
+              client      = { this.state.client}
+              openModal   = { this.state.openInvoicePdfModal}
+              closeModal  = { () => this.setState({ openInvoicePdfModal: false})}
+            />
+        
+        }
+        <br />
         <Card className="card-settings">
           <Card.Header>Generate a Pdf file</Card.Header>
           <Card.Body>

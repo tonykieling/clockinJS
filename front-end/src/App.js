@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './App.css';
 import { connect } from "react-redux";
 
 import Land           from "./component/Land.js";
-import NoPage         from "./component/Error.js";
 import SysHeader      from "./component/SysHeader.js";
 import Register       from './component/Register.js';
 import Login          from "./component/Login.js";
-// import decodeToken from "./component/aux/decodeToken.js";
 import Home           from "./component/Home.js";
 import User           from "./component/User.js";
 import ClientNew      from "./component/ClientNew.js";
@@ -24,6 +21,7 @@ import ResetPassword  from "./component/ResetPassword.js";
 import Guidance       from "./component/Guidance.js";
 import Contact        from "./component/Contact.js";
 import InvoiceIssue   from "./component/InvoiceIssue.js";
+import ClientGeneralNew from "./component/ClientGeneralNew.js";
 
 
 class App extends Component {
@@ -77,12 +75,18 @@ class App extends Component {
           
           <Route exact path = "/clientNew" 
             render = {() => {
-              // const token = decodeToken(this.props.storeToken);
-              // if(!token) {
               if (!this.props.storeEmail)
                 return <Login />
               else
                 return <ClientNew />
+            }} />
+
+          <Route exact path = "/clientGeneralNew" 
+            render = {() => {
+              if (!this.props.storeEmail)
+                return <Login />
+              else
+                return <ClientGeneralNew />
             }} />
 
           <Route exact path = "/clientList" 
@@ -149,7 +153,8 @@ class App extends Component {
             <Contact />
           </Route>
 
-          <Route component = { NoPage } />
+          <Route component = { Land } />
+
         </Switch>
       </Router>
     );
