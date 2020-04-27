@@ -9,7 +9,6 @@ class ClientGeneralNew extends Component {
 
   state = {
       name            : "",
-      nickname        : "",
       defaultRate     : "",
       message         : "",
       setModal        : false,
@@ -29,86 +28,78 @@ class ClientGeneralNew extends Component {
     }
 
   handleChange = e => {
-    if (e.key === "Enter")
-      switch(e.target.name) {
-        case "name":
-          if (this.state.name !== "")
-            this.textInput2.focus();
-          break;
-        case "defaultRate":
-          if (this.state.defaultRate !== "") {
-            this.buttonSave.click();
-          }
-          break;
-        default:
-      }
-      
-      this.setState({
-        [e.target.name]: e.target.value
-      });
+    this.setState({
+      [e.target.name]: e.target.value
+    });
   }
 
 
   handleSubmit = async e => {
-      if (!this.state.name || !this.state.defaultRate) {
-        this.setState({ setModal: true});
-        if (!this.state.name)
-          this.textInput1.focus();
-        else
-          this.textInput8.focus();
-      } else {
-        this.setState({ disableBtn: true });
+    e.preventdefault();
+    if (!this.state.name || !this.state.defaultRate) {
+      this.setState({ setModal: true});
+      if (!this.state.name)
+        this.textInput1.focus();
+      else
+        this.textInput8.focus();
+    } else {
+      this.setState({ disableBtn: true });
 
-        const url = "/client";
-        const createClient  = {
-          name        : this.state.name,
-          defaultRate : this.state.defaultRate,
+      const url = "/client";
+      const createClient  = {
+        name        : this.state.name,
+        defaultRate : this.state.defaultRate,
 
-          email         : this.state.email,
-          address       : this.state.address,
-          city          : this.state.city,
-          province      : this.state.province,
-          phone         : this.state.phone,
-          postalCode    : this.state.postalCode,
-          typeOfService : this.state.typeOfService
-        }
-
-        try {
-          const addClient = await axios.post( 
-            url, 
-            createClient,
-            {  
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization" : `Bearer ${this.props.storeToken}` }
-          });
-
-          if (addClient.data.message) {
-
-            this.setState({
-              message       : <p>Client <b>{this.state.name}</b> has been created.</p>,
-              className     : "messageSuccess",
-              name          : "",
-              nickname      : "",
-              typeOfService : "",
-              defaultRate   : ""
-            });
-
-          } else if (addClient.data.error) {
-            this.setState({
-              message   : addClient.data.error,
-              className : "messageFailure" });
-            }
-            
-        } catch(err) {
-          this.setState({
-            message : err.message,
-            className : "messageFailure"
-          });
-          
-        }
-        this.clearMessage();
+        email         : this.state.email,
+        address       : this.state.address,
+        city          : this.state.city,
+        province      : this.state.province,
+        phone         : this.state.phone,
+        postalCode    : this.state.postalCode,
+        typeOfService : this.state.typeOfService
       }
+
+      try {
+        const addClient = await axios.post( 
+          url, 
+          createClient,
+          {  
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization" : `Bearer ${this.props.storeToken}` }
+        });
+
+        if (addClient.data.message) {
+
+          this.setState({
+            message       : <p>Client <b>{this.state.name}</b> has been created.</p>,
+            className     : "messageSuccess",
+            name          : "",
+            email         : "",
+            phone         : "",
+            address       : "",
+            city          : "",
+            province      : "",
+            postalCode    : "",
+            typeOfService : "",
+            defaultRate   : ""
+          });
+
+        } else if (addClient.data.error) {
+          this.setState({
+            message   : addClient.data.error,
+            className : "messageFailure" });
+          }
+          
+      } catch(err) {
+        this.setState({
+          message : err.message,
+          className : "messageFailure"
+        });
+        
+      }
+      this.clearMessage();
+    }
   }
 
 
@@ -123,12 +114,6 @@ class ClientGeneralNew extends Component {
     }, 3500);
   }
 
-
-  afterChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    })
-  }
 
 
   render() {
@@ -162,14 +147,26 @@ class ClientGeneralNew extends Component {
             <Form.Group controlId="formEmail">
               <Form.Label className="cardLabel">Email</Form.Label>
               <Form.Control
-                type        = "text"
+                type        = "email"
                 placeholder = "Client's email"
                 name        = "email"
                 onChange    = {this.handleChange}
                 value       = {this.state.email}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput2 = input } />
-            </Form.Group>            
+            </Form.Group>
+
+            <Form.Group controlId="formPhone">
+              <Form.Label className="cardLabel">Phone</Form.Label>
+              <Form.Control
+                type        = "text"
+                placeholder = "Client's phone"
+                name        = "phone"
+                onChange    = {this.handleChange}
+                value       = {this.state.phone}
+                onKeyPress  = {this.handleChange}
+                ref         = {input => this.textInput3 = input } />
+            </Form.Group>
 
             <Form.Group controlId="formAddress">
               <Form.Label className="cardLabel">Address</Form.Label>
@@ -180,7 +177,7 @@ class ClientGeneralNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.address}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput3 = input } />
+                ref         = {input => this.textInput4 = input } />
             </Form.Group>
 
             <Form.Group controlId="formCity">
@@ -192,7 +189,7 @@ class ClientGeneralNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.city}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput4 = input } />
+                ref         = {input => this.textInput5 = input } />
             </Form.Group>
 
             <Form.Group controlId="formProvince">
@@ -204,7 +201,7 @@ class ClientGeneralNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.province}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput5 = input } />
+                ref         = {input => this.textInput6 = input } />
             </Form.Group>
 
             <Form.Group controlId="formPostalCode">
@@ -216,7 +213,7 @@ class ClientGeneralNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.postalCode}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput6 = input } />
+                ref         = {input => this.textInput7 = input } />
             </Form.Group>
 
             <Form.Group controlId="formTypeOfService">
@@ -228,7 +225,7 @@ class ClientGeneralNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.typeOfService}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput7 = input } />
+                ref         = {input => this.textInput8 = input } />
             </Form.Group>
 
             <Form.Group controlId="formDefaultRate">
@@ -240,7 +237,7 @@ class ClientGeneralNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.defaultRate}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput8 = input }  />
+                ref         = {input => this.textInput9 = input }  />
             </Form.Group>
 
           <Card.Footer className={ this.state.className }>          
