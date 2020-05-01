@@ -104,7 +104,7 @@ class KidClientNew extends Component {
 
   handleSubmit = async e => {
       if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
-        this.setState({ setModal: true});
+        this.setState({ setModal: true });
         if (!this.state.name)
           this.textInput1.focus();
         else if (!this.state.nickname)
@@ -116,19 +116,20 @@ class KidClientNew extends Component {
 
         const url = "/client";
         const createClient  = {
-          name        : this.state.name,
-          nickname    : this.state.nickname,
-          birthday    : this.state.birthday,
-          mother      : this.state.mother,
-          mPhone      : this.state.mPhone,
-          mEmail      : this.state.mEmail,
-          father      : this.state.father,
-          fPhone      : this.state.fPhone,
-          fEmail      : this.state.fEmail,
-          consultant  : this.state.consultant,
-          cPhone      : this.state.cPhone,
-          cEmail      : this.state.cEmail,
-          defaultRate : this.state.defaultRate
+          name        : this.state.name || null,
+          nickname    : this.state.nickname || null,
+          birthday    : this.state.birthday || null,
+          mother      : this.state.mother || null,
+          mPhone      : this.state.mPhone || null,
+          mEmail      : this.state.mEmail || null,
+          father      : this.state.father || null,
+          fPhone      : this.state.fPhone || null,
+          fEmail      : this.state.fEmail || null,
+          consultant  : this.state.consultant || null,
+          cPhone      : this.state.cPhone || null,
+          cEmail      : this.state.cEmail || null,
+          defaultRate : this.state.defaultRate || null,
+          typeKid     : true
         }
 
         try {

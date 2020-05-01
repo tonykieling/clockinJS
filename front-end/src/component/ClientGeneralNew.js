@@ -35,13 +35,13 @@ class ClientGeneralNew extends Component {
 
 
   handleSubmit = async e => {
-    e.preventdefault();
+    e.preventDefault();
     if (!this.state.name || !this.state.defaultRate) {
       this.setState({ setModal: true});
       if (!this.state.name)
         this.textInput1.focus();
       else
-        this.textInput8.focus();
+        this.textInput9.focus();
     } else {
       this.setState({ disableBtn: true });
 
@@ -50,13 +50,13 @@ class ClientGeneralNew extends Component {
         name        : this.state.name,
         defaultRate : this.state.defaultRate,
 
-        email         : this.state.email,
-        address       : this.state.address,
-        city          : this.state.city,
-        province      : this.state.province,
-        phone         : this.state.phone,
-        postalCode    : this.state.postalCode,
-        typeOfService : this.state.typeOfService
+        email         : this.state.email  || null,
+        address       : this.state.address  || null,
+        city          : this.state.city  || null,
+        province      : this.state.province || null,
+        phone         : this.state.phone || null,
+        postalCode    : this.state.postalCode || null,
+        typeOfService : this.state.typeOfService || null,
       }
 
       try {
@@ -82,7 +82,8 @@ class ClientGeneralNew extends Component {
             province      : "",
             postalCode    : "",
             typeOfService : "",
-            defaultRate   : ""
+            defaultRate   : "",
+            typeKid       : false
           });
 
         } else if (addClient.data.error) {

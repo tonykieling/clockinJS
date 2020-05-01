@@ -192,13 +192,16 @@ function renderClockinDataTable was create and is being used by PunchInList.js a
 
 XInvoiceGenerator has to allow button and send a message if no date OR no cliente
 Xsubmit button enabled at Punchin after punched
-- enable dt generate to invoice
++-- enable dt generate to invoice
   fe and be are done
 X- in change invoice's status, enable message greater than ... and validation (received > deliver > generate)
 - check add break (it has been disabling submit button in the second punch in) - see validation
-- enable offset (adjustment) more or less and reason to invoice
-- enable change invoice's code
-- add pictures to quick guidance
+X- enable offset (adjustment) more or less and reason to invoice
+X- enable change invoice's code
+X- add pictures to quick guidance
 - add code sugestion (client(09+01))
 - add report (invoices = all / per client / per period / per status)
               clockins
+
+
+- invoice date on frontend is being the host system time, rather than the local time
