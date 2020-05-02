@@ -88,7 +88,7 @@ console.log("inside client get_one");
 // it creates a client register
 const client_add = async (req, res) => {
 console.log("inside client add");
-console.log("client", req.body);
+// if (1) return res.json({error: "something happened"});
   const {
         name,
         nickname, 
@@ -112,19 +112,22 @@ console.log("client", req.body);
         postalCode,
         typeOfService
      } = req.body;
+
   const userId = req.userData.userId
-  const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : null;
-// console.log("===> req.body.birthday ", req.body.birthday, "typeof:", typeof req.body.birthday);
-// console.log("===> birthday: ", birthday, "typeof:", typeof birthday);
-// if (1) return res.send({message: "OK"});
-  // it checks whether the name and nickname are already been used by an user account
-  // if so, it returns an error message
+  const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : undefined;
+
   try {
-    const clientExist = await Client
-      .find({ name, nickname });
-  
-    if (clientExist.length > 0)
-      return res.status(200).json({ error: `User <name: ${name} or nickname: ${nickname}> alread exists.`});
+    const clientExistName = await Client
+      .find({ name });
+    const clientExistNickname = await Client
+      .find({ nickname });
+
+    if (clientExistName.length > 0 && userId == clientExistName[0].user_id)
+      return res.status(200).json({ error: `Client <name: ${name}> alread exists.`});
+
+    if (clientExistNickname.length > 0 && userId == clientExistNickname[0].user_id)
+      return res.status(200).json({ error: `Client <nickname: ${nickname}> alread exists.`});
+
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(200).json({
@@ -161,8 +164,7 @@ console.log("client", req.body);
     });
 
     await client.save();
-
-    client.id = client._id;
+    
     return res.json({
       message: `Client <${client.name}> has been created.`,
       client

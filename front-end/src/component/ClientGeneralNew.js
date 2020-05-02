@@ -11,9 +11,6 @@ class ClientGeneralNew extends Component {
       defaultRate     : "",
       message         : "",
       className       : "",
-      validForm       : false,
-      formValidated   : false,
-      saveButtonType  : undefined,
       disableBtn      : false,
 
       email           : "",
@@ -22,23 +19,36 @@ class ClientGeneralNew extends Component {
       city            : "",
       province        : "",
       postalCode      : "",
-      phone          : ""
+      phone           : "",
+      messageControlName        : "",
+      messageControlDefaultRate : ""
     }
 
   handleChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     });
+
+    e.target.name === "name"        && this.state.messageControlName && this.setState({ messageControlName: ""});
+    e.target.name === "defaultRate" && this.state.messageControlDefaultRate && this.setState({ messageControlDefaultRate: ""});
   }
 
 
   handleSubmit = async e => {
     e.preventDefault();
+    window.scrollTo(0, 2000);
     if (!this.state.name || !this.state.defaultRate) {
-      if (!this.state.name)
-        this.textInput1.focus();
-      else
+      if (!this.state.defaultRate) {
+        this.setState({ messageControlDefaultRate: "Please inform the default rate($)."})
         this.textInput9.focus();
+      }
+      
+      if (!this.state.name) {
+        window.scrollTo(0, 0);
+        this.setState({ messageControlName: "Please inform client's name."})
+        this.textInput1.focus();
+      }
+
     } else {
       this.setState({ disableBtn: true });
 
@@ -46,14 +56,13 @@ class ClientGeneralNew extends Component {
       const createClient  = {
         name        : this.state.name,
         defaultRate : this.state.defaultRate,
-
-        email         : this.state.email  || null,
-        address       : this.state.address  || null,
-        city          : this.state.city  || null,
-        province      : this.state.province || null,
-        phone         : this.state.phone || null,
-        postalCode    : this.state.postalCode || null,
-        typeOfService : this.state.typeOfService || null,
+        email         : this.state.email  || undefined,
+        address       : this.state.address  || undefined,
+        city          : this.state.city  || undefined,
+        province      : this.state.province || undefined,
+        phone         : this.state.phone || undefined,
+        postalCode    : this.state.postalCode || undefined,
+        typeOfService : this.state.typeOfService || undefined,
       }
 
       try {
@@ -79,19 +88,17 @@ class ClientGeneralNew extends Component {
             province      : "",
             postalCode    : "",
             typeOfService : "",
-            defaultRate   : "",
-            typeKid       : false
+            defaultRate   : ""
           });
 
         } else if (addClient.data.error) {
-          this.setState({
-            message   : addClient.data.error,
-            className : "messageFailure" });
+          throw (addClient.data.error);
           }
           
       } catch(err) {
+        window.scrollTo(0, 20000);
         this.setState({
-          message : err.message,
+          message : err.message || err,
           className : "messageFailure"
         });
         
@@ -108,6 +115,7 @@ class ClientGeneralNew extends Component {
         message     : "",
         disableBtn  : false
       })
+      window.scrollTo(0, 0);
       this.textInput1.focus();
     }, 3500);
   }
@@ -120,7 +128,7 @@ class ClientGeneralNew extends Component {
         <br />
         <Card className="card-settings">
           <Card.Header>
-            <h2>New General Client</h2>
+            <h2>New Client</h2>
           </Card.Header>
           <Form
             autoComplete  = {"off"}
@@ -133,7 +141,7 @@ class ClientGeneralNew extends Component {
               <br />
               <Form.Label className="cardLabel">Name</Form.Label>
               <Form.Control
-                required
+                // required
                 autoFocus   = {true}
                 type        = "text"
                 placeholder = "Client's name"
@@ -142,6 +150,9 @@ class ClientGeneralNew extends Component {
                 value       = {this.state.name}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput1 = input } />
+              <Form.Text className="messageControl-user">
+                {this.state.messageControlName}
+              </Form.Text>
             </Form.Group>
 
             <Form.Group controlId="formEmail">
@@ -232,7 +243,7 @@ class ClientGeneralNew extends Component {
             <Form.Group controlId="formDefaultRate">
               <Form.Label className="cardLabel">Rate</Form.Label>
               <Form.Control
-                required
+                // required
                 type        = "number"
                 placeholder = "Hourly rate - CAD$"
                 name        = "defaultRate"
@@ -240,6 +251,9 @@ class ClientGeneralNew extends Component {
                 value       = {this.state.defaultRate}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput9 = input }  />
+              <Form.Text className="messageControl-user">
+                {this.state.messageControlDefaultRate}
+              </Form.Text>
             </Form.Group>
 
           <Card.Footer className={ this.state.className }>          

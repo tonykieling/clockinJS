@@ -24,9 +24,6 @@ class KidClientNew extends Component {
       defaultRate     : "",
       message         : "",
       className       : "",
-      validForm       : false,
-      formValidated   : false,
-      saveButtonType  : undefined,
       disableBtn      : false,
 
       messageControlName        : "",
@@ -99,7 +96,7 @@ class KidClientNew extends Component {
       this.setState({
         [e.target.name]: e.target.value,
       });
-      
+
       e.target.name === "name"        && this.state.messageControlName && this.setState({ messageControlName: ""});
       e.target.name === "nickname"    && this.state.messageControlNickname && this.setState({ messageControlNickname: ""});
       e.target.name === "defaultRate" && this.state.messageControlDefaultRate && this.setState({ messageControlDefaultRate: ""});
@@ -108,93 +105,95 @@ class KidClientNew extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-      if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
-        
-        if (!this.state.defaultRate) {
-          this.setState({ messageControlDefaultRate: "Please inform the default rate($)."})
-          this.textInput13.focus();
-        }
+    window.scrollTo(0, 2000);
 
-        if (!this.state.nickname) {
-          window.scrollTo(0,0);
-          this.setState({ messageControlNickname: "Please inform Client's nickname."})
-          this.textInput2.focus();
-        }
-
-        if (!this.state.name) {
-          window.scrollTo(0,0); // goes to the top of the screen and user can see the message
-          this.setState({ messageControlName: "Please inform Client's name."})
-          this.textInput1.focus();
-        }
-        
-
-      } else {
-        this.setState({ disableBtn: true });
-
-        const url = "/client";
-        const createClient  = {
-          name        : this.state.name || null,
-          nickname    : this.state.nickname || null,
-          birthday    : this.state.birthday || null,
-          mother      : this.state.mother || null,
-          mPhone      : this.state.mPhone || null,
-          mEmail      : this.state.mEmail || null,
-          father      : this.state.father || null,
-          fPhone      : this.state.fPhone || null,
-          fEmail      : this.state.fEmail || null,
-          consultant  : this.state.consultant || null,
-          cPhone      : this.state.cPhone || null,
-          cEmail      : this.state.cEmail || null,
-          defaultRate : this.state.defaultRate || null,
-          typeKid     : true
-        }
-
-        try {
-          const addClient = await axios.post( 
-            url, 
-            createClient,
-            {  
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization" : `Bearer ${this.props.storeToken}` }
-          });
-
-          if (addClient.data.message) {
-
-            this.setState({
-              message     : <p>Client <b>{this.state.nickname}</b> has been created.</p>,
-              className   : "messageSuccess",
-
-              name        : "",
-              nickname    : "",
-              birthday    : "",
-              mother      : "",
-              mPhone      : "",
-              mEmail      : "",
-              father      : "",
-              fPhone      : "",
-              fEmail      : "",
-              consultant  : "",
-              cPhone      : "",
-              cEmail      : "",
-              defaultRate : ""
-            });
-
-          } else if (addClient.data.error) {
-            this.setState({
-              message   : addClient.data.error,
-              className : "messageFailure" });
-            }
-            
-        } catch(err) {
-          this.setState({
-            message : err.message,
-            className : "messageFailure"
-          });
-          
-        }
-        this.clearMessage();
+    if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
+      
+      if (!this.state.defaultRate) {
+        this.setState({ messageControlDefaultRate: "Please inform the default rate($)."})
+        this.textInput13.focus();
       }
+
+      if (!this.state.nickname) {
+        window.scrollTo(0, 0);
+        this.setState({ messageControlNickname: "Please inform Client's nickname."})
+        this.textInput2.focus();
+      }
+
+      if (!this.state.name) {
+        window.scrollTo(0, 0);
+        this.setState({ messageControlName: "Please inform Client's name."})
+        this.textInput1.focus();
+      }
+      
+
+    } else {
+      this.setState({ disableBtn: true });
+
+      const url = "/client";
+      const createClient  = {
+        name        : this.state.name,
+        nickname    : this.state.nickname,
+        birthday    : this.state.birthday || undefined,
+        mother      : this.state.mother || undefined,
+        mPhone      : this.state.mPhone || undefined,
+        mEmail      : this.state.mEmail || undefined,
+        father      : this.state.father || undefined,
+        fPhone      : this.state.fPhone || undefined,
+        fEmail      : this.state.fEmail || undefined,
+        consultant  : this.state.consultant || undefined,
+        cPhone      : this.state.cPhone || undefined,
+        cEmail      : this.state.cEmail || undefined,
+        defaultRate : this.state.defaultRate,
+        typeKid     : true
+      }
+
+      try {
+        const addClient = await axios.post( 
+          url, 
+          createClient,
+          {  
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization" : `Bearer ${this.props.storeToken}` }
+        });
+
+        if (addClient.data.message) {
+
+          this.setState({
+            message     : <p>Client <b>{this.state.nickname}</b> has been created.</p>,
+            className   : "messageSuccess",
+
+            name        : "",
+            nickname    : "",
+            birthday    : "",
+            mother      : "",
+            mPhone      : "",
+            mEmail      : "",
+            father      : "",
+            fPhone      : "",
+            fEmail      : "",
+            consultant  : "",
+            cPhone      : "",
+            cEmail      : "",
+            defaultRate : ""
+          });
+
+        } else if (addClient.data.error) {
+          this.setState({
+            message   : addClient.data.error,
+            className : "messageFailure" });
+          }
+          
+      } catch(err) {
+        this.setState({
+          message : err.message,
+          className : "messageFailure"
+        });
+        
+      }
+      this.clearMessage();
+    }
   }
 
 
@@ -205,6 +204,8 @@ class KidClientNew extends Component {
         message     : "",
         disableBtn  : false
       })
+
+      window.scrollTo(0, 0);
       this.textInput1.focus();
     }, 3500);
   }
@@ -234,9 +235,8 @@ class KidClientNew extends Component {
 
             <Form.Group controlId="formName">
               <br />
-              <Form.Label className="cardLabel">Nameqweqwe</Form.Label>
+              <Form.Label className="cardLabel">Name</Form.Label>
               <Form.Control
-                // required
                 autoFocus   = {true}
                 type        = "text"
                 placeholder = "Client's name"
