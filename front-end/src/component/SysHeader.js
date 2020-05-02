@@ -86,7 +86,7 @@ function SysHeader(props) {
                 <Nav className="mr-auto">
                   <Link to="/user" className="nav-link">{props.storeEmail}</Link>
                   <NavDropdown title="Clients" id="basic-nav-dropdown1">
-                    <NavDropdown title="Add a New One" id="basic-nav-submenu" drop="right">
+                    <NavDropdown title="Add a New One" id="basic-nav-submenu" drop="right" style={{paddingLeft: "1rem"}}>
                         <NavDropdown.Item href="clientNew">Kids</NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item href="clientGeneralNew">General</NavDropdown.Item>
