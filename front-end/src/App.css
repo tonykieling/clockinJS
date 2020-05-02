@@ -202,9 +202,14 @@ a {
   color: blue;
 }
 
-#submenu-item {
+/* #submenu-item {
   color: #212529;
   padding: .25rem 1.5rem;
+} */
+
+.messageControl-user {
+  color: red;
+  font-weight: bolder;
 }
 
 

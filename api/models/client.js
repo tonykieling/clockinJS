@@ -84,6 +84,10 @@ const clientSchema = mongoose.Schema({
     type: String
   },
 
+  type_kid: {
+    type: Boolean
+  },
+
 
   
   email: {

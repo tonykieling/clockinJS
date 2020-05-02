@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import axios from "axios";
-import MessageModal from "./MessageModal.js";
 
 
 class ClientGeneralNew extends Component {
@@ -11,7 +10,6 @@ class ClientGeneralNew extends Component {
       name            : "",
       defaultRate     : "",
       message         : "",
-      setModal        : false,
       className       : "",
       validForm       : false,
       formValidated   : false,
@@ -37,7 +35,6 @@ class ClientGeneralNew extends Component {
   handleSubmit = async e => {
     e.preventDefault();
     if (!this.state.name || !this.state.defaultRate) {
-      this.setState({ setModal: true});
       if (!this.state.name)
         this.textInput1.focus();
       else
@@ -129,12 +126,14 @@ class ClientGeneralNew extends Component {
             autoComplete  = {"off"}
             className     = "formPosition"
             style         = {{width: "30rem"}}
+            onSubmit      = {this.handleSubmit}
           >
 
             <Form.Group controlId="formName">
               <br />
               <Form.Label className="cardLabel">Name</Form.Label>
               <Form.Control
+                required
                 autoFocus   = {true}
                 type        = "text"
                 placeholder = "Client's name"
@@ -149,6 +148,7 @@ class ClientGeneralNew extends Component {
               <Form.Label className="cardLabel">Email</Form.Label>
               <Form.Control
                 type        = "email"
+                pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                 placeholder = "Client's email"
                 name        = "email"
                 onChange    = {this.handleChange}
@@ -232,6 +232,7 @@ class ClientGeneralNew extends Component {
             <Form.Group controlId="formDefaultRate">
               <Form.Label className="cardLabel">Rate</Form.Label>
               <Form.Control
+                required
                 type        = "number"
                 placeholder = "Hourly rate - CAD$"
                 name        = "defaultRate"
@@ -251,7 +252,7 @@ class ClientGeneralNew extends Component {
             <Button
               disabled  = { this.state.disableBtn }
               variant   = "primary" 
-              onClick   = { this.handleSubmit }
+              type      = "submit"
               ref       = {input => this.buttonSave = input}
             >
             Save
@@ -263,26 +264,6 @@ class ClientGeneralNew extends Component {
         <br></br>
         <br></br>
 
-        { this.state.setModal
-          ?
-            <MessageModal
-              openModal = { this.state.setModal }
-              message   = {
-                <div>Please, fill at least:
-                  <ol>
-                    <li>
-                      <b>Name</b>,
-                    </li>
-                    <li>
-                      <b>Rate($).</b>
-                    </li>
-                  </ol>
-                </div>
-              }
-              noMethod  = { () => this.setState({ setModal: false })}
-            />
-          : ""
-        }
       </div>
     )
   }

@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import axios from "axios";
-import MessageModal from "./MessageModal.js";
 
 import MaskedInput from 'react-text-mask';
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
 
 
 class KidClientNew extends Component {
@@ -26,12 +23,15 @@ class KidClientNew extends Component {
       cEmail          : "",
       defaultRate     : "",
       message         : "",
-      setModal        : false,
       className       : "",
       validForm       : false,
       formValidated   : false,
       saveButtonType  : undefined,
-      disableBtn      : false
+      disableBtn      : false,
+
+      messageControlName        : "",
+      messageControlNickname    : "",
+      messageControlDefaultRate : ""
     }
 
   handleChange = e => {
@@ -40,6 +40,7 @@ class KidClientNew extends Component {
         case "name":
           if (this.state.name !== "")
             this.textInput2.focus();
+            // this.setState({ messageControlName: ""});
           break;
         case "nickname":
           if (this.state.nickname !== "")
@@ -89,7 +90,6 @@ class KidClientNew extends Component {
           break;
         case "defaultRate":
           if (this.state.defaultRate !== "") {
-            // this.setState({ saveButtonType: "submit" });
             this.buttonSave.click();
           }
           break;
@@ -97,20 +97,37 @@ class KidClientNew extends Component {
       }
       
       this.setState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       });
+      
+      e.target.name === "name"        && this.state.messageControlName && this.setState({ messageControlName: ""});
+      e.target.name === "nickname"    && this.state.messageControlNickname && this.setState({ messageControlNickname: ""});
+      e.target.name === "defaultRate" && this.state.messageControlDefaultRate && this.setState({ messageControlDefaultRate: ""});
   }
 
 
   handleSubmit = async e => {
+    e.preventDefault();
       if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
-        this.setState({ setModal: true });
-        if (!this.state.name)
-          this.textInput1.focus();
-        else if (!this.state.nickname)
-          this.textInput2.focus();
-        else
+        
+        if (!this.state.defaultRate) {
+          this.setState({ messageControlDefaultRate: "Please inform the default rate($)."})
           this.textInput13.focus();
+        }
+
+        if (!this.state.nickname) {
+          window.scrollTo(0,0);
+          this.setState({ messageControlNickname: "Please inform Client's nickname."})
+          this.textInput2.focus();
+        }
+
+        if (!this.state.name) {
+          window.scrollTo(0,0); // goes to the top of the screen and user can see the message
+          this.setState({ messageControlName: "Please inform Client's name."})
+          this.textInput1.focus();
+        }
+        
+
       } else {
         this.setState({ disableBtn: true });
 
@@ -205,22 +222,21 @@ class KidClientNew extends Component {
       <div className="formPosition">
         <br />
         <Card className="card-settings">
-        {/* <Card className="bigCardPosition"> */}
           <Card.Header>
             <h2>New Kid Client</h2>
           </Card.Header>
           <Form
-            // autoComplete  = {"off"}
-            // onSubmit      = {this.handleSubmit}
+            autoComplete  = {"off"}
+            onSubmit      = {this.handleSubmit}
             className     = "formPosition"
             style         = {{width: "30rem"}}
           >
 
             <Form.Group controlId="formName">
               <br />
-              <Form.Label className="cardLabel">Name</Form.Label>
+              <Form.Label className="cardLabel">Nameqweqwe</Form.Label>
               <Form.Control
-                autoComplete= "off"
+                // required
                 autoFocus   = {true}
                 type        = "text"
                 placeholder = "Client's name"
@@ -229,12 +245,14 @@ class KidClientNew extends Component {
                 value       = {this.state.name}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput1 = input } />
+              <Form.Text className="messageControl-user">
+                {this.state.messageControlName}
+              </Form.Text>
             </Form.Group>
 
             <Form.Group controlId="formNickname">
               <Form.Label className="cardLabel">Nickname</Form.Label>
               <Form.Control
-                autoComplete= "off"
                 type        = "text"
                 placeholder = "Client's nickname"
                 name        = "nickname"
@@ -242,6 +260,9 @@ class KidClientNew extends Component {
                 value       = {this.state.nickname}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput2 = input } />
+              <Form.Text className="messageControl-user">
+                {this.state.messageControlNickname}
+              </Form.Text>
             </Form.Group>
 
             <Form.Group controlId="formBirthday">
@@ -275,7 +296,7 @@ class KidClientNew extends Component {
                 className   = "form-control"
                 placeholder = "Mother's phone number"
                 name        = "mPhone"
-                id="mPhone"
+                id          = "mPhone"
                 onBlur      = { e => this.afterChange(e)}
                 value       = { this.state.mPhone}
                 onKeyPress  = { this.handleChange}
@@ -382,6 +403,9 @@ class KidClientNew extends Component {
                 value       = {this.state.defaultRate}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput13 = input }  />
+              <Form.Text className="messageControl-user">
+                {this.state.messageControlDefaultRate}
+              </Form.Text>
             </Form.Group>
 
           <Card.Footer className={ this.state.className }>          
@@ -394,7 +418,7 @@ class KidClientNew extends Component {
             <Button
               disabled  = { this.state.disableBtn }
               variant   = "primary" 
-              onClick   = { this.handleSubmit }
+              type      = "submit"
               ref       = {input => this.buttonSave = input}
             >
             Save
@@ -406,29 +430,6 @@ class KidClientNew extends Component {
         <br></br>
         <br></br>
 
-        { this.state.setModal
-          ?
-            <MessageModal
-              openModal = { this.state.setModal }
-              message   = {
-                <div>Please, fill at least:
-                  <ol>
-                    <li>
-                      <b>Name</b>,
-                    </li>
-                    <li>
-                      <b>Nickname</b> and 
-                    </li>
-                    <li>
-                      <b>Rate($).</b>
-                    </li>
-                  </ol>
-                </div>
-              }
-              noMethod  = { () => this.setState({ setModal: false })}
-            />
-          : ""
-        }
       </div>
     )
   }

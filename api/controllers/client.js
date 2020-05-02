@@ -88,7 +88,7 @@ console.log("inside client get_one");
 // it creates a client register
 const client_add = async (req, res) => {
 console.log("inside client add");
-
+console.log("client", req.body);
   const {
         name,
         nickname, 
@@ -102,6 +102,7 @@ console.log("inside client add");
         cPhone, 
         cEmail, 
         defaultRate,
+        typeKid,
 
         email,
         phone,
@@ -134,22 +135,24 @@ console.log("inside client add");
   try {
     const client = new Client({
       _id           : new mongoose.Types.ObjectId(),
-      name          : name || "",
-      nickname      : nickname || "", 
-      birthday      : birthday || "", 
-      mother        : mother || "", 
-      mphone        : mPhone || "", 
-      memail        : mEmail || "", 
-      father        : father || "", 
-      fphone        : fPhone || "", 
-      femail        : fEmail || "", 
-      consultant    : consultant || "", 
-      cphone        : cPhone || "", 
-      cemail        : cEmail || "", 
-      default_rate  : defaultRate || "",
+      name          : name,
+      nickname      : nickname, 
+      birthday      : birthday, 
+      mother        : mother, 
+      mphone        : mPhone, 
+      memail        : mEmail, 
+      father        : father, 
+      fphone        : fPhone, 
+      femail        : fEmail, 
+      consultant    : consultant, 
+      cphone        : cPhone, 
+      cemail        : cEmail, 
+      default_rate  : defaultRate,
       user_id       : userId,
+      type_kid      : typeKid,
 
       email,
+      phone,
       city,
       address,
       province,
