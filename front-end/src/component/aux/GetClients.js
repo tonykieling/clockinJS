@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { connect } from "react-redux";
 import { Dropdown } from "react-bootstrap";
@@ -6,30 +6,29 @@ import MessageModal from "../MessageModal.js";
 import { Redirect } from "react-router-dom";
 
 
-class GetClients extends Component {
+function GetClients(props) {
+  const [clients, setclients] = useState("");
+  const [errorMsg, seterrorMsg] = useState("");
+  const [goLand, setgoLand] = useState("");
+  const [showModal, setshowModal] = useState("");
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      clients       : undefined,
-      errorMsg      : undefined,
-      goLand        : false,
-      showModal     : false
-    }
-  }
-
-  logout = () => {
-    this.props.noUser();
-    this.setState({
-      goLand    : true,
-      showModal : false
-    });
+  useEffect(() => {
+    getClientsFunction();
+    // eslint-disable-next-line
+  }, [props.updateButton ? props.updateButton : 1]);
+  
+  
+  const logout = () => {
+    console.log("asd")
+    props.noUser();
+    setgoLand(true);
+    setshowModal(false);
   };
 
 
-  async componentDidMount() {
+  const getClientsFunction = async () => {
     const url = "/client";    // this is dev setting
-    const askInvoiceSample = this.props.askInvoiceSample || false;
+    const askInvoiceSample = props.askInvoiceSample || false;
 
     try {
       const getClients = await axios.get( 
@@ -37,42 +36,37 @@ class GetClients extends Component {
         {  
           headers: { 
             "Content-Type": "application/json",
-            "Authorization" : `Bearer ${this.props.storeToken}`,
+            "Authorization" : `Bearer ${props.storeToken}`,
             "askinvoicesample" : askInvoiceSample
           }
         },
       );
-      
+
       if (getClients.data.count) {
-        this.setState({
-          clients: getClients.data.message
-        });
+        setclients(getClients.data.message);
       } else if (getClients.data.error) {
         //call message modal to say the user needs to login again and redirect to /land
-        this.setState({
-          showModal: true
-        });
+        setshowModal(true);
       }
     } catch(err) {
-      this.setState({
-        errorMsg: err.message });
+      seterrorMsg(err.message);
     }
   }
 
-  populateDropbox = () => {
+
+  const populateDropbox = () => {
     return(
       <Dropdown>
         <Dropdown.Toggle variant="success" id="dropdown-basic">
-          {/* {(this.props.client && this.props.client.nickname) || `Select Client` } */}
-          {(this.props.client && this.props.client.name) || `Select Client` }
+          {(props.client && props.client.name) || `Select Client` }
           {}
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          {this.state.clients.map( (client, id) =>
+          {clients.map( (client, id) =>
             <Dropdown.Item 
               key = { id } 
-              onClick = { (e) => this.changes(e, client) }
+              onClick = { (e) => changes(e, client) }
               // data-client = { JSON.stringify(client) }
               name = { client.name }
             > { client.nickname || client.name } </Dropdown.Item>
@@ -82,34 +76,32 @@ class GetClients extends Component {
     );
   }
 
-  changes = (event, incommingClient) => {
+  const changes = (event, incommingClient) => {
     event.preventDefault();
-    this.props.getClientInfo(incommingClient);
+    props.getClientInfo(incommingClient);
   }
 
 
-  render() {
     return (
       <div>
-        { this.state.goLand && <Redirect to = "/land" /> }
+        { goLand && <Redirect to = "/land" /> }
 
-        { this.state.showModal
+        { showModal
             &&
               <MessageModal
-                openModal = { this.state.showModal }
+                openModal = { showModal }
                 message   = "User needs to login again."
-                noMethod  = { this.logout }
+                noMethod  = { logout }
               />
         }
 
-        { this.state.clients
-          ? this.populateDropbox()
-          : "No clients at all" 
+        { clients
+          ? populateDropbox()
+          : errorMsg || "No clients at all" 
         }
 
       </div>
     )
-  }
 }
 
 

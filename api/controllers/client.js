@@ -31,8 +31,7 @@ console.log("inside client get_all");
       return res.status(200).json({
         message: `No clients at all.`
       });
-    
-// console.log("***allclients", allClients[0].birthday, typeof allClients[0].birthday);
+
 // should return birthday as a string yyyy-mm-dd
     return res.status(200).json({
       count: allClients.length,

@@ -178,7 +178,6 @@ class ClientsList extends Component {
 
 
   getClientInfo = client => {
-console.log("inside getclientinfo");
     const {
       _id, name, nickname,  mother, father, consultant, default_rate, type_kid
     } = client;
@@ -282,19 +281,14 @@ console.log("inside getclientinfo");
   render() {
     return (
       <div className="formPosition">
-        {console.log("updateButton1", this.state.updateButton)}
         <br />
         <Card className="card-settings">
           <Card.Header>Your Client's list</Card.Header>
         <Card.Body>
-        {console.log("updateButton2", this.state.updateButton)}
-
-        { this.state.updateButton 
-          ?
           <GetClients 
-            getClientInfo = { this.getClientInfo } />     //{/* mount the Dropbox Button with all clients for the user */}
-          : "asd"
-        }
+            getClientInfo = { this.getClientInfo }     /* mount the Dropbox Button with all clients for the user */
+            updateButton  = { this.state.updateButton}
+          />
         </Card.Body>
       </Card>        
 
