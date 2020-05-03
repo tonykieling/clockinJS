@@ -63,9 +63,9 @@ class InvoiceNew extends Component {
         message           : "Please, select Client and set Date Start and Date End.",
         classNameMessage  : "messageFailure"
       });      
-    } else if (this.state.dateEnd <= this.state.dateStart) {
+    } else if (this.state.dateEnd < this.state.dateStart) {
       this.setState({
-        message           : "Date End has to be greater than Date Start.",
+        message           : "Date End has to be greater or equal than Date Start.",
         classNameMessage  : "messageFailure"
       });
     } else if (this.state.dateStart && this.state.dateEnd && this.state.client) {

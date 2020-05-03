@@ -164,7 +164,7 @@ console.log("inside client add");
     });
 
     await client.save();
-    
+
     return res.json({
       message: `Client <${client.name}> has been created.`,
       client
@@ -228,40 +228,60 @@ console.log("inside client modify");
     consultant, 
     cPhone, 
     cEmail, 
-    default_rate
- } = req.body;
+    default_rate,
 
- const birthday = new Date(req.body.birthday);
+    email,
+    phone,
+    city,
+    address,
+    province,
+    postal_code   : postalCode,
+    type_of_service : typeOfService
+
+  } = req.body;
+
+  const birthday = req.body.birthday ? new Date(req.body.birthday) : undefined;
 
   try {
     const clientToBeChanged = await Client
-      .updateOne({
+      .updateOne(
+        {
         _id: clientId
-      }, {
-        $set: {
-            name: name || "", 
-            nickname: nickname || "", 
-            birthday: birthday || "", 
-            mother: mother || "", 
-            mphone: mPhone || "", 
-            memail: mEmail || "", 
-            father: father || "", 
-            fphone: fPhone || "", 
-            femail: fEmail || "", 
-            consultant: consultant || "", 
-            cphone: cPhone || "", 
-            cemail: cEmail || "", 
-            default_rate: default_rate || "", 
-            user_id: userId
-        }
-      }, {
-        runValidators: true
-      });
+        }, 
+        {
+          name, 
+          nickname, 
+          birthday, 
+          mother, 
+          mphone: mPhone || undefined, 
+          memail: mEmail || undefined, 
+          father, 
+          fphone: fPhone || undefined, 
+          femail: fEmail || undefined, 
+          consultant, 
+          cphone: cPhone || undefined, 
+          cemail: cEmail || undefined, 
+          default_rate: default_rate || undefined, 
+          user_id: userId,
 
-    if (clientToBeChanged.nModified) {
+          email,
+          phone,
+          city,
+          address,
+          province,
+          postal_code   : postalCode || undefined,
+          type_of_service : typeOfService || undefined
+        }, 
+        {
+          runValidators: true,
+          ignoreUndefined: true
+        }
+      );
+
+      if (clientToBeChanged.nModified) {
       const clientModified = await Client
         .findById({ _id: clientId})
-        .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
+        // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
       clientModified.birthday = Date.parse(clientModified.birthday);
 
       return res.json({

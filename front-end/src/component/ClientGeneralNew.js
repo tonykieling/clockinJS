@@ -141,7 +141,6 @@ class ClientGeneralNew extends Component {
               <br />
               <Form.Label className="cardLabel">Name</Form.Label>
               <Form.Control
-                // required
                 autoFocus   = {true}
                 type        = "text"
                 placeholder = "Client's name"

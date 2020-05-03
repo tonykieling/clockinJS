@@ -42,7 +42,7 @@ class GetClients extends Component {
           }
         },
       );
-
+      
       if (getClients.data.count) {
         this.setState({
           clients: getClients.data.message
@@ -63,18 +63,19 @@ class GetClients extends Component {
     return(
       <Dropdown>
         <Dropdown.Toggle variant="success" id="dropdown-basic">
-          {(this.props.client && this.props.client.nickname) || `Select Client` }
+          {/* {(this.props.client && this.props.client.nickname) || `Select Client` } */}
+          {(this.props.client && this.props.client.name) || `Select Client` }
+          {}
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
           {this.state.clients.map( (client, id) =>
             <Dropdown.Item 
               key = { id } 
-              // onClick = { () => this.changes(client) } 
               onClick = { (e) => this.changes(e, client) }
               // data-client = { JSON.stringify(client) }
-              name = { client.nickname }
-            > { client.nickname } </Dropdown.Item>
+              name = { client.name }
+            > { client.nickname || client.name } </Dropdown.Item>
           )}
         </Dropdown.Menu>
       </Dropdown>

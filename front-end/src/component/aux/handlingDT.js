@@ -19,15 +19,12 @@
  *    2019-01-01T00:00:00.000PST"
  */
 const receivingDate = dateString => {
-console.log("client.birthday: ", dateString, typeof dateString);
   const date = new Date(dateString.substring(0, 10));
-console.log("===> date", date);
 const month = date.getUTCMonth() + 1;
 const newD = (
   (date.getUTCFullYear()) + "-" + 
   (month < 10 ? `0${month}` : month) + "-" + 
   (date.getUTCDate() < 10 ? `0${date.getUTCDate()}` : date.getUTCDate()));
-console.log("newD", newD);
   // return (new Date((date.getUTCMonth() + 1) + "-" + date.getUTCDate() + "-" + date.getUTCFullYear()));   /desired format
   return newD;
 }
