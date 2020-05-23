@@ -123,7 +123,7 @@ console.log("inside client add");
 
     if (clientExistName.length > 0 && userId == clientExistName[0].user_id)
       return res.status(200).json({ error: `Client <name: ${name}> alread exists.`});
-
+      
     if (clientExistNickname.length > 0 && userId == clientExistNickname[0].user_id)
       return res.status(200).json({ error: `Client <nickname: ${nickname}> alread exists.`});
 

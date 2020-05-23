@@ -199,9 +199,31 @@ X- in change invoice's status, enable message greater than ... and validation (r
 X- enable offset (adjustment) more or less and reason to invoice
 X- enable change invoice's code
 X- add pictures to quick guidance
+
+
+- ordinary client:
+  - add
+    - review data type and validation
+      phone number only number
+      email should be a valid one
+      postal code with a mask for Canadian pattern (checkbox which allows postal code outside Canada)
+  - edit
+  - clocki and invoice (check the behaviour)
+- invoice for ordinary client
+- invoice date on frontend is being the host system time, rather than the local time
+- update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
+- hamburguer icon on right side
 - add code sugestion (client(09+01))
 - add report (invoices = all / per client / per period / per status)
               clockins
+- allow user to delete their account - in practice it will set as true the field "deleted"
+  - change db to have deleted field (user collection)
+  - need to have a API to do so
+  - need to develop front-end to do so
+- allow user to set a client as "inactive"
+  - change db to have inactive field (client collection)
+  - need to have a API to do so
+  - need to develop front-end to do so
+- rewrite back-end to avoid code repetition
+- rewrite front-end to avoid code repetition
 
-
-- invoice date on frontend is being the host system time, rather than the local time
