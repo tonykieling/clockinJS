@@ -31,7 +31,7 @@ class ClientsList extends Component {
       cPhone          : "",
       cEmail          : "",
       default_rate    : "",
-      type_kid        : "",
+      typeKid         : "",
 
       tmp_name            : "",
       tmp_nickname        : "",
@@ -81,29 +81,48 @@ class ClientsList extends Component {
 
     const data = { 
       clientId      : this.state.clientId || undefined,
-      name          : this.state.name || undefined,
-      nickname      : this.state.nickname || undefined,
-      birthday      : this.state.birthday || undefined,
-      mother        : this.state.mother || undefined,
-      mPhone        : this.state.mPhone || undefined,
-      mEmail        : this.state.mEmail || undefined,
-      father        : this.state.father || undefined,
-      fPhone        : this.state.fPhone || undefined,
-      fEmail        : this.state.fEmail || undefined,
-      consultant    : this.state.consultant || undefined,
-      cPhone        : this.state.cPhone || undefined,
-      cEmail        : this.state.cEmail || undefined,
-      default_rate  : this.state.default_rate || undefined,
+      name          : this.state.name || (this.state.tmp_name ? " " : undefined),
+      nickname      : this.state.nickname || (this.state.tmp_nickname ? " " : undefined),
+      birthday      : this.state.birthday || (this.state.tmp_birthday ? " " : undefined),
+      mother        : this.state.mother || (this.state.tmp_mother ? " " : undefined),
+      mPhone        : this.state.mPhone || (this.state.tmp_mPhone ? " " : undefined),
+      mEmail        : this.state.mEmail || (this.state.tmp_mEmail ? " " : undefined),
+      father        : this.state.father || (this.state.tmp_father ? " " : undefined),
+      fPhone        : this.state.fPhone || (this.state.tmp_fPhone ? " " : undefined),
+      fEmail        : this.state.fEmail || (this.state.tmp_fEmail ? " " : undefined),
+      consultant    : this.state.consultant || (this.state.tmp_consultant ? " " : undefined),
+      cPhone        : this.state.cPhone || (this.state.tmp_cPhone ? " " : undefined),
+      cEmail        : this.state.cEmail || (this.state.tmp_cEmail ? " " : undefined),
+      default_rate  : this.state.default_rate || (this.state.tmp_default_rate ? " " : undefined),
+      typeKid       : this.state.typeKid ? true : false,
 
-      email           : this.state.email || undefined,
-      phone           : this.state.phone || undefined,
-      city            : this.state.city || undefined,
-      address         : this.state.address || undefined,
-      province        : this.state.province || undefined,
-      postal_code     : this.state.postalCode || undefined,
-      type_of_service : this.state.typeOfService || undefined
+      // email           : this.state.email          || (this.state.tmp_email ? " " : undefined),
+      // phone           : this.state.phone          || (this.state.tmp_phone ? " " : undefined),
+      // city            : this.state.city           || (this.state.tmp_city ? " " : undefined),
+      // address         : this.state.address        || (this.state.tmp_address ? " " : undefined),
+      // province        : this.state.province       || (this.state.tmp_province ? " " : undefined),
+      // postal_code     : this.state.postalCode     || (this.state.tmp_postalCode ? " " : undefined),
+      // type_of_service : this.state.typeOfService  || (this.state.tmp_typeOfService ? " " : undefined)
+
+      email           : this.state.email          ,
+      phone           : this.state.phone          ,
+      city            : this.state.city           ,
+      address         : this.state.address        ,
+      province        : this.state.province       ,
+      postal_code     : this.state.postalCode     ,
+      type_of_service : this.state.typeOfService  
     };
     
+
+    // if (this.state.typeKid) {
+    //   if (!this.state.name)
+    //   if (!this.state.nickname)
+    //   if (!this.state.default_rate)
+    // } else {
+    //   if (!this.state.name)
+    //   if (!this.state.default_rate)
+    // }
+
     const url = `/client/${data.clientId}`;
 
     try {
@@ -197,7 +216,7 @@ class ClientsList extends Component {
         cPhone    : client.cphone || "",
         cEmail    : client.cemail || "",
         default_rate,
-        type_kid,
+        typeKid   : type_kid,
 
         email         : client.email || "",
         phone         : client.phone || "",
@@ -316,7 +335,7 @@ class ClientsList extends Component {
                     // ref         = {input => this.name = input }
                     />
                 </Form.Group>
-                { this.state.type_kid
+                { this.state.typeKid
                   ?
                     <div>
                       <Form.Group controlId="formNickname">
@@ -379,6 +398,7 @@ class ClientsList extends Component {
                         <Form.Label className="cardLabel">Mother's Email address</Form.Label>
                         <Form.Control
                           type        = "email"
+                          pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                           placeholder = {"Type the mother's email"}
                           name        = "mEmail"
                           onChange    = {this.handleChange}
@@ -600,7 +620,8 @@ class ClientsList extends Component {
                   <Button 
                     variant = "success"
                     style   = { {width: "50%"}}
-                    onClick = {this.handleSubmit} >
+                    type    = "submit"
+                  >
                     Save
                   </Button>
 

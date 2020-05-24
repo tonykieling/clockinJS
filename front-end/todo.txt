@@ -205,9 +205,11 @@ X- add pictures to quick guidance
   - add
     - review data type and validation
       phone number only number
-      email should be a valid one
+      X email should be a valid one
+        being made by the browser resource
       postal code with a mask for Canadian pattern (checkbox which allows postal code outside Canada)
   - edit
+    - it's working for both kid and ordinary clients
   - clocki and invoice (check the behaviour)
 - invoice for ordinary client
 - invoice date on frontend is being the host system time, rather than the local time
