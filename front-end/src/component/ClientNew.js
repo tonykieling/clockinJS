@@ -307,7 +307,8 @@ class KidClientNew extends Component {
               <Form.Label className="cardLabel">Mother's Email address</Form.Label>
               <Form.Control
                 type        = "email"
-                pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" 
+                // pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" 
+                pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                 placeholder = "Mother's email"
                 name        = "mEmail"
                 onChange    = {this.handleChange}
@@ -347,6 +348,8 @@ class KidClientNew extends Component {
               <Form.Label className="cardLabel">Father's Email address</Form.Label>
               <Form.Control
                 type        = "email"
+                // pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" 
+                pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                 placeholder = "Father's email"
                 name        = "fEmail"
                 onChange    = {this.handleChange}
@@ -385,6 +388,8 @@ class KidClientNew extends Component {
               <Form.Label className="cardLabel">Consultant's Email address</Form.Label>
               <Form.Control
                 type        = "email"
+                // pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
+                pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                 placeholder = "Consultant's email"
                 name        = "cEmail"
                 onChange    = {this.handleChange}

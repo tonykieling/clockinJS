@@ -30,7 +30,7 @@ class ClientsList extends Component {
       consultant      : "",
       cPhone          : "",
       cEmail          : "",
-      default_rate    : "",
+      defaultRate    : "",
       typeKid         : "",
 
       tmp_name            : "",
@@ -45,7 +45,7 @@ class ClientsList extends Component {
       tmp_consultant      : "",
       tmp_cPhone          : "",
       tmp_cEmail          : "",
-      tmp_default_rate    : "",
+      tmp_defaultRate     : "",
 
       className           : "",
 
@@ -70,116 +70,131 @@ class ClientsList extends Component {
 
 
   handleChange = event => {
-      this.setState({
-        [event.target.name]: event.target.value || ""
-      });
+    this.setState({
+      [event.target.name]: event.target.value || ""
+    });
+
+    event.target.name === "name"        && this.state.messageControlName && this.setState({ messageControlName: ""});
+    event.target.name === "nickname"    && this.state.messageControlNickname && this.setState({ messageControlNickname: ""});
+    event.target.name === "defaultRate" && this.state.messageControlDefaultRate && this.setState({ messageControlDefaultRate: ""});
   }
 
 
   handleSubmit = async event => {
     event.preventDefault();
 
-    const data = { 
-      clientId      : this.state.clientId || undefined,
-      name          : this.state.name || (this.state.tmp_name ? " " : undefined),
-      nickname      : this.state.nickname || (this.state.tmp_nickname ? " " : undefined),
-      birthday      : this.state.birthday || (this.state.tmp_birthday ? " " : undefined),
-      mother        : this.state.mother || (this.state.tmp_mother ? " " : undefined),
-      mPhone        : this.state.mPhone || (this.state.tmp_mPhone ? " " : undefined),
-      mEmail        : this.state.mEmail || (this.state.tmp_mEmail ? " " : undefined),
-      father        : this.state.father || (this.state.tmp_father ? " " : undefined),
-      fPhone        : this.state.fPhone || (this.state.tmp_fPhone ? " " : undefined),
-      fEmail        : this.state.fEmail || (this.state.tmp_fEmail ? " " : undefined),
-      consultant    : this.state.consultant || (this.state.tmp_consultant ? " " : undefined),
-      cPhone        : this.state.cPhone || (this.state.tmp_cPhone ? " " : undefined),
-      cEmail        : this.state.cEmail || (this.state.tmp_cEmail ? " " : undefined),
-      default_rate  : this.state.default_rate || (this.state.tmp_default_rate ? " " : undefined),
-      typeKid       : this.state.typeKid ? true : false,
+    const
+      name        = this.state.name ? this.state.name.trim() : false,
+      nickname    = this.state.nickname ? this.state.nickname.trim() : false,
+      defaultRate = this.state.defaultRate ? this.state.defaultRate.trim() : false;
 
-      // email           : this.state.email          || (this.state.tmp_email ? " " : undefined),
-      // phone           : this.state.phone          || (this.state.tmp_phone ? " " : undefined),
-      // city            : this.state.city           || (this.state.tmp_city ? " " : undefined),
-      // address         : this.state.address        || (this.state.tmp_address ? " " : undefined),
-      // province        : this.state.province       || (this.state.tmp_province ? " " : undefined),
-      // postal_code     : this.state.postalCode     || (this.state.tmp_postalCode ? " " : undefined),
-      // type_of_service : this.state.typeOfService  || (this.state.tmp_typeOfService ? " " : undefined)
+    if (!name || !defaultRate || (this.state.typeKid ? !nickname : false)) {
+      if (!defaultRate) {
+        this.setState({ messageControlDefaultRate: "Please inform the default rate($)."})
+        this.textInput13.focus();
+      }
 
-      email           : this.state.email          ,
-      phone           : this.state.phone          ,
-      city            : this.state.city           ,
-      address         : this.state.address        ,
-      province        : this.state.province       ,
-      postal_code     : this.state.postalCode     ,
-      type_of_service : this.state.typeOfService  
-    };
-    
+      if (this.state.typeKid)
+        if (!nickname) {
+          window.scrollTo(0, 0);
+          this.setState({ messageControlNickname: "Please inform Client's nickname."})
+          this.textInput2.focus();
+        }
 
-    // if (this.state.typeKid) {
-    //   if (!this.state.name)
-    //   if (!this.state.nickname)
-    //   if (!this.state.default_rate)
-    // } else {
-    //   if (!this.state.name)
-    //   if (!this.state.default_rate)
-    // }
+      if (!name) {
+        window.scrollTo(0, 0);
+        this.setState({ messageControlName: "Please inform Client's name."})
+        this.textInput1.focus();
+      }
+    } else {
 
-    const url = `/client/${data.clientId}`;
+      const data = { 
+        clientId      : this.state.clientId || undefined,
+        name,
+        default_rate  : defaultRate,
 
-    try {
-      const newClientData = await axios.patch( 
-        url,
-        data,
-        {  
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization" : `Bearer ${this.props.storeToken}` }
-      });
-      if (newClientData.data.message) {
-        if (newClientData.data.newData)
+        nickname      : this.state.typeKid ? nickname : undefined,
+        birthday      : this.state.birthday || (this.state.tmp_birthday ? " " : undefined),
+        mother        : this.state.mother || (this.state.tmp_mother ? " " : undefined),
+        mPhone        : this.state.mPhone || (this.state.tmp_mPhone ? " " : undefined),
+        mEmail        : this.state.mEmail || (this.state.tmp_mEmail ? " " : undefined),
+        father        : this.state.father || (this.state.tmp_father ? " " : undefined),
+        fPhone        : this.state.fPhone || (this.state.tmp_fPhone ? " " : undefined),
+        fEmail        : this.state.fEmail || (this.state.tmp_fEmail ? " " : undefined),
+        consultant    : this.state.consultant || (this.state.tmp_consultant ? " " : undefined),
+        cPhone        : this.state.cPhone || (this.state.tmp_cPhone ? " " : undefined),
+        cEmail        : this.state.cEmail || (this.state.tmp_cEmail ? " " : undefined),
+        typeKid       : this.state.typeKid ? true : false,
+
+        email           : this.state.email,
+        phone           : this.state.phone,
+        city            : this.state.city,
+        address         : this.state.address,
+        province        : this.state.province,
+        postal_code     : this.state.postalCode,
+        type_of_service : this.state.typeOfService  
+      };
+      
+
+      const url = `/client/${data.clientId}`;
+      try {
+        const newClientData = await axios.patch( 
+          url,
+          data,
+          {  
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization" : `Bearer ${this.props.storeToken}` }
+        });
+        if (newClientData.data.message) {
+console.log("returned ", newClientData.data)
+          if (newClientData.data.newData)
+            this.setState({
+              message:      `${newClientData.data.newData.nickname || newClientData.data.newData.name} has been changed`,
+              name          : newClientData.data.newData.name || "",
+              nickname      : newClientData.data.newData.nickname || "",
+              birthday      : newClientData.data.newData.birthday ? handlingDate.receivingDate(newClientData.data.newData.birthday) : "",
+              mother        : newClientData.data.newData.mother || "",
+              mPhone        : newClientData.data.newData.mphone || "",
+              mEmail        : newClientData.data.newData.memail || "",
+              father        : newClientData.data.newData.father || "",
+              fPhone        : newClientData.data.newData.fphone || "",
+              fEmail        : newClientData.data.newData.femail || "",
+              cPhone        : newClientData.data.newData.cphone || "",
+              cEmail        : newClientData.data.newData.cemail || "",
+              consultant    : newClientData.data.newData.consultant || "",
+              defaultRate  : newClientData.data.newData.default_rate || "",
+              className     : "messageSuccess",
+              email           : newClientData.data.newData.email || "",
+              phone           : newClientData.data.newData.phone || "",
+              city            : newClientData.data.newData.city || "",
+              address         : newClientData.data.newData.address || "",
+              province        : newClientData.data.newData.province || "",
+              postal_code     : newClientData.data.newData.postalCode || "",
+              type_of_service : newClientData.data.newData.typeOfService || "",
+              updateButton    : true
+            });
+          else
+            this.setState({
+              message   : newClientData.data.message,
+              className : "messageSuccess"
+            });        
+        } else if (newClientData.data.error)
           this.setState({
-            message:      `${newClientData.data.newData.nickname || newClientData.data.newData.name} has been changed`,
-            name          : newClientData.data.newData.name || "",
-            nickname      : newClientData.data.newData.nickname || "",
-            birthday      : newClientData.data.newData.birthday ? handlingDate.receivingDate(newClientData.data.newData.birthday) : "",
-            mother        : newClientData.data.newData.mother || "",
-            mPhone        : newClientData.data.newData.mphone || "",
-            mEmail        : newClientData.data.newData.memail || "",
-            father        : newClientData.data.newData.father || "",
-            fPhone        : newClientData.data.newData.fphone || "",
-            fEmail        : newClientData.data.newData.femail || "",
-            cPhone        : newClientData.data.newData.cphone || "",
-            cEmail        : newClientData.data.newData.cemail || "",
-            consultant    : newClientData.data.newData.consultant || "",
-            default_rate  : newClientData.data.newData.default_rate || "",
-            className     : "messageSuccess",
-            email           : newClientData.data.newData.email || "",
-            phone           : newClientData.data.newData.phone || "",
-            city            : newClientData.data.newData.city || "",
-            address         : newClientData.data.newData.address || "",
-            province        : newClientData.data.newData.province || "",
-            postal_code     : newClientData.data.newData.postalCode || "",
-            type_of_service : newClientData.data.newData.typeOfService || "",
-            updateButton    : true
+            message   : newClientData.data.error,
+            className : "messageFailure"
           });
-        else
-          this.setState({
-            message   : newClientData.data.message,
-            className : "messageSuccess"
-          });        
-      } else if (newClientData.data.error)
+        
+      } catch(err) {
         this.setState({
-          message   : newClientData.data.error,
+          message   : err.message,
           className : "messageFailure"
         });
-      
-    } catch(err) {
-      this.setState({
-        message   : err.message,
-        className : "messageFailure"
-      });
+      }
+
+      this.clearMessage();
     }
 
-    this.clearMessage();
   }
 
 
@@ -198,25 +213,26 @@ class ClientsList extends Component {
 
   getClientInfo = client => {
     const {
-      _id, name, nickname,  mother, father, consultant, default_rate, type_kid
+      _id, name, nickname, birthday, mother, father, consultant
     } = client;
 
       this.setState({
         clientId: _id,
-        birthday: client.birthday ? handlingDate.receivingDate(client.birthday) : "",
-        name      : name || "",
-        nickname  : nickname || "",
-        mother    : mother || "",
-        mPhone    : client.mphone || "",
-        mEmail    : client.memail || "",
-        father    : father || "",
-        fPhone    : client.fphone || "",
-        fEmail    : client.femail || "",
+        name        : name || "",
+        defaultRate :  client.default_rate,
+
+        birthday    : birthday ? handlingDate.receivingDate(birthday) : "",
+        nickname    : nickname || "",
+        mother      : mother || "",
+        mPhone      : client.mphone || "",
+        mEmail      : client.memail || "",
+        father      : father || "",
+        fPhone      : client.fphone || "",
+        fEmail      : client.femail || "",
         consultant  : consultant || "",
-        cPhone    : client.cphone || "",
-        cEmail    : client.cemail || "",
-        default_rate,
-        typeKid   : type_kid,
+        cPhone      : client.cphone || "",
+        cEmail      : client.cemail || "",
+        typeKid     : client.type_kid,
 
         email         : client.email || "",
         phone         : client.phone || "",
@@ -248,7 +264,7 @@ class ClientsList extends Component {
       tmp_consultant      : this.state.consultant,
       tmp_cPhone          : this.state.cPhone,
       tmp_cEmail          : this.state.cEmail,
-      tmp_default_rate    : this.state.default_rate,
+      tmp_defaultRate     : this.state.defaultRate,
 
       tmp_email         : this.state.email,
       tmp_phone         : this.state.phone,
@@ -277,7 +293,7 @@ class ClientsList extends Component {
       consultant      : this.state.tmp_consultant,
       cPhone          : this.state.tmp_cPhone,
       cEmail          : this.state.tmp_cEmail,
-      default_rate    : this.state.tmp_default_rate,
+      defaultRate     : this.state.tmp_defaultRate,
 
       email         : this.state.tmp_email,
       phone         : this.state.tmp_phone,
@@ -332,8 +348,11 @@ class ClientsList extends Component {
                     value       = {this.state.name}
                     onKeyPress  = {this.handleChange}
                     disabled    = {this.state.disableEditForm}
-                    // ref         = {input => this.name = input }
+                    ref         = {input => this.textInput1 = input }
                     />
+                  <Form.Text className="messageControl-user">
+                    {this.state.messageControlName}
+                  </Form.Text>
                 </Form.Group>
                 { this.state.typeKid
                   ?
@@ -348,8 +367,11 @@ class ClientsList extends Component {
                           value       = {this.state.nickname}
                           onKeyPress  = {this.handleChange}
                           disabled    = {this.state.disableEditForm}
-                          // ref         = {input => this.textInput2 = input } 
+                          ref         = {input => this.textInput2 = input } 
                           />
+                        <Form.Text className="messageControl-user">
+                          {this.state.messageControlNickname}
+                        </Form.Text>
                       </Form.Group>
 
                       <Form.Group controlId="formBirthday">
@@ -398,6 +420,7 @@ class ClientsList extends Component {
                         <Form.Label className="cardLabel">Mother's Email address</Form.Label>
                         <Form.Control
                           type        = "email"
+                          // pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
                           pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                           placeholder = {"Type the mother's email"}
                           name        = "mEmail"
@@ -443,6 +466,8 @@ class ClientsList extends Component {
                         <Form.Label className="cardLabel">Father's Email address</Form.Label>
                         <Form.Control
                           type        = "email"
+                          // pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
+                          pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                           placeholder = {"Type the father's email"}
                           name        = "fEmail"
                           onChange    = {this.handleChange}
@@ -487,6 +512,8 @@ class ClientsList extends Component {
                         <Form.Label className="cardLabel">Consultant's Email address</Form.Label>
                         <Form.Control
                           type        = "email"
+                          // pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
+                          pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                           placeholder = {"Type the consultant's email"}
                           name        = "cEmail"
                           onChange    = {this.handleChange}
@@ -496,20 +523,6 @@ class ClientsList extends Component {
                           // ref         = {input => this.textInput12 = input }  
                         />
                       </Form.Group>
-
-                      <Form.Group controlId="formDefaultRate">
-                        <Form.Label className="cardLabel">Rate</Form.Label>
-                        <Form.Control
-                          type        = "text"
-                          placeholder = {"Type the hourly rate - CAD$"}
-                          name        = "default_rate"
-                          onChange    = {this.handleChange}
-                          value       = {this.state.default_rate}
-                          onKeyPress  = {this.handleChange}
-                          disabled    = {this.state.disableEditForm}
-                          // ref         = {input => this.textInput13 = input }  
-                        />
-                      </Form.Group>
                     </div>
                   :
                     <div>
@@ -517,6 +530,7 @@ class ClientsList extends Component {
                         <Form.Label className="cardLabel">Email</Form.Label>
                         <Form.Control
                           type        = "email"
+                          pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
                           placeholder = {"Type the client's email"}
                           name        = "email"
                           onChange    = {this.handleChange}
@@ -606,6 +620,22 @@ class ClientsList extends Component {
                       </Form.Group>
                     </div>
                 }
+                      <Form.Group controlId="formDefaultRate">
+                        <Form.Label className="cardLabel">Rate</Form.Label>
+                        <Form.Control
+                          type        = "number"
+                          placeholder = {"Type the hourly rate - CAD$"}
+                          name        = "defaultRate"
+                          onChange    = {this.handleChange}
+                          value       = {this.state.defaultRate}
+                          onKeyPress  = {this.handleChange}
+                          disabled    = {this.state.disableEditForm}
+                          ref         = {input => this.textInput13 = input }  
+                        />
+                        <Form.Text className="messageControl-user">
+                          {this.state.messageControlDefaultRate}
+                        </Form.Text>
+                      </Form.Group>
 
           <Card.Footer className={this.state.className}>
             { this.state.message

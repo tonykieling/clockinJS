@@ -195,30 +195,6 @@ console.log("inside client modify");
   // this try is for check is the clientId passed from the frontend is alright (exists in database), plus
   //  check whether either the client to be changed belongs for the user or the user is admin - if not, not allowed to change client's data
 
-//   try {
-//     const client = await Client
-//       .findById(clientId);
-// console.log("req.body:::", req.body);
-// console.log("client:::", client);
-//     if (!client || client.length < 1)
-//       return res.status(200).json({
-//         error: `Error CM01: Client <id: ${clientId}> does not exist.`
-//       });
-//     if (userId.toString() !== client.user_id.toString() && !userAdmin)
-//       return res.status(200).json({
-//         error: `Error CM02: Client <id: ${clientId}> belongs to another user.`
-//       });
-
-//   } catch(err) {
-//     console.log("Error => ", err.message);
-//     if (clientId.length !== 24)
-//       return res.status(200).json({
-//         error: "Error ECM01: ClientId mystyped."
-//       });  
-//     return res.status(200).json({
-//       error: "Error ECM02: Something got wrong."
-//     });
-//   }
 
   const {
     name,
@@ -252,8 +228,7 @@ console.log("inside client modify");
 
     const client = await Client
     .findById(clientId);
-console.log("req.body:::", req.body);
-console.log("client:::", client);
+    
     if (!client || client.length < 1)
       return res.status(200).json({
         error: `Error CM01: Client <id: ${clientId}> does not exist.`
