@@ -77,6 +77,15 @@ class ClientsList extends Component {
     event.target.name === "name"        && this.state.messageControlName && this.setState({ messageControlName: ""});
     event.target.name === "nickname"    && this.state.messageControlNickname && this.setState({ messageControlNickname: ""});
     event.target.name === "defaultRate" && this.state.messageControlDefaultRate && this.setState({ messageControlDefaultRate: ""});
+
+  }
+
+
+  handlePostalCode = event => {
+    const newValue = event.target.value;
+    this.setState({
+      postalCode: isNaN(newValue) ? newValue.toUpperCase() : newValue 
+    });
   }
 
 
@@ -146,8 +155,8 @@ class ClientsList extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
+
         if (newClientData.data.message) {
-console.log("returned ", newClientData.data)
           if (newClientData.data.newData)
             this.setState({
               message:      `${newClientData.data.newData.nickname || newClientData.data.newData.name} has been changed`,
@@ -313,6 +322,11 @@ console.log("returned ", newClientData.data)
   }
 
 
+  handleCheckPostalCode = event => {
+    console.log("value:", event.target.value);
+  }
+
+
   render() {
     return (
       <div className="formPosition">
@@ -420,8 +434,7 @@ console.log("returned ", newClientData.data)
                         <Form.Label className="cardLabel">Mother's Email address</Form.Label>
                         <Form.Control
                           type        = "email"
-                          // pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
-                          pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                          pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                           placeholder = {"Type the mother's email"}
                           name        = "mEmail"
                           onChange    = {this.handleChange}
@@ -466,9 +479,8 @@ console.log("returned ", newClientData.data)
                         <Form.Label className="cardLabel">Father's Email address</Form.Label>
                         <Form.Control
                           type        = "email"
-                          // pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
-                          pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-                          placeholder = {"Type the father's email"}
+                          pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                          placeholder = {"Type father's email"}
                           name        = "fEmail"
                           onChange    = {this.handleChange}
                           value       = {this.state.fEmail}
@@ -482,7 +494,7 @@ console.log("returned ", newClientData.data)
                         <Form.Label className="cardLabel">Consultant</Form.Label>
                         <Form.Control
                           type        = "text"
-                          placeholder = {"Type the consultant's name"}
+                          placeholder = {"Type consultant's name"}
                           name        = "consultant"
                           onChange    = {this.handleChange}
                           value       = {this.state.consultant}
@@ -512,9 +524,8 @@ console.log("returned ", newClientData.data)
                         <Form.Label className="cardLabel">Consultant's Email address</Form.Label>
                         <Form.Control
                           type        = "email"
-                          // pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
-                          pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-                          placeholder = {"Type the consultant's email"}
+                          pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                          placeholder = {"Type consultant's email"}
                           name        = "cEmail"
                           onChange    = {this.handleChange}
                           value       = {this.state.cEmail}
@@ -530,8 +541,8 @@ console.log("returned ", newClientData.data)
                         <Form.Label className="cardLabel">Email</Form.Label>
                         <Form.Control
                           type        = "email"
-                          pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
-                          placeholder = {"Type the client's email"}
+                          pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                          placeholder = {"Type client's email"}
                           name        = "email"
                           onChange    = {this.handleChange}
                           value       = {this.state.email}
@@ -542,22 +553,22 @@ console.log("returned ", newClientData.data)
                       </Form.Group>
                       <Form.Group controlId="formPhone">
                         <Form.Label className="cardLabel">Phone</Form.Label>
-                        <Form.Control
-                          type        = "text"
-                          placeholder = {"Type the client's phone"}
+                        <MaskedInput
+                          mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                          className   = "form-control"
+                          placeholder = "Enter client's phone number"
                           name        = "phone"
-                          onChange    = {this.handleChange}
+                          onBlur      = {e => this.afterChange(e)}
                           value       = {this.state.phone}
                           onKeyPress  = {this.handleChange}
                           disabled    = {this.state.disableEditForm}
-                          // ref         = {input => this.phone = input }
                         />
                       </Form.Group>
                       <Form.Group controlId="formCity">
                         <Form.Label className="cardLabel">City</Form.Label>
                         <Form.Control
                           type        = "text"
-                          placeholder = {"Type the client's city"}
+                          placeholder = {"Type client's city"}
                           name        = "city"
                           onChange    = {this.handleChange}
                           value       = {this.state.city}
@@ -570,7 +581,7 @@ console.log("returned ", newClientData.data)
                         <Form.Label className="cardLabel">Address</Form.Label>
                         <Form.Control
                           type        = "text"
-                          placeholder = {"Type the client's address"}
+                          placeholder = {"Type client's address"}
                           name        = "address"
                           onChange    = {this.handleChange}
                           value       = {this.state.address}
@@ -583,7 +594,7 @@ console.log("returned ", newClientData.data)
                         <Form.Label className="cardLabel">Province</Form.Label>
                         <Form.Control
                           type        = "text"
-                          placeholder = {"Type the client's province"}
+                          placeholder = {"Type client's province"}
                           name        = "province"
                           onChange    = {this.handleChange}
                           value       = {this.state.province}
@@ -594,15 +605,21 @@ console.log("returned ", newClientData.data)
                       </Form.Group>
                       <Form.Group controlId="formPostalCode">
                         <Form.Label className="cardLabel">Postal Code</Form.Label>
-                        <Form.Control
-                          type        = "text"
-                          placeholder = {"Type the client's postal code"}
+                        <Form.Check 
+                          inline 
+                          label     = " outside Canada"
+                          type      = "checkbox"
+                          style     = {{marginLeft: "1rem"}}
+                          onChange  = {this.handleCheckPostalCode}
+                        />
+                        <MaskedInput
+                          mask        = {[/[A-Z]/i, /\d/, /[A-Z]/i, ' ', /\d/, /[A-Z]/i, /\d/]}
+                          className   = "form-control"
+                          placeholder = "Enter client's postal code"
                           name        = "postalCode"
-                          onChange    = {this.handleChange}
                           value       = {this.state.postalCode}
-                          onKeyPress  = {this.handleChange}
+                          onChange    = {this.handlePostalCode}
                           disabled    = {this.state.disableEditForm}
-                          // ref         = {input => this.postalCode = input }
                         />
                       </Form.Group>
                       <Form.Group controlId="formTypeOfService">

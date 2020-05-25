@@ -212,7 +212,8 @@ X- add pictures to quick guidance
     - it's working for both kid and ordinary clients
   - need to double check email's pattern for forms:
       pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"    OR
-      pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+      pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" OR
+      pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
   - clockin and invoice (check the behaviour)
 - invoice for ordinary client
 - invoice date on frontend is being the host system time, rather than the local time
