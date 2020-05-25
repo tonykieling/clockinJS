@@ -203,17 +203,17 @@ X- add pictures to quick guidance
 
 - ordinary client:
   - add
-    - review data type and validation
+    X- review data type and validation
       phone number only number
       X email should be a valid one
         being made by the browser resource
-      postal code with a mask for Canadian pattern (checkbox which allows postal code outside Canada)
+      X postal code with a mask for Canadian pattern (checkbox which allows postal code outside Canada)
   - edit
-    - it's working for both kid and ordinary clients
-  - need to double check email's pattern for forms:
+    X- it's working for both kid and ordinary clients
+  X- need to double check email's pattern for forms:
       pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"    OR
       pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" OR
-      pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+      pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" CHOOSED IT
   - clockin and invoice (check the behaviour)
 - invoice for ordinary client
 - invoice date on frontend is being the host system time, rather than the local time
@@ -231,5 +231,5 @@ X- add pictures to quick guidance
   - need to have a API to do so
   - need to develop front-end to do so
 - rewrite back-end to avoid code repetition
-- rewrite front-end to avoid code repetition
+- rewrite front-end to avoid code repetition (check for duplicate functions, such as handlePostalCode and handlePostalCodeChange)
 

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import axios from "axios";
+import MaskedInput from 'react-text-mask';
+
 
 
 class ClientGeneralNew extends Component {
@@ -21,7 +23,9 @@ class ClientGeneralNew extends Component {
       postalCode      : "",
       phone           : "",
       messageControlName        : "",
-      messageControlDefaultRate : ""
+      messageControlDefaultRate : "",
+
+      pcOutsideCanada   : false
     }
 
   handleChange = e => {
@@ -31,6 +35,21 @@ class ClientGeneralNew extends Component {
 
     e.target.name === "name"        && this.state.messageControlName && this.setState({ messageControlName: ""});
     e.target.name === "defaultRate" && this.state.messageControlDefaultRate && this.setState({ messageControlDefaultRate: ""});
+  }
+
+
+  handlePostalCode = event => {
+    const newValue = event.target.value;
+    this.setState({
+      postalCode: isNaN(newValue) ? newValue.toUpperCase() : newValue 
+    });
+  }
+
+
+  handleCheckPostalCode = () => {
+    this.setState({
+      pcOutsideCanada   : !this.state.pcOutsideCanada
+    });
   }
 
 
@@ -53,6 +72,13 @@ class ClientGeneralNew extends Component {
       this.setState({ disableBtn: true });
 
       const url = "/client";
+
+      const postalCode = this.state.postalCode
+        ? !this.state.pcOutsideCanada
+          ? this.state.postalCode.substr(0, 6).split(" ").join("")
+          : this.state.postalCode
+        : undefined;
+
       const createClient  = {
         name        : this.state.name,
         defaultRate : this.state.defaultRate,
@@ -61,7 +87,7 @@ class ClientGeneralNew extends Component {
         city          : this.state.city  || undefined,
         province      : this.state.province || undefined,
         phone         : this.state.phone || undefined,
-        postalCode    : this.state.postalCode || undefined,
+        postalCode,
         typeOfService : this.state.typeOfService || undefined,
       }
 
@@ -112,8 +138,9 @@ class ClientGeneralNew extends Component {
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        message     : "",
-        disableBtn  : false
+        message         : "",
+        disableBtn      : false,
+        pcOutsideCanada : false
       })
       window.scrollTo(0, 0);
       this.textInput1.focus();
@@ -148,6 +175,7 @@ class ClientGeneralNew extends Component {
                 onChange    = {this.handleChange}
                 value       = {this.state.name}
                 onKeyPress  = {this.handleChange}
+                disabled    = {this.state.disableBtn}
                 ref         = {input => this.textInput1 = input } />
               <Form.Text className="messageControl-user">
                 {this.state.messageControlName}
@@ -158,25 +186,28 @@ class ClientGeneralNew extends Component {
               <Form.Label className="cardLabel">Email</Form.Label>
               <Form.Control
                 type        = "email"
-                pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                 placeholder = "Client's email"
                 name        = "email"
                 onChange    = {this.handleChange}
                 value       = {this.state.email}
                 onKeyPress  = {this.handleChange}
+                disabled    = {this.state.disableBtn}
                 ref         = {input => this.textInput2 = input } />
             </Form.Group>
 
             <Form.Group controlId="formPhone">
               <Form.Label className="cardLabel">Phone</Form.Label>
-              <Form.Control
-                type        = "text"
-                placeholder = "Client's phone"
+              <MaskedInput
+                mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                className   = "form-control"
+                placeholder = "Client's phone number"
                 name        = "phone"
-                onChange    = {this.handleChange}
                 value       = {this.state.phone}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput3 = input } />
+                disabled    = {this.state.disableBtn}
+                // ref         = {input => this.textInput3 = input } 
+              />
             </Form.Group>
 
             <Form.Group controlId="formAddress">
@@ -187,6 +218,7 @@ class ClientGeneralNew extends Component {
                 name        = "address"
                 onChange    = {this.handleChange}
                 value       = {this.state.address}
+                disabled    = {this.state.disableBtn}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput4 = input } />
             </Form.Group>
@@ -199,6 +231,7 @@ class ClientGeneralNew extends Component {
                 name        = "city"
                 onChange    = {this.handleChange}
                 value       = {this.state.city}
+                disabled    = {this.state.disableBtn}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput5 = input } />
             </Form.Group>
@@ -211,20 +244,45 @@ class ClientGeneralNew extends Component {
                 name        = "province"
                 onChange    = {this.handleChange}
                 value       = {this.state.province}
+                disabled    = {this.state.disableBtn}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput6 = input } />
             </Form.Group>
 
             <Form.Group controlId="formPostalCode">
               <Form.Label className="cardLabel">Postal Code</Form.Label>
-              <Form.Control
-                type        = "text"
-                placeholder = "postal code"
-                name        = "postalCode"
-                onChange    = {this.handleChange}
-                value       = {this.state.postalCode}
-                onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput7 = input } />
+              <Form.Check 
+                inline 
+                label     = " outside Canada"
+                checked   = {this.state.pcOutsideCanada}
+                type      = "checkbox"
+                style     = {{marginLeft: "1rem"}}
+                onChange  = {this.handleCheckPostalCode}
+                disabled  = {this.state.disableBtn}
+              />
+              { !this.state.pcOutsideCanada
+                ?
+                  <MaskedInput
+                    mask        = {[/[A-Z]/i, /\d/, /[A-Z]/i, ' ', /\d/, /[A-Z]/i, /\d/]}
+                    className   = "form-control"
+                    placeholder = "Enter client's postal code"
+                    name        = "postalCode"
+                    value       = {this.state.postalCode}
+                    onChange    = {this.handlePostalCode}
+                    disabled    = {this.state.disableBtn}
+                    />
+                : 
+                  <Form.Control
+                    type        = "text"
+                    placeholder = {"Enter client's postal code"}
+                    name        = "postalCode"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.postalCode}
+                    disabled    = {this.state.disableBtn}
+                    onKeyPress  = {this.handleChange}
+                    ref         = {input => this.textInput7 = input }
+                  />
+              }
             </Form.Group>
 
             <Form.Group controlId="formTypeOfService">
@@ -235,6 +293,7 @@ class ClientGeneralNew extends Component {
                 name        = "typeOfService"
                 onChange    = {this.handleChange}
                 value       = {this.state.typeOfService}
+                disabled    = {this.state.disableBtn}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput8 = input } />
             </Form.Group>
@@ -248,6 +307,7 @@ class ClientGeneralNew extends Component {
                 name        = "defaultRate"
                 onChange    = {this.handleChange}
                 value       = {this.state.defaultRate}
+                disabled    = {this.state.disableBtn}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput9 = input }  />
               <Form.Text className="messageControl-user">

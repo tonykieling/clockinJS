@@ -64,7 +64,9 @@ class ClientsList extends Component {
       tmp_postalCode    : "",
       tmp_typeOfService : "",
 
-      updateButton      : true
+      updateButton      : true,
+      pcOutsideCanada   : false,
+      postalCodeChange  : false
     }
   }
 
@@ -140,7 +142,9 @@ class ClientsList extends Component {
         city            : this.state.city,
         address         : this.state.address,
         province        : this.state.province,
-        postal_code     : this.state.postalCode,
+        postal_code     : this.state.postalCodeChange && !this.state.pcOutsideCanada
+                            ? this.state.postalCode.substr(0, 6).split(" ").join("") 
+                            : this.state.postalCode,
         type_of_service : this.state.typeOfService  
       };
       
@@ -225,35 +229,36 @@ class ClientsList extends Component {
       _id, name, nickname, birthday, mother, father, consultant
     } = client;
 
-      this.setState({
-        clientId: _id,
-        name        : name || "",
-        defaultRate :  client.default_rate,
+    this.setState({
+      clientId: _id,
+      name            : name || "",
+      defaultRate     : client.default_rate,
+      pcOutsideCanada : (client.postal_code && client.postal_code.length > 6) ? true : false,
 
-        birthday    : birthday ? handlingDate.receivingDate(birthday) : "",
-        nickname    : nickname || "",
-        mother      : mother || "",
-        mPhone      : client.mphone || "",
-        mEmail      : client.memail || "",
-        father      : father || "",
-        fPhone      : client.fphone || "",
-        fEmail      : client.femail || "",
-        consultant  : consultant || "",
-        cPhone      : client.cphone || "",
-        cEmail      : client.cemail || "",
-        typeKid     : client.type_kid,
+      birthday    : birthday ? handlingDate.receivingDate(birthday) : "",
+      nickname    : nickname || "",
+      mother      : mother || "",
+      mPhone      : client.mphone || "",
+      mEmail      : client.memail || "",
+      father      : father || "",
+      fPhone      : client.fphone || "",
+      fEmail      : client.femail || "",
+      consultant  : consultant || "",
+      cPhone      : client.cphone || "",
+      cEmail      : client.cemail || "",
+      typeKid     : client.type_kid,
 
-        email         : client.email || "",
-        phone         : client.phone || "",
-        city          : client.city || "",
-        address       : client.address || "",
-        province      : client.province || "",
-        postalCode    : client.postal_code || "",
-        typeOfService : client.type_of_service || "",
+      email         : client.email || "",
+      phone         : client.phone || "",
+      city          : client.city || "",
+      address       : client.address || "",
+      province      : client.province || "",
+      postalCode    : client.postal_code || "",
+      typeOfService : client.type_of_service || "",
 
-        disableEditForm : true,
-        updateButton    : false
-      });
+      disableEditForm : true,
+      updateButton    : false
+    });
   }
 
 
@@ -281,7 +286,7 @@ class ClientsList extends Component {
       tmp_address       : this.state.address,
       tmp_province      : this.state.province,
       tmp_postalCode    : this.state.postalCode,
-      tmp_typeOfService : this.state.typeOfService
+      tmp_typeOfService : this.state.typeOfService,
     });
   }
 
@@ -322,8 +327,11 @@ class ClientsList extends Component {
   }
 
 
-  handleCheckPostalCode = event => {
-    console.log("value:", event.target.value);
+  handleCheckPostalCode = () => {
+    this.setState({
+      pcOutsideCanada   : !this.state.pcOutsideCanada,
+      postalCodeChange  : !this.state.postalCodeChange
+    });
   }
 
 
@@ -608,19 +616,35 @@ class ClientsList extends Component {
                         <Form.Check 
                           inline 
                           label     = " outside Canada"
+                          checked   = {this.state.pcOutsideCanada}
                           type      = "checkbox"
                           style     = {{marginLeft: "1rem"}}
                           onChange  = {this.handleCheckPostalCode}
+                          disabled  = {this.state.disableEditForm}
                         />
-                        <MaskedInput
-                          mask        = {[/[A-Z]/i, /\d/, /[A-Z]/i, ' ', /\d/, /[A-Z]/i, /\d/]}
-                          className   = "form-control"
-                          placeholder = "Enter client's postal code"
-                          name        = "postalCode"
-                          value       = {this.state.postalCode}
-                          onChange    = {this.handlePostalCode}
-                          disabled    = {this.state.disableEditForm}
-                        />
+                        
+                        { !this.state.pcOutsideCanada
+                          ?
+                            <MaskedInput
+                              mask        = {[/[A-Z]/i, /\d/, /[A-Z]/i, ' ', /\d/, /[A-Z]/i, /\d/]}
+                              className   = "form-control"
+                              placeholder = "Enter client's postal code"
+                              name        = "postalCode"
+                              value       = {this.state.postalCode}
+                              onChange    = {this.handlePostalCode}
+                              disabled    = {this.state.disableEditForm}
+                              />
+                          : 
+                            <Form.Control
+                              type        = "text"
+                              placeholder = {"Enter client's postal code"}
+                              name        = "postalCode"
+                              onChange    = {this.handleChange}
+                              value       = {this.state.postalCode}
+                              onKeyPress  = {this.handleChange}
+                              disabled    = {this.state.disableEditForm}
+                            />
+                        }
                       </Form.Group>
                       <Form.Group controlId="formTypeOfService">
                         <Form.Label className="cardLabel">Type of Service</Form.Label>
