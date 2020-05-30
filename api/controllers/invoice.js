@@ -151,6 +151,31 @@ console.log("date::", date)
   const clientExist   = temp_client.checkClient;
 
 
+  /**
+   * it checks whether there is invoice for this user and client with the same code
+   * if so, it returns a message to the user asking to them to change the code
+   */
+  try {
+    const checkInvoiceCode = await Invoice
+      .find({
+        user_id   : userId,
+        client_id : clientId,
+        code
+      });
+    
+    if (checkInvoiceCode.length && checkInvoiceCode.length > 0)
+      return res.json({
+        error: "This code is already been used in other invoice for this client."
+      });
+    
+  } catch(err) {
+    console.log("Error checking InvoiceCode", err.message)
+    return res.json({
+      error: "Error EIADD07"
+    });
+  }
+// if (1) return res.send({error: "gotcha!!"});
+
   let clockins = [];
   try {
     clockins = await Clockin
@@ -172,7 +197,7 @@ console.log("date::", date)
 
   } catch(err) {
     return res.status(409).json({
-      error: `EIADD06: Something got wrong.`
+      error: "EIADD06: Something got wrong."
     });
   }
 

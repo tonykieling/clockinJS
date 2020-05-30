@@ -22,7 +22,7 @@ const thinScreen = window.innerWidth < 800 ? true : false;
 class InvoiceNew extends Component {
 
   state = {
-    dateStart         : "2020-02-11",
+    dateStart         : "2020-03-04",
     dateEnd           : "2020-04-13",
     // dateStart         : "",
     // dateEnd           : "",
@@ -51,7 +51,10 @@ class InvoiceNew extends Component {
     });
 
     if (event.target.name === "invoiceCode" || event.target.name === "invoiceDate")
-      this.setState({ messageInvoice: ""});
+      this.setState({ 
+        messageInvoice    : "",
+        disableInvGenBtn  : false
+      });
   }
 
 
@@ -73,8 +76,6 @@ class InvoiceNew extends Component {
         dateStart = this.state.dateStart,
         dateEnd   = this.state.dateEnd,
         clientId  = this.state.clientId;
-console.log("dates to be sent ", dateStart, dateEnd)
-// if (1) return;
 
       const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
@@ -86,7 +87,7 @@ console.log("dates to be sent ", dateStart, dateEnd)
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-console.log("allclockins received::", getClockins.data.allClockins)
+        
         if (getClockins.data.allClockins){
           const tempClockins = getClockins.data.allClockins;
           this.setState({
@@ -148,7 +149,7 @@ console.log("allclockins received::", getClockins.data.allClockins)
       const dtGeneration = this.state.invoiceDate 
               ? new Date(this.state.invoiceDate).getTime() 
               : getCurrentDateTime();
-console.log("currentDateTime::", dtGeneration)
+              
       if (dtGeneration < this.state.lastClockinDate) {
         this.setState({
           messageInvoice    : "Date should be greater or equal to the last clockin date.",
@@ -167,9 +168,8 @@ console.log("currentDateTime::", dtGeneration)
         clientId  : this.state.clientId,
         code      : this.state.invoiceCode.toUpperCase()
       }
-console.log("data:::: ", data)
-// if (1) return;
-        const url = "/invoice";
+
+      const url = "/invoice";
         try {
           const Invoice = await axios.post( 
             url,
@@ -202,14 +202,13 @@ console.log("data:::: ", data)
             classNameMessage  : "messageFailure"
           });
 
-          this.clearMessage();
+          // this.clearMessage();
         }
       }
     }  
 
 
   renderDataTable = (clockins) => {
-    console.log("rendering table")
     return clockins.map((clockin, index) => {
       const clockinsToSend = renderClockinDataTable(clockin, index);
 
@@ -296,7 +295,6 @@ console.log("data:::: ", data)
 
 
   checkIfThereIsInvoiceCode = listOfClockins => {
-    console.log("checking invoicecode")
     const check = listOfClockins.filter(clockin => clockin.invoice);
     return((check.length > 0) ? true : false)
   }
@@ -472,7 +470,6 @@ console.log("data:::: ", data)
               showModal     = { this.state.showModal}
               clockinData   = { this.state.clockinToModal}
               client        = { this.state.client.nickname}
-              // deleteClockin = { (clockinId) => console.log("clockin got deleted", clockinId)}
               deleteClockin = { (clockinId) => this.updateClockins(clockinId)}
               closeModal    = { this.closeClockinModal}
               thinScreen    = { thinScreen}

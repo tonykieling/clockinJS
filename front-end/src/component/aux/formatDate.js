@@ -25,6 +25,9 @@ const set = () => {
 }
 
 
+/**
+ * this method formats the current user date and time
+ */
 const getCurrentDateTime = () =>  {
     const currentDate   = new Date();
     const currentYear   = currentDate.getFullYear();
