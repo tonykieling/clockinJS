@@ -7,8 +7,6 @@ const ml = window.innerWidth < 800 ? "2rem" : "3rem";
 
 export default function Guidance() {
   return (
-    // <div style={{all: "unset"}} className="page-general">
-    // <div style={{all: "unset"}} className="formPosition">
     <div>
 
       {/* <Card style={{backgroundColor: "aliceblue"}}> */}
@@ -156,8 +154,9 @@ export default function Guidance() {
               <li>Add break to clockin - done</li>
               <li>Add Guidance - done</li>
               <li>Set date to the invoice's change processes (delivered and received) - done</li>
+              <li>Ordinary Clients (no kids) - Add and Edit</li>
               <li>Reports</li>
-              <li>Generate a Invoice's pdf file from the system.</li>
+              <li>Generate a Invoice's pdf file from the system for both kids and ordinary clients.</li>
             </ul>
           </Card.Body>
         </Card>

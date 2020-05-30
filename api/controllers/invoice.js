@@ -123,7 +123,12 @@ console.log("Inside Invoice_add");
     clientId,
     code
   } = req.body;
+console.log("received date::", req.body.date)
   const date = req.body.date ? new Date(req.body.date) : new Date();
+  // const date = req.body.date ? new Date(req.body.date) : return();
+console.log("dates::", dateStart, dateEnd)
+console.log("date::", date)
+// if (1) return res.send({error: "wait"})
 
   const userId      = req.userData.userId;
   const checkUser   = require("../helpers/user-h.js");

@@ -19,7 +19,6 @@ function GetClients(props) {
   
   
   const logout = () => {
-    console.log("asd")
     props.noUser();
     setgoLand(true);
     setshowModal(false);

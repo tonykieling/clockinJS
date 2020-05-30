@@ -24,7 +24,20 @@ const set = () => {
     return;
 }
 
+
+const getCurrentDateTime = () =>  {
+    const currentDate   = new Date();
+    const currentYear   = currentDate.getFullYear();
+    const currentMonth  = currentDate.getMonth() > 8 ? currentDate.getMonth() + 1 : `0${currentDate.getMonth() + 1}`;
+    const currentDay    = currentDate.getDate() > 9 ? currentDate.getDate() : `0${currentDate.getDate()}`;
+    const currentHour   = currentDate.getHours() > 9 ? currentDate.getHours() : `0${currentDate.getHours()}`;
+    const currentMin    = currentDate.getMinutes() > 9 ? currentDate.getMinutes() : `0${currentDate.getMinutes()}`;
+    return(`${currentYear}-${currentMonth}-${currentDay}T${currentHour}:${currentMin}Z`);
+}
+
+
 export {
     show,
-    set 
+    set,
+    getCurrentDateTime
 };

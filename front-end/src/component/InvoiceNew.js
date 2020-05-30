@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 
 import GetClients from "./aux/GetClients.js";
-// import * as formatDate from "./aux/formatDate.js";
+import { getCurrentDateTime } from "./aux/formatDate.js";
 import PunchInModal from "./PunchInModal.js";
 import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
 
@@ -22,10 +22,10 @@ const thinScreen = window.innerWidth < 800 ? true : false;
 class InvoiceNew extends Component {
 
   state = {
-    // dateStart         : "2020-02-11",
-    // dateEnd           : "2020-04-13",
-    dateStart         : "",
-    dateEnd           : "",
+    dateStart         : "2020-02-11",
+    dateEnd           : "2020-04-13",
+    // dateStart         : "",
+    // dateEnd           : "",
     clientId          : "",
     clockinList       : [],
     client            : "",
@@ -57,7 +57,7 @@ class InvoiceNew extends Component {
 
   handleGetClockins = async event => {
     event.preventDefault();
-
+    
     if (!this.state.dateStart || !this.state.dateEnd) {
       this.setState({
         message           : "Please, select Client and set Date Start and Date End.",
@@ -73,7 +73,8 @@ class InvoiceNew extends Component {
         dateStart = this.state.dateStart,
         dateEnd   = this.state.dateEnd,
         clientId  = this.state.clientId;
-
+console.log("dates to be sent ", dateStart, dateEnd)
+// if (1) return;
 
       const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
@@ -85,7 +86,7 @@ class InvoiceNew extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-
+console.log("allclockins received::", getClockins.data.allClockins)
         if (getClockins.data.allClockins){
           const tempClockins = getClockins.data.allClockins;
           this.setState({
@@ -126,7 +127,7 @@ class InvoiceNew extends Component {
       // this.clearMessage();
     }
 
-    this.clearMessage();
+    // this.clearMessage();
   }
 
 
@@ -144,7 +145,10 @@ class InvoiceNew extends Component {
       
       this.textCode.focus();
     } else {
-      const dtGeneration = new Date(this.state.invoiceDate).getTime();
+      const dtGeneration = this.state.invoiceDate 
+              ? new Date(this.state.invoiceDate).getTime() 
+              : getCurrentDateTime();
+console.log("currentDateTime::", dtGeneration)
       if (dtGeneration < this.state.lastClockinDate) {
         this.setState({
           messageInvoice    : "Date should be greater or equal to the last clockin date.",
@@ -156,14 +160,15 @@ class InvoiceNew extends Component {
       this.setState({disableInvGenBtn: true});
 
       const data = {
-        date      : dtGeneration || null,
+        date      : dtGeneration,
         dateStart : this.state.dateStart,
         dateEnd   : this.state.dateEnd,
         notes     : this.state.notes,
         clientId  : this.state.clientId,
         code      : this.state.invoiceCode.toUpperCase()
       }
-
+console.log("data:::: ", data)
+// if (1) return;
         const url = "/invoice";
         try {
           const Invoice = await axios.post( 
@@ -204,6 +209,7 @@ class InvoiceNew extends Component {
 
 
   renderDataTable = (clockins) => {
+    console.log("rendering table")
     return clockins.map((clockin, index) => {
       const clockinsToSend = renderClockinDataTable(clockin, index);
 
@@ -290,6 +296,7 @@ class InvoiceNew extends Component {
 
 
   checkIfThereIsInvoiceCode = listOfClockins => {
+    console.log("checking invoicecode")
     const check = listOfClockins.filter(clockin => clockin.invoice);
     return((check.length > 0) ? true : false)
   }
@@ -318,7 +325,8 @@ class InvoiceNew extends Component {
                   type        = "date"
                   name        = "dateStart"
                   onChange    = {this.handleChange}
-                  value       = {this.state.dateStart} />
+                  value       = {this.state.dateStart} 
+                />
               </Col>
             </Form.Group>
 
@@ -331,7 +339,8 @@ class InvoiceNew extends Component {
                   type        = "date"
                   name        = "dateEnd"
                   onChange    = {this.handleChange}
-                  value       = {this.state.dateEnd} />
+                  value       = {this.state.dateEnd} 
+                />
               </Col>
             </Form.Group>
 

@@ -202,19 +202,20 @@ X- add pictures to quick guidance
 
 
 - ordinary client:
-  - add
-    X- review data type and validation
+  X - add
+    review data type and validation
       phone number only number
-      X email should be a valid one
-        being made by the browser resource
-      X postal code with a mask for Canadian pattern (checkbox which allows postal code outside Canada)
-  - edit
-    X- it's working for both kid and ordinary clients
-  X- need to double check email's pattern for forms:
+      email should be a valid one
+      being made by the browser resource
+      postal code with a mask for Canadian pattern (checkbox which allows postal code outside Canada)
+  X - edit
+    it's working for both kid and ordinary clients
+  X - need to double check email's pattern for forms:
       pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"    OR
       pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" OR
       pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" CHOOSED IT
   - clockin and invoice (check the behaviour)
+- generate invoice should take user date/time, instead of the server (as it is happening now)
 - invoice for ordinary client
 - invoice date on frontend is being the host system time, rather than the local time
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
@@ -230,6 +231,7 @@ X- add pictures to quick guidance
   - change db to have inactive field (client collection)
   - need to have a API to do so
   - need to develop front-end to do so
+- hamburguer icon set on the left side instead of right (now)
 - rewrite back-end to avoid code repetition
 - rewrite front-end to avoid code repetition (check for duplicate functions, such as handlePostalCode and handlePostalCodeChange)
 
