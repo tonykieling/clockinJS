@@ -1,13 +1,19 @@
 const Invoice   = require("../../models/invoice.js");
+const Clockin   = require("../../models/clockin.js");
 
 /**
- * this auxiliary method checks the last invoice code and
+ * this auxiliary method checks the last invoice code used and
  * if there is a number at its end, add 1, otherwise return the last code
- * or, if not invoice code has found for that particular array of clockins, it returns null
+ * or, if not invoice code has found at all for that particular array of clockins, it returns null
  */
-module.exports = async allClockins => {
-  console.log("inside checkInvoiceCode")
+module.exports = async (userId, clientId) => {
   // it reverses the array to find from the end to begin
+  const allClockins = await Clockin.find({
+    user_id   : userId,
+    client_id : clientId,
+  })
+
+  console.log("allClockins", allClockins)
   const reverseAllClockins = allClockins.slice().reverse();
 
   // it checks whether there is a invoice in the clockin's array and gets the most recent one

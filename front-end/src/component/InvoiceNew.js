@@ -40,7 +40,8 @@ class InvoiceNew extends Component {
     clockinToModal    : "",
     classNameMessage  : "",
     messageInvoice    : "",
-    disableInvGenBtn  : false
+    disableInvGenBtn  : false,
+    codeMessage       : ""
   }
 
 
@@ -88,8 +89,10 @@ class InvoiceNew extends Component {
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
         
-        if (getClockins.data.allClockins){
-          const tempClockins = getClockins.data.allClockins;
+        if (getClockins.data.count){
+          const tempClockins          = getClockins.data.allClockins;
+          const invoiceSuggestionCode = getClockins.data.codeSuggestion || "";
+          console.log("+++invoiceSuggestionCode", invoiceSuggestionCode)
           console.log("+++received clockins", getClockins.data)
           this.setState({
             clockinList       : tempClockins,
@@ -99,7 +102,9 @@ class InvoiceNew extends Component {
             clientId,
             lastClockinDate   : new Date(tempClockins[tempClockins.length - 1].date.substring(0, 10)).getTime(),
             clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(tempClockins),
-            message           : ""
+            message           : "",
+            invoiceCode       : invoiceSuggestionCode.newCode ||  invoiceSuggestionCode,
+            codeMessage       : invoiceSuggestionCode ? (invoiceSuggestionCode.newCode ? "suggested code" : "last code used") : ""
           });
 
           this.textCode.scrollIntoView({ behavior: "smooth" });
@@ -410,7 +415,7 @@ class InvoiceNew extends Component {
 
               <Row >
                 <Col xs = "6">
-                  <Form.Label column  style = {{ paddingRight: 0, marginLeft: "1rem"}} ><strong>Code </strong> (must):</Form.Label>
+                  <Form.Label column  style = {{ paddingRight: 0, marginLeft: "1rem"}} ><strong>Code </strong> (must): {!this.state.clockinWithInvoiceCode ? this.state.codeMessage : ""}</Form.Label>
                 </Col>
                 <Col xs = "5">
                   <Form.Control
@@ -420,7 +425,7 @@ class InvoiceNew extends Component {
                     placeholder = "Invoice's code"
                     onKeyPress  = {this.handleEnter}
                     onChange    = {this.handleChange}
-                    value       = {this.state.invoiceCode}
+                    value       = {this.state.clockinWithInvoiceCode ? "" : this.state.invoiceCode}
                     disabled    = {this.state.clockinWithInvoiceCode}
                     ref         = {input => this.textCode = input }
                   />
