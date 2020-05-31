@@ -10,6 +10,7 @@ const Email = require("../helpers/send-email.js");
 // it gets all clockins from the system - on purpose with no auth
 const get_all = async (req, res) => {
 console.log("inside clockins get_all");
+  const checkInvoiceCode = require("./aux/checkInvoiceCode.js");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
 
@@ -84,14 +85,20 @@ console.log("inside clockins get_all");
         ])
         .sort({date: 1});
     }
-// console.log("ALLCLOCKINS", allClockins);
+
     if (!allClockins || allClockins.length < 1) {
       return res.status(200).json({
         message: `No clockins at all.`
       });
     }
-    // const invoiceCode = await Invoice
-    //   .findById(allClockins.)
+
+    const codeSuggestion = allClockins.length && await checkInvoiceCode(allClockins);
+    console.log("==> codeSuggestion", codeSuggestion);
+    /**
+     * it can be null
+     * it can be the last code used (when the code is not ended with a valid number)
+     * it can be a new code, adding one to its ending part - here, it is an object with a attribute newCode
+     *  */
 
     if (clientId) {
       const client = await Client
@@ -100,7 +107,7 @@ console.log("inside clockins get_all");
         
 
 // console.clear();
-// console.log("--------------------------------------------------------");
+console.log("--------------------------------------------------------");
 // let totalCadTmp = 0;
 // allClockins.forEach(async (clockin, i) => {
 // // console.log(allClockins[i]);
@@ -115,13 +122,15 @@ console.log("inside clockins get_all");
       return res.status(200).json({
         count: allClockins.length,
         allClockins,
-        client: client.nickname });
-      };
+        client: client.nickname, 
+        codeSuggestion
+      });
+    };
 
-    return res.status(200).json({
-      count: allClockins.length,
-      allClockins
-    });
+    // return res.status(200).json({
+    //   count: allClockins.length,
+    //   allClockins
+    // });
   
   } catch(err) {
     console.log("Error => ", err.message);

@@ -215,7 +215,13 @@ X- add pictures to quick guidance
       pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" OR
       pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" CHOOSED IT
   - clockin and invoice (check the behaviour)
-- generate invoice should take user date/time, instead of the server (as it is happening now)
+X - generate invoice should take user date/time, instead of the server (as it is happening now)
+X - system only accepts invoice code with no repetition for that particular client and user
+- system show the last invoice code for that client/user in the invoice generator screen (as a suggestion)
+  - query clockins and get the last invoice code
+  - taking from right to left, check if there is number, if so, add 1 to it as suggestion, if not, take the last code
+  - print in the code on its respective filed in the form
+  - error message is gonna be something like "this was the last invoice code used. Please set a new one."
 - invoice for ordinary client
 - invoice date on frontend is being the host system time, rather than the local time
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)

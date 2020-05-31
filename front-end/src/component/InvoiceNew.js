@@ -90,6 +90,7 @@ class InvoiceNew extends Component {
         
         if (getClockins.data.allClockins){
           const tempClockins = getClockins.data.allClockins;
+          console.log("+++received clockins", getClockins.data)
           this.setState({
             clockinList       : tempClockins,
             clockInListTable  : this.renderDataTable(tempClockins),
@@ -97,7 +98,8 @@ class InvoiceNew extends Component {
             tableVisibility   : true,
             clientId,
             lastClockinDate   : new Date(tempClockins[tempClockins.length - 1].date.substring(0, 10)).getTime(),
-            clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(tempClockins)
+            clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(tempClockins),
+            message           : ""
           });
 
           this.textCode.scrollIntoView({ behavior: "smooth" });
