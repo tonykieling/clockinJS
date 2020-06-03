@@ -70,7 +70,7 @@ class InvoiceNew extends Component {
 
   handleGetClockins = async event => {
     event.preventDefault();
-console.log("this.state.disableInvGenBtn", this.state.disableInvGenBtn)
+
     if (!this.state.dateStart || !this.state.dateEnd) {
       this.setState({
         message           : "Please, select Client and set Date Start and Date End.",
@@ -102,7 +102,7 @@ console.log("this.state.disableInvGenBtn", this.state.disableInvGenBtn)
         if (getClockins.data.count){
           const tempClockins          = getClockins.data.allClockins;
           const invoiceSuggestionCode = getClockins.data.codeSuggestion || "";
-console.log("### invoiceSuggestionCode", invoiceSuggestionCode)
+
           this.setState({
             clockinList       : tempClockins,
             clockInListTable  : this.renderDataTable(tempClockins),
@@ -380,8 +380,7 @@ console.log("### invoiceSuggestionCode", invoiceSuggestionCode)
           <div className="d-flex flex-column">
             <Button 
               variant   = "primary" 
-              type      = "submit" 
-              // disabled  = { (this.state.dateStart && this.state.dateEnd && this.state.client) ? false : true }
+              type      = "submit"
               onClick   = { this.handleGetClockins } 
               ref       = {input => this.getClockinsBtn = input }  
             >
@@ -488,7 +487,6 @@ console.log("### invoiceSuggestionCode", invoiceSuggestionCode)
                     value       = {this.state.invoiceDate}
                     disabled    = {this.state.clockinWithInvoiceCode}
                     style       = {{paddingRight: "0"}}
-                    // ref         = {input => this.textDate = input }
                   />
                 </Col>
               </Row>

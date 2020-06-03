@@ -147,14 +147,14 @@ export default function Guidance() {
             <br />
             <p>Even though it is running, some improvements and features are being developed.</p>
             <ul>
-              <li>Better styling for some components - almost done</li>
               <li>Edit and Delete Clockin - done</li>
               <li>Edit and Delete Invoice - done</li>
               <li>Img at Land and Quick Guidance - done</li>
               <li>Add break to clockin - done</li>
               <li>Add Guidance - done</li>
               <li>Set date to the invoice's change processes (delivered and received) - done</li>
-              <li>Ordinary Clients (no kids) - Add and Edit</li>
+              <li>Ordinary Clients (no kids) - Add and Edit - done</li>
+              <li>Invoice Code with suggestion or last code used plus ToolTip - done</li>
               <li>Reports</li>
               <li>Generate a Invoice's pdf file from the system for both kids and ordinary clients.</li>
             </ul>

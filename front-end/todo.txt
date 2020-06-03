@@ -221,10 +221,11 @@ X - system only accepts invoice code with no repetition for that particular clie
   X - query clockins and get the last invoice code
   X - taking from right to left, check if there is number, if so, add 1 to it as suggestion, if not, take the last code
   X - print in the code on its respective filed in the form
-  - format color in the codeMessage (green for suggestion and yellow for last code used)
-  - error message is gonna be something like "this was the last invoice code used. Please set a new one."
+  X- format color in the codeMessage (green for suggestion and yellow for last code used)
+  X- error message is gonna be something like "this was the last invoice code used. Please set a new one."
+  X ToolTip on Invoice's code added
 - invoice for ordinary client
-- invoice date on frontend is being the host system time, rather than the local time
+X- invoice date on frontend is being the host system time, rather than the local time
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - hamburguer icon on right side
 - add code sugestion (client(09+01))
