@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
 import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
+import Overlay from 'react-bootstrap/Overlay';
+// import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip'
 
 import GetClients from "./aux/GetClients.js";
 import { getCurrentDateTime } from "./aux/formatDate.js";
@@ -21,29 +24,33 @@ const thinScreen = window.innerWidth < 800 ? true : false;
 
 class InvoiceNew extends Component {
 
-  state = {
-    dateStart         : "2020-03-04",
-    dateEnd           : "2020-04-13",
-    // dateStart         : "",
-    // dateEnd           : "",
-    clientId          : "",
-    clockinList       : [],
-    client            : "",
-    clockInListTable  : "",
-    tableVisibility   : false,
-    message           : "",
-    invoiceCode       : "",
-    invoiceDate       : "",
-    clockinWithInvoiceCode: false,
+  constructor(props) {
+    super(props);
+    this.textCode = React.createRef();
+    this.state = {
+      dateStart         : "2020-03-04",
+      dateEnd           : "2020-04-13",
+      // dateStart         : "",
+      // dateEnd           : "",
+      clientId          : "",
+      clockinList       : [],
+      client            : "",
+      clockInListTable  : "",
+      tableVisibility   : false,
+      message           : "",
+      invoiceCode       : "",
+      invoiceDate       : "",
+      clockinWithInvoiceCode: false,
 
-    showModal         : false,
-    clockinToModal    : "",
-    classNameMessage  : "",
-    messageInvoice    : "",
-    disableInvGenBtn  : false,
-    codeMessage       : "",
-    lastUsedCode      : ""
-  }
+      showModal         : false,
+      clockinToModal    : "",
+      classNameMessage  : "",
+      messageInvoice    : "",
+      disableInvGenBtn  : false,
+      codeMessage       : "",
+      lastUsedCode      : ""
+    }
+  };
 
 
   handleChange = event => {
@@ -56,7 +63,7 @@ class InvoiceNew extends Component {
       this.setState({ 
         messageInvoice    : "",
         disableInvGenBtn  : false,
-        codeMessage       : this.state.lastUsedCode === event.target.value ? "(last used code)" : ""
+        codeMessage       : this.state.lastUsedCode === event.target.value ? "Last used code" : ""
       });
   }
 
@@ -107,11 +114,11 @@ console.log("### invoiceSuggestionCode", invoiceSuggestionCode)
             disableInvGenBtn  : this.checkIfThereIsInvoiceCode(tempClockins),
             message           : "",
             invoiceCode       : invoiceSuggestionCode.newCode ||  invoiceSuggestionCode,
-            codeMessage       : invoiceSuggestionCode ? (invoiceSuggestionCode.newCode ? "(suggested code)" : "(last used code)") : "",
+            codeMessage       : invoiceSuggestionCode ? (invoiceSuggestionCode.newCode ? "Suggested code" : "Last used code") : "",
             lastUsedCode      : invoiceSuggestionCode && !invoiceSuggestionCode.newCode && invoiceSuggestionCode
           });
 
-          this.textCode.scrollIntoView({ behavior: "smooth" });
+          this.generatorBtn.scrollIntoView({ behavior: "smooth" });
           // this.clearMessage();
         } else {
           this.setState({
@@ -149,21 +156,21 @@ console.log("### invoiceSuggestionCode", invoiceSuggestionCode)
    */
   handleInvoiceGenerator = async event => {
     event.preventDefault();
-console.log("!!!this.state:", this.state)
+    
     if (!this.state.invoiceCode || this.state.invoiceCode === "") {
       this.setState({
         messageInvoice    : "Please, provide Invoice's Code.",
         classNameMessage  : "messageFailure"
       });
       
-      this.textCode.focus();
-    } else if ((this.state.codeMessage === "(last used code)") || this.state.lastUsedCode === this.state.invoiceCode) {
+      this.textCode.current.focus();
+    } else if ((this.state.codeMessage === "last used code") || this.state.lastUsedCode === this.state.invoiceCode) {
       this.setState({
         messageInvoice    : "Please, provide a new Invoice's Code.",
         classNameMessage  : "messageFailure"
       });
       
-      this.textCode.focus();
+      this.textCode.current.focus();
     } else {
       const dtGeneration = this.state.invoiceDate 
               ? new Date(this.state.invoiceDate).getTime() 
@@ -429,7 +436,12 @@ console.log("!!!this.state:", this.state)
 
               <Row >
                 <Col xs = "6">
-                  <Form.Label column  style = {{ paddingRight: 0, marginLeft: "1rem"}} ><strong>Code: </strong> <strong style={{color: this.state.codeMessage === "(suggested code)" ? "green" : "orange"}}>{!this.state.clockinWithInvoiceCode ? this.state.codeMessage : ""}</strong></Form.Label>
+                  <Form.Label 
+                    column  
+                    style   = {{ paddingRight: 0, marginLeft: "1rem"}} 
+                  >
+                    <strong>Code: </strong> 
+                  </Form.Label>
                 </Col>
                 <Col xs = "5">
                   <Form.Control
@@ -438,12 +450,28 @@ console.log("!!!this.state:", this.state)
                     name        = "invoiceCode"
                     placeholder = "Invoice's code"
                     onKeyPress  = {this.handleEnter}
-                    // onKeyPress  = {this.handleChange}
                     onChange    = {this.handleChange}
                     value       = {this.state.clockinWithInvoiceCode ? "" : this.state.invoiceCode}
                     disabled    = {this.state.clockinWithInvoiceCode}
-                    ref         = {input => this.textCode = input }
+                    ref         = { this.textCode }
                   />
+                  {this.state.codeMessage && !this.state.disableInvGenBtn 
+                    ?
+                      <Overlay
+                        target    = {this.textCode}
+                        show      = {true}
+                        placement = "left"
+                      >
+                        <Tooltip id={"tooltip-left"}>
+                          <strong 
+                            style={{color: this.state.codeMessage === "Suggested code" ? "lime" : "gold"}}
+                          >
+                            {this.state.codeMessage}
+                          </strong>
+                        </Tooltip>
+                      </Overlay>
+                    : ""
+                  }
                 </Col>
               </Row>
 
@@ -459,6 +487,7 @@ console.log("!!!this.state:", this.state)
                     onChange    = {this.handleChange}
                     value       = {this.state.invoiceDate}
                     disabled    = {this.state.clockinWithInvoiceCode}
+                    style       = {{paddingRight: "0"}}
                     // ref         = {input => this.textDate = input }
                   />
                 </Col>
@@ -471,7 +500,7 @@ console.log("!!!this.state:", this.state)
                     : <br /> }
                 </Card.Footer>
               </div>
-{console.log("clockinwithinvoicecode && disableinvbtn", this.state.clockinWithInvoiceCode, this.state.disableInvGenBtn)}
+              
               <Button 
                 variant   = "primary" 
                 type      = "submit"
