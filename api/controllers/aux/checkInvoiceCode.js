@@ -1,5 +1,4 @@
 const Invoice   = require("../../models/invoice.js");
-const Clockin   = require("../../models/clockin.js");
 
 /**
  * this auxiliary method checks the last invoice code used and
@@ -8,32 +7,21 @@ const Clockin   = require("../../models/clockin.js");
  */
 module.exports = async (userId, clientId) => {
   // it reverses the array to find from the end to begin
-  const allClockins = await Clockin.find({
+  const allInvoices = await Invoice.find({
     user_id   : userId,
     client_id : clientId,
   })
 
-  console.log("allClockins", allClockins)
-  const reverseAllClockins = allClockins.slice().reverse();
-
-  // it checks whether there is a invoice in the clockin's array and gets the most recent one
-  const invoiceChecked         = reverseAllClockins.find(clockin => clockin.invoice_id);
-
-  // if no invoice code found, returns null
-  if (!invoiceChecked) return null;
-
-  const theMostRecentInvoiceId = invoiceChecked.invoice_id;
-
+  if (!allInvoices || allInvoices.length < 1) return null;
 
   // it goes to invoice collection and gets the most recent invoice
-  const theMostRecentInvoice = theMostRecentInvoiceId 
-    && await Invoice.findById(theMostRecentInvoiceId);
+  const theMostRecentInvoiceCode = allInvoices[allInvoices.length - 1].code;
 
   // it checks whether the code ends in a number, if so, it adds 1 to it
-  const codeArray = theMostRecentInvoice.code.split("");
-  console.log("code", codeArray)
+  const codeArray = theMostRecentInvoiceCode.split("");
   let numberPart  = [];
   let stringPart  = "";
+
   for (let x = codeArray.length - 1; x >= 0; x--) {
     if (isNaN(codeArray[x])) {
 

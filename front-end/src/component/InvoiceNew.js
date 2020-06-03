@@ -41,7 +41,8 @@ class InvoiceNew extends Component {
     classNameMessage  : "",
     messageInvoice    : "",
     disableInvGenBtn  : false,
-    codeMessage       : ""
+    codeMessage       : "",
+    lastUsedCode      : ""
   }
 
 
@@ -50,18 +51,19 @@ class InvoiceNew extends Component {
       [event.target.name] : event.target.value,
       // message             : ""
     });
-
-    if (event.target.name === "invoiceCode" || event.target.name === "invoiceDate")
+    
+    if (event.target.name === "invoiceCode")
       this.setState({ 
         messageInvoice    : "",
-        disableInvGenBtn  : false
+        disableInvGenBtn  : false,
+        codeMessage       : this.state.lastUsedCode === event.target.value ? "(last used code)" : ""
       });
   }
 
 
   handleGetClockins = async event => {
     event.preventDefault();
-    
+console.log("this.state.disableInvGenBtn", this.state.disableInvGenBtn)
     if (!this.state.dateStart || !this.state.dateEnd) {
       this.setState({
         message           : "Please, select Client and set Date Start and Date End.",
@@ -74,11 +76,12 @@ class InvoiceNew extends Component {
       });
     } else if (this.state.dateStart && this.state.dateEnd && this.state.client) {
       const
-        dateStart = this.state.dateStart,
-        dateEnd   = this.state.dateEnd,
-        clientId  = this.state.clientId;
+        dateStart             = this.state.dateStart,
+        dateEnd               = this.state.dateEnd,
+        clientId              = this.state.clientId,
+        queryLastInvoiceCode  = true;
 
-      const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+      const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}&queryLastInvoiceCode=${queryLastInvoiceCode}`;
 
       try {
         const getClockins = await axios.get( 
@@ -92,8 +95,7 @@ class InvoiceNew extends Component {
         if (getClockins.data.count){
           const tempClockins          = getClockins.data.allClockins;
           const invoiceSuggestionCode = getClockins.data.codeSuggestion || "";
-          console.log("+++invoiceSuggestionCode", invoiceSuggestionCode)
-          console.log("+++received clockins", getClockins.data)
+console.log("### invoiceSuggestionCode", invoiceSuggestionCode)
           this.setState({
             clockinList       : tempClockins,
             clockInListTable  : this.renderDataTable(tempClockins),
@@ -102,12 +104,15 @@ class InvoiceNew extends Component {
             clientId,
             lastClockinDate   : new Date(tempClockins[tempClockins.length - 1].date.substring(0, 10)).getTime(),
             clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(tempClockins),
+            disableInvGenBtn  : this.checkIfThereIsInvoiceCode(tempClockins),
             message           : "",
             invoiceCode       : invoiceSuggestionCode.newCode ||  invoiceSuggestionCode,
-            codeMessage       : invoiceSuggestionCode ? (invoiceSuggestionCode.newCode ? "suggested code" : "last code used") : ""
+            codeMessage       : invoiceSuggestionCode ? (invoiceSuggestionCode.newCode ? "(suggested code)" : "(last used code)") : "",
+            lastUsedCode      : invoiceSuggestionCode && !invoiceSuggestionCode.newCode && invoiceSuggestionCode
           });
 
           this.textCode.scrollIntoView({ behavior: "smooth" });
+          // this.clearMessage();
         } else {
           this.setState({
             message           : "No clockins for this period.",
@@ -115,7 +120,7 @@ class InvoiceNew extends Component {
             tableVisibility   : false
           });
 
-          // this.clearMessage();
+          this.clearMessage();
         }
 
       } catch(err) {
@@ -124,7 +129,7 @@ class InvoiceNew extends Component {
           classNameMessage  : "messageFailure"
         });
 
-        // this.clearMessage();
+        this.clearMessage();
       }
     } else {
       this.setState({
@@ -144,10 +149,17 @@ class InvoiceNew extends Component {
    */
   handleInvoiceGenerator = async event => {
     event.preventDefault();
-    
+console.log("!!!this.state:", this.state)
     if (!this.state.invoiceCode || this.state.invoiceCode === "") {
       this.setState({
         messageInvoice    : "Please, provide Invoice's Code.",
+        classNameMessage  : "messageFailure"
+      });
+      
+      this.textCode.focus();
+    } else if ((this.state.codeMessage === "(last used code)") || this.state.lastUsedCode === this.state.invoiceCode) {
+      this.setState({
+        messageInvoice    : "Please, provide a new Invoice's Code.",
         classNameMessage  : "messageFailure"
       });
       
@@ -192,7 +204,9 @@ class InvoiceNew extends Component {
               messageInvoice          : `Invoice has been Generated!`,
               classNameMessage        : "messageSuccess",
               clockinWithInvoiceCode  : true,
-              invoiceDate             : ""
+              invoiceDate             : "",
+              lastUsedCode            : "",
+              codeMessage             : ""
             });
 
             this.clearMessage();
@@ -415,7 +429,7 @@ class InvoiceNew extends Component {
 
               <Row >
                 <Col xs = "6">
-                  <Form.Label column  style = {{ paddingRight: 0, marginLeft: "1rem"}} ><strong>Code </strong> (must): {!this.state.clockinWithInvoiceCode ? this.state.codeMessage : ""}</Form.Label>
+                  <Form.Label column  style = {{ paddingRight: 0, marginLeft: "1rem"}} ><strong>Code: </strong> <strong style={{color: this.state.codeMessage === "(suggested code)" ? "green" : "orange"}}>{!this.state.clockinWithInvoiceCode ? this.state.codeMessage : ""}</strong></Form.Label>
                 </Col>
                 <Col xs = "5">
                   <Form.Control
@@ -424,6 +438,7 @@ class InvoiceNew extends Component {
                     name        = "invoiceCode"
                     placeholder = "Invoice's code"
                     onKeyPress  = {this.handleEnter}
+                    // onKeyPress  = {this.handleChange}
                     onChange    = {this.handleChange}
                     value       = {this.state.clockinWithInvoiceCode ? "" : this.state.invoiceCode}
                     disabled    = {this.state.clockinWithInvoiceCode}
@@ -434,7 +449,7 @@ class InvoiceNew extends Component {
 
               <Row >
                 <Col xs = "6">
-                  <Form.Label column style = {{ paddingRight: 0, marginLeft: "1rem"}}><strong>Date </strong> (optional):</Form.Label>
+                  <Form.Label column style = {{ paddingRight: 0, marginLeft: "1rem"}}><strong>Date: </strong> (optional)</Form.Label>
                 </Col>
                 <Col xs = "5" >
                   <Form.Control
@@ -456,7 +471,7 @@ class InvoiceNew extends Component {
                     : <br /> }
                 </Card.Footer>
               </div>
-
+{console.log("clockinwithinvoicecode && disableinvbtn", this.state.clockinWithInvoiceCode, this.state.disableInvGenBtn)}
               <Button 
                 variant   = "primary" 
                 type      = "submit"

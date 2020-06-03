@@ -150,7 +150,7 @@ console.log("date::", date)
     });
   const clientExist   = temp_client.checkClient;
 
-
+// if (1) return res.json({error: "wait!"})
   /**
    * it checks whether there is invoice for this user and client with the same code
    * if so, it returns a message to the user asking to them to change the code

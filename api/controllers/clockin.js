@@ -92,14 +92,16 @@ console.log("inside clockins get_all");
       });
     }
 
+
     /**
-     * it can be null
-     * it can be the last code used (when the code is not ended with a valid number)
-     * it can be a new code, adding one to its ending part - here, it is an object with a attribute newCode
+     * it checks whether the application is querying for last invoice code (queryLastInvoiceCode) used
+     * if so, it calls checkInvoiceCode, which returns either:
+     *  - null
+     *  - the last code used (when the code is not ended with a valid number)
+     *  - a new code, adding one to its ending part - here, it is an object with a attribute newCode
      *  */
     // const codeSuggestion = allClockins.length && await checkInvoiceCode(allClockins);
-    const codeSuggestion = await checkInvoiceCode(userId, clientId);
-
+    const codeSuggestion = req.query.queryLastInvoiceCode ? await checkInvoiceCode(userId, clientId) : null;
 
     if (clientId) {
       const client = await Client
