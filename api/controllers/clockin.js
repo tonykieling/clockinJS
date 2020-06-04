@@ -267,7 +267,7 @@ console.log("inside clockins ADD", req.body);
 
     // send email to the user about the information just punched
     const formatDT = require("../helpers/formatDT.js");
-    Email.sendClockinEmail(`Clockin added - ${clientExist.nickname}: ${formatDT.showDate(newClockin.date)} - ${formatDT.showTime(newClockin.time_start)}`, newClockin, userExist, clientExist);
+    Email.sendClockinEmail(`Clockin added - ${clientExist.type_kid ? clientExist.nickname : clientExist.name}: ${formatDT.showDate(newClockin.date)} - ${formatDT.showTime(newClockin.time_start)}`, newClockin, userExist, clientExist);
     
     // everything is ok, so lets fe knows it
     return res.json({

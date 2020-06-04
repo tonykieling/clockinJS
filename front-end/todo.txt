@@ -242,4 +242,6 @@ X- invoice date on frontend is being the host system time, rather than the local
 - hamburguer icon set on the left side instead of right (now)
 - rewrite back-end to avoid code repetition
 - rewrite front-end to avoid code repetition (check for duplicate functions, such as handlePostalCode and handlePostalCodeChange)
-
+- Invoice's List, above the list of invoices references nickname (it also should consider general clients by their names)
+  - need to check in other screens such as clockins
+X- Email for clockin is sending the nickname, but it is not considering general clients

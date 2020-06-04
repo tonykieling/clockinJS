@@ -25,7 +25,7 @@ const sendClockinEmail = (subject, clockin, user, client) => {
           <b>Client</b>
         </td>
         <td style="border: 1px solid black; padding: 0.2rem 0.6rem">
-          ${client.nickname}
+          ${client.type_kid ? client.nickname : client.name}
         </td>
       </tr>
       <tr>
