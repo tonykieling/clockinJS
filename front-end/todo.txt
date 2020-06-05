@@ -245,3 +245,5 @@ X- invoice date on frontend is being the host system time, rather than the local
 - Invoice's List, above the list of invoices references nickname (it also should consider general clients by their names)
   - need to check in other screens such as clockins
 X- Email for clockin is sending the nickname, but it is not considering general clients
+X- nickname in the toogle GetClients instead of name (for kids)
+X- when generating invoice, and also in Punch List, the list of clockins should show duration, instead of CAD$ (user requirement). Need to change the labels, as well.

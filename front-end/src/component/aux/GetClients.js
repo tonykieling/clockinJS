@@ -57,7 +57,8 @@ function GetClients(props) {
     return(
       <Dropdown>
         <Dropdown.Toggle variant="success" id="dropdown-basic">
-          {(props.client && props.client.name) || `Select Client` }
+          {/* {(props.client && props.client.nickname) || `Select Client` } */}
+          {(props.client && (props.client.nickname || props.client.name)) || `Select Client` }
           {}
         </Dropdown.Toggle>
 
@@ -82,7 +83,7 @@ function GetClients(props) {
 
 
     return (
-      <div>
+      <>
         { goLand && <Redirect to = "/land" /> }
 
         { showModal
@@ -99,7 +100,7 @@ function GetClients(props) {
           : errorMsg || "No clients at all" 
         }
 
-      </div>
+      </>
     )
 }
 

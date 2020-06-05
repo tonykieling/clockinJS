@@ -138,7 +138,8 @@ class PunchInsList extends Component {
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
+            {/* <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td> */}
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
           </tr>
         );
@@ -316,8 +317,9 @@ class PunchInsList extends Component {
                       <tr>
                         <th style={{verticalAlign: "middle"}}>#</th>
                         <th style={{verticalAlign: "middle"}}>Date</th>
-                        <th style={{verticalAlign: "middle"}}>Time Start</th>
-                        <th style={{verticalAlign: "middle"}}>CAD$</th>
+                        <th style={{verticalAlign: "middle"}}>At</th>
+                        <th style={{verticalAlign: "middle"}}>Duration</th>
+                        {/* <th style={{verticalAlign: "middle"}}>CAD$</th> */}
                         <th style={{verticalAlign: "middle"}}>Invoice</th>
                       </tr>
                     </thead>
