@@ -305,7 +305,7 @@ class PunchInsList extends Component {
           ?
             <Card className="cardInvoiceGenListofClockins card">
               <Card.Header style={{textAlign: "center"}}>
-                Client: <b>{this.state.client.nickname}</b>, {`  `} 
+                Client: <b>{this.state.client.nickname || this.state.client.name}</b>, {" "}
                 <b>{this.state.clockinList.length}</b> {this.state.clockinList.length > 1 ? "Clockins" : "Clockin"}
               </Card.Header>
 

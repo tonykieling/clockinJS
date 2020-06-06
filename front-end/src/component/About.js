@@ -155,6 +155,7 @@ export default function Guidance() {
               <li>Set date to the invoice's change processes (delivered and received) - done</li>
               <li>Ordinary Clients (no kids) - Add and Edit - done</li>
               <li>Invoice Code with suggestion or last code used plus ToolTip - done</li>
+              <li>Feature of inactivating user - done</li>
               <li>Reports</li>
               <li>Generate a Invoice's pdf file from the system for both kids and ordinary clients.</li>
             </ul>

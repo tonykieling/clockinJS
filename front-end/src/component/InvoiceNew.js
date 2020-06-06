@@ -3,7 +3,6 @@ import axios from "axios";
 import { connect } from "react-redux";
 import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 import Overlay from 'react-bootstrap/Overlay';
-// import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip'
 
 import GetClients from "./aux/GetClients.js";
@@ -28,10 +27,10 @@ class InvoiceNew extends Component {
     super(props);
     this.textCode = React.createRef();
     this.state = {
-      dateStart         : "2020-03-04",
-      dateEnd           : "2020-04-13",
-      // dateStart         : "",
-      // dateEnd           : "",
+      // dateStart         : "2020-03-04",
+      // dateEnd           : "2020-04-13",
+      dateStart         : "",
+      dateEnd           : "",
       clientId          : "",
       clockinList       : [],
       client            : "",
@@ -300,7 +299,7 @@ class InvoiceNew extends Component {
         message         : "",
         messageInvoice  : "",
         invoiceCode     : "",
-        disableInvGenBtn: false
+        // disableInvGenBtn: false
       });
     }, 3500);
   }
@@ -398,7 +397,8 @@ class InvoiceNew extends Component {
           ?
             <Card className="cardInvoiceGenListofClockins card">
               <Card.Header style={{textAlign: "center"}}>
-                Client: <b>{this.state.client.nickname}</b>, <b>{this.state.clockinList.length}</b> clockins
+                Client: <b>{this.state.client.nickname || this.state.client.name}</b>, {" "}
+                  <b>{this.state.clockinList.length}</b> {this.state.clockinList.length > 1 ? "Clockins" : "Clockin"}
               </Card.Header>
 
               {(this.state.clockinList.length > 0)

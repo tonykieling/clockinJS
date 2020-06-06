@@ -275,8 +275,8 @@ renderDataTable = (invoices) => {
             <Card className="cardInvoiceGenListofInvoices">
               {/* <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label> */}
               <Card.Header style={{textAlign: "center"}}>
-                Client: <b>{this.state.client.nickname}</b>, {`  `}
-                <b>{this.state.invoiceList.length}</b> {this.state.invoiceList.length > 1 ? "Invoices" : "Invoice"}
+                Client: <b>{this.state.client.nickname || this.state.client.name}</b>, {" "}
+                  <b>{this.state.invoiceList.length}</b> {this.state.invoiceList.length > 1 ? "Invoices" : "Invoice"}
               </Card.Header>
 
               {(this.state.invoiceList.length > 0) 
