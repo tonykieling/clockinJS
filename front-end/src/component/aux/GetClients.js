@@ -61,17 +61,34 @@ function GetClients(props) {
           {(props.client && (props.client.nickname || props.client.name)) || `Select Client` }
           {}
         </Dropdown.Toggle>
-
-        <Dropdown.Menu>
-          {clients.map( (client, id) =>
-            <Dropdown.Item 
-              key = { id } 
-              onClick = { (e) => changes(e, client) }
-              // data-client = { JSON.stringify(client) }
-              name = { client.name }
-            > { client.nickname || client.name } </Dropdown.Item>
-          )}
-        </Dropdown.Menu>
+        
+        { props.bringAllClients 
+          ?
+            <Dropdown.Menu>
+              {clients.map( (client, id) =>
+                  <Dropdown.Item 
+                    key = { id } 
+                    onClick = { (e) => changes(e, client) }
+                    // data-client = { JSON.stringify(client) }
+                    name = { client.name }
+                  > { client.nickname || client.name } 
+                  </Dropdown.Item>
+              )}
+            </Dropdown.Menu>
+          :
+            <Dropdown.Menu>
+              {clients.map( (client, id) =>
+                  !client.inactive &&
+                    <Dropdown.Item 
+                      key = { id } 
+                      onClick = { (e) => changes(e, client) }
+                      // data-client = { JSON.stringify(client) }
+                      name = { client.name }
+                    > { client.nickname || client.name } 
+                    </Dropdown.Item>
+              )}
+              </Dropdown.Menu>
+            }
       </Dropdown>
     );
   }

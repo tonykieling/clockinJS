@@ -218,7 +218,8 @@ console.log("inside client modify");
     address,
     province,
     postal_code   : postalCode,
-    type_of_service : typeOfService
+    type_of_service : typeOfService,
+    inactive
 
   } = req.body;
 
@@ -266,7 +267,8 @@ console.log("inside client modify");
           address         : address ? address.trim() : (client.address ? "" : undefined),
           province        : province ? province.trim() : (client.province ? "" : undefined) ,
           postal_code     : postalCode ? postalCode.trim() : (client.postal_code ? "" : undefined),
-          type_of_service : typeOfService ? typeOfService.trim() : (client.type_of_service ? "" : undefined)
+          type_of_service : typeOfService ? typeOfService.trim() : (client.type_of_service ? "" : undefined),
+          inactive        : inactive === false ? false : (inactive == true ? true : undefined)
         }, 
         {
           runValidators: true,

@@ -116,6 +116,10 @@ const clientSchema = mongoose.Schema({
 
   type_of_service: {
     type: String
+  },
+
+  inactive: {
+    type    : Boolean
   }
   
 });

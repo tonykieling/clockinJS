@@ -66,7 +66,9 @@ class ClientsList extends Component {
 
       updateButton      : true,
       pcOutsideCanada   : false,
-      postalCodeChange  : false
+      postalCodeChange  : false,
+
+      inactive          : false
     }
   }
 
@@ -145,7 +147,9 @@ class ClientsList extends Component {
         postal_code     : this.state.postalCodeChange && !this.state.pcOutsideCanada
                             ? this.state.postalCode.substr(0, 6).split(" ").join("") 
                             : this.state.postalCode,
-        type_of_service : this.state.typeOfService  
+        type_of_service : this.state.typeOfService,
+
+        inactive        : this.state.inactive
       };
       
 
@@ -185,7 +189,9 @@ class ClientsList extends Component {
               province        : newClientData.data.newData.province || "",
               postal_code     : newClientData.data.newData.postalCode || "",
               type_of_service : newClientData.data.newData.typeOfService || "",
-              updateButton    : true
+              updateButton    : true,
+              
+              inactive        : newClientData.data.newData.inactive || false
             });
           else
             this.setState({
@@ -257,7 +263,9 @@ class ClientsList extends Component {
       typeOfService : client.type_of_service || "",
 
       disableEditForm : true,
-      updateButton    : false
+      updateButton    : false,
+
+      inactive        : client.inactive || ""
     });
   }
 
@@ -287,6 +295,8 @@ class ClientsList extends Component {
       tmp_province      : this.state.province,
       tmp_postalCode    : this.state.postalCode,
       tmp_typeOfService : this.state.typeOfService,
+
+      tmp_inactive      : this.state.inactive
     });
   }
 
@@ -316,6 +326,8 @@ class ClientsList extends Component {
       province      : this.state.tmp_province,
       postalCode    : this.state.tmp_postalCode,
       typeOfService : this.state.tmp_typeOfService,
+
+      inactive      : this.state.tmp_inactive
     });
   }
 
@@ -343,8 +355,9 @@ class ClientsList extends Component {
           <Card.Header>Your Client's list</Card.Header>
         <Card.Body>
           <GetClients 
-            getClientInfo = { this.getClientInfo }     /* mount the Dropbox Button with all clients for the user */
-            updateButton  = { this.state.updateButton}
+            getClientInfo   = { this.getClientInfo }     /* mount the Dropbox Button with all clients for the user */
+            updateButton    = { this.state.updateButton}
+            bringAllClients = { true}
           />
         </Card.Body>
       </Card>        
@@ -361,6 +374,17 @@ class ClientsList extends Component {
               >
 
                 <Form.Group controlId="formName">
+                  <Button 
+                    style     = { {width: "50%"}}
+                    onClick   = { () => this.setState({inactive: !this.state.inactive})}
+                    variant   = { this.state.inactive ? "danger" : "primary"}
+                    disabled  = { this.state.disableEditForm}
+                    // ref     = { input => this.textInputX = input }
+                    >
+                    Client is <strong>{this.state.inactive ? "Inactive" : "Active"}</strong>
+                  </Button>
+                  <br /> <br />
+
                   <Form.Label className="cardLabel">Name</Form.Label>
                   <Form.Control
                     type        = "text"

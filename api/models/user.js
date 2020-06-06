@@ -57,7 +57,7 @@ const userSchema = mongoose.Schema({
 
   code_expiry_at: {
     type: Number
-  },
+  }
   
 });
 

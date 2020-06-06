@@ -228,17 +228,17 @@ X - system only accepts invoice code with no repetition for that particular clie
 X- invoice date on frontend is being the host system time, rather than the local time
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - hamburguer icon on right side
-- add code sugestion (client(09+01))
+X- add code sugestion (client(09+01))
 - add report (invoices = all / per client / per period / per status)
               clockins
 - allow user to delete their account - in practice it will set as true the field "deleted"
   - change db to have deleted field (user collection)
   - need to have a API to do so
   - need to develop front-end to do so
-- allow user to set a client as "inactive"
-  - change db to have inactive field (client collection)
-  - need to have a API to do so
-  - need to develop front-end to do so
+X- allow user to set a client as "inactive"
+  - change db to have inactive field (client collection), done
+  - need to have a API to do so (used API is modify)
+  - need to develop front-end to do so, done
 - hamburguer icon set on the left side instead of right (now)
 - rewrite back-end to avoid code repetition
 - rewrite front-end to avoid code repetition (check for duplicate functions, such as handlePostalCode and handlePostalCodeChange)
