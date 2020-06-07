@@ -201,7 +201,7 @@ X- enable change invoice's code
 X- add pictures to quick guidance
 
 
-- ordinary client:
+X- ordinary client:
   X - add
     review data type and validation
       phone number only number
@@ -214,7 +214,7 @@ X- add pictures to quick guidance
       pattern     = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"    OR
       pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" OR
       pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" CHOOSED IT
-  - clockin and invoice (check the behaviour)
+  X - clockin and invoice (check the behaviour)
 X - generate invoice should take user date/time, instead of the server (as it is happening now)
 X - system only accepts invoice code with no repetition for that particular client and user
 X system show the last invoice code for that client/user in the invoice generator screen (as a suggestion)
@@ -224,26 +224,26 @@ X system show the last invoice code for that client/user in the invoice generato
   - format color in the codeMessage (green for suggestion and yellow for last code used)
   - error message is gonna be something like "this was the last invoice code used. Please set a new one."
   - ToolTip on Invoice's code added
-- invoice for ordinary client
 X- invoice date on frontend is being the host system time, rather than the local time
-- update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
-- hamburguer icon on right side
 X- add code sugestion (client(09+01))
-- add report (invoices = all / per client / per period / per status)
-              clockins
-- allow user to delete their account - in practice it will set as true the field "deleted"
-  - change db to have deleted field (user collection)
-  - need to have a API to do so
-  - need to develop front-end to do so
 X- allow user to set a client as "inactive"
   - change db to have inactive field (client collection), done
   - need to have a API to do so (used API is modify)
   - need to develop front-end to do so, done
-- hamburguer icon set on the left side instead of right (now)
-- rewrite back-end to avoid code repetition
-- rewrite front-end to avoid code repetition (check for duplicate functions, such as handlePostalCode and handlePostalCodeChange)
 X- Invoice's List, above the list of invoices references nickname (it also should consider general clients by their names)
   - need to check in other screens such as clockins
 X- Email for clockin is sending the nickname, but it is not considering general clients
 X- nickname in the toogle GetClients instead of name (for kids)
 X- when generating invoice, and also in Punch List, the list of clockins should show duration, instead of CAD$ (user requirement). Need to change the labels, as well.
+- invoice for ordinary client
+- update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
+- hamburguer icon on right side
+- add report (invoices = all / per client / per period / per status)
+              clockins
+- hamburguer icon set on the left side instead of right (now)
+- analyse back-end to avoid code repetition and rewrite some parts
+- analyse front-end to avoid code repetition (check for duplicate functions, such as handlePostalCode and handlePostalCodeChange)
+- allow user to delete their account - in practice it will set as true the field "deleted"
+  - change db to have deleted field (user collection)
+  - need to have a API to do so
+  - need to develop front-end to do so

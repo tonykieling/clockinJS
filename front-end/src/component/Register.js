@@ -7,23 +7,37 @@ import MaskedInput from 'react-text-mask';
 
 class Register extends Component {
 
-  state = {
+  constructor(props){
+    console.log("inside constructor");
+    super(props);
+    this.textPC1 = React.createRef();
+    this.textPC2 = React.createRef();
+    // this.focusPostalCode = this.focusPostalCode.bind(this);
+    this.state = {
       name            : "",
       email           : "",
       password        : "",
       confirmPassword : "",
-
+      
       address         : "",
       city            : "",
       postalCode      : "",
       phone           : "",
-
+      
       redirectFlag    : false,
       message         : "",
       btnType         : undefined,
-      classNameMessage: ""
+      classNameMessage: "",
+      
+      disableBtn      : false,
+      pcOutsideCanada : false
     }
+  }
 
+  focusPostalCode() {
+    console.log("inside focus!!")
+    this.textInput5.current.focus();
+  }
 
   handleChange = e => {
     if (e.key === "Enter")
@@ -63,19 +77,19 @@ class Register extends Component {
         default:                     
       }
 
-        if (e.target.name !== "postalCode") {
-          this.setState({
-            [e.target.name]: e.target.value
-          });
-        } else if (e.target.value.length < 7)  {
-          // const value = (typeof e.target.value == "string")
-          //   ? e.target.value.toUpperCase()
-          //   : e.target.value;
+        // if (e.target.name !== "postalCode") {
+        //   this.setState({
+        //     [e.target.name]: e.target.value
+        //   });
+        // } else if (e.target.value.length < 7)  {
+        //   // const value = (typeof e.target.value == "string")
+        //   //   ? e.target.value.toUpperCase()
+        //   //   : e.target.value;
 
           this.setState({
             [e.target.name]: e.target.value
           });
-        }
+        // }
   }
 
 
@@ -103,6 +117,8 @@ class Register extends Component {
           message           : "Phone has to have 10 numbers (i.e. 123 456 789) or empty.",
         });
       } else {
+        this.setState({ disableBtn: true });
+
         const url = "/user/signup";
         const createUser  = {
           name        : this.state.name,
@@ -136,14 +152,18 @@ class Register extends Component {
           } else if (addUser.data.error) {
             this.setState({
               classNameMessage  : "messageFailure",
-              message           : addUser.data.error });
+              message           : addUser.data.error,
+              disableBtn        : false
+            });
             // this.clearMessage();
           }
 
         } catch(err) {
           this.setState({
             classNameMessage  : "messageFailure",
-            message           : err.message });
+            message           : err.message,
+            disableBtn        : false
+          });
           // this.clearMessage();
         }
       }
@@ -155,26 +175,53 @@ class Register extends Component {
         confirmPassword   : ""
       });
     }
-    this.clearMessage();
+    // this.clearMessage();
   }
 
 
   //it clears the error message after 3.5s
-  clearMessage = () => {
-    setTimeout(() => {
-      this.setState({
-        message         : "",
-        password        : "",
-        confirmPassword : ""
-      })
-    }, 3500);
-  }
+  // clearMessage = () => {
+  //   setTimeout(() => {
+  //     this.setState({
+  //       message         : "",
+  //       password        : "",
+  //       confirmPassword : "",
+  //       disableBtn      : false
+  //     })
+  //   }, 3500);
+  // }
 
 
   afterChange = event => {
     this.setState({
       [event.target.name]: event.target.value
     })
+  }
+
+
+  handlePostalCode = event => {
+    const newValue = event.target.value;
+    this.setState({
+      postalCode: isNaN(newValue) ? newValue.toUpperCase() : newValue 
+    });
+  }
+
+
+  checkpcOutsideCanada = () => {
+    // console.log("PC1: ", this.textPC1, "PC2:", this.textPC2.current)
+    let count = 0;
+      for (let x = (this.state.postalCode.length - 1); x >= 0; x-- ) {
+        if (this.state.postalCode[x] === "_" || this.state.postalCode[x] === " ") count++;
+        else break;
+      }
+
+    this.setState({ 
+      pcOutsideCanada : !this.state.pcOutsideCanada,
+      postalCode      : this.state.postalCode.slice(0, this.state.postalCode.length - count)
+    });
+
+    // this.textPC1.current ? this.textPC1.current.focus() : this.textPC2.current.focus();
+    // this.textInput5.current.focus();
   }
 
 
@@ -257,18 +304,42 @@ class Register extends Component {
               </Form.Group>
 
               <Form.Group controlId="formPostalCode">
-                <Form.Label>Postal Code</Form.Label>
-                <Form.Control
-                  type        = "text"
-                  // mask        = {[/^[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z] [0-9][ABCEGHJ-NPRSTV-Z][0-9]$/]}
-                  placeholder = "Type the user's Postal Code"
-                  name        = "postalCode"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.postalCode}
-                  onKeyPress  = {this.handleChange}
-                  ref         = {input => this.textInput5 = input }
-                />
-              </Form.Group>
+              <Form.Label className="cardLabel">Postal Code</Form.Label>
+              <Form.Check 
+                inline 
+                label     = " outside Canada"
+                checked   = {this.state.pcOutsideCanada}
+                type      = "checkbox"
+                style     = {{marginLeft: "1rem"}}
+                onChange  = { this.checkpcOutsideCanada }
+                disabled  = {this.state.disableBtn}
+              />
+              { !this.state.pcOutsideCanada
+                ?
+                  <MaskedInput
+                    mask        = {[/[A-Z]/i, /\d/, /[A-Z]/i, ' ', /\d/, /[A-Z]/i, /\d/]}
+                    className   = "form-control"
+                    placeholder = "Enter client's postal code"
+                    name        = "postalCode"
+                    value       = {this.state.postalCode}
+                    onChange    = {this.handlePostalCode}
+                    disabled    = {this.state.disableBtn}
+                    ref         = {input => this.textPC1 = input }
+                    // ref         = {this.textPC1 }
+                  />
+                : 
+                  <Form.Control
+                    type        = "text"
+                    placeholder = {"Enter client's postal code"}
+                    name        = "postalCode"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.postalCode}
+                    disabled    = {this.state.disableBtn}
+                    onKeyPress  = {this.handleChange}
+                    ref         = {input => this.textPC2 = input}
+                  />
+              }
+            </Form.Group>
 
               <Form.Group controlId="formPhone">
                 <Form.Label>Phone</Form.Label>
