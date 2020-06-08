@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import axios from "axios";
 import MaskedInput from 'react-text-mask';
+import { findDOMNode } from "react-dom";
 
 class Register extends Component {
 
   constructor(props){
     console.log("inside constructor");
     super(props);
-    this.textPC1 = React.createRef();
+    // this.textPC1 = React.createRef();
     this.textPC2 = React.createRef();
     // this.focusPostalCode = this.focusPostalCode.bind(this);
     this.state = {
@@ -207,25 +208,54 @@ class Register extends Component {
   }
 
 
-  checkpcOutsideCanada = () => {
-    // console.log("PC1: ", this.textPC1, "PC2:", this.textPC2.current)
+  clickpcOutsideCanada = () => {
+    console.log("1-click")
+    console.log("111 PC1: ", this.textPC1, "PC2:", this.textPC2)
+    /*let count = 0;
+      for (let x = (this.state.postalCode.length - 1); x >= 0; x-- ) {
+        if (this.state.postalCode[x] === "_" || this.state.postalCode[x] === " ") count++;
+        else break;
+      }
+      */
+
+    this.setState({ 
+      pcOutsideCanada : !this.state.pcOutsideCanada,
+      // postalCode      : this.state.postalCode.slice(0, this.state.postalCode.length - count)
+    });
+    
+    /*
+    this.textPC1 && this.textPC1.focus();
+      // this.textPC1 ? this.textPC1.focus() : this.textPC2.current.focus();
+    // this.textInput5.current.focus();
+    */
+  }
+
+
+  changepcOutsideCanada = () => {
+    console.log("2-change")
+    console.log("222 PC1: ", this.textPC1, "PC2:", this.textPC2)
     let count = 0;
       for (let x = (this.state.postalCode.length - 1); x >= 0; x-- ) {
         if (this.state.postalCode[x] === "_" || this.state.postalCode[x] === " ") count++;
         else break;
       }
 
-    this.setState({ 
-      pcOutsideCanada : !this.state.pcOutsideCanada,
+     this.setState({ 
+      // pcOutsideCanada : !this.state.pcOutsideCanada,
       postalCode      : this.state.postalCode.slice(0, this.state.postalCode.length - count)
     });
-
-    // this.textPC1.current ? this.textPC1.current.focus() : this.textPC2.current.focus();
+    
+    /*
+    this.textPC1 && this.textPC1.focus();
+      // this.textPC1 ? this.textPC1.focus() : this.textPC2.current.focus();
     // this.textInput5.current.focus();
+    */
   }
 
-
   render() {
+    // console.log("### pcOutsideCanada", this.state.pcOutsideCanada)
+    // console.log("###PC1:", this.textPC1)
+    // console.log("###PC2:", this.textPC2)
     if (this.state.redirectFlag)
       return(<Redirect to="/" />);
     else
@@ -311,7 +341,8 @@ class Register extends Component {
                 checked   = {this.state.pcOutsideCanada}
                 type      = "checkbox"
                 style     = {{marginLeft: "1rem"}}
-                onChange  = { this.checkpcOutsideCanada }
+                onClick   = { this.clickpcOutsideCanada }
+                onChange  = { () => this.changepcOutsideCanada() }
                 disabled  = {this.state.disableBtn}
               />
               { !this.state.pcOutsideCanada
@@ -324,8 +355,7 @@ class Register extends Component {
                     value       = {this.state.postalCode}
                     onChange    = {this.handlePostalCode}
                     disabled    = {this.state.disableBtn}
-                    ref         = {input => this.textPC1 = input }
-                    // ref         = {this.textPC1 }
+                    ref         = {input => this.textPC1 = findDOMNode(input) }
                   />
                 : 
                   <Form.Control
@@ -336,7 +366,7 @@ class Register extends Component {
                     value       = {this.state.postalCode}
                     disabled    = {this.state.disableBtn}
                     onKeyPress  = {this.handleChange}
-                    ref         = {input => this.textPC2 = input}
+                    ref         = {this.textPC2}
                   />
               }
             </Form.Group>
