@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 
 import Land           from "./component/Land.js";
 import SysHeader      from "./component/SysHeader.js";
-import Register       from './component/Register.js';
+import SignUp         from './component/SignUp.js';
 import Login          from "./component/Login.js";
 import Home           from "./component/Home.js";
 import User           from "./component/User.js";
@@ -57,10 +57,10 @@ class App extends Component {
                 return <Redirect to = "/" />
             }} />
 
-          <Route exact path = "/register" 
+          <Route exact path = "/signup" 
             render = {() => {
               if (!this.props.storeEmail)
-                return <Register />
+                return <SignUp />
               else
                 return <Redirect to = "/" />
             }} />

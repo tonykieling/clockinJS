@@ -203,7 +203,7 @@ function SysHeader(props) {
           <Navbar.Brand href="/">Clockin.js</Navbar.Brand>
           <Nav>
             <Link to="/login" className="nav-link">Login</Link>
-            <Link to="/register" className="nav-link">Sign Up</Link>
+            <Link to="/signup" className="nav-link">Sign Up</Link>
             <Link to="/guidance" className="nav-link">Guide</Link>
             <Link to="/about" className="nav-link">About</Link>
             { !smallDevice
