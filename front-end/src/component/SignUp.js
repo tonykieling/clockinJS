@@ -2,13 +2,13 @@ import React, { useState, useRef } from 'react';
 import Button   from 'react-bootstrap/Button';
 import Form     from 'react-bootstrap/Form';
 import Card     from 'react-bootstrap/Card';
-// import { connect } from 'react-redux';
+import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-// import axios from "axios";
+import axios from "axios";
 import MaskedInput from 'react-text-mask';
-// import { findDOMNode } from "react-dom";
+import { findDOMNode } from "react-dom";
 
-export default function SignUp() {
+function SignUp(props) {
 
   const [state, setstate] = useState({
     name    : "",
@@ -20,19 +20,85 @@ export default function SignUp() {
     password        : "",
     confirmPassword : ""
   });
+  const refTop              = useRef(null);
+  const refName             = useRef(null);
+  const refEmail            = useRef(null);
+  const refCity             = useRef(null);
+  const refAddress          = useRef(null);
+  const refPhone            = useRef(null);
+  // const refPhone            = React.createRef();
+  const refPC1              = useRef(null);
+  // const refPC1              = React.createRef();
+  const refPC2              = useRef(null);
+  const refPassword         = useRef(null);
+  const refConfirmPassword  = useRef(null);
+  const refButtonSubmit     = useRef(null);
+
 
   const [disableForm, setdisableForm] = useState(false);
   const [pcOutsideCanada, setpcOutsideCanada] = useState(false);
-  const [message, setmessage] = useState("");
-  const [classNameMessage, setclassNameMessage] = useState("");
-  const [btnType, setbtnType] = useState("");
+  const [message, setmessage] = useState({
+    content   : "",
+    cssClass  : ""
+  });
   const [leave, setleave] = useState(false);
 
 
-  const handleChange = ({ target : { name, value }}) => {
-    console.log("name: ", name, "value: ", value);
-    setstate({ ...state, [name]: value});
+  // const handleChange = ({ target : { name, value }}) => {
+  const handleChange = event => {
+    // console.log("inside handleCHANGE")
+    // console.log("ASD", event.target.name, event.target.value)
+    // console.log("event KEY:", event.key)
+    const key = event.key;
+    // console.log("KEY:::", key)
+    const { name, value } = event.target;
+    
+    if (key === "Enter") {
+      event.preventDefault();
+      console.log("enter pressed")
+      switch (name){
+        case "name":
+          if (state.name)
+            refEmail.current.focus();
+          break;
+        case "email":
+          if (state.email)
+            refCity.current.focus();
+          break;
+        case "city":
+          refAddress.current.focus();
+          break;
+        case "address":
+          pcOutsideCanada ? refPC2.current.focus() : refPC1.current.focus();
+          console.log("after ADDRESSSS")
+          break;
+        case "postalCode":
+          console.log("withi PPPPC")
+          refPhone.current.focus();
+          break;
+        case "phone":
+          console.log("within PHONE")
+          refPassword.current.focus();
+          break;
+        case "password":
+          console.log("inside password switch")
+          if (state.password)
+            refConfirmPassword.current.focus();
+          break;
+        case "confirmPassword":
+          console.log("confirmPassword swith")
+          if (state.confirmPassword)
+            refButtonSubmit.current.click();
+          break;
+        default:
+          console.log("it's default")
+      }
+    }
+
+    setstate({ ...state, [name]: value });
+
   };
+
 
   const handlePostalCode = event => {
     const newValue = event.target.value;
@@ -40,16 +106,99 @@ export default function SignUp() {
       ...state,
       postalCode: isNaN(newValue) ? newValue.toUpperCase() : newValue 
     });
-    console.log("postalCode: ", state.postalCode)
   }
 
-  const handleSubmit = e => {
+
+  const changepcOutsideCanada = () => {
+    if (pcOutsideCanada) {
+      setpcOutsideCanada(false);
+      refPC1.current.focus();
+    } else {
+      setpcOutsideCanada(true);
+      refPC2.current.focus();
+    }
+  }
+
+
+  const handleSubmit = async e => {
+    console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeeee", e);
     e.preventDefault();
-    console.log("inside handlesubmit");
-    setdisableForm(true);
-    setleave(true);
-  }
+    console.log("inside handleSubmit")
+    console.log("state:", state)
+    console.log("props:::", props)
 
+    if (state.email !== "" && state.name !== "") {
+      if ((state.password !== state.confirmPassword) || (state.password === "")) {
+        setmessage({
+          content   :  `Password and Confirm Password fields MUST be the same and NOT empty.`,
+          cssClass  : "messageFailure"
+        });
+        setstate({
+          ...state,
+          password        : "",
+          confirmPassword : ""
+        });
+        refPassword.current.focus();
+      } else if (state.phone !== "" 
+              &&  ((!Number(state.phone.substring(1,4)))
+                || (!Number(state.phone.substring(6,9))) 
+                || (!Number(state.phone.substring(10,14))))) { 
+        setmessage({
+          content   :  "Phone has to have 10 numbers or empty.",
+          cssClass  : "messageFailure"
+        });
+      } else {
+        setdisableForm(true);
+
+        const url = "/user/signup";
+        const createUser  = {
+          name        : state.name,
+          email       : state.email,
+          password    : state.password,
+          address     : state.address,
+          city        : state.city,
+          postalCode  : state.postalCode,
+          phone       : state.phone
+        }
+
+        try {
+          const addUser = await axios.post(url, createUser);
+          if (addUser.data.message) {
+            const user = {
+              id      : addUser.data.user._id,
+              name    : addUser.data.user.name,
+              email   : addUser.data.user.email,
+              token   : addUser.data.token,
+              address     : addUser.data.user.address,
+              city        : addUser.data.user.city,
+              postalCode  : addUser.data.user.postal_code,
+              phone       : addUser.data.user.phone
+            };
+            props.dispatchLogin({ user });
+            setleave(true);
+          } else if (addUser.data.error) {
+            console.log("it THROWS an ERROR")
+            throw(addUser.data.error)
+          }
+
+        } catch(err) {
+          setmessage({
+            content   :  err,
+            cssClass  : "messageFailure"
+          });
+          setdisableForm(false);
+        }
+      }
+    } else {
+      setmessage({
+        content   :  "Please, entry at least Name, Email, Password and Confirm Password",
+        cssClass  : "messageFailure"
+      });
+      refTop.current.scrollIntoView({ behavior: "smooth" });
+      state.name ? refEmail.current.focus() : refName.current.focus();
+      setdisableForm(false);
+    }
+  }
 
   return (
     <React.Fragment>
@@ -58,7 +207,9 @@ export default function SignUp() {
     <div className="formPosition">
       <br />
       <Card className="card-settings">
-        <Card.Header>
+        <Card.Header
+          ref = { refTop}
+        >
           <h2>Sign Up</h2>
         </Card.Header>
         <Form 
@@ -75,11 +226,13 @@ export default function SignUp() {
               type        = "text"
               placeholder = "User's name"
               name        = "name"
-              onChange    = {e => handleChange(e)}
+              // onChange    = {e => handleChange(e)}
+              onChange    = { handleChange}
               value       = {state.name}
               disabled    = { disableForm}
-              // onKeyPress  = {this.handleChange}
-              // ref         = {input => this.textInput1 = input }
+              // onKeyPress  = { e => handleChange(e)}
+              onKeyPress  = { handleChange}
+              ref         = { refName }
             />
           </Form.Group>
 
@@ -90,13 +243,15 @@ export default function SignUp() {
             <Form.Label>Email address</Form.Label>
             <Form.Control
               type        = "email"
+              pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
               placeholder = "User's email"
               name        = "email"
-              onChange    = {e => handleChange(e)}
+              onChange    = { handleChange}
+              onKeyPress  = { handleChange}
               value       = {state.email}
               disabled    = { disableForm}
               // onKeyPress  = {this.handleChange}
-              // ref         = {input => this.textInput2 = input }
+              ref         = { refEmail }
             />
           </Form.Group>
           <Form.Text className="text-muted" style={{marginTop: "2px"}}>
@@ -112,11 +267,12 @@ export default function SignUp() {
               type        = "text"
               placeholder = "Type the user's city"
               name        = "city"
-              onChange    = {e => handleChange(e)}
+              onChange    = { handleChange}
+              onKeyPress  = { handleChange}
               value       = {state.city}
               disabled    = { disableForm}
               // onKeyPress  = {this.handleChange}
-              // ref         = {input => this.textInput3 = input }
+              ref         = { refCity }
               />
           </Form.Group>
 
@@ -126,11 +282,12 @@ export default function SignUp() {
               type        = "text"
               placeholder = "Type the user's address"
               name        = "address"
-              onChange    = {e => handleChange(e)}
+              onChange    = { handleChange}
+              onKeyPress  = { handleChange}
               value       = {state.address}
               disabled    = { disableForm}
               // onKeyPress  = {this.handleChange}
-              // ref         = {input => this.textInput4 = input }
+              ref         = { refAddress }
               />
           </Form.Group>
 
@@ -143,9 +300,9 @@ export default function SignUp() {
               type      = "checkbox"
               style     = {{marginLeft: "1rem"}}
               // onClick   = { () => setpcOutsideCanada(!pcOutsideCanada) }
-              onChange  = { () => setpcOutsideCanada(!pcOutsideCanada) }
+              // onChange  = { () => setpcOutsideCanada(!pcOutsideCanada) }
               disabled    = { disableForm}
-                // onChange  = { () => changepcOutsideCanada() }
+              onChange  = { changepcOutsideCanada }
               // disabled  = {disableBtn}
             />
             { !pcOutsideCanada
@@ -158,7 +315,9 @@ export default function SignUp() {
                   value       = {state.postalCode}
                   disabled    = { disableForm}
                   onChange    = { e => handlePostalCode(e)}
-                  // ref         = {input => this.textPC1 = findDOMNode(input) }
+                  onKeyPress  = { handleChange}
+                  ref         = {input => refPC1.current = findDOMNode(input) }
+                  // ref         = { refPC1 } // it does NOT work. It is necessary findDOMNode
                 />
               : 
                 <Form.Control
@@ -168,8 +327,8 @@ export default function SignUp() {
                   onChange    = {e => handleChange(e)}
                   value       = {state.postalCode}
                   disabled    = { disableForm}
-                  // onKeyPress  = {this.handleChange}
-                  // ref         = {this.textPC2}
+                  onKeyPress  = { handleChange}
+                  ref         = { refPC2}
                 />
             }
           </Form.Group>
@@ -186,12 +345,10 @@ export default function SignUp() {
               value       = {state.phone}
               onKeyPress  = {e => handleChange(e)}
               disabled    = { disableForm}
-              // ref         = {input => this.textInput6 = input }
-              // alwaysShowMask = {true}
+              // ref         = { refPhone.current }
+              ref         = { input => refPhone.current = findDOMNode(input) }
               />
           </Form.Group>
-
-
 
           <Form.Group controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
@@ -199,11 +356,11 @@ export default function SignUp() {
               type        = "password"
               placeholder = "Password"
               name        = "password"
-              onChange    = { e => handleChange(e)}
+              onChange    = { handleChange}
               value       = { state.password}
               disabled    = { disableForm}
-              // onKeyPress  = {this.handleChange}
-              // ref         = {input => this.textInput7 = input }
+              onKeyPress  = { handleChange}
+              ref         = { refPassword }
               />
           </Form.Group>
 
@@ -213,28 +370,29 @@ export default function SignUp() {
               type        = "password"
               placeholder = "Confirm Password"
               name        = "confirmPassword"
-              onChange    = {e => handleChange(e)}
+              onChange    = { handleChange}
               value       = {state.confirmPassword}
               disabled    = { disableForm}
-              // onKeyPress  = {this.handleChange}
-              // ref         = {input => this.textInput8 = input }
-              />
+              onKeyPress  = { handleChange}
+              ref         = { refConfirmPassword }
+            />
           </Form.Group>
 
 
-        <Card.Footer className= { classNameMessage}>          
-          { message
-            ? message
+        <Card.Footer className= { message.cssClass}>          
+          { message.content
+            ? message.content
             : <br /> }
         </Card.Footer>
 
         <br />
         <div className="d-flex flex-column">
           <Button 
-            variant = "primary" 
-            type    = {btnType}
-            onClick = {handleSubmit}              
-            disabled    = { disableForm}
+            variant   = "primary" 
+            type      = "submit"
+            onClick   = {e => handleSubmit(e)}          
+            disabled  = { disableForm}
+            ref       = { refButtonSubmit}
           >
             Submit
           </Button>
@@ -249,3 +407,15 @@ export default function SignUp() {
 
   )
 }
+
+
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatchLogin: user => dispatch({
+      type:"LOGIN",
+      data: user })
+  }
+}
+
+
+export default connect(null, mapDispatchToProps)(SignUp);
