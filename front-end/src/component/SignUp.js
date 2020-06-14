@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Button   from 'react-bootstrap/Button';
 import Form     from 'react-bootstrap/Form';
 import Card     from 'react-bootstrap/Card';
@@ -7,6 +7,8 @@ import { Redirect } from 'react-router-dom';
 import axios from "axios";
 import MaskedInput from 'react-text-mask';
 import { findDOMNode } from "react-dom";
+import Overlay from 'react-bootstrap/Overlay';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 function SignUp(props) {
 
@@ -26,14 +28,11 @@ function SignUp(props) {
   const refCity             = useRef(null);
   const refAddress          = useRef(null);
   const refPhone            = useRef(null);
-  // const refPhone            = React.createRef();
   const refPC1              = useRef(null);
-  // const refPC1              = React.createRef();
   const refPC2              = useRef(null);
   const refPassword         = useRef(null);
   const refConfirmPassword  = useRef(null);
   const refButtonSubmit     = useRef(null);
-
 
   const [disableForm, setdisableForm] = useState(false);
   const [pcOutsideCanada, setpcOutsideCanada] = useState(false);
@@ -42,51 +41,44 @@ function SignUp(props) {
     cssClass  : ""
   });
   const [leave, setleave] = useState(false);
+  const [emailValid, setemailValid] = useState(true);
+  const [nameValid, setnameValid] = useState(true);
+  const [changePC, setchangePC] = useState(false);
 
 
-  // const handleChange = ({ target : { name, value }}) => {
   const handleChange = event => {
-    // console.log("inside handleCHANGE")
-    // console.log("ASD", event.target.name, event.target.value)
-    // console.log("event KEY:", event.key)
     const key = event.key;
-    // console.log("KEY:::", key)
     const { name, value } = event.target;
     
     if (key === "Enter") {
       event.preventDefault();
-      console.log("enter pressed")
       switch (name){
         case "name":
           if (state.name)
             refEmail.current.focus();
           break;
         case "email":
-          if (state.email)
+          if (state.email) {
             refCity.current.focus();
+          }
           break;
         case "city":
           refAddress.current.focus();
           break;
         case "address":
           pcOutsideCanada ? refPC2.current.focus() : refPC1.current.focus();
-          console.log("after ADDRESSSS")
           break;
         case "postalCode":
-          console.log("withi PPPPC")
           refPhone.current.focus();
           break;
         case "phone":
-          console.log("within PHONE")
           refPassword.current.focus();
           break;
         case "password":
-          console.log("inside password switch")
           if (state.password)
             refConfirmPassword.current.focus();
           break;
         case "confirmPassword":
-          console.log("confirmPassword swith")
           if (state.confirmPassword)
             refButtonSubmit.current.click();
           break;
@@ -96,6 +88,8 @@ function SignUp(props) {
     }
 
     setstate({ ...state, [name]: value });
+    name === "name" && setnameValid(true);
+    name === "email" && new RegExp(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,15}/g).test(value) && setemailValid(true);
 
   };
 
@@ -109,34 +103,35 @@ function SignUp(props) {
   }
 
 
-  const changepcOutsideCanada = () => {
-    if (pcOutsideCanada) {
-      setpcOutsideCanada(false);
-      refPC1.current.focus();
-    } else {
-      setpcOutsideCanada(true);
-      refPC2.current.focus();
-    }
+  const onChangePCOutsideCanada = () => {
+    setchangePC(true);
+    setpcOutsideCanada(!pcOutsideCanada);
+    pcOutsideCanada ? refPC2.current.focus() : refPC1.current.focus();
   }
 
 
+  useEffect(() => {
+    if (changePC) {
+      pcOutsideCanada ? refPC2.current.focus() : refPC1.current.focus();
+      let count = 0;
+      for (let x = (state.postalCode.length - 1); x >= 0; x-- ) {
+        if (state.postalCode[x] === "_" || state.postalCode[x] === " ") count++;
+        else break;
+      }
+      setstate({ ...state, postalCode: state.postalCode.slice(0, state.postalCode.length - count)})
+
+    } 
+  }, [pcOutsideCanada, setpcOutsideCanada]);
+
+
   const handleSubmit = async e => {
-    console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeeee", e);
     e.preventDefault();
-    console.log("inside handleSubmit")
-    console.log("state:", state)
-    console.log("props:::", props)
 
     if (state.email !== "" && state.name !== "") {
       if ((state.password !== state.confirmPassword) || (state.password === "")) {
         setmessage({
           content   :  `Password and Confirm Password fields MUST be the same and NOT empty.`,
           cssClass  : "messageFailure"
-        });
-        setstate({
-          ...state,
-          password        : "",
-          confirmPassword : ""
         });
         refPassword.current.focus();
       } else if (state.phone !== "" 
@@ -200,10 +195,10 @@ function SignUp(props) {
     }
   }
 
+
   return (
     <React.Fragment>
       { leave && <Redirect to = "/" />}
-
     <div className="formPosition">
       <br />
       <Card className="card-settings">
@@ -220,7 +215,7 @@ function SignUp(props) {
 
           <br />
           <Form.Group controlId="formName">
-            <Form.Label>Name</Form.Label>
+            <Form.Label className="cardLabel">Name</Form.Label>
             <Form.Control
               autoFocus   = {true}
               type        = "text"
@@ -232,25 +227,40 @@ function SignUp(props) {
               disabled    = { disableForm}
               // onKeyPress  = { e => handleChange(e)}
               onKeyPress  = { handleChange}
+              onBlur      = { () => setnameValid(state.name ? true : false) }
               ref         = { refName }
             />
+            { !nameValid &&
+                <Overlay
+                target    = { refName}
+                show      = {true}
+                placement = "bottom"
+                >
+                  <Tooltip id={"tooltip-bottom"}>
+                    <strong 
+                      style={{color: "gold"}}
+                      >
+                      Please, type a name
+                    </strong>
+                  </Tooltip>
+                </Overlay>
+            }
           </Form.Group>
 
           <Form.Group 
             controlId="formBasicEmail"
             style       = {{marginBottom: "5px"}}
           >
-            <Form.Label>Email address</Form.Label>
+            <Form.Label className="cardLabel">Email address</Form.Label>
             <Form.Control
               type        = "email"
-              pattern     = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
               placeholder = "User's email"
               name        = "email"
               onChange    = { handleChange}
               onKeyPress  = { handleChange}
               value       = {state.email}
               disabled    = { disableForm}
-              // onKeyPress  = {this.handleChange}
+              onBlur      = { () => setemailValid(new RegExp(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,15}/g).test(state.email) ? true : false) }
               ref         = { refEmail }
             />
           </Form.Group>
@@ -260,9 +270,24 @@ function SignUp(props) {
           <Form.Text className="text-muted" style={{marginTop: "0px", marginBottom: "16px"}}>
             Set a real email so you will receive emails from Clockin.js.
           </Form.Text>
+          { !emailValid &&
+                <Overlay
+                target    = { refEmail}
+                show      = {true}
+                placement = "bottom"
+                >
+                  <Tooltip id={"tooltip-bottom"}>
+                    <strong 
+                      style={{color: "gold"}}
+                      >
+                      Please, type a valid email
+                    </strong>
+                  </Tooltip>
+                </Overlay>
+            }
           
           <Form.Group controlId="formCity">
-            <Form.Label>City</Form.Label>
+            <Form.Label className="cardLabel">City</Form.Label>
             <Form.Control
               type        = "text"
               placeholder = "Type the user's city"
@@ -271,13 +296,12 @@ function SignUp(props) {
               onKeyPress  = { handleChange}
               value       = {state.city}
               disabled    = { disableForm}
-              // onKeyPress  = {this.handleChange}
               ref         = { refCity }
               />
           </Form.Group>
 
           <Form.Group controlId="formAddress">
-            <Form.Label>Address</Form.Label>
+            <Form.Label className="cardLabel">Address</Form.Label>
             <Form.Control
               type        = "text"
               placeholder = "Type the user's address"
@@ -286,7 +310,6 @@ function SignUp(props) {
               onKeyPress  = { handleChange}
               value       = {state.address}
               disabled    = { disableForm}
-              // onKeyPress  = {this.handleChange}
               ref         = { refAddress }
               />
           </Form.Group>
@@ -297,13 +320,12 @@ function SignUp(props) {
               inline 
               label     = " outside Canada"
               checked   = { pcOutsideCanada}
+              // onClick   = { () => console.log("PC CLick")}
+              // onChange  = { () => console.log("PC Change")}
               type      = "checkbox"
               style     = {{marginLeft: "1rem"}}
-              // onClick   = { () => setpcOutsideCanada(!pcOutsideCanada) }
-              // onChange  = { () => setpcOutsideCanada(!pcOutsideCanada) }
-              disabled    = { disableForm}
-              onChange  = { changepcOutsideCanada }
-              // disabled  = {disableBtn}
+              disabled  = { disableForm}
+              onChange  = { onChangePCOutsideCanada}
             />
             { !pcOutsideCanada
               ?
@@ -317,7 +339,6 @@ function SignUp(props) {
                   onChange    = { e => handlePostalCode(e)}
                   onKeyPress  = { handleChange}
                   ref         = {input => refPC1.current = findDOMNode(input) }
-                  // ref         = { refPC1 } // it does NOT work. It is necessary findDOMNode
                 />
               : 
                 <Form.Control
@@ -334,24 +355,22 @@ function SignUp(props) {
           </Form.Group>
 
           <Form.Group controlId="formPhone">
-            <Form.Label>Phone</Form.Label>
+            <Form.Label className="cardLabel">Phone</Form.Label>
             <MaskedInput
               mask        = {['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
               className   = "form-control"
               placeholder = "Enter your phone number"
               name        = "phone"
               id          = "phone"
-              // onBlur      = {e => this.afterChange(e)}
               value       = {state.phone}
               onKeyPress  = {e => handleChange(e)}
               disabled    = { disableForm}
-              // ref         = { refPhone.current }
               ref         = { input => refPhone.current = findDOMNode(input) }
               />
           </Form.Group>
 
           <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
+            <Form.Label className="cardLabel">Password</Form.Label>
             <Form.Control
               type        = "password"
               placeholder = "Password"
@@ -365,7 +384,7 @@ function SignUp(props) {
           </Form.Group>
 
           <Form.Group controlId="formConfirmPassword">
-            <Form.Label>Confirm Password</Form.Label>
+            <Form.Label className="cardLabel">Confirm Password</Form.Label>
             <Form.Control
               type        = "password"
               placeholder = "Confirm Password"
@@ -390,7 +409,7 @@ function SignUp(props) {
           <Button 
             variant   = "primary" 
             type      = "submit"
-            onClick   = {e => handleSubmit(e)}          
+            onClick   = { handleSubmit}      
             disabled  = { disableForm}
             ref       = { refButtonSubmit}
           >

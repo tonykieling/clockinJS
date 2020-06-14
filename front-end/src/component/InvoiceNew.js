@@ -3,7 +3,7 @@ import axios from "axios";
 import { connect } from "react-redux";
 import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 import Overlay from 'react-bootstrap/Overlay';
-import Tooltip from 'react-bootstrap/Tooltip'
+import Tooltip from 'react-bootstrap/Tooltip';
 
 import GetClients from "./aux/GetClients.js";
 import { getCurrentDateTime } from "./aux/formatDate.js";
