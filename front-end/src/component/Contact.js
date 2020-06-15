@@ -14,15 +14,10 @@ import githubIcon from "../icons/github.png";
 
 export default function Contact() {
   return (
-    // <div style={{all: "unset"}} className="page-general">
-    // <div style={{all: "unset"}} className="formPosition">
-    <div>
-
-      {/* <Card style={{backgroundColor: "aliceblue"}}> */}
-      <br />
+    <React.Fragment>
       <Card className="bigCardPosition" >
-        <Card.Header>
-          <h2>Contact</h2>
+        <Card.Header style={{textAlign: "center"}}>
+          <h1>Contact</h1>
         </Card.Header>
 
         <Card.Body>
@@ -70,6 +65,6 @@ export default function Contact() {
         </Card>
         <br /><br />
       </Card>
-    </div>
+    </React.Fragment>
   )
 }

@@ -20,7 +20,9 @@ export default function ContactFoot(props) {
   // }, [contactFootRef]);
 
   return (
-    <div style={{all: "unset"}}>
+    // <div style={{all: "unset"}}>
+    <React.Fragment>
+    
     
       <Card
         style={{
@@ -80,7 +82,9 @@ export default function ContactFoot(props) {
             </Container>
           </Card.Body>
         </Card>
-    </div>
+    {/* </div> */}
+    </React.Fragment>
+
   )
 }
 

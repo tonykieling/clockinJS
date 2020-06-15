@@ -125,10 +125,10 @@ console.log("inside client add");
         : null;
 
     if (clientExistName.length > 0 && userId == clientExistName[0].user_id)
-      return res.status(200).json({ error: `Client <name: ${name}> alread exists.`});
+      return res.status(200).json({ error: `Client <name: ${name}> already exists.`});
 
     if (clientExistNickname && clientExistNickname.length > 0 && userId == clientExistNickname[0].user_id)
-      return res.status(200).json({ error: `Client <nickname: ${nickname}> alread exists.`});
+      return res.status(200).json({ error: `Client <nickname: ${nickname}> already exists.`});
 
   } catch(err) {
     console.trace("Error: ", err.message);

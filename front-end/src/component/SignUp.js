@@ -396,24 +396,24 @@ function SignUp(props) {
             </Form.Group>
 
 
-          <Card.Footer className= { message.cssClass}>          
-            { message.content
-              ? message.content
-              : <br /> }
-          </Card.Footer>
+            <Card.Footer className= { message.cssClass}>          
+              { message.content
+                ? message.content
+                : <br /> }
+            </Card.Footer>
 
-          <br />
-          <div className="d-flex flex-column">
-            <Button 
-              variant   = "primary" 
-              type      = "submit"
-              onClick   = { handleSubmit}      
-              disabled  = { disableForm}
-              ref       = { refButtonSubmit}
-            >
-              Submit
-            </Button>
-          </div>
+            <br />
+            <div className="d-flex flex-column">
+              <Button 
+                variant   = "primary" 
+                type      = "submit"
+                onClick   = { handleSubmit}      
+                disabled  = { disableForm}
+                ref       = { refButtonSubmit}
+              >
+                Submit
+              </Button>
+            </div>
 
           </Form>
         </Card>

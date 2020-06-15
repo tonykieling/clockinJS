@@ -104,7 +104,7 @@ console.log("*** inside USER signup");
   
     if (userExist.length > 0)
       return res.status(200).json({ 
-        error: `User <email: ${email}> alread exists.` });
+        error: `User <email: ${email}> already exists.` });
   } catch(err) {
     console.trace("Error: ", err.message);
     return res.status(200).json({
