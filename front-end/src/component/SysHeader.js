@@ -107,7 +107,7 @@ function SysHeader(props) {
                     <NavDropdown.Divider />
                     <NavDropdown.Item href="invoicesList">List, Check and Edit</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="invoiceIssue">Issue an Invoice</NavDropdown.Item>
+                    <NavDropdown.Item href="invoicePrint">Print an Invoice</NavDropdown.Item>
                   </NavDropdown>
 
                   <Link to="/guidance" className="nav-link">Guidance</Link>
@@ -174,7 +174,7 @@ function SysHeader(props) {
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="invoicesList">List, Check and Edit</NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="invoiceIssue">Issue an Invoice</NavDropdown.Item>
+                <NavDropdown.Item href="invoicePrint">Print an Invoice</NavDropdown.Item>
               </NavDropdown>            
 
               <br />

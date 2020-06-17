@@ -8,12 +8,7 @@ import { generatePdf } from "./aux/generatePdf.js";
 import { show } from "./aux/formatDate.js";
 import InvoicePdfModal from "./InvoicePdfModal";
 
-/**
- * how to use tooltips (TIPS)
- * https://www.w3schools.com/howto/howto_css_tooltip.asp
- */
-
-class InvoicesIssue extends Component {
+class InvoicesPrint extends Component {
 
   state = {
     dateStart         : "",
@@ -63,19 +58,20 @@ class InvoicesIssue extends Component {
         });
 
         if (getInvoices.data.allInvoices){
-          const hasInvoiceSample = this.state.client.invoice_sample ? true : false;
+          // const hasInvoiceSample = this.state.client.invoice_sample ? true : false;
 
           this.setState({
             invoiceList       : getInvoices.data.allInvoices,
             invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
             tableVisibility   : true,
-            clientId,
+            clientId
 
-            classNameMessage  : `${hasInvoiceSample ? "messageSuccess" : "messageFailure"}`,
-            message           : `${hasInvoiceSample 
-              ? "Click on the invoice to generate a pdf document and check your download folder." 
-              // : "Client does not have invoice sample registered. Please contact tony.kieling@gmail.com and ask for it."}`
-              : "Click in the invoice to a general pdf invoice. Please, contact tony.kieling@gmail.com for any format changes."}`
+            // classNameMessage  : "messageSuccess",
+            // classNameMessage  : `${hasInvoiceSample ? "messageSuccess" : "messageFailure"}`,
+            // message           : `${hasInvoiceSample 
+            //   ? "Click on the invoice to generate a pdf document and check your download folder." 
+            //   // : "Client does not have invoice sample registered. Please contact tony.kieling@gmail.com and ask for it."}`
+            //   : "Click in the invoice to a general pdf invoice. Please, contact tony.kieling@gmail.com for any format changes."}`
           });
         } else {
           throw(getInvoices.data.message);
@@ -133,13 +129,15 @@ renderDataTable = (invoices) => {
       clientId        : client._id,
       disabledIPBtn   : false,
       tableVisibility : false,
-      message         : ""
+      message         : "",
+      classNameMessage: "messageSuccess"
     });
   }
 
 
 
   issuePdf = (invoice) => {
+console.log("inside issuePdf")
     if (this.state.client.invoice_sample) {
       const data = {
         invoice,
@@ -169,7 +167,7 @@ renderDataTable = (invoices) => {
         }
         <br />
         <Card className="card-settings">
-          <Card.Header>Generate a Pdf file</Card.Header>
+          <Card.Header>Export an Invoice to a Pdf file</Card.Header>
           <Card.Body>
           <GetClients 
                 client            = { this.state.client }
@@ -199,30 +197,49 @@ renderDataTable = (invoices) => {
                   type        = "date"
                   name        = "dateEnd"
                   onChange    = {this.handleChange}
-                  value       = {this.state.dateEnd} />
+                  value       = {this.state.dateEnd}
+                />
               </Col>
             </Form.Group>
 
-          <Card.Footer className= { this.state.classNameMessage}>          
-            { this.state.message
-              ? this.state.message
-              : <br /> }
-          </Card.Footer>
-          <br />
+            <Card.Footer className= { this.state.classNameMessage} style={{textAlign: "left"}}>
+              { this.state.client
+                // ? this.state.message
+                ?
+                  this.state.client.invoice_sample
+                    ?
+                      <React.Fragment>
+                        <ol>
+                          <li>Select invoice,</li>
+                          <li>Click on the invoice to export, and </li>
+                          <li>Find the pdf in your downloads.</li>
+                        </ol>
+                      </React.Fragment>
+                    :
+                      <React.Fragment>
+                        <ol>
+                          <li>Get the invoice,</li>
+                          <li>Click on the invoice and check its format, and </li>
+                          <li>For a customized invoice, please contact tony.kieling@gmail.com.</li>
+                        </ol>
+                      </React.Fragment>
+                : <br /> }
+              </Card.Footer>
+              <br />
 
-          <div className="d-flex flex-column">
-            <Button 
-              variant   = "primary" 
-              type      = "submit" 
-              onClick   = { this.handleGetInvoices } 
-              ref       = {input => this.getInvoicesBtn = input }  >
-              Get Invoices
-            </Button>
-          </div>
-            
-          </Form>
-        </Card.Body>
-      </Card>
+              <div className="d-flex flex-column">
+                <Button 
+                  variant   = "primary" 
+                  type      = "submit" 
+                  onClick   = { this.handleGetInvoices } 
+                  ref       = {input => this.getInvoicesBtn = input }  >
+                  Get Invoices
+                </Button>
+              </div>
+
+            </Form>
+          </Card.Body>
+        </Card>
 
 
       { this.state.tableVisibility
@@ -236,23 +253,20 @@ renderDataTable = (invoices) => {
 
               {(this.state.invoiceList.length > 0) 
                 ? 
-                  <div>
-                    <Table striped bordered hover size="sm" responsive>
-                      <thead>
-                        <tr style={{textAlign: "center", verticalAlign: "middle"}}>
-                          <th>#</th>
-                          <th>Date</th>
-                          <th>CAD$</th>
-                          <th>Code</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody style={{textAlign: "center"}}>
-                        {this.state.invoiceListTable}
-                      </tbody>
-                    </Table>
-
-                  </div>
+                  <Table striped bordered hover size="sm" responsive>
+                    <thead>
+                      <tr style={{textAlign: "center", verticalAlign: "middle"}}>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>CAD$</th>
+                        <th>Code</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody style={{textAlign: "center"}}>
+                      {this.state.invoiceListTable}
+                    </tbody>
+                  </Table>
                 : null }
             </Card>
           : null }
@@ -272,4 +286,4 @@ const mapStateToProps = store => {
 
 
 
-export default connect(mapStateToProps, null)(InvoicesIssue);
+export default connect(mapStateToProps, null)(InvoicesPrint);
