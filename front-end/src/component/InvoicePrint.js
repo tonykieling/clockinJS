@@ -19,10 +19,11 @@ function InvoicesPrint(props) {
     openInvoicePdfModal : false
   });
   const [invoices, setinvoices] = useState({
-    invoice           : "",
     invoiceList       : "",
     invoiceListTable  : ""
   });
+  const [currentInvoice, setcurrentInvoice] = useState("");
+
 
   const handleGetInvoices = async event => {
     event.preventDefault();
@@ -60,13 +61,11 @@ function InvoicesPrint(props) {
             message           : "",
             classNameMessage  : "messageSuccess"
           });
-          setinvoices({ 
-            ...invoices, 
+          setinvoices({
             invoiceList       : getInvoices.data.allInvoices,
             invoiceListTable  : renderDataTable(getInvoices.data.allInvoices)
           });
         } else {
-          console.log("---getInvoices.data.message", getInvoices.data.message)
           throw(getInvoices.data.message);
         }
       } catch(err) {
@@ -84,7 +83,6 @@ function InvoicesPrint(props) {
   }
 
 
-
   const renderDataTable = (invoices) => {
     return invoices.map((invoice, index) => {
       const invoiceToSend = {
@@ -94,13 +92,12 @@ function InvoicesPrint(props) {
         code        : invoice.code,
         status      : invoice.status
       }
-
       return (
         <tr 
           key={invoiceToSend.num} 
           onClick={formData.client.invoice_sample 
-                          ? () => issuePdf(invoice) 
-                          : () => setformData({ ...formData, openInvoicePdfModal: true })}
+                          ? () => issuePdf(invoice)
+                          : () => callPdfModal(invoice) }
         >
           <td>{invoiceToSend.num}</td>
           <td>{invoiceToSend.date}</td>
@@ -113,6 +110,16 @@ function InvoicesPrint(props) {
   }
 
 
+  const callPdfModal = invoice => {
+    setcurrentInvoice(invoice);
+    setformData({ 
+      ...formData,
+      tableVisibility     : true,
+      openInvoicePdfModal : true
+    });
+  }
+
+
   const getClientInfo = client => {
     setformData({
       ...formData,
@@ -120,9 +127,11 @@ function InvoicesPrint(props) {
       tableVisibility : false,
       message         : "",
       classNameMessage: "messageSuccess"
-    })
+    });
+    setinvoices({
+      invoiceList: ""
+    });
   }
-
 
 
   const issuePdf = (invoice) => {
@@ -142,6 +151,7 @@ function InvoicesPrint(props) {
           <InvoicePdfModal
             user        = { props.user}
             client      = { formData.client}
+            invoice     = { currentInvoice}
             openModal   = { formData.openInvoicePdfModal}
             closeModal  = { () => setformData({ ...formData, openInvoicePdfModal: false})}
           />
@@ -250,8 +260,7 @@ function InvoicesPrint(props) {
               : null }
           </Card>
         : null }
-
-        </div>
+    </div>
   )
 }
 
