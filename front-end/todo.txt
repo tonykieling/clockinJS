@@ -237,7 +237,7 @@ X- nickname in the toogle GetClients instead of name (for kids)
 X- when generating invoice, and also in Punch List, the list of clockins should show duration, instead of CAD$ (user requirement). Need to change the labels, as well.
 X- SignUp page rebuilded using react hooks and handling tips and PostalCode format for Canada and outside Canada
 - invoice for any client
-  - convert from class to function component (hooks)
+  X- convert from class to function component (hooks)
   - if no invoice_sample to the client, print something to contact me
   - when clicking in the invoice, open a modal (form style), which allows some configuration
   - there is a button to generate the pdf file

@@ -9,19 +9,6 @@ import { show } from "./aux/formatDate.js";
 import InvoicePdfModal from "./InvoicePdfModal";
 
 function InvoicesPrint(props) {
-  // state = {
-  //   dateStart         : "",
-  //   dateEnd           : "",
-  //   clientId          : "",
-  //   invoiceList       : [],
-  //   client            : "",
-  //   invoiceListTable  : "",
-  //   tableVisibility   : false,
-  //   message           : "",
-
-  //   invoice           : "",
-  //   openInvoicePdfModal  : false
-  // }
   const [formData, setformData] = useState({
     client  : "",
     dtStart : "",
@@ -39,16 +26,20 @@ function InvoicesPrint(props) {
 
   const handleGetInvoices = async event => {
     event.preventDefault();
-
     const
       dateStart = formData.dtStart,
       dateEnd   = formData.dtEnd,
       clientId  = formData.client._id ;
-console.log("client? ", clientId)
     if (!clientId) {
       setformData({
         ...formData,
         message           : "Select a client.",
+        classNameMessage  : "messageFailure"
+      });
+    } else if ( dateStart && dateEnd && dateStart > dateEnd ) {
+      setformData({
+        ...formData,
+        message           : "Date End must be greater than Date Start.",
         classNameMessage  : "messageFailure"
       });
     } else {
@@ -62,84 +53,64 @@ console.log("client? ", clientId)
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${props.storeToken}` }
         });
-
         if (getInvoices.data.allInvoices){
-          // const hasInvoiceSample = this.state.client.invoice_sample ? true : false;
-
-          setformData({ ...formData,
-            tableVisibility: true});
-          setinvoices({ ...invoices, 
+          setformData({ 
+            ...formData,
+            tableVisibility   : true,
+            message           : "",
+            classNameMessage  : "messageSuccess"
+          });
+          setinvoices({ 
+            ...invoices, 
             invoiceList       : getInvoices.data.allInvoices,
             invoiceListTable  : renderDataTable(getInvoices.data.allInvoices)
-          })
-          // this.setState({
-          //   invoiceList       : getInvoices.data.allInvoices,
-          //   invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
-          //   tableVisibility   : true,
-          //   clientId
-
-          //   // classNameMessage  : "messageSuccess",
-          //   // classNameMessage  : `${hasInvoiceSample ? "messageSuccess" : "messageFailure"}`,
-          //   // message           : `${hasInvoiceSample 
-          //   //   ? "Click on the invoice to generate a pdf document and check your download folder." 
-          //   //   // : "Client does not have invoice sample registered. Please contact tony.kieling@gmail.com and ask for it."}`
-          //   //   : "Click in the invoice to a general pdf invoice. Please, contact tony.kieling@gmail.com for any format changes."}`
-          // });
+          });
         } else {
+          console.log("---getInvoices.data.message", getInvoices.data.message)
           throw(getInvoices.data.message);
         }
       } catch(err) {
+        setinvoices({
+          invoiceList: ""
+        });
         setformData({
           ...formData,
           message           : err,
-          classNameMessage  : "messageFailure"
+          classNameMessage  : "messageFailure",
+          tableVisibility   : false
         });
-        // this.setState({
-        //   message           : err,
-        //   classNameMessage  : "messageFailure"
-        // });
-        // this.clearMessage();
       }
     }
   }
 
 
 
-const renderDataTable = (invoices) => {
-  return invoices.map((invoice, index) => {
-    const invoiceToSend = {
-      num         : index + 1,
-      date        : show(invoice.date),
-      totalCad    : Number(invoice.cad_adjustment) || Number(invoice.total_cad),
-      code        : invoice.code,
-      status      : invoice.status
-    }
+  const renderDataTable = (invoices) => {
+    return invoices.map((invoice, index) => {
+      const invoiceToSend = {
+        num         : index + 1,
+        date        : show(invoice.date),
+        totalCad    : Number(invoice.cad_adjustment) || Number(invoice.total_cad),
+        code        : invoice.code,
+        status      : invoice.status
+      }
 
-    return (
-      <tr 
-        key={invoiceToSend.num} 
-        onClick={formData.client.invoice_sample 
-                        ? () => issuePdf(invoice) 
-                        : () => setformData({ ...formData, openInvoicePdfModal: true })}
-      >
-        <td>{invoiceToSend.num}</td>
-        <td>{invoiceToSend.date}</td>
-        <td>{invoiceToSend.totalCad.toFixed(2)}</td>
-        <td>{invoiceToSend.code}</td>
-        <td>{invoiceToSend.status}</td>
-      </tr>
-    );
-  });
-}  
-
-  // clearMessage = () => {
-  //   setTimeout(() => {
-  //     this.setState({
-  //       message     : "",
-  //       invoiceCode : ""
-  //     });
-  //   }, 3500);
-  // }
+      return (
+        <tr 
+          key={invoiceToSend.num} 
+          onClick={formData.client.invoice_sample 
+                          ? () => issuePdf(invoice) 
+                          : () => setformData({ ...formData, openInvoicePdfModal: true })}
+        >
+          <td>{invoiceToSend.num}</td>
+          <td>{invoiceToSend.date}</td>
+          <td>{invoiceToSend.totalCad.toFixed(2)}</td>
+          <td>{invoiceToSend.code}</td>
+          <td>{invoiceToSend.status}</td>
+        </tr>
+      );
+    });
+  }
 
 
   const getClientInfo = client => {
@@ -150,31 +121,19 @@ const renderDataTable = (invoices) => {
       message         : "",
       classNameMessage: "messageSuccess"
     })
-    // this.setState({
-    //   client,
-    //   clientId        : client._id,
-    //   tableVisibility : false,
-    //   message         : "",
-    //   classNameMessage: "messageSuccess"
-    // });
   }
 
 
 
   const issuePdf = (invoice) => {
-console.log("inside issuePdf")
-    // if (this.state.client.invoice_sample) {
-    //   const data = {
-    //     invoice,
-    //     user      : this.props.user,
-    //     client    : this.state.client
-    //   };
-    //   generatePdf(data);
-    // } else {
-    //   console.log("NO INVOICESAMPLE!");
-
-    // }
+    const data = {
+      invoice,
+      user      : props.user,
+      client    : formData.client
+    };
+    generatePdf(data);
   }
+
 
   return (
     <div className="formPosition">
@@ -206,8 +165,8 @@ console.log("inside issuePdf")
               <Form.Control
                 type        = "date"
                 name        = "dtStart"
-                onChange    = { e => setformData({ ...formData, dtStart: e})}
-                value       = {formData.dtStart} />
+                onChange    = { e => setformData({ ...formData, dtStart: e.target.value})}
+                value       = { formData.dtStart} />
             </Col>
           </Form.Group>
 
@@ -219,14 +178,14 @@ console.log("inside issuePdf")
               <Form.Control                
                 type        = "date"
                 name        = "dtEnd"
-                onChange    = { e => setformData({ ...formData, dtEnd: e})}
+                onChange    = { e => setformData({ ...formData, dtEnd: e.target.value})}
                 value       = {formData.dtEnd}
               />
             </Col>
           </Form.Group>
 
           <Card.Footer className= { formData.classNameMessage}>
-            { formData.client
+            { invoices.invoiceList && !formData.message
               ?
                 formData.client.invoice_sample
                   ?
@@ -253,8 +212,7 @@ console.log("inside issuePdf")
               <Button 
                 variant   = "primary" 
                 type      = "submit" 
-                onClick   = { handleGetInvoices } 
-                // ref       = {input => this.getInvoicesBtn = input }  
+                onClick   = { handleGetInvoices }
               >
                 Get Invoices
               </Button>
