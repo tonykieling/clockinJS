@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
 import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
@@ -8,40 +8,46 @@ import { generatePdf } from "./aux/generatePdf.js";
 import { show } from "./aux/formatDate.js";
 import InvoicePdfModal from "./InvoicePdfModal";
 
-class InvoicesPrint extends Component {
+function InvoicesPrint(props) {
+  // state = {
+  //   dateStart         : "",
+  //   dateEnd           : "",
+  //   clientId          : "",
+  //   invoiceList       : [],
+  //   client            : "",
+  //   invoiceListTable  : "",
+  //   tableVisibility   : false,
+  //   message           : "",
 
-  state = {
-    dateStart         : "",
-    dateEnd           : "",
-    clientId          : "",
-    invoiceList       : [],
-    client            : "",
-    invoiceListTable  : "",
-    tableVisibility   : false,
-    message           : "",
-
+  //   invoice           : "",
+  //   openInvoicePdfModal  : false
+  // }
+  const [formData, setformData] = useState({
+    client  : "",
+    dtStart : "",
+    dtEnd   : "",
+    message : "",
+    classNameMessage    : "",
+    tableVisibility     : false,
+    openInvoicePdfModal : false
+  });
+  const [invoices, setinvoices] = useState({
     invoice           : "",
-    openInvoicePdfModal  : false
-  }
+    invoiceList       : "",
+    invoiceListTable  : ""
+  });
 
-
-  handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
-  }
-
-
-  handleGetInvoices = async event => {
+  const handleGetInvoices = async event => {
     event.preventDefault();
 
     const
-      dateStart = this.state.dateStart,
-      dateEnd   = this.state.dateEnd,
-      clientId  = this.state.clientId ;
-
-    if (!this.state.clientId) {
-      this.setState({
+      dateStart = formData.dtStart,
+      dateEnd   = formData.dtEnd,
+      clientId  = formData.client._id ;
+console.log("client? ", clientId)
+    if (!clientId) {
+      setformData({
+        ...formData,
         message           : "Select a client.",
         classNameMessage  : "messageFailure"
       });
@@ -54,41 +60,52 @@ class InvoicesPrint extends Component {
           {  
             headers: { 
               "Content-Type": "application/json",
-              "Authorization" : `Bearer ${this.props.storeToken}` }
+              "Authorization" : `Bearer ${props.storeToken}` }
         });
 
         if (getInvoices.data.allInvoices){
           // const hasInvoiceSample = this.state.client.invoice_sample ? true : false;
 
-          this.setState({
+          setformData({ ...formData,
+            tableVisibility: true});
+          setinvoices({ ...invoices, 
             invoiceList       : getInvoices.data.allInvoices,
-            invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
-            tableVisibility   : true,
-            clientId
+            invoiceListTable  : renderDataTable(getInvoices.data.allInvoices)
+          })
+          // this.setState({
+          //   invoiceList       : getInvoices.data.allInvoices,
+          //   invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
+          //   tableVisibility   : true,
+          //   clientId
 
-            // classNameMessage  : "messageSuccess",
-            // classNameMessage  : `${hasInvoiceSample ? "messageSuccess" : "messageFailure"}`,
-            // message           : `${hasInvoiceSample 
-            //   ? "Click on the invoice to generate a pdf document and check your download folder." 
-            //   // : "Client does not have invoice sample registered. Please contact tony.kieling@gmail.com and ask for it."}`
-            //   : "Click in the invoice to a general pdf invoice. Please, contact tony.kieling@gmail.com for any format changes."}`
-          });
+          //   // classNameMessage  : "messageSuccess",
+          //   // classNameMessage  : `${hasInvoiceSample ? "messageSuccess" : "messageFailure"}`,
+          //   // message           : `${hasInvoiceSample 
+          //   //   ? "Click on the invoice to generate a pdf document and check your download folder." 
+          //   //   // : "Client does not have invoice sample registered. Please contact tony.kieling@gmail.com and ask for it."}`
+          //   //   : "Click in the invoice to a general pdf invoice. Please, contact tony.kieling@gmail.com for any format changes."}`
+          // });
         } else {
           throw(getInvoices.data.message);
         }
       } catch(err) {
-        this.setState({
+        setformData({
+          ...formData,
           message           : err,
           classNameMessage  : "messageFailure"
         });
-        this.clearMessage();
+        // this.setState({
+        //   message           : err,
+        //   classNameMessage  : "messageFailure"
+        // });
+        // this.clearMessage();
       }
     }
   }
 
 
 
-renderDataTable = (invoices) => {
+const renderDataTable = (invoices) => {
   return invoices.map((invoice, index) => {
     const invoiceToSend = {
       num         : index + 1,
@@ -99,10 +116,12 @@ renderDataTable = (invoices) => {
     }
 
     return (
-      <tr key={invoiceToSend.num} onClick={this.state.client.invoice_sample 
-                        ? () => this.issuePdf(invoice) 
-                        : () => this.setState({ openInvoicePdfModal: true })}>
-      {/* <tr key={invoiceToSend.num} onClick={() => this.setState({ openInvoicePdfModal: true })}> */}
+      <tr 
+        key={invoiceToSend.num} 
+        onClick={formData.client.invoice_sample 
+                        ? () => issuePdf(invoice) 
+                        : () => setformData({ ...formData, openInvoicePdfModal: true })}
+      >
         <td>{invoiceToSend.num}</td>
         <td>{invoiceToSend.date}</td>
         <td>{invoiceToSend.totalCad.toFixed(2)}</td>
@@ -113,167 +132,169 @@ renderDataTable = (invoices) => {
   });
 }  
 
-  clearMessage = () => {
-    setTimeout(() => {
-      this.setState({
-        message     : "",
-        invoiceCode : ""
-      });
-    }, 3500);
-  }
+  // clearMessage = () => {
+  //   setTimeout(() => {
+  //     this.setState({
+  //       message     : "",
+  //       invoiceCode : ""
+  //     });
+  //   }, 3500);
+  // }
 
 
-  getClientInfo = client => {
-    this.setState({
+  const getClientInfo = client => {
+    setformData({
+      ...formData,
       client,
-      clientId        : client._id,
-      disabledIPBtn   : false,
       tableVisibility : false,
       message         : "",
       classNameMessage: "messageSuccess"
-    });
+    })
+    // this.setState({
+    //   client,
+    //   clientId        : client._id,
+    //   tableVisibility : false,
+    //   message         : "",
+    //   classNameMessage: "messageSuccess"
+    // });
   }
 
 
 
-  issuePdf = (invoice) => {
+  const issuePdf = (invoice) => {
 console.log("inside issuePdf")
-    if (this.state.client.invoice_sample) {
-      const data = {
-        invoice,
-        user      : this.props.user,
-        client    : this.state.client
-      };
-      generatePdf(data);
-    } else {
-      console.log("NO INVOICESAMPLE!");
+    // if (this.state.client.invoice_sample) {
+    //   const data = {
+    //     invoice,
+    //     user      : this.props.user,
+    //     client    : this.state.client
+    //   };
+    //   generatePdf(data);
+    // } else {
+    //   console.log("NO INVOICESAMPLE!");
 
-    }
+    // }
   }
 
+  return (
+    <div className="formPosition">
+      {formData.openInvoicePdfModal 
+        &&
+          <InvoicePdfModal
+            user        = { props.user}
+            client      = { formData.client}
+            openModal   = { formData.openInvoicePdfModal}
+            closeModal  = { () => setformData({ ...formData, openInvoicePdfModal: false})}
+          />
+      
+      }
+      <br />
+      <Card className="card-settings">
+        <Card.Header>Export an Invoice to a Pdf file</Card.Header>
+        <Card.Body>
+        <GetClients 
+              client            = { formData.client }
+              getClientInfo     = { getClientInfo } 
+              askInvoiceSample  = { true } />
 
-  render() {
-    return (
-      <div className="formPosition">
-        {this.state.openInvoicePdfModal 
-          &&
-            <InvoicePdfModal
-              user        = { this.props.user}
-              client      = { this.state.client}
-              openModal   = { this.state.openInvoicePdfModal}
-              closeModal  = { () => this.setState({ openInvoicePdfModal: false})}
-            />
-        
-        }
-        <br />
-        <Card className="card-settings">
-          <Card.Header>Export an Invoice to a Pdf file</Card.Header>
-          <Card.Body>
-          <GetClients 
-                client            = { this.state.client }
-                getClientInfo     = { this.getClientInfo } 
-                askInvoiceSample  = { true } />
+        <br></br>
+        <Form onSubmit={ handleGetInvoices} >
 
-          <br></br>
-          <Form onSubmit={this.handleGetInvoices} >
+          <Form.Group as={Row} controlId="formST">
+            <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
+            <Col sm="5">
+              <Form.Control
+                type        = "date"
+                name        = "dtStart"
+                onChange    = { e => setformData({ ...formData, dtStart: e})}
+                value       = {formData.dtStart} />
+            </Col>
+          </Form.Group>
 
-            <Form.Group as={Row} controlId="formST">
-              <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
-              <Col sm="5">
-                <Form.Control
-                  type        = "date"
-                  name        = "dateStart"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.dateStart} />
-              </Col>
-            </Form.Group>
+          <Form.Group as={Row} controlId="formET">
+            <Col sm="3">
+              <Form.Label className="cardLabel">Date End:</Form.Label>
+            </Col>
+            <Col sm="5">
+              <Form.Control                
+                type        = "date"
+                name        = "dtEnd"
+                onChange    = { e => setformData({ ...formData, dtEnd: e})}
+                value       = {formData.dtEnd}
+              />
+            </Col>
+          </Form.Group>
 
-            <Form.Group as={Row} controlId="formET">
-              <Col sm="3">
-                <Form.Label className="cardLabel">Date End:</Form.Label>
-              </Col>
-              <Col sm="5">
-                <Form.Control                
-                  type        = "date"
-                  name        = "dateEnd"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.dateEnd}
-                />
-              </Col>
-            </Form.Group>
+          <Card.Footer className= { formData.classNameMessage}>
+            { formData.client
+              ?
+                formData.client.invoice_sample
+                  ?
+                    <div style={{textAlign: "left"}}>
+                      <ol>
+                        <li>Select invoice,</li>
+                        <li>Click on the invoice to export, and </li>
+                        <li>Find the pdf in your downloads.</li>
+                      </ol>
+                    </div>
+                  :
+                    <div style={{textAlign: "left"}}>
+                      <ol>
+                        <li>Get the invoice,</li>
+                        <li>Click on the invoice and check its format, and </li>
+                        <li>For a customized invoice, please contact tony.kieling@gmail.com.</li>
+                      </ol>
+                    </div>
+              : formData.message || <br /> }
+            </Card.Footer>
+            <br />
 
-            <Card.Footer className= { this.state.classNameMessage} style={{textAlign: "left"}}>
-              { this.state.client
-                // ? this.state.message
-                ?
-                  this.state.client.invoice_sample
-                    ?
-                      <React.Fragment>
-                        <ol>
-                          <li>Select invoice,</li>
-                          <li>Click on the invoice to export, and </li>
-                          <li>Find the pdf in your downloads.</li>
-                        </ol>
-                      </React.Fragment>
-                    :
-                      <React.Fragment>
-                        <ol>
-                          <li>Get the invoice,</li>
-                          <li>Click on the invoice and check its format, and </li>
-                          <li>For a customized invoice, please contact tony.kieling@gmail.com.</li>
-                        </ol>
-                      </React.Fragment>
-                : <br /> }
-              </Card.Footer>
-              <br />
+            <div className="d-flex flex-column">
+              <Button 
+                variant   = "primary" 
+                type      = "submit" 
+                onClick   = { handleGetInvoices } 
+                // ref       = {input => this.getInvoicesBtn = input }  
+              >
+                Get Invoices
+              </Button>
+            </div>
 
-              <div className="d-flex flex-column">
-                <Button 
-                  variant   = "primary" 
-                  type      = "submit" 
-                  onClick   = { this.handleGetInvoices } 
-                  ref       = {input => this.getInvoicesBtn = input }  >
-                  Get Invoices
-                </Button>
-              </div>
-
-            </Form>
-          </Card.Body>
-        </Card>
+          </Form>
+        </Card.Body>
+      </Card>
 
 
-      { this.state.tableVisibility
-          ?
-            <Card className="cardInvoiceGenListofInvoices">
-              {/* <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label> */}
-              <Card.Header style={{textAlign: "center"}}>
-                Client: <b>{ this.state.client.nickname || this.state.client.name }</b>, {" "}
-                  <b>{this.state.invoiceList.length}</b> {this.state.invoiceList.length > 1 ? "Invoices" : "Invoice"}
-              </Card.Header>
+    { formData.tableVisibility
+        ?
+          <Card className="cardInvoiceGenListofInvoices">
+            <Card.Header style={{textAlign: "center"}}>
+              Client: <b>{ formData.client.nickname || formData.client.name }</b>, {" "}
+                <b>{invoices.invoiceList.length}</b> {invoices.invoiceList.length > 1 ? "Invoices" : "Invoice"}
+            </Card.Header>
 
-              {(this.state.invoiceList.length > 0) 
-                ? 
-                  <Table striped bordered hover size="sm" responsive>
-                    <thead>
-                      <tr style={{textAlign: "center", verticalAlign: "middle"}}>
-                        <th>#</th>
-                        <th>Date</th>
-                        <th>CAD$</th>
-                        <th>Code</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody style={{textAlign: "center"}}>
-                      {this.state.invoiceListTable}
-                    </tbody>
-                  </Table>
-                : null }
-            </Card>
-          : null }
+            {(invoices.invoiceList.length > 0) 
+              ? 
+                <Table striped bordered hover size="sm" responsive>
+                  <thead>
+                    <tr style={{textAlign: "center", verticalAlign: "middle"}}>
+                      <th>#</th>
+                      <th>Date</th>
+                      <th>CAD$</th>
+                      <th>Code</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{textAlign: "center"}}>
+                    {invoices.invoiceListTable}
+                  </tbody>
+                </Table>
+              : null }
+          </Card>
+        : null }
 
-          </div>
-    )
-  }
+        </div>
+  )
 }
 
 
