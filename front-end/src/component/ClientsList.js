@@ -72,7 +72,9 @@ class ClientsList extends Component {
       pcOutsideCanada   : false,
       postalCodeChange  : false,
 
-      inactive          : false
+      inactive          : false,
+      showRate          : false,
+      showComments      : false,
     }
   }
 
@@ -691,22 +693,51 @@ class ClientsList extends Component {
                       </Form.Group>
                     </div>
                 }
-                      <Form.Group controlId="formDefaultRate">
-                        <Form.Label className="cardLabel">Rate</Form.Label>
-                        <Form.Control
-                          type        = "number"
-                          placeholder = {"Type the hourly rate - CAD$"}
-                          name        = "defaultRate"
-                          onChange    = {this.handleChange}
-                          value       = {this.state.defaultRate}
-                          onKeyPress  = {this.handleChange}
-                          disabled    = {this.state.disableEditForm}
-                          ref         = {input => this.textInput13 = input }  
-                        />
-                        <Form.Text className="messageControl-user">
-                          {this.state.messageControlDefaultRate}
-                        </Form.Text>
-                      </Form.Group>
+
+                <Form.Group controlId="formDefaultRate">
+                  <Form.Label className="cardLabel">Rate</Form.Label>
+                  <Form.Control
+                    type        = "number"
+                    placeholder = {"Type the hourly rate - CAD$"}
+                    name        = "defaultRate"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.defaultRate}
+                    onKeyPress  = {this.handleChange}
+                    disabled    = {this.state.disableEditForm}
+                    ref         = {input => this.textInput13 = input }  
+                  />
+                  <Form.Text className="messageControl-user">
+                    {this.state.messageControlDefaultRate}
+                  </Form.Text>
+                </Form.Group>
+
+                <br />
+                <Form.Group controlId="formShowRate">
+                  <Form.Label className="cardLabel">Show Rate on PunchIn form</Form.Label>
+                  <Form.Check 
+                    inline 
+                    label     = " Confirm"
+                    // checked   = { pcOutsideCanada}
+                    checked   = { this.state.showRate}
+                    type      = "checkbox"
+                    style     = {{marginLeft: "1rem"}}
+                    disabled    = {this.state.disableEditForm}
+                    onChange  = { () => this.setState({ showRate: true})}
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formShowComments">
+                  <Form.Label className="cardLabel">Show Comments on PunchIn form</Form.Label>
+                  <Form.Check 
+                    inline 
+                    label     = " Confirm"
+                    // checked   = { pcOutsideCanada}
+                    type      = "checkbox"
+                    style     = {{marginLeft: "1rem"}}
+                    disabled    = {this.state.disableEditForm}
+                    onChange  = { () => this.setState({ showComments: true})}
+                  />
+                </Form.Group>
 
           <Card.Footer className={this.state.className}>
             { this.state.message
