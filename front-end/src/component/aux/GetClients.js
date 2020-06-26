@@ -57,9 +57,7 @@ function GetClients(props) {
     return(
       <Dropdown>
         <Dropdown.Toggle variant="success" id="dropdown-basic">
-          {/* {(props.client && props.client.nickname) || `Select Client` } */}
           {(props.client && (props.client.nickname || props.client.name)) || `Select Client` }
-          {}
         </Dropdown.Toggle>
         
         { props.bringAllClients 

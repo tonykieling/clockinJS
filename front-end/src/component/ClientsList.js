@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { connect } from "react-redux";
-import {  Card, Button, Form, ButtonGroup } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 import MaskedInput from 'react-text-mask';
 import "react-datepicker/dist/react-datepicker.css";
 import GetClients from "./aux/GetClients.js";
@@ -17,6 +20,7 @@ class ClientsList extends Component {
       message         : "",
       disableEditForm : true,
 
+      client          : "",
       clientId        : "",
       name            : "",
       nickname        : "",
@@ -236,7 +240,8 @@ class ClientsList extends Component {
     } = client;
 
     this.setState({
-      clientId: _id,
+      client,
+      clientId        : _id,
       name            : name || "",
       defaultRate     : client.default_rate,
       pcOutsideCanada : (client.postal_code && client.postal_code.length > 6) ? true : false,
@@ -355,6 +360,7 @@ class ClientsList extends Component {
           <Card.Header>Your Client's list</Card.Header>
         <Card.Body>
           <GetClients 
+            client          = { this.state.client }
             getClientInfo   = { this.getClientInfo }     /* mount the Dropbox Button with all clients for the user */
             updateButton    = { this.state.updateButton}
             bringAllClients = { true}
