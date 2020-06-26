@@ -1,3 +1,55 @@
+.modal-content {
+  width: 150%;
+  background-color: gainsboro;
+}
+
 .title {
-  justify-content: center;
+  text-align: center;
+  padding-top: 10%;
+}
+
+.info {
+  padding-top: 3%;
+  padding-right: 30px;
+  text-align: right;
+  font-weight: bolder;
+}
+
+.pdf-card {
+  margin: 15px 5px;
+  border: solid 2px blue;
+  border-radius: 10px;
+}
+
+.pdf-card-people {
+  border: none;
+  background-color: gainsboro;
+  width: 50%;
+  padding-left: 15px;
+  text-align: center;
+}
+
+.pdf-card-people-item {
+  text-align: left;
+  font-weight: bolder;
+  font-size: large;
+  padding-left: 10px;
+}
+
+.pdf-table {
+
+}
+
+.pdf-table-title {
+
+}
+
+.pdf-table-items {
+
+}
+
+@media only screen and (max-width: 800px){
+  .modal-content {
+    width: 100%;
+  }
 }
