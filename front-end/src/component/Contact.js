@@ -21,7 +21,7 @@ export default function Contact() {
         </Card.Header>
 
         <Card.Body>
-          <h4 style={{marginTop: "1rem"}}>Clockin.js author is Tony Kieling.</h4>
+          <h4 style={{marginTop: "1rem"}}>Clockin.js creator is Tony Kieling.</h4>
 
           <br />
           <p>Curious and self-taught passionate about data handling and process automation. He has a background as an IT system analyst, which has made him an excellent problem solver, always committed to finding ways to automate solutions using the right tools and best practices. He holds experience and maturity in dealing with customers and users' demands in a complex context and he is eager to face challenges and deliver a reliable and first-class code.</p>
