@@ -236,6 +236,9 @@ X- Email for clockin is sending the nickname, but it is not considering general 
 X- nickname in the toogle GetClients instead of name (for kids)
 X- when generating invoice, and also in Punch List, the list of clockins should show duration, instead of CAD$ (user requirement). Need to change the labels, as well.
 X- SignUp page rebuilded using react hooks and handling tips and PostalCode format for Canada and outside Canada
+X- invoice for BC Autism modified to accomodate multiple pages
+X- clientList button according what Si asked
+X- Punch in form able to not show rate and notes , user needs to set on client page
 - invoice for ordinary client
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - add report (invoices = all / per client / per period / per status)

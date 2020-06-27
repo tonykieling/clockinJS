@@ -8,8 +8,7 @@ import Row        from "react-bootstrap/Row";
 import Col        from "react-bootstrap/Col";
 import Container  from "react-bootstrap/Container";
 import { Link} from "react-router-dom";
-// import {  Card, Button, Form, Row, Col } from "react-bootstrap";
-// import {  Card, Button, Form, Row, Col } from "react-bootstrap";
+
 // import moment from "moment";
 // import DatePicker from "react-datepicker";
 // import "react-datepicker/dist/react-datepicker.css";
@@ -47,16 +46,16 @@ class PunchInNew extends Component {
   handleSubmit = async event => {
     this.setState({ disabledBtn: true });
     event.preventDefault();
-// console.log("validBreak", this.state.validBreak);
+
     const data = { 
       date          : this.state.date,
       timeStart     : this.state.startingTime,
       timeEnd       : this.state.endingTime,
       rate          : this.state.rate,
-      notes         : this.state.notes || "",
+      notes         : this.state.notes || undefined,
       clientId      : this.state.client._id,
-      startingBreak : this.state.startingBreak || "",
-      endingBreak   : this.state.endingBreak || ""
+      startingBreak : this.state.startingBreak || undefined,
+      endingBreak   : this.state.endingBreak || undefined
     };
     
     if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak)
@@ -207,7 +206,7 @@ class PunchInNew extends Component {
     return (
       <div className="formPosition">
         <br />
-
+        
         <Card className="card-settings">
           <Card.Header 
           >PunchIn</Card.Header>
@@ -326,37 +325,39 @@ class PunchInNew extends Component {
             }
             <br />
 
+            { this.state.client.showRate &&
+              <Form.Group as={Row} controlId="formRate">
+                <Form.Label column sm="3" className="cardLabel" >Rate</Form.Label>
+                <Col sm="3">
+                  <Form.Control
+                    type        = "number"
+                    placeholder = { this.state.rate || "Rate ($)"}
+                    name        = "rate"
+                    onChange    = {this.handleChange}
+                    onKeyPress  = {this.handleChange}
+                    value       = {this.state.rate}
+                  />
+                </Col>
+              </Form.Group>
+            }
 
-
-
-            <Form.Group as={Row} controlId="formRate">
-              <Form.Label column sm="3" className="cardLabel" >Rate</Form.Label>
-              <Col sm="3">
+            { this.state.client.showNotes &&
+              <Form.Group controlId="formBasicPassword">
+                <Form.Label className="cardLabel">Notes</Form.Label>
                 <Form.Control
-                  type        = "number"
-                  placeholder = { this.state.rate || "Rate ($)"}
-                  name        = "rate"
+                  as          = "textarea"
+                  rows        = "3"
+                  placeholder = "Session's Notes"
+                  name        = "notes"
                   onChange    = {this.handleChange}
+                  value       = {this.state.notes}
                   onKeyPress  = {this.handleChange}
-                  value       = {this.state.rate}
                 />
-              </Col>
-            </Form.Group>
+              </Form.Group>
+            }
 
-            <Form.Group controlId="formBasicPassword">
-              <Form.Label className="cardLabel">Notes</Form.Label>
-              <Form.Control
-                as          = "textarea"
-                rows        = "3"
-                // type        = "text"
-                placeholder = "Session's Notes"
-                name        = "notes"
-                onChange    = {this.handleChange}
-                value       = {this.state.notes}
-                onKeyPress  = {this.handleChange}
-              />
-            </Form.Group>
-
+            { (!this.state.client.showRate && !this.state.showNotes) && <br />}
+            
             <Card.Footer className= { this.state.classNameMessage}>          
               { this.state.message
                 ? this.state.message
