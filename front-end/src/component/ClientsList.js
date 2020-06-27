@@ -34,7 +34,7 @@ class ClientsList extends Component {
       consultant      : "",
       cPhone          : "",
       cEmail          : "",
-      defaultRate    : "",
+      defaultRate     : "",
       typeKid         : "",
 
       tmp_name            : "",
@@ -73,8 +73,10 @@ class ClientsList extends Component {
       postalCodeChange  : false,
 
       inactive          : false,
-      showRate          : false,
-      showComments      : false,
+      showRate          : true,
+      showNotes         : true,
+      tmp_showRate      : true,
+      tmp_showNotes     : true
     }
   }
 
@@ -155,7 +157,9 @@ class ClientsList extends Component {
                             : this.state.postalCode,
         type_of_service : this.state.typeOfService,
 
-        inactive        : this.state.inactive
+        inactive        : this.state.inactive,
+        showRate        : this.state.showRate,
+        showNotes       : this.state.showNotes
       };
       
 
@@ -272,7 +276,9 @@ class ClientsList extends Component {
       disableEditForm : true,
       updateButton    : false,
 
-      inactive        : client.inactive || ""
+      inactive        : client.inactive || "",
+      showRate        : client.showRate,
+      showNotes       : client.showNotes
     });
   }
 
@@ -303,7 +309,9 @@ class ClientsList extends Component {
       tmp_postalCode    : this.state.postalCode,
       tmp_typeOfService : this.state.typeOfService,
 
-      tmp_inactive      : this.state.inactive
+      tmp_inactive      : this.state.inactive,
+      tmp_showRate      : this.state.showRate,
+      tmp_showNotes     : this.state.showNotes
     });
   }
 
@@ -334,7 +342,9 @@ class ClientsList extends Component {
       postalCode    : this.state.tmp_postalCode,
       typeOfService : this.state.tmp_typeOfService,
 
-      inactive      : this.state.tmp_inactive
+      inactive      : this.state.tmp_inactive,
+      showRate      : this.state.tmp_showRate,
+      showNotes     : this.state.tmp_showNotes
     });
   }
 
@@ -713,29 +723,64 @@ class ClientsList extends Component {
 
                 <br />
                 <Form.Group controlId="formShowRate">
-                  <Form.Label className="cardLabel">Show Rate on PunchIn form</Form.Label>
+                  <Form.Label className="cardLabel">Show Rate on PunchIn form?</Form.Label>
+                    {/* <ButtonGroup>
+                      <Button 
+                        variant   = "success"
+                        style     = { {width: "4rem"}}
+                        onClick   = { () => this.setState({ showRate: true})}
+                        disabled  = { !this.state.client.showRate}
+                      >
+                        Yes
+                      </Button>
+
+                      <Button 
+                        variant="warning"
+                        style   = { {width: "3rem"}}
+                        // onClick={ this.btnCancel } 
+                      >
+                        No
+                      </Button>
+                  </ButtonGroup> */}
                   <Form.Check 
                     inline 
-                    label     = " Confirm"
-                    // checked   = { pcOutsideCanada}
+                    label     = "Yes"
                     checked   = { this.state.showRate}
-                    type      = "checkbox"
-                    style     = {{marginLeft: "1rem"}}
+                    type      = "radio"
+                    style     = {{marginLeft: "2rem"}}
                     disabled    = {this.state.disableEditForm}
                     onChange  = { () => this.setState({ showRate: true})}
                   />
-                </Form.Group>
-
-                <Form.Group controlId="formShowComments">
-                  <Form.Label className="cardLabel">Show Comments on PunchIn form</Form.Label>
                   <Form.Check 
                     inline 
-                    label     = " Confirm"
-                    // checked   = { pcOutsideCanada}
-                    type      = "checkbox"
+                    label     = "No"
+                    checked   = { !this.state.showRate}
+                    type      = "radio"
                     style     = {{marginLeft: "1rem"}}
                     disabled    = {this.state.disableEditForm}
-                    onChange  = { () => this.setState({ showComments: true})}
+                    onChange  = { () => this.setState({ showRate: false})}
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formShowNotes">
+                  <Form.Label className="cardLabel">Show Notes on PunchIn form?</Form.Label>
+                  <Form.Check 
+                    inline 
+                    label     = "Yes"
+                    checked   = { this.state.showNotes}
+                    type      = "radio"
+                    style     = {{marginLeft: "2rem"}}
+                    disabled    = {this.state.disableEditForm}
+                    onChange  = { () => this.setState({ showNotes: true})}
+                  />
+                  <Form.Check 
+                    inline 
+                    label     = "No"
+                    checked   = { !this.state.showNotes}
+                    type      = "radio"
+                    style     = {{marginLeft: "1rem"}}
+                    disabled  = {this.state.disableEditForm}
+                    onChange  = { () => this.setState({ showNotes: false})}
                   />
                 </Form.Group>
 

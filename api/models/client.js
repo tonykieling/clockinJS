@@ -119,7 +119,17 @@ const clientSchema = mongoose.Schema({
   },
 
   inactive: {
-    type    : Boolean
+    type: Boolean
+  },
+
+  showRate: {
+    type    : Boolean,
+    default : true
+  },
+
+  showNotes: {
+    type    : Boolean,
+    default : true
   }
   
 });

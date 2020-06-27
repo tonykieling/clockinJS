@@ -196,7 +196,7 @@ console.log("inside clockins get_one");
 // and
 //   write down invoice (it needs to be before 2)
 const clockin_add = async (req, res) => {
-console.log("inside clockins ADD", req.body);
+console.log("inside clockins ADD");
 
   const userId      = req.userData.userId;
   const checkUser   = require("../helpers/user-h.js");
@@ -241,11 +241,9 @@ console.log("inside clockins ADD", req.body);
   const time_start  = new Date(d + t1);
   const time_end    = new Date(d + t2);
   const date        = new Date(d);
-  const break_start = breakStart ? new Date(breakStart + d) : null;
-  const break_end   = breakEnd ? new Date(breakEnd + d) : null;
+  const break_start = breakStart ? new Date(breakStart + d) : undefined;
+  const break_end   = breakEnd ? new Date(breakEnd + d) : undefined;
   const workedHours = (time_end - time_start) - (breakEnd - breakStart);
-  // console.log("horkedhours:", workedHours, time_start, time_end, breakStart, breakEnd);
-
 
   try {
     const newClockin = new Clockin({
@@ -257,11 +255,14 @@ console.log("inside clockins ADD", req.body);
       notes,
       client_id,
       user_id: userId,
-      invoice_id: null,
+      invoice_id: undefined,
       break_start,
       break_end,
       worked_hours: workedHours
-    });
+    },{
+      ignoreUndefined: true
+    }
+    );
 
     await newClockin.save();
 
