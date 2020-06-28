@@ -38,9 +38,10 @@ export default function ContactFoot(props) {
               paddingBottom: "15px"
             }}
           >
-            <Container >
+            <Container style={{maxWidth: "300px"}}>
               <Row 
-                className="justify-content-md-center"
+                className="justify-content-around"
+                // className="justify-content-md-center"
                 style = {{textAlign: "center"}}
                 >
                 <Col 

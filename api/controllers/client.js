@@ -219,8 +219,9 @@ console.log("inside client modify");
     province,
     postal_code   : postalCode,
     type_of_service : typeOfService,
-    inactive
-
+    inactive,
+    showRate,
+    showNotes
   } = req.body;
 
   const birthday = req.body.birthday ? new Date(req.body.birthday) : undefined;
@@ -268,7 +269,9 @@ console.log("inside client modify");
           province        : province ? province.trim() : (client.province ? "" : undefined) ,
           postal_code     : postalCode ? postalCode.trim() : (client.postal_code ? "" : undefined),
           type_of_service : typeOfService ? typeOfService.trim() : (client.type_of_service ? "" : undefined),
-          inactive        : inactive === false ? false : (inactive == true ? true : undefined)
+          inactive        : inactive === false ? false : (inactive == true ? true : undefined),
+          showRate,
+          showNotes
         }, 
         {
           runValidators: true,

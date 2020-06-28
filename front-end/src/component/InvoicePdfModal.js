@@ -1,7 +1,33 @@
 import React, { useState, useEffect} from 'react';
-import { Modal, ButtonGroup, Button, Card, Table } from "react-bootstrap";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import Table from "react-bootstrap/Table";
+import Modal from "react-bootstrap/Modal";
 import { show } from "./aux/formatDate";
+// import ReactModal from "react-modal";
 import "../Pdf.css";
+// import "./aux/generatePdf.js";
+
+import { getClockins } from "./aux/getClockins.js";
+
+
+
+// const cs = {
+//   content : {
+//     width: "95%",
+//     height: "85%",
+//     // left: "0",
+//     // top: "0"
+//     top                   : '50%',
+//     left                  : '50%',
+//     right                 : 'auto',
+//     bottom                : 'auto',
+//     marginRight           : '-50%',
+//     transform             : 'translate(-50%, -50%)',
+//     overflow              : 'scroll'  
+//   }
+// };
 
 export default function InvoicePdfModal(props) {
   console.log("invoicePDFmodal porps:", props)
@@ -9,7 +35,8 @@ export default function InvoicePdfModal(props) {
   const [clockins, setclockins] = useState("");
 
   useEffect(() => {
-    console.log("load closkins!!!!!!!!!!!!")
+    console.log("load clockins!!!!!!!!!!!!")
+    getClockins()
     setclockins("asd");
   }, []);
 
@@ -17,9 +44,16 @@ export default function InvoicePdfModal(props) {
     <div className="main-screen">
 {console.log("clockins::::", clockins)}
       <Modal
+        // isOpen  = { props.openModal }
+        onHide  = {props.closeModal}
         show    = { props.openModal }
-        onHide  = { props.closeInvoicePdfModal }
-        // className = "modali-content"
+        size    = "xl"
+        // keyboard
+        centered
+        // onHide  = { props.closeInvoicePdfModal }
+        // style   = {cs}
+        // className = "modal-format"
+        // dialogClassName = "modal-format"
       >
 
         <h1 className="title">Invoice</h1>
@@ -68,21 +102,28 @@ export default function InvoicePdfModal(props) {
           </tbody>
         </Table>
 
-        <Modal.Footer>
+        <Card.Footer>
           Footer
-        </Modal.Footer>
+        </Card.Footer>
 
         <ButtonGroup>
           <Button
             variant = { "primary"}
-            style   = { {width: "50%"}}
+            style   = { {width: "33%"}}
             onClick = { () => console.log("PDF is coming soon")}
             >
             Generate a PDF file
           </Button>
           <Button
+            variant = { "warning"}
+            style   = { {width: "33%"}}
+            onClick = { () => console.log("EDIT PDF is coming soon")}
+            >
+            Edit
+          </Button>
+          <Button
             variant = { "danger"}
-            style   = { {width: "50%"}}
+            style   = { {width: "33%"}}
             onClick = { props.closeModal}
             >
             Close

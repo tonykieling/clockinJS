@@ -1,15 +1,10 @@
-.modal-content {
-  width: 150%;
-  background-color: gainsboro;
-}
-
 .title {
   text-align: center;
-  padding-top: 10%;
+  padding-top: 2rem;
 }
 
 .info {
-  padding-top: 3%;
+  padding-top: 1rem;
   padding-right: 30px;
   text-align: right;
   font-weight: bolder;
@@ -48,8 +43,34 @@
 
 }
 
+.modal-format {
+  /* width         : 500; */
+  /* max-width     : 80%; */
+  /* min-width     : 600px; */
+  height        : 75%;
+  /* // left: "0";
+  // top: "0; */
+  top           : auto;
+  /* top           : '50%'; */
+  left          : '50%';
+  right         : 'auto';
+  bottom        : auto;
+  margin-right  : '-50%';
+  transform     : 'translate(-50%, -50%)';
+  overflow      : 'scroll'  
+}
+
+
 @media only screen and (max-width: 800px){
-  .modal-content {
-    width: 100%;
-  }
+  /* .modal-format {
+    width         : "95%";
+    height        : "85%";
+    top           : '50%';
+    left          : '50%';
+    right         : 'auto';
+    bottom        : 'auto';
+    margin-right  : '-50%';
+    transform     : 'translate(-50%, -50%)';
+    overflow      : 'scroll'  
+  } */
 }

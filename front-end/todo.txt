@@ -242,6 +242,11 @@ X- SignUp page rebuilded using react hooks and handling tips and PostalCode form
   - when clicking in the invoice, open a modal (form style), which allows some configuration
   - there is a button to generate the pdf file
   - print clockin.js at the bottom right side
+X- invoice for BC Autism modified to accomodate multiple pages
+X- clientList button according what Si asked
+X- Punch in form able to not show rate and notes , user needs to set on client page
+- invoice for ordinary client
+- On PunchIn form, when user selects a date, the system will retrieve all clockins for that particular day
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - add report (invoices = all / per client / per period / per status)
               clockins
