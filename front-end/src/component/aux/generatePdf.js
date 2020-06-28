@@ -2,7 +2,7 @@ import axios from "axios";
 import jsPDF from 'jspdf';
 import { show } from "./formatDate.js";
 
-const getClocinks = async (userToken, clientId, dateStart, dateEnd) => {
+const getClockins = async (userToken, clientId, dateStart, dateEnd) => {
   const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
   try {
@@ -24,7 +24,7 @@ const getClocinks = async (userToken, clientId, dateStart, dateEnd) => {
 
 
 const generatePdf = async(props) => {
-  const clockins = await getClocinks(props.user.token, 
+  const clockins = await getClockins(props.user.token, 
                                props.client._id, 
                                props.invoice.date_start.substring(0, 10), 
                                props.invoice.date_end.substring(0, 10));

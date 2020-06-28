@@ -5,7 +5,8 @@ import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
 import { show } from "./aux/formatDate";
-// import ReactModal from "react-modal";
+import { connect } from "react-redux";
+
 import "../Pdf.css";
 // import "./aux/generatePdf.js";
 
@@ -29,15 +30,16 @@ import { getClockins } from "./aux/getClockins.js";
 //   }
 // };
 
-export default function InvoicePdfModal(props) {
+function InvoicePdfModal(props) {
   console.log("invoicePDFmodal porps:", props)
   const currentDate = new Date();
   const [clockins, setclockins] = useState("");
 
   useEffect(() => {
     console.log("load clockins!!!!!!!!!!!!")
-    getClockins()
+    getClockins(props.storeToken, props.invoice._id)
     setclockins("asd");
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -134,3 +136,13 @@ export default function InvoicePdfModal(props) {
     </div>
   )
 }
+
+
+const mapStateToProps = store => {
+  return {
+    storeToken    : store.token
+  };
+};
+
+
+export default connect(mapStateToProps, null)(InvoicePdfModal);

@@ -144,6 +144,33 @@ console.log("inside clockins get_all");
 }
 
 
+// it retrieves clockins by its invoice_id
+const get_by_invoiceId = async (req, res) => {
+  console.log("inside clockins get_by_invoiceId");
+  
+  const invoiceId  = req.query.invoiceId;
+  
+  try {
+    const clockin = invoiceId && await Clockin
+      .find({ invoice_id: invoiceId })
+      .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+
+    if (!clockin || clockin.length < 1)
+      throw ("clockin by invoiceId error");
+
+    return res.json({
+      message : clockin,
+      counter : clockin.length
+    });
+  } catch(err) {
+    console.log("Error => ", err.message || "error in get_clockin_by_invoiceId");
+    return res.json({
+      error: "ECKGO03: Something's got wrong."
+    });
+  }
+}
+
+
 // it gets one user - on purpose with no auth
 const get_one = async (req, res) => {
 console.log("inside clockins get_one");
@@ -432,133 +459,134 @@ console.log("inside CLOCKIN DELETE");
 }
 
 
-// it gets all clockins from the system - on purpose with no auth
-const get_clockins_by_invoice = async (req, res) => {
-  console.log("inside clockins get_all");
-    const userAdmin = req.userData.admin;
-    const userId    = req.userData.userId;
+// // it gets all clockins from the system - on purpose with no auth
+// const get_clockins_by_invoice = async (req, res) => {
+//   console.log("inside clockins get_all");
+//     const userAdmin = req.userData.admin;
+//     const userId    = req.userData.userId;
   
-    const 
-      clientId  = req.query.clientId,
-      dateStart = new Date(req.query.dateStart || "2000-03-01T09:00:00.000Z"),
-      dateEnd   = new Date(req.query.dateEnd || "2100-03-01T09:00:00.000Z");
+//     const 
+//       clientId  = req.query.clientId,
+//       dateStart = new Date(req.query.dateStart || "2000-03-01T09:00:00.000Z"),
+//       dateEnd   = new Date(req.query.dateEnd || "2100-03-01T09:00:00.000Z");
       
   
-    try {
-      let allClockins = null;
-      // if (!userAdmin)
-      if (userAdmin) /////////////// ----->>>>> this is the right one
-        allClockins = await Clockin
-          .find()
-          .select(" date time_start time_end rate notes invoice_id client_id user_id ");
-      else {
-        // https://stackoverflow.com/questions/6502541/mongodb-query-multiple-collections-at-once
-        // this code works - BEFORE doing a $lookup
-        // allClockins = await Clockin
-          // .find({ 
-          //   user_id: userId,
-          //   date: {
-          //     $gte: dateStart,
-          //     $lte: dateEnd
-          //   },
-          //   client_id: clientId
-          // })
-          // .select(" date time_start time_end rate notes invoice_id client_id user_id ");
-        allClockins = await Clockin
-          .aggregate([
-            { $match: 
-              {
-                user_id: mongoose.Types.ObjectId(userId),
-                date: {
-                  // $gte: "2019-05-06T00:00:00.000Z",
-                  // $lte: "2020-01-18T00:00:00.000Z"
-                  $gte: dateStart,
-                  $lte: dateEnd
-                },
-                client_id: mongoose.Types.ObjectId(clientId)
-              }
-            },
-            { $lookup: 
-              {
-                from: "invoices",
-                localField: "invoice_id",
-                foreignField: "_id",
-                as: "invoice"
-              }
-            },
-            {
-              $unwind: {
-                path :'$invoice', 
-                preserveNullAndEmptyArrays: true
-              }
-            },
-            {
-                $project: {
-                    "invoice.__v": 0,
-                    // "invoice._id": 0,
-                    "invoice.date": 0,
-                    "invoice.date_start": 0,
-                    "invoice.date_end": 0,
-                    "invoice.notes": 0,
-                    "invoice.status": 0,
-                    "invoice.total_cad": 0,
-                    "invoice.client_id": 0,
-                    "invoice.user_id": 0
-                }
-            }
-          ])
-          .sort({date: 1});
-      }
-  // console.log("ALLCLOCKINS", allClockins);
-      if (!allClockins || allClockins.length < 1) {
-        return res.status(200).json({
-          message: `No clockins at all.`
-        });
-      }
-      // const invoiceCode = await Invoice
-      //   .findById(allClockins.)
+//     try {
+//       let allClockins = null;
+//       // if (!userAdmin)
+//       if (userAdmin) /////////////// ----->>>>> this is the right one
+//         allClockins = await Clockin
+//           .find()
+//           .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+//       else {
+//         // https://stackoverflow.com/questions/6502541/mongodb-query-multiple-collections-at-once
+//         // this code works - BEFORE doing a $lookup
+//         // allClockins = await Clockin
+//           // .find({ 
+//           //   user_id: userId,
+//           //   date: {
+//           //     $gte: dateStart,
+//           //     $lte: dateEnd
+//           //   },
+//           //   client_id: clientId
+//           // })
+//           // .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+//         allClockins = await Clockin
+//           .aggregate([
+//             { $match: 
+//               {
+//                 user_id: mongoose.Types.ObjectId(userId),
+//                 date: {
+//                   // $gte: "2019-05-06T00:00:00.000Z",
+//                   // $lte: "2020-01-18T00:00:00.000Z"
+//                   $gte: dateStart,
+//                   $lte: dateEnd
+//                 },
+//                 client_id: mongoose.Types.ObjectId(clientId)
+//               }
+//             },
+//             { $lookup: 
+//               {
+//                 from: "invoices",
+//                 localField: "invoice_id",
+//                 foreignField: "_id",
+//                 as: "invoice"
+//               }
+//             },
+//             {
+//               $unwind: {
+//                 path :'$invoice', 
+//                 preserveNullAndEmptyArrays: true
+//               }
+//             },
+//             {
+//                 $project: {
+//                     "invoice.__v": 0,
+//                     // "invoice._id": 0,
+//                     "invoice.date": 0,
+//                     "invoice.date_start": 0,
+//                     "invoice.date_end": 0,
+//                     "invoice.notes": 0,
+//                     "invoice.status": 0,
+//                     "invoice.total_cad": 0,
+//                     "invoice.client_id": 0,
+//                     "invoice.user_id": 0
+//                 }
+//             }
+//           ])
+//           .sort({date: 1});
+//       }
+//   // console.log("ALLCLOCKINS", allClockins);
+//       if (!allClockins || allClockins.length < 1) {
+//         return res.status(200).json({
+//           message: `No clockins at all.`
+//         });
+//       }
+//       // const invoiceCode = await Invoice
+//       //   .findById(allClockins.)
   
-      if (clientId) {
-        const client = await Client
-          .findById( clientId )
-          .select(" nickname ");
+//       if (clientId) {
+//         const client = await Client
+//           .findById( clientId )
+//           .select(" nickname ");
           
   
-  // console.clear();
-  // console.log("--------------------------------------------------------");
-  // let totalCadTmp = 0;
-  // allClockins.forEach(async (clockin, i) => {
-  // // console.log(allClockins[i]);
-  //   const t = clockin.worked_hours 
-  //               ? ((clockin.worked_hours / 3600000) * clockin.rate)
-  //               : ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
-  //   totalCadTmp += t;
-  // console.log(i + 1 , t, "--> totalCadTmp", totalCadTmp, " - ", clockin.date);
-  // if (i === 4 || i === 5) console.log(clockin);
-  // });
+//   // console.clear();
+//   // console.log("--------------------------------------------------------");
+//   // let totalCadTmp = 0;
+//   // allClockins.forEach(async (clockin, i) => {
+//   // // console.log(allClockins[i]);
+//   //   const t = clockin.worked_hours 
+//   //               ? ((clockin.worked_hours / 3600000) * clockin.rate)
+//   //               : ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
+//   //   totalCadTmp += t;
+//   // console.log(i + 1 , t, "--> totalCadTmp", totalCadTmp, " - ", clockin.date);
+//   // if (i === 4 || i === 5) console.log(clockin);
+//   // });
   
-        return res.status(200).json({
-          count: allClockins.length,
-          allClockins,
-          client: client.nickname });
-        };
+//         return res.status(200).json({
+//           count: allClockins.length,
+//           allClockins,
+//           client: client.nickname });
+//         };
   
-      return res.status(200).json({
-        count: allClockins.length,
-        allClockins
-      });
+//       return res.status(200).json({
+//         count: allClockins.length,
+//         allClockins
+//       });
     
-    } catch(err) {
-      console.log("Error => ", err.message);
-      return res.status(422).json({
-        error: "EACK02: Something got wrong."
-      });
-    }
-  }
+//     } catch(err) {
+//       console.log("Error => ", err.message);
+//       return res.status(422).json({
+//         error: "EACK02: Something got wrong."
+//       });
+//     }
+//   }
 
 
 module.exports = {
   get_all,
+  get_by_invoiceId,
   get_one,
   clockin_add,
   clockin_delete

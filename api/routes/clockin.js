@@ -5,8 +5,10 @@ const checkAuth           = require("../middleware/check-auth.js")  // it calls 
 const clockinController   = require("../controllers/clockin.js");
 
 
-// it returns all users
-// router.get("/", clockinController.get_all);
+// it returns all clockins searching by its invoice id
+router.get("/get_by_invoiceId", checkAuth, clockinController.get_by_invoiceId);
+
+// it returns all clockins
 router.get("/", checkAuth, clockinController.get_all);
 
 

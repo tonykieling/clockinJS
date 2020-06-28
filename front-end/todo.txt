@@ -246,6 +246,16 @@ X- invoice for BC Autism modified to accomodate multiple pages
 X- clientList button according what Si asked
 X- Punch in form able to not show rate and notes , user needs to set on client page
 - invoice for ordinary client
+  X- create API in BE and integrate with fe
+  - handle the clockins in a table
+  - offer option to be by day, week, or only one description
+  - format modal to be in a good presentation, size of modal, fields distribuition
+  - export to pdf
+    - create a invoice_sample for general clients
+  - check necessity in invoice to have a description field
+- create an aux/getClockin to avoid duplicate code
+  - started doing this with InvoicePdfModal, need to apply to other components
+
 - On PunchIn form, when user selects a date, the system will retrieve all clockins for that particular day
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - add report (invoices = all / per client / per period / per status)
