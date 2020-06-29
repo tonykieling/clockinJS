@@ -8,6 +8,7 @@ import Row        from "react-bootstrap/Row";
 import Col        from "react-bootstrap/Col";
 import Container  from "react-bootstrap/Container";
 import { Link} from "react-router-dom";
+import { getClockins } from "./aux/getClockins.js";
 
 // import moment from "moment";
 // import DatePicker from "react-datepicker";
@@ -32,7 +33,12 @@ class PunchInNew extends Component {
     endingBreak   : "",
     validBreak    : true,
     classNameMessage  : "",
-    disabledBtn   : false
+    disabledBtn   : false,
+
+    showPastClockins  : false,
+    pastClockins      : "",
+    tablePastClockins : "",
+    messageNoClockins : "No clockins for this day"
   };
 
 
@@ -40,6 +46,20 @@ class PunchInNew extends Component {
     this.setState({
       [event.target.name]: event.target.value
     });
+
+    event.target.name === "date" && this.getPastClockins();
+  }
+
+
+  // it checks past clockins as soon the user selected a date
+  getPastClockins = async () => {
+    console.log("inside get past clockins, calling getClockins")
+    //should query clockins
+    getClockins(this.props.storeToken, "byDate", this.state.date);
+    this.setState({
+      showPastClockins  : true,
+
+    })
   }
 
 
@@ -233,6 +253,14 @@ class PunchInNew extends Component {
                 />
               </Col>
             </Form.Group>
+
+            {this.state.showPastClockins &&
+              <Card.Footer style = {{ color: "green", fontStyle: "bold"}}>          
+                { this.state.pastClockins
+                  ? this.state.tablePastClockins
+                  : this.state.messageNoClockins }
+              </Card.Footer>
+            }
 
 
             <Container style={{paddingLeft: 0}}>

@@ -13,7 +13,8 @@ console.log("inside clockins get_all");
   const checkInvoiceCode = require("./aux/checkInvoiceCode.js");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
-
+console.log("====> req.query", req.query)
+if (1) return res.json({message: "Ok"});
   const 
     clientId  = req.query.clientId,
     dateStart = new Date(req.query.dateStart || "2000-03-01T09:00:00.000Z"),
