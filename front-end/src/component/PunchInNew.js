@@ -7,9 +7,12 @@ import Button     from "react-bootstrap/Button";
 import Row        from "react-bootstrap/Row";
 import Col        from "react-bootstrap/Col";
 import Container  from "react-bootstrap/Container";
+import Table  from "react-bootstrap/Table";
 import { Link} from "react-router-dom";
 import { getClockins } from "./aux/getClockins.js";
-// import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
+import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
+
+
 
 // import moment from "moment";
 // import DatePicker from "react-datepicker";
@@ -22,8 +25,8 @@ import GetClients from "./aux/GetClients.js";
 class PunchInNew extends Component {
 
   state = {
-    date          : "",
-    // date          : "2020-01-01",
+    // date          : "",
+    date          : "2020-03-05",
     startingTime  : "",
     endingTime    : "",
     rate          : "",
@@ -53,16 +56,36 @@ class PunchInNew extends Component {
 
   // it checks past clockins as soon the user selected a date
   getPastClockins = async (clientId) => {
-    console.log("inside get past clockins, calling getClockins, date=>", this.state.date)
-    console.log("client inside getPastCloskins=", clientId || this.state.client._id)
+    // console.log("inside get past clockins, calling getClockins, date=>", this.state.date)
+    // console.log("client inside getPastCloskins=", clientId || this.state.client._id)
 
     //should query clockins
     const pastClockins = await getClockins(this.props.storeToken, "byDate", this.state.date, clientId || this.state.client._id);
     console.log("pastClockins: ", pastClockins)
+    const clockinsTable = pastClockins && await this.formatClockinsTable(pastClockins);
+
     this.setState({
       showPastClockins  : true,
       pastClockins,
-      tablePastClockins : pastClockins && "table is coming soon"
+      tablePastClockins : clockinsTable
+    });
+  }
+
+
+  formatClockinsTable = (clockins) => {
+console.log("#pastclockins:", clockins)
+    return clockins.map((clockin, index) => {
+      const clockinsToSend = renderClockinDataTable(clockin, index);
+        return (
+          <tr key={clockinsToSend.num} >
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+          </tr>
+        );
     });
   }
 
@@ -183,7 +206,7 @@ class PunchInNew extends Component {
       rate    : client.default_rate
     });
 
-    this.state.date && this.getPastClockins(client._id);
+    // this.state.date && this.getPastClockins(client._id);
   }
 
 
@@ -262,8 +285,22 @@ class PunchInNew extends Component {
 
             {this.state.showPastClockins &&
               <Card.Footer style = {{ color: "green", fontStyle: "bold"}}>          
-                { this.state.pastClockins
-                  ? this.state.tablePastClockins
+                {this.state.tablePastClockins
+                  ? <Table striped bordered hover size="sm" responsive>
+                      <thead style={{textAlign: "center"}}>
+                        <tr>
+                          <th style={{verticalAlign: "middle"}}>#</th>
+                          <th style={{verticalAlign: "middle"}}>Client</th>
+                          <th style={{verticalAlign: "middle"}}>Date</th>
+                          <th style={{verticalAlign: "middle"}}>At</th>
+                          <th style={{verticalAlign: "middle"}}>Duration</th>
+                          <th style={{verticalAlign: "middle"}}>Invoice</th>
+                        </tr>
+                      </thead>
+                      <tbody style={{textAlign: "center"}}>
+                        {this.state.tablePastClockins}
+                      </tbody>
+                    </Table>
                   : Object.entries(this.state.client).length === 0 
                       ? this.state.messageNoClockins
                       : `${this.state.client.nickname || this.state.client.name} - ${this.state.messageNoClockins}` 

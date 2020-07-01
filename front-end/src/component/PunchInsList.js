@@ -312,39 +312,39 @@ class PunchInsList extends Component {
 {/* {console.log("this.state", this.state)} */}
               {(this.state.clockinList.length > 0)
                 ? thinScreen 
-                ? <Table striped bordered hover size="sm" responsive>
-                    <thead style={{textAlign: "center"}}>
-                      <tr>
-                        <th style={{verticalAlign: "middle"}}>#</th>
-                        <th style={{verticalAlign: "middle"}}>Date</th>
-                        <th style={{verticalAlign: "middle"}}>At</th>
-                        <th style={{verticalAlign: "middle"}}>Duration</th>
-                        {/* <th style={{verticalAlign: "middle"}}>CAD$</th> */}
-                        <th style={{verticalAlign: "middle"}}>Invoice</th>
-                      </tr>
-                    </thead>
-                    <tbody style={{textAlign: "center"}}>
-                      {this.state.clockInListTable}
-                    </tbody>
-                  </Table> 
-                : <Table striped bordered hover size="sm" responsive>
-                    <thead style={{textAlign: "center"}}>
-                      <tr>
-                        <th style={{verticalAlign: "middle"}}>#</th>
-                        {/* <th>Client</th> */}
-                        <th style={{verticalAlign: "middle"}}>Date</th>
-                        <th style={{verticalAlign: "middle"}}>Time Start</th>
-                        {/* <th>Time End</th> */}
-                        <th style={{verticalAlign: "middle"}}>Total Time</th>
-                        {/* <th>Rate</th> */}
-                        <th style={{verticalAlign: "middle"}}>CAD$</th>
-                        <th style={{verticalAlign: "middle"}}>Invoice</th>
-                      </tr>
-                    </thead>
-                    <tbody style={{textAlign: "center"}}>
-                      {this.state.clockInListTable}
-                    </tbody>
-                  </Table> 
+                  ? <Table striped bordered hover size="sm" responsive>
+                      <thead style={{textAlign: "center"}}>
+                        <tr>
+                          <th style={{verticalAlign: "middle"}}>#</th>
+                          <th style={{verticalAlign: "middle"}}>Date</th>
+                          <th style={{verticalAlign: "middle"}}>At</th>
+                          <th style={{verticalAlign: "middle"}}>Duration</th>
+                          {/* <th style={{verticalAlign: "middle"}}>CAD$</th> */}
+                          <th style={{verticalAlign: "middle"}}>Invoice</th>
+                        </tr>
+                      </thead>
+                      <tbody style={{textAlign: "center"}}>
+                        {this.state.clockInListTable}
+                      </tbody>
+                    </Table> 
+                  : <Table striped bordered hover size="sm" responsive>
+                      <thead style={{textAlign: "center"}}>
+                        <tr>
+                          <th style={{verticalAlign: "middle"}}>#</th>
+                          {/* <th>Client</th> */}
+                          <th style={{verticalAlign: "middle"}}>Date</th>
+                          <th style={{verticalAlign: "middle"}}>Time Start</th>
+                          {/* <th>Time End</th> */}
+                          <th style={{verticalAlign: "middle"}}>Total Time</th>
+                          {/* <th>Rate</th> */}
+                          <th style={{verticalAlign: "middle"}}>CAD$</th>
+                          <th style={{verticalAlign: "middle"}}>Invoice</th>
+                        </tr>
+                      </thead>
+                      <tbody style={{textAlign: "center"}}>
+                        {this.state.clockInListTable}
+                      </tbody>
+                    </Table> 
                 : null }
             </Card>
           : null }

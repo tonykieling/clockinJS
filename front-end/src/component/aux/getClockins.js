@@ -2,7 +2,7 @@ import axios from "axios";
     
 const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
 
-    console.log("!!!!!!!!!!inside getClockins!!!!!!!!!!!");
+    // console.log("!!!!!!!!!!inside getClockins!!!!!!!!!!!");
     // console.log("PROOPS: userToken =>", userToken, "typeOfOperation=>", typeOfOperation, "moreArgs=>", moreArgs);
 
     let url = "";
@@ -26,7 +26,7 @@ const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
           }
         }
       );
-
+console.log("===> clockins", clockins)
       return(clockins.data.allClockins);
     } catch(err){
       console.log("Error: ", err.message || err);

@@ -570,6 +570,7 @@ const get_general = async (req, res) => {
       clientId  = req.query.clientId === "undefined" ? undefined : req.query.clientId,
       date      = req.query.date,
       typeQuestion = req.query.type;
+
     const
       dateStart = (typeQuestion === "byDate" )
                   ? new Date(`${date}T00:00:00.000Z`)
@@ -589,29 +590,71 @@ const get_general = async (req, res) => {
     if (clientId) 
       conditions.client_id = mongoose.Types.ObjectId(clientId);
 
-console.log("dateeee::", date, "dtStart:", dateStart, "dtEnd:", dateEnd, "clientId:", clientId, "conditions:", conditions);
-// if (1) return res.json({message: "Ok"});
-      
-  
-    try {
 
-        // https://stackoverflow.com/questions/6502541/mongodb-query-multiple-collections-at-once
-        // this code works - BEFORE doing a $lookup
-        // allClockins = await Clockin
-          // .find({ 
-          //   user_id: userId,
-          //   date: {
-          //     $gte: dateStart,
-          //     $lte: dateEnd
-          //   },
-          //   client_id: clientId
-          // })
-          // .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+    try {
+      // const allClockins = await Clockin
+      //   .find(conditions)
+      //   .sort({
+      //     date: 1
+      //   });
+
+
+
       const allClockins = await Clockin
-        .find(conditions)
-        .sort({
-          date: 1
-        });
+        .aggregate([
+          { $match: 
+            conditions
+          },
+          { $lookup: 
+            {
+              from: "invoices",
+              localField: "invoice_id",
+              foreignField: "_id",
+              as: "invoice"
+            }
+          },
+          {
+            $unwind: {
+              path :'$invoice',
+              preserveNullAndEmptyArrays: true
+            }
+          },
+          { $lookup: 
+            {
+              from: "clients",
+              localField: "client_id",
+              foreignField: "_id",
+              as: "client"
+            }
+          },
+          {
+            $unwind: {
+              path :'$client',
+              preserveNullAndEmptyArrays: true
+            }
+          },
+          {   
+            $project:{
+                // _id : 1,
+                date            : 1,
+                time_start      : 1,
+                time_end        : 1,
+                rate            : 1,
+                notes           : 1,
+                client_id       : 1,
+                user_id         : 1,
+                break_start     : 1,
+                break_end       : 1,
+                worked_hours    : 1,
+                invoice_id      : 1,
+                invoice         : "$invoice",
+                client_name     : "$client.name",
+                client_nickname : "$client.nickname"
+            } 
+        }
+        ])
+        .sort({date: 1});
+console.log("===> allClockins", allClockins)
   
       if (!allClockins || allClockins.length < 1) {
         return res.status(200).json({
