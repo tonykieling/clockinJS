@@ -1,11 +1,9 @@
 import axios from "axios";
     
-// const getClockins = async (userToken, invoiceId) => {
 const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
 
     console.log("!!!!!!!!!!inside getClockins!!!!!!!!!!!");
-    // console.log("PROOPS:::", userToken, invoiceId);
-    console.log("PROOPS: userToken =>", userToken, "typeOfOperation=>", typeOfOperation, "moreArgs=>", moreArgs);
+    // console.log("PROOPS: userToken =>", userToken, "typeOfOperation=>", typeOfOperation, "moreArgs=>", moreArgs);
 
     let url = "";
     switch (typeOfOperation) {
@@ -14,7 +12,7 @@ const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
         break;
       default:
     }
-// if (1) return;
+
 
     // const url = `/clockin/get_by_invoiceId/?userToken=${userToken}&invoiceId=${invoiceId}`;
   
@@ -28,8 +26,6 @@ const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
           }
         }
       );
-
-console.log("clockins retrieved::", clockins)
 
       return(clockins.data.allClockins);
     } catch(err){

@@ -23,6 +23,7 @@ class PunchInNew extends Component {
 
   state = {
     date          : "",
+    // date          : "2020-01-01",
     startingTime  : "",
     endingTime    : "",
     rate          : "",
@@ -47,18 +48,16 @@ class PunchInNew extends Component {
     this.setState({
       [event.target.name]: event.target.value
     });
-
-    // event.target.name === "date" && this.getPastClockins(event.target.value);
   }
 
 
   // it checks past clockins as soon the user selected a date
-  getPastClockins = async () => {
-    // console.log("date====>", date.targe.name)
-    console.log("inside get past clockins, calling getClockins, date=>", this.state.client._id)
+  getPastClockins = async (clientId) => {
+    console.log("inside get past clockins, calling getClockins, date=>", this.state.date)
+    console.log("client inside getPastCloskins=", clientId || this.state.client._id)
 
     //should query clockins
-    const pastClockins = await getClockins(this.props.storeToken, "byDate", this.state.date, this.state.client._id);
+    const pastClockins = await getClockins(this.props.storeToken, "byDate", this.state.date, clientId || this.state.client._id);
     console.log("pastClockins: ", pastClockins)
     this.setState({
       showPastClockins  : true,
@@ -183,6 +182,8 @@ class PunchInNew extends Component {
       client  : client,
       rate    : client.default_rate
     });
+
+    this.state.date && this.getPastClockins(client._id);
   }
 
 
@@ -254,10 +255,7 @@ class PunchInNew extends Component {
                   name        = "date"
                   onChange    = {this.handleChange}
                   value       = {this.state.date}
-                  // onKeyPress  = {this.handleChange}
-                  onBlur      = {this.getPastClockins}
-                  // onSelect    = { () => console.log("DATE=", this.state.date)}
-                  // onInput    = {this.getPastClockins}
+                  onBlur      = { () => this.getPastClockins()}
                 />
               </Col>
             </Form.Group>
@@ -266,7 +264,10 @@ class PunchInNew extends Component {
               <Card.Footer style = {{ color: "green", fontStyle: "bold"}}>          
                 { this.state.pastClockins
                   ? this.state.tablePastClockins
-                  : this.state.messageNoClockins }
+                  : Object.entries(this.state.client).length === 0 
+                      ? this.state.messageNoClockins
+                      : `${this.state.client.nickname || this.state.client.name} - ${this.state.messageNoClockins}` 
+                }
               </Card.Footer>
             }
 

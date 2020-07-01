@@ -562,13 +562,12 @@ const get_clockins_by_invoice = async (req, res) => {
  * going to rewrite get clockin
  * it gets clockins accordingly to the type of request
  */
-// it gets all clockins from the system - on purpose with no auth
 const get_general = async (req, res) => {
   console.log("inside clockins get_general");
     const userId    = req.userData.userId;
-  console.log("====> req.query", req.query)
+  // console.log("====> req.query", req.query)
     const 
-      clientId  = req.query.clientId,
+      clientId  = req.query.clientId === "undefined" ? undefined : req.query.clientId,
       date      = req.query.date,
       typeQuestion = req.query.type;
     const
@@ -585,8 +584,6 @@ const get_general = async (req, res) => {
                       $gte: dateStart,
                       $lte: dateEnd
                     },
-      // client_id : undefined
-      // client_id : mongoose.Types.ObjectId("5e38bf37f77298748d5ecc8f")
     };
 
     if (clientId) 
@@ -612,12 +609,13 @@ console.log("dateeee::", date, "dtStart:", dateStart, "dtEnd:", dateEnd, "client
           // .select(" date time_start time_end rate notes invoice_id client_id user_id ");
       const allClockins = await Clockin
         .find(conditions)
-        .sort({date: 1});
-console.log("allClockins", allClockins)
+        .sort({
+          date: 1
+        });
   
       if (!allClockins || allClockins.length < 1) {
         return res.status(200).json({
-          message: `No clockins at allWWW.`
+          message: `No clockins at all.`
         });
       }
   
