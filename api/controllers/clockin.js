@@ -558,10 +558,99 @@ const get_clockins_by_invoice = async (req, res) => {
   }
 
 
+/**
+ * going to rewrite get clockin
+ * it gets clockins accordingly to the type of request
+ */
+// it gets all clockins from the system - on purpose with no auth
+const get_general = async (req, res) => {
+  console.log("inside clockins get_general");
+    const userId    = req.userData.userId;
+  console.log("====> req.query", req.query)
+    const 
+      clientId  = req.query.clientId,
+      date      = req.query.date,
+      typeQuestion = req.query.type;
+    const
+      dateStart = (typeQuestion === "byDate" )
+                  ? new Date(`${date}T00:00:00.000Z`)
+                  : new Date(req.query.dateStart || "2000-03-01T09:00:00.000Z"),
+      dateEnd   = typeQuestion === "byDate" 
+                  ? new Date(`${date}T23:59:59.000Z`)
+                  : new Date(req.query.dateEnd || "2100-03-01T09:00:00.000Z");
+
+    const conditions = {
+      user_id   : mongoose.Types.ObjectId(userId),
+      date      :   {
+                      $gte: dateStart,
+                      $lte: dateEnd
+                    },
+      // client_id : undefined
+      // client_id : mongoose.Types.ObjectId("5e38bf37f77298748d5ecc8f")
+    };
+
+    if (clientId) 
+      conditions.client_id = mongoose.Types.ObjectId(clientId);
+
+console.log("dateeee::", date, "dtStart:", dateStart, "dtEnd:", dateEnd, "clientId:", clientId, "conditions:", conditions);
+// if (1) return res.json({message: "Ok"});
+      
+  
+    try {
+
+        // https://stackoverflow.com/questions/6502541/mongodb-query-multiple-collections-at-once
+        // this code works - BEFORE doing a $lookup
+        // allClockins = await Clockin
+          // .find({ 
+          //   user_id: userId,
+          //   date: {
+          //     $gte: dateStart,
+          //     $lte: dateEnd
+          //   },
+          //   client_id: clientId
+          // })
+          // .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+      const allClockins = await Clockin
+        .find(conditions)
+        .sort({date: 1});
+console.log("allClockins", allClockins)
+  
+      if (!allClockins || allClockins.length < 1) {
+        return res.status(200).json({
+          message: `No clockins at allWWW.`
+        });
+      }
+  
+      if (clientId) {
+        const client = await Client
+          .findById( clientId )
+          .select(" nickname ");
+          
+        return res.status(200).json({
+          count: allClockins.length,
+          allClockins,
+          client: client.nickname
+        });
+      };
+  
+      return res.status(200).json({
+        count: allClockins.length,
+        allClockins
+      });
+    
+    } catch(err) {
+      console.log("Error => ", err.message);
+      return res.status(422).json({
+        error: "EACK02: Something got wrong."
+      });
+    }
+  }
+
 module.exports = {
   get_all,
   get_one,
   clockin_add,
-  clockin_delete
+  clockin_delete,
   // get_clockins_by_invoice
+  get_general
 }

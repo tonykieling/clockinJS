@@ -5,12 +5,12 @@ const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
 
     console.log("!!!!!!!!!!inside getClockins!!!!!!!!!!!");
     // console.log("PROOPS:::", userToken, invoiceId);
-    console.log("PROOPS:::", userToken, typeOfOperation, moreArgs);
+    console.log("PROOPS: userToken =>", userToken, "typeOfOperation=>", typeOfOperation, "moreArgs=>", moreArgs);
 
     let url = "";
     switch (typeOfOperation) {
       case "byDate":
-        url = `/clockin/?userToken=${userToken}&invoiceId=${"invoiceId"}`;
+        url = `/clockin/clockins/?userToken=${userToken}&date=${moreArgs[0]}&type=byDate&clientId=${moreArgs[1]}`;
         break;
       default:
     }
@@ -29,9 +29,8 @@ const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
         }
       );
 
-      if (clockins.data.counter < 1 || clockins.data.error)
-       throw (clockins.data.error || "general error");
-  console.log("clockins retrieved::", clockins)
+console.log("clockins retrieved::", clockins)
+
       return(clockins.data.allClockins);
     } catch(err){
       console.log("Error: ", err.message || err);

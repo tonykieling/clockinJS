@@ -9,6 +9,7 @@ import Col        from "react-bootstrap/Col";
 import Container  from "react-bootstrap/Container";
 import { Link} from "react-router-dom";
 import { getClockins } from "./aux/getClockins.js";
+// import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
 
 // import moment from "moment";
 // import DatePicker from "react-datepicker";
@@ -47,19 +48,23 @@ class PunchInNew extends Component {
       [event.target.name]: event.target.value
     });
 
-    event.target.name === "date" && this.getPastClockins();
+    // event.target.name === "date" && this.getPastClockins(event.target.value);
   }
 
 
   // it checks past clockins as soon the user selected a date
   getPastClockins = async () => {
-    console.log("inside get past clockins, calling getClockins")
+    // console.log("date====>", date.targe.name)
+    console.log("inside get past clockins, calling getClockins, date=>", this.state.client._id)
+
     //should query clockins
-    getClockins(this.props.storeToken, "byDate", this.state.date);
+    const pastClockins = await getClockins(this.props.storeToken, "byDate", this.state.date, this.state.client._id);
+    console.log("pastClockins: ", pastClockins)
     this.setState({
       showPastClockins  : true,
-
-    })
+      pastClockins,
+      tablePastClockins : pastClockins && "table is coming soon"
+    });
   }
 
 
@@ -249,7 +254,10 @@ class PunchInNew extends Component {
                   name        = "date"
                   onChange    = {this.handleChange}
                   value       = {this.state.date}
-                  onKeyPress  = {this.handleChange}
+                  // onKeyPress  = {this.handleChange}
+                  onBlur      = {this.getPastClockins}
+                  // onSelect    = { () => console.log("DATE=", this.state.date)}
+                  // onInput    = {this.getPastClockins}
                 />
               </Col>
             </Form.Group>
