@@ -565,7 +565,7 @@ const get_clockins_by_invoice = async (req, res) => {
 const get_general = async (req, res) => {
   console.log("inside clockins get_general");
     const userId    = req.userData.userId;
-  // console.log("====> req.query", req.query)
+  console.log("====> req.query", req.query)
     const 
       clientId  = req.query.clientId === "undefined" ? undefined : req.query.clientId,
       date      = req.query.date,
@@ -587,8 +587,8 @@ const get_general = async (req, res) => {
                     },
     };
 
-    if (clientId) 
-      conditions.client_id = mongoose.Types.ObjectId(clientId);
+    // if (clientId) 
+    //   conditions.client_id = mongoose.Types.ObjectId(clientId);
 
 
     try {

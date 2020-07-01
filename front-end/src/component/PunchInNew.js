@@ -43,7 +43,8 @@ class PunchInNew extends Component {
     showPastClockins  : false,
     pastClockins      : "",
     tablePastClockins : "",
-    messageNoClockins : "No clockins for this day"
+    messageNoClockins : "No clockins for this day",
+    blockedHours      : []
   };
 
 
@@ -55,25 +56,36 @@ class PunchInNew extends Component {
 
 
   // it checks past clockins as soon the user selected a date
-  getPastClockins = async (clientId) => {
+  getPastClockins = async () => {
     // console.log("inside get past clockins, calling getClockins, date=>", this.state.date)
     // console.log("client inside getPastCloskins=", clientId || this.state.client._id)
 
     //should query clockins
-    const pastClockins = await getClockins(this.props.storeToken, "byDate", this.state.date, clientId || this.state.client._id);
-    console.log("pastClockins: ", pastClockins)
+    const pastClockins = await getClockins(this.props.storeToken, "byDate", this.state.date, this.state.client._id);
+    // console.log("pastClockins: ", pastClockins)
     const clockinsTable = pastClockins && await this.formatClockinsTable(pastClockins);
-
+    const blockedHours = pastClockins && this.getBlockedHours(pastClockins);
+console.log("111blockedHours", blockedHours)
     this.setState({
       showPastClockins  : true,
       pastClockins,
-      tablePastClockins : clockinsTable
+      tablePastClockins : clockinsTable,
+      blockedHours
     });
   }
 
 
+  getBlockedHours = clockins => {
+    return clockins.map( clockin => (
+      {
+        timeStart : new Date(clockin.time_start).getTime(),
+        timeEnd   : new Date(clockin.time_end).getTime()
+      }
+    ));
+  }
+
+
   formatClockinsTable = (clockins) => {
-console.log("#pastclockins:", clockins)
     return clockins.map((clockin, index) => {
       const clockinsToSend = renderClockinDataTable(clockin, index);
         return (
@@ -82,11 +94,24 @@ console.log("#pastclockins:", clockins)
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeEnd}</td>
           </tr>
         );
     });
+  }
+
+
+  checkHours = (st, en) => {
+    console.log("XXXXblockedHours", this.state.blockedHours)
+    const 
+      sh = new Date(`${this.state.date}T${st}Z`).getTime(),
+      eh = new Date(`${this.state.date}T${en}Z`).getTime();
+
+    console.log("st", st, "en", en)
+    console.log("SH", sh, "EH", eh)
+    const result = this.state.blockedHours.filter(e => ((sh >= e.timeStart && sh <= e.timeEnd) || ( eh >= e.timeStart && eh <= e.timeEnd)));
+    console.log("RESULT", result.length)
+    return result.length;
   }
 
 
@@ -104,9 +129,18 @@ console.log("#pastclockins:", clockins)
       startingBreak : this.state.startingBreak || undefined,
       endingBreak   : this.state.endingBreak || undefined
     };
-    
+
+
     if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak)
       !this.state.validBreak ? this.checkBreakIsValid(event) : this.messageValidationMethod();
+
+    else if (this.checkHours(data.timeStart, data.timeEnd))
+      this.setState({
+        message     : "Check time, please",
+        className   : "messageFailure",
+        disabledBtn : false
+      });
+
     else {
       const url = "/clockin";
       try {
@@ -121,20 +155,23 @@ console.log("#pastclockins:", clockins)
 
         if (addClockin.data.message) {
           this.setState({
-            message          : `Punched in!`,
-            classNameMessage : "messageSuccess",
-            addBreak         : false
+            message           : `Punched in!`,
+            classNameMessage  : "messageSuccess",
+            addBreak          : false,
+            disabledBtn       : false
           });
         } else if (addClockin.data.error)
           this.setState({
-            message          : addClockin.data.error,
-            classNameMessage : "messageFailure"
+            message           : addClockin.data.error,
+            classNameMessage  : "messageFailure",
+            disabledBtn       : false
           });
         
       } catch(err) {
         this.setState({
-          message          : err.message,
-          classNameMessage : "messageFailure"
+          message           : err.message,
+          classNameMessage  : "messageFailure",
+          disabledBtn       : false
         });
       }
 
@@ -145,24 +182,25 @@ console.log("#pastclockins:", clockins)
 
   messageValidationMethod = () => {
     this.setState({
-      message          : (Object.entries(this.state.client).length === 0) ? "Please, select client." : "Please fill or correct the fields.",
-      classNameMessage : "messageFailure"
+      message           : (Object.entries(this.state.client).length === 0) ? "Please, select client." : "Please fill or correct the fields.",
+      classNameMessage  : "messageFailure",
+      disabledBtn       : false
     });
 
-    this.clearMessage();
+    // this.clearMessage();
   }
 
 
-  clearMessage = () => {
-    setTimeout(() => {
-      this.setState({
-        message     : "",
-        disabledBtn : false
-      });
-      // this.headerRef.focus();
-      // window.scrollTo(0,0); // goes to the top of the screen and can see the message
-    }, 3000);
-  }
+  // clearMessage = () => {
+  //   setTimeout(() => {
+  //     this.setState({
+  //       message     : "",
+  //       disabledBtn : false
+  //     });
+  //     // this.headerRef.focus();
+  //     // window.scrollTo(0,0); // goes to the top of the screen and can see the message
+  //   }, 3000);
+  // }
 
 
   clearForm = () => {
@@ -177,7 +215,8 @@ console.log("#pastclockins:", clockins)
         client        : {},
         disabledBtn   : false,
         startingBreak : "",
-        endingBreak   : ""
+        endingBreak   : "",
+        showPastClockins  : false
       });
       window.scrollTo(0,0); // goes to the top of the screen and can see the message
     }, 3000);
@@ -203,7 +242,8 @@ console.log("#pastclockins:", clockins)
   getClientInfo = client => {
     this.setState({
       client  : client,
-      rate    : client.default_rate
+      rate    : client.default_rate,
+      message : ""
     });
 
     // this.state.date && this.getPastClockins(client._id);
@@ -236,10 +276,11 @@ console.log("#pastclockins:", clockins)
           validBreak  : true,
           disabledBtn : false
         });
-        this.clearMessage();
-    } else {
-      this.clearMessage();
+        // this.clearMessage();
     }
+    //  else {
+    //   this.clearMessage();
+    // }
   }
 
 
@@ -292,18 +333,15 @@ console.log("#pastclockins:", clockins)
                           <th style={{verticalAlign: "middle"}}>#</th>
                           <th style={{verticalAlign: "middle"}}>Client</th>
                           <th style={{verticalAlign: "middle"}}>Date</th>
-                          <th style={{verticalAlign: "middle"}}>At</th>
-                          <th style={{verticalAlign: "middle"}}>Duration</th>
-                          <th style={{verticalAlign: "middle"}}>Invoice</th>
+                          <th style={{verticalAlign: "middle"}}>From</th>
+                          <th style={{verticalAlign: "middle"}}>To</th>
                         </tr>
                       </thead>
                       <tbody style={{textAlign: "center"}}>
                         {this.state.tablePastClockins}
                       </tbody>
                     </Table>
-                  : Object.entries(this.state.client).length === 0 
-                      ? this.state.messageNoClockins
-                      : `${this.state.client.nickname || this.state.client.name} - ${this.state.messageNoClockins}` 
+                  : this.state.messageNoClockins
                 }
               </Card.Footer>
             }

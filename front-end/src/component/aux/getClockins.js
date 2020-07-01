@@ -8,7 +8,7 @@ const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
     let url = "";
     switch (typeOfOperation) {
       case "byDate":
-        url = `/clockin/clockins/?userToken=${userToken}&date=${moreArgs[0]}&type=byDate&clientId=${moreArgs[1]}`;
+        url = `/clockin/clockins/?userToken=${userToken}&date=${moreArgs[0]}&type=byDate`;
         break;
       default:
     }
@@ -26,7 +26,7 @@ const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
           }
         }
       );
-console.log("===> clockins", clockins)
+      
       return(clockins.data.allClockins);
     } catch(err){
       console.log("Error: ", err.message || err);
