@@ -22,6 +22,7 @@ import Guidance       from "./component/Guidance.js";
 import Contact        from "./component/Contact.js";
 import InvoiceIssue   from "./component/InvoiceIssue.js";
 import ClientGeneralNew from "./component/ClientGeneralNew.js";
+import PunchinsReport from "./component/PunchInsReport.js";
 
 
 class App extends Component {
@@ -137,7 +138,7 @@ class App extends Component {
                 return <InvoiceIssue />
             }} />
 
-          <Route path = "/reset_password" >
+          <Route exact path = "/reset_password" >
             <ResetPassword />
           </Route>
 
@@ -151,6 +152,14 @@ class App extends Component {
 
           <Route exact path = "/contact" >
             <Contact />
+          </Route>
+
+          <Route exact path = "/clockins" >
+            <PunchinsReport />
+          </Route>
+
+          <Route exact path = "/invoices" >
+            {console.log("Invoices' report coming soon")}
           </Route>
 
           <Route component = { Land } />
