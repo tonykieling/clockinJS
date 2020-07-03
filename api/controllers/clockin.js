@@ -561,13 +561,15 @@ const get_clockins_by_invoice = async (req, res) => {
 /**
  * going to rewrite get clockin
  * it gets clockins accordingly to the type of request
+ * 
+ * actually, right now, this method is being used to get past clockins, used on new PunchIn
+ * maybe, in the future, it is gonna be used to other methos that queries the db about clockins
  */
 const get_general = async (req, res) => {
   console.log("inside clockins get_general");
     const userId    = req.userData.userId;
-  console.log("====> req.query", req.query)
     const 
-      clientId  = req.query.clientId === "undefined" ? undefined : req.query.clientId,
+      // clientId  = req.query.clientId === "undefined" ? undefined : req.query.clientId,
       date      = req.query.date,
       typeQuestion = req.query.type;
 
@@ -592,14 +594,6 @@ const get_general = async (req, res) => {
 
 
     try {
-      // const allClockins = await Clockin
-      //   .find(conditions)
-      //   .sort({
-      //     date: 1
-      //   });
-
-
-
       const allClockins = await Clockin
         .aggregate([
           { $match: 
@@ -653,8 +647,7 @@ const get_general = async (req, res) => {
             } 
         }
         ])
-        .sort({date: 1});
-console.log("===> allClockins", allClockins)
+        .sort({time_start: 1});
   
       if (!allClockins || allClockins.length < 1) {
         return res.status(200).json({
@@ -662,17 +655,17 @@ console.log("===> allClockins", allClockins)
         });
       }
   
-      if (clientId) {
-        const client = await Client
-          .findById( clientId )
-          .select(" nickname ");
+      // if (clientId) {
+      //   const client = await Client
+      //     .findById( clientId )
+      //     .select(" nickname ");
           
-        return res.status(200).json({
-          count: allClockins.length,
-          allClockins,
-          client: client.nickname
-        });
-      };
+      //   return res.status(200).json({
+      //     count: allClockins.length,
+      //     allClockins,
+      //     client: client.nickname
+      //   });
+      // };
   
       return res.status(200).json({
         count: allClockins.length,
@@ -686,6 +679,8 @@ console.log("===> allClockins", allClockins)
       });
     }
   }
+
+
 
 module.exports = {
   get_all,

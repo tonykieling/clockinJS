@@ -241,7 +241,7 @@ X- clientList button according what Si asked
 X- Punch in form able to not show rate and notes , user needs to set on client page
 - invoice for ordinary client
 
-- punchin show clockins for the day as soon the user selects it. If no client yet, it shows all clockins in a table regarding the selected day.
+X- punchin show clockins for the day as soon the user selects it. If no client yet, it shows all clockins in a table regarding the selected day.
   - decided to show on PunchIn page all clockins for the day, regardles the client
   - when there is clockin, the system block time that alread been used for other client
     - it is not possible to have shared time among clients at the same time. Checked with Si and she also think the same.

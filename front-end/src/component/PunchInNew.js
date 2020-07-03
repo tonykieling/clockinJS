@@ -25,8 +25,8 @@ import GetClients from "./aux/GetClients.js";
 class PunchInNew extends Component {
 
   state = {
-    // date          : "",
-    date          : "2020-03-05",
+    date          : "",
+    // date          : "2020-03-05",
     startingTime  : "",
     endingTime    : "",
     rate          : "",
@@ -57,15 +57,11 @@ class PunchInNew extends Component {
 
   // it checks past clockins as soon the user selected a date
   getPastClockins = async () => {
-    // console.log("inside get past clockins, calling getClockins, date=>", this.state.date)
-    // console.log("client inside getPastCloskins=", clientId || this.state.client._id)
-
-    //should query clockins
+    //it queries clockins
     const pastClockins = await getClockins(this.props.storeToken, "byDate", this.state.date, this.state.client._id);
-    // console.log("pastClockins: ", pastClockins)
     const clockinsTable = pastClockins && await this.formatClockinsTable(pastClockins);
-    const blockedHours = pastClockins && this.getBlockedHours(pastClockins);
-console.log("111blockedHours", blockedHours)
+    const blockedHours = pastClockins && await this.getBlockedHours(pastClockins);
+
     this.setState({
       showPastClockins  : true,
       pastClockins,
@@ -102,15 +98,12 @@ console.log("111blockedHours", blockedHours)
 
 
   checkHours = (st, en) => {
-    console.log("XXXXblockedHours", this.state.blockedHours)
     const 
       sh = new Date(`${this.state.date}T${st}Z`).getTime(),
       eh = new Date(`${this.state.date}T${en}Z`).getTime();
 
-    console.log("st", st, "en", en)
-    console.log("SH", sh, "EH", eh)
     const result = this.state.blockedHours.filter(e => ((sh >= e.timeStart && sh <= e.timeEnd) || ( eh >= e.timeStart && eh <= e.timeEnd)));
-    console.log("RESULT", result.length)
+
     return result.length;
   }
 
@@ -157,21 +150,18 @@ console.log("111blockedHours", blockedHours)
           this.setState({
             message           : `Punched in!`,
             classNameMessage  : "messageSuccess",
-            addBreak          : false,
-            disabledBtn       : false
+            addBreak          : false
           });
         } else if (addClockin.data.error)
           this.setState({
             message           : addClockin.data.error,
-            classNameMessage  : "messageFailure",
-            disabledBtn       : false
+            classNameMessage  : "messageFailure"
           });
         
       } catch(err) {
         this.setState({
           message           : err.message,
-          classNameMessage  : "messageFailure",
-          disabledBtn       : false
+          classNameMessage  : "messageFailure"
         });
       }
 
@@ -191,6 +181,7 @@ console.log("111blockedHours", blockedHours)
   }
 
 
+  // not using this anymore, just keeping for a while
   // clearMessage = () => {
   //   setTimeout(() => {
   //     this.setState({
@@ -245,16 +236,14 @@ console.log("111blockedHours", blockedHours)
       rate    : client.default_rate,
       message : ""
     });
-
-    // this.state.date && this.getPastClockins(client._id);
   }
 
 
   handleAddBreak = () => {
     this.setState({ 
       addBreak      : !this.state.addBreak,
-      startingBreak : this.state.startingBreak && "",
-      endingBreak   : this.state.endingBreak && "",
+      // startingBreak : this.state.startingBreak && "",
+      // endingBreak   : this.state.endingBreak && "",
       message       : this.state.message && ""
     });
   }
@@ -348,7 +337,7 @@ console.log("111blockedHours", blockedHours)
 
 
             <Container style={{paddingLeft: 0}}>
-              <Row style={{paddingLeft: 0}}>
+              <Row style={{paddingLeft: 0, textAlign: "center"}} >
                 <Col>
                   <Form.Label className="cardLabel" >Starting</Form.Label>
                 </Col>
