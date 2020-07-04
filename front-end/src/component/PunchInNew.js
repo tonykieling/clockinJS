@@ -52,13 +52,15 @@ class PunchInNew extends Component {
     this.setState({
       [event.target.name]: event.target.value
     });
+
+    (event.target.name === "date") && (window.innerWidth <= 800) && this.getPastClockins(event.target.value);
   }
 
 
   // it checks past clockins as soon the user selected a date
-  getPastClockins = async () => {
+  getPastClockins = async (date) => {
     //it queries clockins
-    const pastClockins = await getClockins(this.props.storeToken, "byDate", this.state.date, this.state.client._id);
+    const pastClockins = await getClockins(this.props.storeToken, "byDate", (date || this.state.date));
     const clockinsTable = pastClockins && await this.formatClockinsTable(pastClockins);
     const blockedHours = pastClockins && await this.getBlockedHours(pastClockins);
 
@@ -127,7 +129,7 @@ class PunchInNew extends Component {
     if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak)
       !this.state.validBreak ? this.checkBreakIsValid(event) : this.messageValidationMethod();
 
-    else if (this.checkHours(data.timeStart, data.timeEnd))
+    else if (this.state.pastClockins && this.checkHours(data.timeStart, data.timeEnd))
       this.setState({
         message     : "Check time, please",
         className   : "messageFailure",
@@ -149,8 +151,7 @@ class PunchInNew extends Component {
         if (addClockin.data.message) {
           this.setState({
             message           : `Punched in!`,
-            classNameMessage  : "messageSuccess",
-            addBreak          : false
+            classNameMessage  : "messageSuccess"
           });
         } else if (addClockin.data.error)
           this.setState({
@@ -207,6 +208,7 @@ class PunchInNew extends Component {
         disabledBtn   : false,
         startingBreak : "",
         endingBreak   : "",
+        addBreak      : false,
         showPastClockins  : false
       });
       window.scrollTo(0,0); // goes to the top of the screen and can see the message
@@ -308,7 +310,7 @@ class PunchInNew extends Component {
                   name        = "date"
                   onChange    = {this.handleChange}
                   value       = {this.state.date}
-                  onBlur      = { () => this.getPastClockins()}
+                  onBlur      = { () => window.innerWidth > 800 && this.getPastClockins()}
                 />
               </Col>
             </Form.Group>

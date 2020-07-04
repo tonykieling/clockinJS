@@ -241,10 +241,16 @@ X- clientList button according what Si asked
 X- Punch in form able to not show rate and notes , user needs to set on client page
 - invoice for ordinary client
 
-X- punchin show clockins for the day as soon the user selects it. If no client yet, it shows all clockins in a table regarding the selected day.
-  - decided to show on PunchIn page all clockins for the day, regardles the client
-  - when there is clockin, the system block time that alread been used for other client
+- punchin show clockins for the day as soon the user selects it. If no client yet, it shows all clockins in a table regarding the selected day.
+  X- decided to show on PunchIn page all clockins for the day, regardles the client
+  X- when there is clockin, the system block time that alread been used for other client
     - it is not possible to have shared time among clients at the same time. Checked with Si and she also think the same.
+  X- fix bug when recording clockin
+    it was validating hours even though no clocking for the day. Solved.
+  X- fix error when querying the clockins (rn it's showing only "OK").
+    find a return with the "OK" message. Solved.
+  X- set date picker in a diff way btw smalls reen and pc
+  - enable user clockin in a break (it's possible to work in a diff place if it is a break)
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - add report (invoices = all / per client / per period / per status)
               clockins
