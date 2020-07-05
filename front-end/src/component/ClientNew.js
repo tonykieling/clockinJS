@@ -5,6 +5,8 @@ import axios from "axios";
 
 import MaskedInput from 'react-text-mask';
 
+import GetClients from "./aux/GetClients.js";
+
 
 class KidClientNew extends Component {
 
@@ -28,7 +30,9 @@ class KidClientNew extends Component {
 
       messageControlName        : "",
       messageControlNickname    : "",
-      messageControlDefaultRate : ""
+      messageControlDefaultRate : "",
+
+      company         : ""
     }
 
   handleChange = e => {
@@ -145,9 +149,10 @@ class KidClientNew extends Component {
         cPhone      : this.state.cPhone || undefined,
         cEmail      : this.state.cEmail || undefined,
         defaultRate : this.state.defaultRate,
-        typeKid     : true
+        typeKid     : true,
+        clientLinkedToCompany: this.state.company._id || undefined
       }
-
+console.log("createClient:::", createClient)
       try {
         const addClient = await axios.post( 
           url, 
@@ -215,6 +220,17 @@ class KidClientNew extends Component {
     this.setState({
       [event.target.name]: event.target.value
     })
+  }
+
+
+  getClientInfo = company => {
+console.log("clientInfo:", company)
+    this.setState({
+      company,
+      // client  : client,
+      // rate    : client.default_rate,
+      message : ""
+    });
   }
 
 
@@ -412,6 +428,12 @@ class KidClientNew extends Component {
                 {this.state.messageControlDefaultRate}
               </Form.Text>
             </Form.Group>
+
+
+            <GetClients 
+                // company       = { this.state.company }
+                client       = { this.state.company }
+                getClientInfo = { this.getClientInfo } />
 
           <Card.Footer className={ this.state.className }>          
             { this.state.message

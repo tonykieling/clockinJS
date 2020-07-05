@@ -109,9 +109,11 @@ console.log("inside client add");
         city,
         province,
         postalCode,
-        typeOfService
-     } = req.body;
+        typeOfService,
 
+        clientLinkedToCompany
+     } = req.body;
+console.log("req.body::::", req.body)
   const userId = req.userData.userId
   const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : undefined;
 
@@ -162,9 +164,12 @@ console.log("inside client add");
       address,
       province,
       postal_code   : postalCode,
-      type_of_service : typeOfService
-    });
+      type_of_service : typeOfService,
 
+      client_linked_to_company: clientLinkedToCompany
+    });
+console.log("client", client)
+// if (1) return res.send({error: "yup!!!"})
     await client.save();
 
     return res.json({

@@ -130,7 +130,13 @@ const clientSchema = mongoose.Schema({
   showNotes: {
     type    : Boolean,
     default : true
-  }
+  },
+
+  client_linked_to_company: {
+    type    : mongoose.Schema.Types.ObjectId,
+    ref     : "Client",
+    // default : false
+  },
   
 });
 
