@@ -111,7 +111,8 @@ console.log("inside client add");
         postalCode,
         typeOfService,
 
-        clientLinkedToCompany
+        linkedCompany,
+        rateAsPerCompany
      } = req.body;
 console.log("req.body::::", req.body)
   const userId = req.userData.userId
@@ -166,10 +167,11 @@ console.log("req.body::::", req.body)
       postal_code   : postalCode,
       type_of_service : typeOfService,
 
-      client_linked_to_company: clientLinkedToCompany
+      linked_company      : linkedCompany,
+      rate_as_per_company : rateAsPerCompany
     });
 console.log("client", client)
-// if (1) return res.send({error: "yup!!!"})
+if (1) return res.send({message: "yup!!!"})
     await client.save();
 
     return res.json({

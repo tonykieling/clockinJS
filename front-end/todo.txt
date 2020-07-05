@@ -257,13 +257,17 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
 
 - link user to company
   X- menu change to Clients / Add a New One / Company-General
-  X- client's database has a field client_linked_to_company
+  X- client's model database has a field client_linked_to_company
   X- client's BE needs to receive and record it
   - client's FE:
-    - client's form needs to have a field "link this client to a company"
-      - when it happes, there is an option in a field "rate as for the Company"
+    X- client's form needs to have a field "link this client to a company"
+      X- when it happes, there is an option in a field "rate as for the Company"
+      X- has to record a field in db called rateAsPerCompany
+        - change Client model to have the above field
+        - BE needs to process it
     - on clockin, show in the green button only kids' clients, not company
     - on Invoice Generation, green button shows only Company and not kids's clients
+    - update ClientsList, as well
 
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - add report (invoices = all / per client / per period / per status)

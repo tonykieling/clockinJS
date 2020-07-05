@@ -32,7 +32,11 @@ class KidClientNew extends Component {
       messageControlNickname    : "",
       messageControlDefaultRate : "",
 
-      company         : ""
+      company             : "",
+      linkClientToCompany : false,
+      rateAsPerCompany    : false,
+      disableRate         : false,
+      companyRate         : ""
     }
 
   handleChange = e => {
@@ -114,7 +118,7 @@ class KidClientNew extends Component {
     if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
       
       if (!this.state.defaultRate) {
-        this.setState({ messageControlDefaultRate: "Please inform the default rate($)."})
+        this.setState({ messageControlDefaultRate: "Please inform the default rate($) or Company."})
         this.textInput13.focus();
       }
 
@@ -131,6 +135,11 @@ class KidClientNew extends Component {
       }
       
 
+    } else if ( this.state.linkClientToCompany && !this.state.company) {
+      this.setState({
+        message   : "Please, select company.",
+        className : "messageFailure"
+      });
     } else {
       this.setState({ disableBtn: true });
 
@@ -150,7 +159,9 @@ class KidClientNew extends Component {
         cEmail      : this.state.cEmail || undefined,
         defaultRate : this.state.defaultRate,
         typeKid     : true,
-        clientLinkedToCompany: this.state.company._id || undefined
+
+        linkedCompany     : this.state.company._id || undefined,
+        rateAsPerCompany  : this.state.rateAsPerCompany || undefined
       }
 console.log("createClient:::", createClient)
       try {
@@ -167,21 +178,7 @@ console.log("createClient:::", createClient)
 
           this.setState({
             message     : <p>Client <b>{this.state.nickname}</b> has been created.</p>,
-            className   : "messageSuccess",
-
-            name        : "",
-            nickname    : "",
-            birthday    : "",
-            mother      : "",
-            mPhone      : "",
-            mEmail      : "",
-            father      : "",
-            fPhone      : "",
-            fEmail      : "",
-            consultant  : "",
-            cPhone      : "",
-            cEmail      : "",
-            defaultRate : ""
+            className   : "messageSuccess"
           });
 
         } else if (addClient.data.error) {
@@ -206,9 +203,27 @@ console.log("createClient:::", createClient)
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
+        name        : "",
+        nickname    : "",
+        birthday    : "",
+        mother      : "",
+        mPhone      : "",
+        mEmail      : "",
+        father      : "",
+        fPhone      : "",
+        fEmail      : "",
+        consultant  : "",
+        cPhone      : "",
+        cEmail      : "",
+        defaultRate : "",
+        disableRate : false,
+        linkClientToCompany : false,
         message     : "",
-        disableBtn  : false
-      })
+        disableBtn  : false,
+        company     : "",
+        companyRate : "",
+        rateAsPerCompany : false
+      });
 
       window.scrollTo(0, 0);
       this.textInput1.focus();
@@ -224,14 +239,78 @@ console.log("createClient:::", createClient)
 
 
   getClientInfo = company => {
-console.log("clientInfo:", company)
     this.setState({
       company,
-      // client  : client,
-      // rate    : client.default_rate,
-      message : ""
+      message     : "",
+      companyRate : company.default_rate,
+      defaultRate : this.state.rateAsPerCompany ? company.default_rate : this.state.defaultRate,
+      messageControlDefaultRate : ""
     });
   }
+
+
+  YNComponent = () => {
+    return  <React.Fragment>
+              <Form.Group controlId="formLinkClient">
+                <Form.Label className="cardLabel"> Link Client to a Company? </Form.Label>
+                <Form.Group
+                  className = "form-check-inline"
+                >
+                  <Form.Check
+                      style     = { window.innerWidth <= 700 ? {marginLeft: "0px"} : {marginLeft: "2rem"}}
+                      inline
+                      label     = "Yes"
+                      checked   = { this.state.linkClientToCompany}
+                      type      = "radio"
+                      onChange  = { () => this.setState({ 
+                                      linkClientToCompany : true,
+                                      rateAsPerCompany    : true,
+                                      disableRate         : true,
+                                      defaultRate         : this.state.companyRate || ""
+                                  })}
+                    />
+                    <Form.Check 
+                      inline
+                      label     = "No"
+                      checked   = { !this.state.linkClientToCompany}
+                      type      = "radio"
+                      style     = {{marginLeft: "1rem"}}
+                      onChange  = { () => this.setState({ 
+                                      linkClientToCompany : false,
+                                      disableRate         : false
+                                  })}
+                    />
+
+                    { this.state.linkClientToCompany && window.innerWidth <= 700 &&
+                        <GetClients
+                          // company       = { this.state.company }
+                          client       = { this.state.company }
+                          getClientInfo = { this.getClientInfo }
+                        />
+                    }
+
+                </Form.Group>
+                { this.state.linkClientToCompany && window.innerWidth > 700 &&
+                    <GetClients
+                      // company       = { this.state.company }
+                      client       = { this.state.company }
+                      getClientInfo = { this.getClientInfo }
+                    />
+                }
+              </Form.Group>
+            </React.Fragment>
+  }
+
+
+  // 500
+  changeRateCheck = () => {
+    this.setState({
+      defaultRate       : !this.state.rateAsPerCompany ? this.state.companyRate : this.state.defaultRate,
+      rateAsPerCompany  : !this.state.rateAsPerCompany,
+      disableRate       : !this.state.disableRate
+    }, () => this.textInput13.focus());
+  }
+
 
 
   render() {
@@ -414,26 +493,37 @@ console.log("clientInfo:", company)
                 ref         = {input => this.textInput12 = input }  />
             </Form.Group>
 
+            { this.state.linkClientToCompany && this.YNComponent() }
+
             <Form.Group controlId="formDefaultRate">
               <Form.Label className="cardLabel">Rate</Form.Label>
+              { this.state.linkClientToCompany &&
+                <Form.Check 
+                  inline 
+                  label     = "Rate as per company ?"
+                  checked   = {this.state.rateAsPerCompany}
+                  type      = "checkbox"
+                  style     = {{marginLeft: "1rem"}}
+                  onChange  = { this.changeRateCheck }
+                />
+              }
               <Form.Control
                 type        = "number"
                 placeholder = "Hourly rate - CAD$"
                 name        = "defaultRate"
                 onChange    = {this.handleChange}
-                value       = {this.state.defaultRate}
+                value       = { this.state.defaultRate}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput13 = input }  />
+                ref         = {input => this.textInput13 = input }
+                disabled    = { this.state.disableRate }
+              />
               <Form.Text className="messageControl-user">
                 {this.state.messageControlDefaultRate}
               </Form.Text>
             </Form.Group>
 
+            { !this.state.linkClientToCompany && this.YNComponent() }
 
-            <GetClients 
-                // company       = { this.state.company }
-                client       = { this.state.company }
-                getClientInfo = { this.getClientInfo } />
 
           <Card.Footer className={ this.state.className }>          
             { this.state.message
