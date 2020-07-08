@@ -255,7 +255,7 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
   - set a frame around "Starting, Ending and Total"
   - Total column content centralized
 
-- link user to company
+- link user to company, actually it is applicable only for kids due to Si's necessity of having some kids related to a company. This way she will be able to generate an invoice for the company, instead of each one of the kids
   X- menu change to Clients / Add a New One / Company-General
   X- client's model database has a field client_linked_to_company
   X- client's BE needs to receive and record it
@@ -265,9 +265,10 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
       X- has to record a field in db called rateAsPerCompany
         - change Client model to have the above field
         - BE needs to process it
+    X- GetClient button with diff color when it comes to select company (apply for new kids and edit kids - CleintNew.js and ClientsList.js components)
+    - update ClientsList, as well
     - on clockin, show in the green button only kids' clients, not company
     - on Invoice Generation, green button shows only Company and not kids's clients
-    - update ClientsList, as well
 
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - add report (invoices = all / per client / per period / per status)

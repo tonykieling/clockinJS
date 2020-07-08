@@ -7,6 +7,7 @@ import { Redirect } from "react-router-dom";
 
 
 function GetClients(props) {
+console.log("1-props:", props)
   const [clients, setclients] = useState("");
   const [errorMsg, seterrorMsg] = useState("");
   const [goLand, setgoLand] = useState("");
@@ -54,9 +55,10 @@ function GetClients(props) {
 
 
   const populateDropbox = () => {
+console.log("props::", props)
     return(
       <Dropdown>
-        <Dropdown.Toggle variant="success" id="dropdown-basic">
+        <Dropdown.Toggle variant={ props.companyFlag ? "info" : "success"} id="dropdown-basic">
           {(props.client && (props.client.nickname || props.client.name)) || `Select Client` }
         </Dropdown.Toggle>
         

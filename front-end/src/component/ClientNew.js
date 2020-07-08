@@ -284,7 +284,8 @@ console.log("createClient:::", createClient)
                     { this.state.linkClientToCompany && window.innerWidth <= 700 &&
                         <GetClients
                           // company       = { this.state.company }
-                          client       = { this.state.company }
+                          client        = { this.state.company }
+                          companyFlag   = { true}
                           getClientInfo = { this.getClientInfo }
                         />
                     }
@@ -293,7 +294,8 @@ console.log("createClient:::", createClient)
                 { this.state.linkClientToCompany && window.innerWidth > 700 &&
                     <GetClients
                       // company       = { this.state.company }
-                      client       = { this.state.company }
+                      client        = { this.state.company }
+                      companyFlag   = { true}
                       getClientInfo = { this.getClientInfo }
                     />
                 }
