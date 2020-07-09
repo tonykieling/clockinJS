@@ -265,9 +265,15 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
       X- has to record a field in db called rateAsPerCompany
         - change Client model to have the above field
         - BE needs to process it
-    X- GetClient button with diff color when it comes to select company (apply for new kids and edit kids - CleintNew.js and ClientsList.js components)
+    X- GetClient button with diff color when it comes to select company (apply for new kids and edit kids - ClientNew.js and ClientsList.js components)
+    X- Client schema should also have a field "company", type of Boolean. It will easy when it comes to Punchin and Invoice procedures.
+      After setting a Client as Company, the user is also able to revert it by editing the client and marking the field above as false. It also disconnect the clients linked to this client.
+      - change Client edit BE procedure to make it happen:
+        X- link client (kid) and set client as company (company)
+        - unlink client (kid) and unset client as company (company)
+        - when a kid is linked to a Client Company, this automatically will disable to Punchin to this client, only for the kids linked to it
     - update ClientsList, as well
-    - on clockin, show in the green button only kids' clients, not company
+    - on Clockin, show in the green button only kids' clients, not company
     - on Invoice Generation, green button shows only Company and not kids's clients
 
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)

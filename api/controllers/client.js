@@ -87,7 +87,8 @@ console.log("inside client get_one");
 // it creates a client register
 const client_add = async (req, res) => {
 console.log("inside client add");
-// if (1) return res.json({error: "something happened"});
+  // mongoose.set("debug", true);
+
   const {
         name,
         nickname, 
@@ -114,7 +115,7 @@ console.log("inside client add");
         linkedCompany,
         rateAsPerCompany
      } = req.body;
-console.log("req.body::::", req.body)
+     
   const userId = req.userData.userId
   const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : undefined;
 
@@ -140,8 +141,9 @@ console.log("req.body::::", req.body)
     });
   }
 
+  //it adds the new client
   try {
-    const client = new Client({
+    const newClient = new Client({
       _id           : new mongoose.Types.ObjectId(),
       name          : name,
       nickname      : nickname, 
@@ -170,13 +172,41 @@ console.log("req.body::::", req.body)
       linked_company      : linkedCompany,
       rate_as_per_company : rateAsPerCompany
     });
-console.log("client", client)
-if (1) return res.send({message: "yup!!!"})
-    await client.save();
+
+    // checks if the new client is gonna be linked to a Company Client
+    if (linkedCompany)  {
+      // if setting a kid for a Company Client, it adds a new boolean field (company) to the the Company Client
+      try {
+        await Client
+          .updateOne(
+            { 
+              _id: linkedCompany 
+            },
+            { 
+              company : true
+            },
+            { 
+              runValidators   : true,
+              ignoreUndefined : true
+            }
+          );
+
+      } catch(err) {
+        console.trace("Error ECAD03: ", err.message);
+        return res.json({
+          error: "ECAD03: Something wrong with Client's Company data."
+        });    
+      }
+    }
+
+    // *no rollback for both add newClient and update Client to Company
+    // as newClient.save comes after the updating Company Client, at least if something happen in this method, the system will send an error.
+      // but, if something happen in newClient.save, the Company Client will be set as it and the kid client will not be saved
+    await newClient.save();
 
     return res.json({
-      message: `Client <${client.name}> has been created.`,
-      client
+      message: `Client <${newClient.name}> has been created.`,
+      newClient
     });
 
   } catch(err) {

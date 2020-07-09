@@ -180,6 +180,7 @@ console.log("createClient:::", createClient)
             message     : <p>Client <b>{this.state.nickname}</b> has been created.</p>,
             className   : "messageSuccess"
           });
+          this.clearMessage();
 
         } else if (addClient.data.error) {
           this.setState({
@@ -192,9 +193,8 @@ console.log("createClient:::", createClient)
           message : err.message,
           className : "messageFailure"
         });
-        
+        this.clearMessage();
       }
-      this.clearMessage();
     }
   }
 
