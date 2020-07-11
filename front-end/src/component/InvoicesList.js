@@ -218,8 +218,10 @@ renderDataTable = (invoices) => {
           <Card.Header>Invoice's List and Edit</Card.Header>
           <Card.Body>
           <GetClients 
-                client        = { this.state.client }
-                getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
+            client        = { this.state.client }
+            getClientInfo = { this.getClientInfo }
+            company       = { true}
+          /> { /* mount the Dropbox Button with all clients for the user */ }
 
           <br></br>
           <Form onSubmit={this.handleGetInvoices} >
@@ -260,7 +262,8 @@ renderDataTable = (invoices) => {
               variant   = "primary" 
               type      = "submit" 
               onClick   = { this.handleGetInvoices } 
-              ref       = {input => this.getInvoicesBtn = input }  >
+              ref       = {input => this.getInvoicesBtn = input }
+            >
               Get Invoices
             </Button>
           </div>

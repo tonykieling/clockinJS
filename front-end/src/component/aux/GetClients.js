@@ -7,7 +7,6 @@ import { Redirect } from "react-router-dom";
 
 
 function GetClients(props) {
-console.log("1-props:", props)
   const [clients, setclients] = useState("");
   const [errorMsg, seterrorMsg] = useState("");
   const [goLand, setgoLand] = useState("");
@@ -61,7 +60,6 @@ console.log("1-props:", props)
 
 
   const populateDropbox = () => {
-console.log("props::", props)
     return(
       <Dropdown>
         <Dropdown.Toggle variant={ props.companyFlag ? "info" : "success"} id="dropdown-basic">
@@ -74,7 +72,7 @@ console.log("props::", props)
               {clients.map( (client, id) =>
                   <Dropdown.Item 
                     key = { id } 
-                    onClick = { (e) => changes(e, client) }
+                    onClick = { e => changes(e, client) }
                     // data-client = { JSON.stringify(client) }
                     name = { client.name }
                   > { client.nickname || client.name } 
@@ -87,7 +85,7 @@ console.log("props::", props)
                   !client.inactive &&
                     <Dropdown.Item 
                       key = { id } 
-                      onClick = { (e) => changes(e, client) }
+                      onClick = { e => changes(e, client) }
                       // data-client = { JSON.stringify(client) }
                       name = { client.name }
                     > { client.nickname || client.name } 

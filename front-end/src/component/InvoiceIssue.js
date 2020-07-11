@@ -172,9 +172,11 @@ renderDataTable = (invoices) => {
           <Card.Header>Generate a Pdf file</Card.Header>
           <Card.Body>
           <GetClients 
-                client            = { this.state.client }
-                getClientInfo     = { this.getClientInfo } 
-                askInvoiceSample  = { true } />
+            client            = { this.state.client }
+            getClientInfo     = { this.getClientInfo } 
+            askInvoiceSample  = { true }
+            company           = { true}
+          />
 
           <br></br>
           <Form onSubmit={this.handleGetInvoices} >

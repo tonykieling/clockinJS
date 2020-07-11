@@ -258,7 +258,13 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
 - link user to company, actually it is applicable only for kids due to Si's necessity of having some kids related to a company. This way she will be able to generate an invoice for the company, instead of each one of the kids
   X- menu change to Clients / Add a New One / Company-General
   X- client's model database has a field client_linked_to_company
-  X- client's BE needs to receive and record it
+  - client's BE needs to receive and record it
+    X- addClient
+    - modify client
+    - add clockin needs to add a field called company which is Company Client's id
+      ?! still in definition
+    - get clockins
+    - add invoice
   - client's FE:
     X- client's form needs to have a field "link this client to a company"
       X- when it happes, there is an option in a field "rate as for the Company"
@@ -273,12 +279,14 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
         - unlink client (kid) and unset client as company (company)
         - when a kid is linked to a Client Company, this automatically will disable to Punchin to this client, only for the kids linked to it
     - update ClientsList, as well
-    - on PunchIn, the button should not show clients set as company = true
-      - main screen is done, need to check for all screens related to PunchIn
-    - on Invoice, the button should not show clients with field client_linked_to_company
-      - main screen is done, need to check for all screens related to Invoice
     - on Clockin, show in the green button only kids' clients, not company
-    - on Invoice Generation, green button shows only Company and not kids's clients
+      - on PunchIn, the button should not show clients set as company = true
+        - main screen is done, need to check for all screens related to PunchIn
+        - actually, PunchiInList component can show both the list of punchins for either client linked to company or company
+    X- on Invoice Generation, green button shows only Company and not kids's clients
+      - on Invoice, the button should not show clients with field client_linked_to_company
+        - main screen is done, need to check for all screens related to Invoice
+        - list and print (issue) is done
 
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - add report (invoices = all / per client / per period / per status)

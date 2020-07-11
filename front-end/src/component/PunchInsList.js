@@ -7,11 +7,11 @@ import Form   from "react-bootstrap/Form";
 import Row    from "react-bootstrap/Row";
 import Col    from "react-bootstrap/Col";
 import Table  from "react-bootstrap/Table";
-
-// , Button, Form, Row, Col, Table } from "react-bootstrap";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+
 // import moment from "moment";
 
+import { getClockins } from "./aux/getClockins.js";
 import GetClients from "./aux/GetClients.js";
 // import * as formatDate from "./aux/formatDate.js";
 import PunchInModal from "./PunchInModal.js";
@@ -59,7 +59,7 @@ class PunchInsList extends Component {
       dateEnd   = this.state.dateEnd,
       clientId  = this.state.clientId;
 
-    const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+    // const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
     if (clientId) {
       const a = new Date(dateStart).getTime();
@@ -72,37 +72,38 @@ class PunchInsList extends Component {
         });
       else
         try {
-          const getClockins = await axios.get( 
-            url,
-            {  
-              headers: { 
-                "Content-Type": "application/json",
-                "Authorization" : `Bearer ${this.props.storeToken}` }
-          });
-          
-          if (getClockins.data.allClockins){
-            this.setState({
-              clockinList       : getClockins.data.allClockins,
-              // client            : getClockins.data.client,
-              clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
-              tableVisibility   : true,
-              cleanButton       : true
-            });
-          } else {
-            this.setState({
-              message         : getClockins.data.message,
-              classNameMessage: "messageFailure",
-              tableVisibility : false
-            });
+console.log("---this.state", this.state)
 
-            // setTimeout(() => {
-            //   this.clearMessage();
-            // }, 3000);
-          }
+          const companyId     = this.state.client._id;
+          const pastClockins  = this.state.client.company
+          // const getClockins = await axios.get( 
+            ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, companyId)
+            : await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId)
+            // : await axios.get( 
+            //   url,
+            //   {  
+            //     headers: { 
+            //       "Content-Type": "application/json",
+            //       "Authorization" : `Bearer ${this.props.storeToken}` }
+            // });
+console.log("pastClockins", pastClockins)
+
+          if (pastClockins.error)
+            throw(pastClockins.error);
+
+          this.setState({
+            clockinList       : pastClockins,
+            // client            : getClockins.data.client,
+            clockInListTable  : this.renderDataTable(pastClockins),
+            tableVisibility   : true,
+            cleanButton       : true
+          });
+
         } catch(err) {
           this.setState({
-            message           : err.message,
-            classNameMessage  : "messageFailure"
+            message           : err,
+            classNameMessage  : "messageFailure",
+            tableVisibility   : false
           });
         
       }
@@ -234,7 +235,8 @@ class PunchInsList extends Component {
           <div className="gridClientBtContainer">
             <GetClients
               client        = { this.state.client }
-              getClientInfo = { this.getClientInfo } />
+              getClientInfo = { this.getClientInfo }
+            />
 
           </div>
 

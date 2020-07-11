@@ -6,10 +6,12 @@ const Client    = require("../models/client.js");
 // const Invoice   = require("../models/invoice.js");
 const Email = require("../helpers/send-email.js");
 
+// mongoose.set("debug", true);
 
 // it gets all clockins from the system - on purpose with no auth
 const get_all = async (req, res) => {
 console.log("inside clockins get_all");
+console.log("%%%req.query", req.query)
   const checkInvoiceCode = require("./aux/checkInvoiceCode.js");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
@@ -20,7 +22,7 @@ console.log("inside clockins get_all");
     dateEnd   = new Date(req.query.dateEnd || "2100-03-01T09:00:00.000Z");
     
 
-  try {
+  try { 
     let allClockins = null;
     // if (!userAdmin)
     if (userAdmin) /////////////// ----->>>>> this is the right one
@@ -88,10 +90,10 @@ console.log("inside clockins get_all");
 
     if (!allClockins || allClockins.length < 1) {
       return res.status(200).json({
-        message: `No clockins at all.`
+        error: `No clockins at all.`
       });
     }
-
+console.log("allClockins", allClockins)
 
     /**
      * it checks whether the application is querying for last invoice code (queryLastInvoiceCode) used
@@ -138,7 +140,7 @@ console.log("inside clockins get_all");
   } catch(err) {
     console.log("Error => ", err.message);
     return res.status(422).json({
-      error: "EACK02: Something got wrong."
+      error: "EACK02: Something's got wrong."
     });
   }
 }
@@ -566,28 +568,76 @@ const get_clockins_by_invoice = async (req, res) => {
  */
 const get_general = async (req, res) => {
   console.log("inside clockins get_general");
+console.log("req.query", req.query)
     const userId    = req.userData.userId;
     const 
       // clientId  = req.query.clientId === "undefined" ? undefined : req.query.clientId,
-      date      = req.query.date,
-      typeQuestion = req.query.type;
+      date          = req.query.date,
+      typeQuestion  = req.query.type;
 
     const
-      dateStart = (typeQuestion === "byDate" )
+      dateStart = (typeQuestion === "byDate")
                   ? new Date(`${date}T00:00:00.000Z`)
                   : new Date(req.query.dateStart || "2000-03-01T09:00:00.000Z"),
       dateEnd   = typeQuestion === "byDate" 
                   ? new Date(`${date}T23:59:59.000Z`)
                   : new Date(req.query.dateEnd || "2100-03-01T09:00:00.000Z");
 
-    const conditions = {
-      user_id   : mongoose.Types.ObjectId(userId),
-      date      :   {
-                      $gte: dateStart,
-                      $lte: dateEnd
-                    },
-    };
-    
+    let conditions = "";
+
+    // it checks whether the is a company client
+    // if so, it will set the condition's query for client_linked_to_company
+    if (typeQuestion === "toCompany") {
+      const companyId = req.query.companyId
+      const clients = await Client
+        .find({
+          client_linked_to_company: mongoose.Types.ObjectId(companyId)
+        })
+        .select(" _id ");
+
+      if (clients.length < 1)
+        return res.json({error: "No clockins for this Company Client"});
+
+      const clientsArray = clients.map(e => e._id);
+      
+      conditions = {
+        client_linked_to_company: {$in: clientsArray},
+        date      :   {
+          $gte: dateStart,
+          $lte: dateEnd
+        },        
+      }
+console.log("***clients", clients)
+return res.json({error: "YEAH! cpmapny"})
+      
+    } else {
+  return res.json({error: "YEAH! no cpmapny"})
+      conditions = {
+          user_id   : mongoose.Types.ObjectId(userId),
+          date      :   {
+                          $gte: dateStart,
+                          $lte: dateEnd
+                        },
+        };      
+    }
+//     const conditions = (typeQuestion === "toCompany")
+//       ?
+//         {
+//           company_id : mongoose.Types.ObjectId(companyId),
+//           date      :   {
+//             $gte: dateStart,
+//             $lte: dateEnd
+//           },          
+//         }        
+//       :
+//         {
+//           user_id   : mongoose.Types.ObjectId(userId),
+//           date      :   {
+//                           $gte: dateStart,
+//                           $lte: dateEnd
+//                         },
+//         };
+console.log("conditions", conditions)
     // if (clientId) 
     //   conditions.client_id = mongoose.Types.ObjectId(clientId);
 
