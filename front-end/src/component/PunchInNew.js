@@ -296,7 +296,9 @@ class PunchInNew extends Component {
             <div className="gridClientBtContainer">
               <GetClients 
                 client        = { this.state.client }
-                getClientInfo = { this.getClientInfo } />
+                getClientInfo = { this.getClientInfo } 
+                company       = { false}
+              />
                 
             </div>
           <br></br>

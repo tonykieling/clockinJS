@@ -138,8 +138,7 @@ const clientSchema = mongoose.Schema({
   },
 
   rate_as_per_company : {
-    type    : Boolean,
-    default : false
+    type    : Boolean
   },
 
   company : {

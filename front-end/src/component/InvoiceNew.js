@@ -337,8 +337,10 @@ class InvoiceNew extends Component {
           <Card.Body>
 
           <GetClients 
-                client        = { this.state.client }
-                getClientInfo = { this.getClientInfo } /> { /* mount the Dropbox Button with all clients for the user */ }
+            client        = { this.state.client }
+            getClientInfo = { this.getClientInfo }
+            company       = { true}
+          /> { /* mount the Dropbox Button with all clients for the user */ }
 
           <br></br>
           {/* <Form onSubmit={this.handleGetClockins} > */}

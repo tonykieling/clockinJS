@@ -43,7 +43,13 @@ console.log("1-props:", props)
       );
 
       if (getClients.data.count) {
-        setclients(getClients.data.message);
+        if (props.company) {
+          setclients(getClients.data.message.filter(e => !e.client_linked_to_company));
+        } else if (props.company === false) {
+          setclients(getClients.data.message.filter(e => !e.company));
+        } else {
+          setclients(getClients.data.message);
+        }
       } else if (getClients.data.error) {
         //call message modal to say the user needs to login again and redirect to /land
         setshowModal(true);

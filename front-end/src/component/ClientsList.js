@@ -36,6 +36,8 @@ class ClientsList extends Component {
       cEmail          : "",
       defaultRate     : "",
       typeKid         : "",
+      clientLinkedToCompany : "",
+      rateAsPerCompany      : false,
 
       tmp_name            : "",
       tmp_nickname        : "",
@@ -241,6 +243,7 @@ class ClientsList extends Component {
 
 
   getClientInfo = client => {
+// console.log("getclientInfo::", client)
     const {
       _id, name, nickname, birthday, mother, father, consultant
     } = client;
@@ -278,7 +281,10 @@ class ClientsList extends Component {
 
       inactive        : client.inactive || "",
       showRate        : client.showRate,
-      showNotes       : client.showNotes
+      showNotes       : client.showNotes,
+
+      clientLinkedToCompany : client.client_linked_to_company,
+      rateAsPerCompany      : client.rate_as_per_company
     });
   }
 
@@ -364,6 +370,66 @@ class ClientsList extends Component {
   }
 
 
+  /**
+   * this method shows the option to link a client to a company
+   */
+  YNComponent = () => {
+    return  <React.Fragment>
+              <Form.Group controlId="formLinkClient">
+                <Form.Label className="cardLabel"> Link Client to a Company? </Form.Label>
+                <Form.Group
+                  className = "form-check-inline"
+                >
+                  <Form.Check
+                      style     = { window.innerWidth <= 700 ? {marginLeft: "0px"} : {marginLeft: "2rem"}}
+                      inline
+                      label     = "Yes"
+                      checked   = { this.state.linkClientToCompany}
+                      type      = "radio"
+                      disabled  = { this.state.disableEditForm}
+                      onChange  = { () => this.setState({ 
+                                      linkClientToCompany : true,
+                                      rateAsPerCompany    : true,
+                                      disableRate         : true,
+                                      defaultRate         : this.state.companyRate || ""
+                                  })}
+                    />
+                    <Form.Check 
+                      inline
+                      label     = "No"
+                      checked   = { !this.state.linkClientToCompany}
+                      type      = "radio"
+                      style     = {{marginLeft: "1rem"}}
+                      disabled  = { this.state.disableEditForm}
+                      onChange  = { () => this.setState({ 
+                                      linkClientToCompany : false,
+                                      disableRate         : false
+                                  })}
+                    />
+
+                    { this.state.linkClientToCompany && window.innerWidth <= 700 &&
+                        <GetClients
+                          // company       = { this.state.company }
+                          client        = { this.state.company }
+                          companyFlag   = { true}
+                          getClientInfo = { this.getClientInfo }
+                        />
+                    }
+
+                </Form.Group>
+                { this.state.linkClientToCompany && window.innerWidth > 700 &&
+                    <GetClients
+                      // company       = { this.state.company }
+                      client        = { this.state.company }
+                      companyFlag   = { true}
+                      getClientInfo = { this.getClientInfo }
+                    />
+                }
+              </Form.Group>
+            </React.Fragment>
+  }
+
+
   render() {
     return (
       <div className="formPosition">
@@ -420,7 +486,7 @@ class ClientsList extends Component {
                 </Form.Group>
                 { this.state.typeKid
                   ?
-                    <div>
+                    <React.Fragment>
                       <Form.Group controlId="formNickname">
                         <Form.Label className="cardLabel">Nickname</Form.Label>
                         <Form.Control
@@ -584,9 +650,9 @@ class ClientsList extends Component {
                           // ref         = {input => this.textInput12 = input }  
                         />
                       </Form.Group>
-                    </div>
+                    </React.Fragment>
                   :
-                    <div>
+                    <React.Fragment>
                       <Form.Group controlId="formEmail">
                         <Form.Label className="cardLabel">Email</Form.Label>
                         <Form.Control
@@ -701,7 +767,7 @@ class ClientsList extends Component {
                           // ref         = {input => this.typeOfService = input }
                         />
                       </Form.Group>
-                    </div>
+                    </React.Fragment>
                 }
 
                 <Form.Group controlId="formDefaultRate">
@@ -722,26 +788,11 @@ class ClientsList extends Component {
                 </Form.Group>
 
                 <br />
+                { this.state.typeKid && this.YNComponent()}
+
+
                 <Form.Group controlId="formShowRate">
                   <Form.Label className="cardLabel">Show Rate on PunchIn form?</Form.Label>
-                    {/* <ButtonGroup>
-                      <Button 
-                        variant   = "success"
-                        style     = { {width: "4rem"}}
-                        onClick   = { () => this.setState({ showRate: true})}
-                        disabled  = { !this.state.client.showRate}
-                      >
-                        Yes
-                      </Button>
-
-                      <Button 
-                        variant="warning"
-                        style   = { {width: "3rem"}}
-                        // onClick={ this.btnCancel } 
-                      >
-                        No
-                      </Button>
-                  </ButtonGroup> */}
                   <Form.Check 
                     inline 
                     label     = "Yes"

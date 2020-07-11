@@ -249,6 +249,9 @@ console.log("createClient:::", createClient)
   }
 
 
+  /**
+   * this method shows the option to link a client to a company
+   */
   YNComponent = () => {
     return  <React.Fragment>
               <Form.Group controlId="formLinkClient">
@@ -304,7 +307,6 @@ console.log("createClient:::", createClient)
   }
 
 
-  // 500
   changeRateCheck = () => {
     this.setState({
       defaultRate       : !this.state.rateAsPerCompany ? this.state.companyRate : this.state.defaultRate,
