@@ -40,11 +40,14 @@ function GetClients(props) {
           }
         },
       );
+      // console.log("#clients", getClients)
 
+      console.log("props", props)
+      // console.log("getClockins", getClients)
       if (getClients.data.count) {
-        if (props.company) {
-          setclients(getClients.data.message.filter(e => !e.client_linked_to_company));
-        } else if (props.company === false) {
+        if (props.companyFlag) {
+          setclients(getClients.data.message.filter(e => !e.linked_company));
+        } else if (props.companyFlag === false) {
           setclients(getClients.data.message.filter(e => !e.company));
         } else {
           setclients(getClients.data.message);

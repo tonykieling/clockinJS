@@ -297,7 +297,7 @@ class PunchInNew extends Component {
               <GetClients 
                 client        = { this.state.client }
                 getClientInfo = { this.getClientInfo } 
-                company       = { false}
+                companyFlag   = { false}
               />
                 
             </div>

@@ -261,9 +261,11 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
   - client's BE needs to receive and record it
     X- addClient
     - modify client
-    - add clockin needs to add a field called company which is Company Client's id
-      ?! still in definition
+    X- add clockin needs to add a field called company which is Company Client's id
+      - right now punchin is being made without company info. In the future, it will be possible to consider recording companyId, as well.
+      ?! still in definition. Defined. See line above
     - get clockins
+      - it's working for PunchInList, but need to check about client information when list is to company
     - add invoice
   - client's FE:
     X- client's form needs to have a field "link this client to a company"

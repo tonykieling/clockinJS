@@ -591,27 +591,23 @@ console.log("req.query", req.query)
       const companyId = req.query.companyId
       const clients = await Client
         .find({
-          client_linked_to_company: mongoose.Types.ObjectId(companyId)
+          linked_company: mongoose.Types.ObjectId(companyId)
         })
         .select(" _id ");
 
       if (clients.length < 1)
-        return res.json({error: "No clockins for this Company Client"});
+        return res.json({error: "Company Client error."});
 
-      const clientsArray = clients.map(e => e._id);
-      
+      const clientsArray = clients.map(e => mongoose.Types.ObjectId(e._id));
+
       conditions = {
-        client_linked_to_company: {$in: clientsArray},
-        date      :   {
+        client_id: {$in: clientsArray},
+        date          : {
           $gte: dateStart,
           $lte: dateEnd
         },        
       }
-console.log("***clients", clients)
-return res.json({error: "YEAH! cpmapny"})
-      
     } else {
-  return res.json({error: "YEAH! no cpmapny"})
       conditions = {
           user_id   : mongoose.Types.ObjectId(userId),
           date      :   {
@@ -620,27 +616,6 @@ return res.json({error: "YEAH! cpmapny"})
                         },
         };      
     }
-//     const conditions = (typeQuestion === "toCompany")
-//       ?
-//         {
-//           company_id : mongoose.Types.ObjectId(companyId),
-//           date      :   {
-//             $gte: dateStart,
-//             $lte: dateEnd
-//           },          
-//         }        
-//       :
-//         {
-//           user_id   : mongoose.Types.ObjectId(userId),
-//           date      :   {
-//                           $gte: dateStart,
-//                           $lte: dateEnd
-//                         },
-//         };
-console.log("conditions", conditions)
-    // if (clientId) 
-    //   conditions.client_id = mongoose.Types.ObjectId(clientId);
-
 
     try {
       const allClockins = await Clockin
@@ -696,8 +671,8 @@ console.log("conditions", conditions)
             } 
         }
         ])
-        .sort({time_start: 1});
-  
+        .sort({time_start: 1}); 
+
       if (!allClockins || allClockins.length < 1) {
         return res.status(200).json({
           message: `No clockins at all.`
