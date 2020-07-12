@@ -122,7 +122,8 @@ class PunchInNew extends Component {
       notes         : this.state.notes || undefined,
       clientId      : this.state.client._id,
       startingBreak : this.state.startingBreak || undefined,
-      endingBreak   : this.state.endingBreak || undefined
+      endingBreak   : this.state.endingBreak || undefined,
+      companyId     : this.state.client.linked_company || undefined
     };
 
 
@@ -131,9 +132,9 @@ class PunchInNew extends Component {
 
     else if (this.state.pastClockins && this.checkHours(data.timeStart, data.timeEnd))
       this.setState({
-        message     : "Check time, please",
-        className   : "messageFailure",
-        disabledBtn : false
+        message           : "Check time, please",
+        classNameMessage  : "messageFailure",
+        disabledBtn       : false
       });
 
     else {
@@ -233,6 +234,7 @@ class PunchInNew extends Component {
   }
 
   getClientInfo = client => {
+console.log("client", client)
     this.setState({
       client  : client,
       rate    : client.default_rate,

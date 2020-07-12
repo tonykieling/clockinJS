@@ -40,10 +40,7 @@ function GetClients(props) {
           }
         },
       );
-      // console.log("#clients", getClients)
 
-      console.log("props", props)
-      // console.log("getClockins", getClients)
       if (getClients.data.count) {
         if (props.companyFlag) {
           setclients(getClients.data.message.filter(e => !e.linked_company));

@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import axios from "axios";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import Card   from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
@@ -13,7 +12,6 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 import { getClockins } from "./aux/getClockins.js";
 import GetClients from "./aux/GetClients.js";
-// import * as formatDate from "./aux/formatDate.js";
 import PunchInModal from "./PunchInModal.js";
 
 import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
@@ -39,7 +37,8 @@ class PunchInsList extends Component {
       cleanButton       : false,
 
       showModal         : false,
-      clockinToModal    : {}
+      clockinToModal    : {},
+      company           : ""
     };
 }
 
@@ -59,8 +58,6 @@ class PunchInsList extends Component {
       dateEnd   = this.state.dateEnd,
       clientId  = this.state.clientId;
 
-    // const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-
     if (clientId) {
       const a = new Date(dateStart).getTime();
       const b = new Date(dateEnd).getTime();
@@ -72,28 +69,15 @@ class PunchInsList extends Component {
         });
       else
         try {
-console.log("---this.state", this.state)
-
-          const companyId     = this.state.client._id;
-          const pastClockins  = this.state.client.company
-          // const getClockins = await axios.get( 
-            ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, companyId)
+          const pastClockins  = this.state.company
+            ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, this.state.company._id)
             : await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId)
-            // : await axios.get( 
-            //   url,
-            //   {  
-            //     headers: { 
-            //       "Content-Type": "application/json",
-            //       "Authorization" : `Bearer ${this.props.storeToken}` }
-            // });
-console.log("pastClockins", pastClockins)
 
           if (pastClockins.error)
             throw(pastClockins.error);
 
           this.setState({
             clockinList       : pastClockins,
-            // client            : getClockins.data.client,
             clockInListTable  : this.renderDataTable(pastClockins),
             tableVisibility   : true,
             cleanButton       : true
@@ -132,7 +116,6 @@ console.log("pastClockins", pastClockins)
   renderDataTable = (clockins) => {
     return clockins.map((clockin, index) => {
       const clockinsToSend = renderClockinDataTable(clockin, index);
-
       if (thinScreen) {   // small devices
         return (
           <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
@@ -184,10 +167,6 @@ console.log("pastClockins", pastClockins)
       message           : "Please, select client.",
       classNameMessage  : "messageFailure"
     });
-
-    // setTimeout(() => {
-    //   this.clearMessage();
-    // }, 3000);
   }
 
 
@@ -202,7 +181,8 @@ console.log("pastClockins", pastClockins)
 
   getClientInfo = client => {
     this.setState({
-      client          : client,
+      company         : !!client.company && client,
+      client          : !client.company && client,
       clientId        : client._id,
       tableVisibility : false
     });
@@ -220,13 +200,12 @@ console.log("pastClockins", pastClockins)
   }
 
 
+
   render() {
-// console.log("this.state.clockinList", this.state.clockinList)
     return (
       <div className="formPosition">
         <br />
 
-        {/* <Card style={{ width: '40rem' }}> */}
         <Card className="card-settings">
           <Card.Header>List of PunchIns</Card.Header>
           <Card.Body>
@@ -234,7 +213,7 @@ console.log("pastClockins", pastClockins)
           { /* mount the Dropbox Button with all clients for the user */ }
           <div className="gridClientBtContainer">
             <GetClients
-              client        = { this.state.client }
+              client        = { this.state.client || this.state.company }
               getClientInfo = { this.getClientInfo }
             />
 
@@ -307,11 +286,10 @@ console.log("pastClockins", pastClockins)
           ?
             <Card className="cardInvoiceGenListofClockins card">
               <Card.Header style={{textAlign: "center"}}>
-                Client: <b>{this.state.client.nickname || this.state.client.name}</b>, {" "}
+                Client: <b>{ this.state.company.name || this.state.client.nickname || this.state.client.name}</b>, {" "}
                 <b>{this.state.clockinList.length}</b> {this.state.clockinList.length > 1 ? "Clockins" : "Clockin"}
               </Card.Header>
 
-{/* {console.log("this.state", this.state)} */}
               {(this.state.clockinList.length > 0)
                 ? thinScreen 
                   ? <Table striped bordered hover size="sm" responsive>
@@ -351,16 +329,15 @@ console.log("pastClockins", pastClockins)
             </Card>
           : null }
 
-        {this.state.showModal
-          ? <PunchInModal 
-              showModal     = { this.state.showModal}
-              clockinData   = { this.state.clockinToModal}
-              client        = { this.state.client.nickname}
-              deleteClockin = { (clockinId) => this.updateClockins(clockinId)}
-              closeModal    = { this.closeClockinModal}
-              thinScreen    = { thinScreen}
-            />
-          : ""}
+        {this.state.showModal &&
+          <PunchInModal 
+            showModal     = { this.state.showModal}
+            clockinData   = { this.state.clockinToModal}
+            client        = { this.state.company ? this.state.clockinToModal.client : this.state.client.nickname || this.state.client.name }
+            deleteClockin = { (clockinId) => this.updateClockins(clockinId)}
+            closeModal    = { this.closeClockinModal}
+            thinScreen    = { thinScreen}
+          />}
 
         </div>
 

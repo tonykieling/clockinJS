@@ -261,9 +261,10 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
   - client's BE needs to receive and record it
     X- addClient
     - modify client
-    X- add clockin needs to add a field called company which is Company Client's id
+    X- add clockin needs to add a field called company which is company_id Client's id
       - right now punchin is being made without company info. In the future, it will be possible to consider recording companyId, as well.
       ?! still in definition. Defined. See line above
+      --! line above changed. The definition: the field company_id was created on clockin schema to record the data regarding a company, when it is the case. Right now there are many clockins in database production, so because of this legacy, I choose to have a code to look up for company, at the clockins query. In the future only looking for company_id will be enough - this is typeQuestion = toCompany.
     - get clockins
       - it's working for PunchInList, but need to check about client information when list is to company
     - add invoice
@@ -280,8 +281,8 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
         X- link client (kid) and set client as company (company)
         - unlink client (kid) and unset client as company (company)
         - when a kid is linked to a Client Company, this automatically will disable to Punchin to this client, only for the kids linked to it
-    - update ClientsList, as well
-    - on Clockin, show in the green button only kids' clients, not company
+    X- update ClientsList, as well
+    X- on Clockin, show in the green button only kids' clients, not company
       - on PunchIn, the button should not show clients set as company = true
         - main screen is done, need to check for all screens related to PunchIn
         - actually, PunchiInList component can show both the list of punchins for either client linked to company or company

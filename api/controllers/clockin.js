@@ -93,7 +93,8 @@ console.log("%%%req.query", req.query)
         error: `No clockins at all.`
       });
     }
-console.log("allClockins", allClockins)
+console.log("!@#22allClockins", allClockins)
+
 
     /**
      * it checks whether the application is querying for last invoice code (queryLastInvoiceCode) used
@@ -225,7 +226,8 @@ console.log("inside clockins ADD");
   // lets record clockin after User and Client validation
   const {
     rate,
-    notes
+    notes,
+    companyId
      } = req.body;
 
   const 
@@ -260,7 +262,8 @@ console.log("inside clockins ADD");
       invoice_id: undefined,
       break_start,
       break_end,
-      worked_hours: workedHours
+      worked_hours: workedHours,
+      company_id  : companyId
     },{
       ignoreUndefined: true
     }
@@ -690,7 +693,7 @@ console.log("req.query", req.query)
       //     client: client.nickname
       //   });
       // };
-  
+console.log("!@#1allClockins", allClockins)
       return res.status(200).json({
         count: allClockins.length,
         allClockins
