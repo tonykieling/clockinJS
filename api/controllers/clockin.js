@@ -10,8 +10,7 @@ const Email = require("../helpers/send-email.js");
 
 // it gets all clockins from the system - on purpose with no auth
 const get_all = async (req, res) => {
-console.log("inside clockins get_all");
-console.log("%%%req.query", req.query)
+  console.log("inside clockins get_all");
   const checkInvoiceCode = require("./aux/checkInvoiceCode.js");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
@@ -93,7 +92,6 @@ console.log("%%%req.query", req.query)
         error: `No clockins at all.`
       });
     }
-console.log("!@#22allClockins", allClockins)
 
 
     /**
@@ -514,7 +512,7 @@ const get_clockins_by_invoice = async (req, res) => {
           ])
           .sort({date: 1});
       }
-  // console.log("ALLCLOCKINS", allClockins);
+
       if (!allClockins || allClockins.length < 1) {
         return res.status(200).json({
           message: `No clockins at all.`
@@ -576,7 +574,9 @@ console.log("req.query", req.query)
     const 
       // clientId  = req.query.clientId === "undefined" ? undefined : req.query.clientId,
       date          = req.query.date,
-      typeQuestion  = req.query.type;
+      typeQuestion  = req.query.type,
+      clientId      = req.query.clientId || req.query.companyId;  
+    ;
 
     const
       dateStart = (typeQuestion === "byDate")
@@ -619,6 +619,7 @@ console.log("req.query", req.query)
                         },
         };      
     }
+
 
     try {
       const allClockins = await Clockin
@@ -681,7 +682,10 @@ console.log("req.query", req.query)
           message: `No clockins at all.`
         });
       }
-  
+console.log("flagggggggg", clientId)
+      const checkInvoiceCode = req.query.queryLastInvoiceCode && require("./aux/checkInvoiceCode.js");
+      const codeSuggestion = req.query.queryLastInvoiceCode ? await checkInvoiceCode(userId, clientId) : null;
+
       // if (clientId) {
       //   const client = await Client
       //     .findById( clientId )
@@ -693,10 +697,11 @@ console.log("req.query", req.query)
       //     client: client.nickname
       //   });
       // };
-console.log("!@#1allClockins", allClockins)
+
       return res.status(200).json({
         count: allClockins.length,
-        allClockins
+        allClockins,
+        codeSuggestion
       });
     
     } catch(err) {

@@ -220,7 +220,7 @@ renderDataTable = (invoices) => {
           <GetClients 
             client        = { this.state.client }
             getClientInfo = { this.getClientInfo }
-            company       = { true}
+            companyFlag   = { true}
           /> { /* mount the Dropbox Button with all clients for the user */ }
 
           <br></br>

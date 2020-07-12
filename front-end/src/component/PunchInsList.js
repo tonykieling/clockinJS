@@ -93,8 +93,6 @@ class PunchInsList extends Component {
       }
     } else
       this.messageValidationMethod();
-
-    this.clearMessage();
   }
 
 
@@ -167,15 +165,6 @@ class PunchInsList extends Component {
       message           : "Please, select client.",
       classNameMessage  : "messageFailure"
     });
-  }
-
-
-  clearMessage = () => {
-    setTimeout(() => {
-      this.setState({
-        message: ""
-      });
-    }, 3000);
   }
 
 

@@ -65,7 +65,7 @@ function PunchInModal(props) {
       setMessage(err);
     }
   }
-console.log("props", props)
+
   return (
     <div>
         <Modal

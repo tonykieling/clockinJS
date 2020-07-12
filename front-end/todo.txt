@@ -265,9 +265,10 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
       - right now punchin is being made without company info. In the future, it will be possible to consider recording companyId, as well.
       ?! still in definition. Defined. See line above
       --! line above changed. The definition: the field company_id was created on clockin schema to record the data regarding a company, when it is the case. Right now there are many clockins in database production, so because of this legacy, I choose to have a code to look up for company, at the clockins query. In the future only looking for company_id will be enough - this is typeQuestion = toCompany.
-    - get clockins
+    X- get clockins
       - it's working for PunchInList, but need to check about client information when list is to company
     - add invoice
+      - invoice also must have company_id field
   - client's FE:
     X- client's form needs to have a field "link this client to a company"
       X- when it happes, there is an option in a field "rate as for the Company"

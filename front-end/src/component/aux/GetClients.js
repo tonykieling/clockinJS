@@ -41,6 +41,7 @@ function GetClients(props) {
         },
       );
 
+      console.log("props", props)
       if (getClients.data.count) {
         if (props.companyFlag) {
           setclients(getClients.data.message.filter(e => !e.linked_company));

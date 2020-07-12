@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 
 const invoiceSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
+
   date: {
     type: Date,
     required: true
@@ -63,6 +64,10 @@ const invoiceSchema = mongoose.Schema({
 
   reason_adjustment: {
     type: String
+  },
+
+  for_company: {
+    type  : Boolean
   }
 
 });

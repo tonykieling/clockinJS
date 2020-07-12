@@ -9,6 +9,7 @@ import GetClients from "./aux/GetClients.js";
 import { getCurrentDateTime } from "./aux/formatDate.js";
 import PunchInModal from "./PunchInModal.js";
 import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
+import { getClockins } from "./aux/getClockins.js";
 
 
 
@@ -27,10 +28,10 @@ class InvoiceNew extends Component {
     super(props);
     this.textCode = React.createRef();
     this.state = {
-      // dateStart         : "2020-03-04",
-      // dateEnd           : "2020-04-13",
-      dateStart         : "",
-      dateEnd           : "",
+      dateStart         : "2020-07-01",
+      dateEnd           : "2020-07-13",
+      // dateStart         : "",
+      // dateEnd           : "",
       clientId          : "",
       clockinList       : [],
       client            : "",
@@ -47,7 +48,8 @@ class InvoiceNew extends Component {
       messageInvoice    : "",
       disableInvGenBtn  : false,
       codeMessage       : "",
-      lastUsedCode      : ""
+      lastUsedCode      : "",
+      company           : ""
     }
   };
 
@@ -73,35 +75,51 @@ class InvoiceNew extends Component {
     if (!this.state.dateStart || !this.state.dateEnd) {
       this.setState({
         message           : "Please, select Client and set Date Start and Date End.",
-        classNameMessage  : "messageFailure"
+        classNameMessage  : "messageFailure",
+        messageInvoice    : ""
       });      
     } else if (this.state.dateEnd < this.state.dateStart) {
       this.setState({
         message           : "Date End has to be greater or equal than Date Start.",
-        classNameMessage  : "messageFailure"
+        classNameMessage  : "messageFailure",
+        messageInvoice    : ""
       });
-    } else if (this.state.dateStart && this.state.dateEnd && this.state.client) {
+    } else if (this.state.dateStart && this.state.dateEnd && (this.state.client || this.state.company)) {
       const
         dateStart             = this.state.dateStart,
         dateEnd               = this.state.dateEnd,
-        clientId              = this.state.clientId,
+        clientId              = this.state.clientId || this.state.company._id,
         queryLastInvoiceCode  = true;
 
-      const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}&queryLastInvoiceCode=${queryLastInvoiceCode}`;
+      // const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}&queryLastInvoiceCode=${queryLastInvoiceCode}`;
 
-      try {
-        const getClockins = await axios.get( 
-          url,
-          {  
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization" : `Bearer ${this.props.storeToken}` }
-        });
-        
-        if (getClockins.data.count){
-          const tempClockins          = getClockins.data.allClockins;
-          const invoiceSuggestionCode = getClockins.data.codeSuggestion || "";
+        const pastClockins  = this.state.company
+          ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, clientId, queryLastInvoiceCode)
+          : await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId, queryLastInvoiceCode)
 
+        // const pastClockins = await axios.get( 
+        //   url,
+        //   {  
+        //     headers: { 
+        //       "Content-Type": "application/json",
+        //       "Authorization" : `Bearer ${this.props.storeToken}` }
+        // });
+
+        if (pastClockins.error)
+          this.setState({
+            message           : pastClockins.error,
+            classNameMessage  : "messageFailure",
+            tableVisibility   : false,
+            messageInvoice    : ""
+          });
+// console.log("getClockins", getClockins)
+// console.log("###pastClockins", pastClockins)
+// if (1) return;
+
+        if (pastClockins.data.count){
+          const tempClockins          = pastClockins.data.allClockins;
+          const invoiceSuggestionCode = pastClockins.data.codeSuggestion || "";
+console.log("checkHERE", tempClockins)
           this.setState({
             clockinList       : tempClockins,
             clockInListTable  : this.renderDataTable(tempClockins),
@@ -114,7 +132,8 @@ class InvoiceNew extends Component {
             message           : "",
             invoiceCode       : invoiceSuggestionCode.newCode ||  invoiceSuggestionCode,
             codeMessage       : invoiceSuggestionCode ? (invoiceSuggestionCode.newCode ? "Suggested code" : "Last used code") : "",
-            lastUsedCode      : invoiceSuggestionCode && !invoiceSuggestionCode.newCode && invoiceSuggestionCode
+            lastUsedCode      : invoiceSuggestionCode && !invoiceSuggestionCode.newCode && invoiceSuggestionCode,
+            messageInvoice    : ""
           });
 
           this.generatorBtn.scrollIntoView({ behavior: "smooth" });
@@ -123,20 +142,14 @@ class InvoiceNew extends Component {
           this.setState({
             message           : "No clockins for this period.",
             classNameMessage  : "messageFailure",
-            tableVisibility   : false
+            tableVisibility   : false,
+            messageInvoice    : ""
           });
 
-          this.clearMessage();
+          // this.clearMessage();
         }
 
-      } catch(err) {
-        this.setState({
-          message           : err.message,
-          classNameMessage  : "messageFailure"
-        });
 
-        this.clearMessage();
-      }
     } else {
       this.setState({
         message           : "Please, select client and set dates.",
@@ -191,12 +204,15 @@ class InvoiceNew extends Component {
         dateEnd   : this.state.dateEnd,
         notes     : this.state.notes,
         clientId  : this.state.clientId,
-        code      : this.state.invoiceCode.toUpperCase()
+        code      : this.state.invoiceCode.toUpperCase(),
+        company   : this.state.company._id ? true : undefined,
+        clockinArray : this.state.clockinList
       }
+console.log("@@@sending invoice data:", data)
 
       const url = "/invoice";
         try {
-          const Invoice = await axios.post( 
+          const invoice = await axios.post( 
             url,
             data,
             {  
@@ -204,23 +220,25 @@ class InvoiceNew extends Component {
                 "Content-Type": "application/json",
                 "Authorization" : `Bearer ${this.props.storeToken}` }
           });
-          
-          if (Invoice.data.message) {
+
+          if (invoice.data.message) {
+            const newClockinTable = this.state.clockinList.map(e => ({...e, invoice: {code: data.code}}));
+
             this.setState({
               messageInvoice          : `Invoice has been Generated!`,
               classNameMessage        : "messageSuccess",
               clockinWithInvoiceCode  : true,
               invoiceDate             : "",
               lastUsedCode            : "",
-              codeMessage             : ""
+              codeMessage             : "",
+              clockinList             : newClockinTable,
+              clockInListTable        : this.renderDataTable(newClockinTable)
             });
 
             this.clearMessage();
-            // reload clockins after creating invoice
-            this.getClockinsBtn.click();
 
           } else
-            throw (Invoice.data.error);
+            throw (invoice.data.error);
 
         } catch(err) {
           console.log("errrr", err);
@@ -238,7 +256,6 @@ class InvoiceNew extends Component {
   renderDataTable = (clockins) => {
     return clockins.map((clockin, index) => {
       const clockinsToSend = renderClockinDataTable(clockin, index);
-
       if (thinScreen) {   // small devices
         return (
           <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
@@ -307,7 +324,8 @@ class InvoiceNew extends Component {
 
   getClientInfo = client => {
     this.setState({
-      client,
+      client          : !client.company && client,
+      company         : !!client.company && client,
       clientId        : client._id,
       disabledIPBtn   : false,
       tableVisibility : false
@@ -337,10 +355,13 @@ class InvoiceNew extends Component {
           <Card.Body>
 
           <GetClients 
-            client        = { this.state.client }
+            client        = { this.state.client || this.state.company }
             getClientInfo = { this.getClientInfo }
-            company       = { true}
-          /> { /* mount the Dropbox Button with all clients for the user */ }
+            companyFlag   = { true}
+          /> { /**
+           * mount the Dropbox Button with all clients for the user
+           * * invoice generation is not available for clients linked to a compnay, only for that company.
+           */ }
 
           <br></br>
           {/* <Form onSubmit={this.handleGetClockins} > */}
@@ -399,7 +420,7 @@ class InvoiceNew extends Component {
           ?
             <Card className="cardInvoiceGenListofClockins card">
               <Card.Header style={{textAlign: "center"}}>
-                Client: <b>{this.state.client.nickname || this.state.client.name}</b>, {" "}
+                Client: <b>{this.state.company.name || this.state.client.nickname || this.state.client.name}</b>, {" "}
                   <b>{this.state.clockinList.length}</b> {this.state.clockinList.length > 1 ? "Clockins" : "Clockin"}
               </Card.Header>
 
