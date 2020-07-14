@@ -36,8 +36,6 @@ class ClientsList extends Component {
       cEmail          : "",
       defaultRate     : "",
       typeKid         : "",
-      clientLinkedToCompany : "",
-      rateAsPerCompany      : false,
 
       tmp_name            : "",
       tmp_nickname        : "",
@@ -78,7 +76,13 @@ class ClientsList extends Component {
       showRate          : true,
       showNotes         : true,
       tmp_showRate      : true,
-      tmp_showNotes     : true
+      tmp_showNotes     : true,
+
+      company             : "",
+      linkClientToCompany : false,
+      rateAsPerCompany    : false,
+      disableRate         : false,
+      companyRate         : ""
     }
   }
 
@@ -350,7 +354,9 @@ class ClientsList extends Component {
 
       inactive      : this.state.tmp_inactive,
       showRate      : this.state.tmp_showRate,
-      showNotes     : this.state.tmp_showNotes
+      showNotes     : this.state.tmp_showNotes,
+
+      linkClientToCompany : false
     });
   }
 
@@ -390,8 +396,7 @@ class ClientsList extends Component {
                       onChange  = { () => this.setState({ 
                                       linkClientToCompany : true,
                                       rateAsPerCompany    : true,
-                                      disableRate         : true,
-                                      defaultRate         : this.state.companyRate || ""
+                                      disableRate         : true
                                   })}
                     />
                     <Form.Check 
@@ -403,30 +408,51 @@ class ClientsList extends Component {
                       disabled  = { this.state.disableEditForm}
                       onChange  = { () => this.setState({ 
                                       linkClientToCompany : false,
-                                      disableRate         : false
+                                      disableRate         : false,
+                                      defaultRate         : this.state.tmp_defaultRate
                                   })}
                     />
 
                     { this.state.linkClientToCompany && window.innerWidth <= 700 &&
                         <GetClients
-                          // company       = { this.state.company }
-                          client        = { this.state.company }
-                          companyFlag   = { true}
-                          getClientInfo = { this.getClientInfo }
+                          client          = { this.state.company }
+                          companyFlag     = { true}
+                          clientListFlag  = { true}
+                          getCompanyInfo  = { this.getCompanyInfo}
                         />
                     }
 
                 </Form.Group>
                 { this.state.linkClientToCompany && window.innerWidth > 700 &&
                     <GetClients
-                      // company       = { this.state.company }
-                      client        = { this.state.company }
-                      companyFlag   = { true}
-                      getClientInfo = { this.getClientInfo }
+                      client          = { this.state.company }
+                      companyFlag     = { true}
+                      clientListFlag  = { true}
+                      getCompanyInfo  = { this.getCompanyInfo}
                     />
                 }
               </Form.Group>
             </React.Fragment>
+  }
+
+
+  changeRateCheck = () => {
+    this.setState({
+      defaultRate       : !this.state.rateAsPerCompany ? this.state.companyRate : this.state.defaultRate,
+      rateAsPerCompany  : !this.state.rateAsPerCompany,
+      disableRate       : !this.state.disableRate
+    }, () => this.textInput13.focus());
+  }
+
+
+  getCompanyInfo = company => {
+    this.setState({
+      company,
+      message     : "",
+      companyRate : company.default_rate,
+      defaultRate : this.state.rateAsPerCompany ? company.default_rate : this.state.defaultRate,
+      messageControlDefaultRate : ""
+    });
   }
 
 
@@ -770,8 +796,24 @@ class ClientsList extends Component {
                     </React.Fragment>
                 }
 
+
+
+
+
+                { this.state.linkClientToCompany && this.YNComponent() }
+
                 <Form.Group controlId="formDefaultRate">
                   <Form.Label className="cardLabel">Rate</Form.Label>
+                  { this.state.linkClientToCompany &&
+                    <Form.Check 
+                      inline 
+                      label     = "Rate as per company ?"
+                      checked   = {this.state.rateAsPerCompany}
+                      type      = "checkbox"
+                      style     = {{marginLeft: "1rem"}}
+                      onChange  = { this.changeRateCheck }
+                    />
+                  }
                   <Form.Control
                     type        = "number"
                     placeholder = {"Type the hourly rate - CAD$"}
@@ -788,7 +830,8 @@ class ClientsList extends Component {
                 </Form.Group>
 
                 <br />
-                { this.state.typeKid && this.YNComponent()}
+
+                { this.state.typeKid && !this.state.linkClientToCompany && this.YNComponent()}
 
 
                 <Form.Group controlId="formShowRate">
