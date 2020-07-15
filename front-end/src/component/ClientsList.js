@@ -356,7 +356,9 @@ class ClientsList extends Component {
       showRate      : this.state.tmp_showRate,
       showNotes     : this.state.tmp_showNotes,
 
-      linkClientToCompany : false
+      linkClientToCompany : false,
+      company             : ""
+
     });
   }
 
@@ -416,7 +418,7 @@ class ClientsList extends Component {
                     { this.state.linkClientToCompany && window.innerWidth <= 700 &&
                         <GetClients
                           client          = { this.state.company }
-                          companyFlag     = { true}
+                          notKidFlag      = { true}
                           clientListFlag  = { true}
                           getCompanyInfo  = { this.getCompanyInfo}
                         />
@@ -426,7 +428,7 @@ class ClientsList extends Component {
                 { this.state.linkClientToCompany && window.innerWidth > 700 &&
                     <GetClients
                       client          = { this.state.company }
-                      companyFlag     = { true}
+                      notKidFlag      = { true}
                       clientListFlag  = { true}
                       getCompanyInfo  = { this.getCompanyInfo}
                     />

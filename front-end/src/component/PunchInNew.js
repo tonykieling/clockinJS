@@ -299,7 +299,7 @@ console.log("client", client)
               <GetClients 
                 client        = { this.state.client }
                 getClientInfo = { this.getClientInfo } 
-                companyFlag   = { false}
+                punchinFlag   = { true }
               />
                 
             </div>

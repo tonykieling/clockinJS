@@ -280,7 +280,10 @@ console.log("createClient:::", createClient)
                       style     = {{marginLeft: "1rem"}}
                       onChange  = { () => this.setState({ 
                                       linkClientToCompany : false,
-                                      disableRate         : false
+                                      disableRate         : false,
+                                      company             : "",
+                                      companyRate         : "",
+                                      defaultRate         : ""
                                   })}
                     />
 
@@ -288,7 +291,7 @@ console.log("createClient:::", createClient)
                         <GetClients
                           // company       = { this.state.company }
                           client        = { this.state.company }
-                          companyFlag   = { true}
+                          notKidFlag    = { true}
                           getClientInfo = { this.getClientInfo }
                         />
                     }
@@ -298,7 +301,7 @@ console.log("createClient:::", createClient)
                     <GetClients
                       // company       = { this.state.company }
                       client        = { this.state.company }
-                      companyFlag   = { true}
+                      notKidFlag    = { true}
                       getClientInfo = { this.getClientInfo }
                     />
                 }

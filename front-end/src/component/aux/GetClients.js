@@ -43,13 +43,22 @@ function GetClients(props) {
 
       // console.log("props", props)
       if (getClients.data.count) {
-        if (props.companyFlag) {
+        // if (props.companyFlag) {
+        //   setclients(getClients.data.message.filter(e => !e.linked_company));
+        //   // setclients(getClients.data.message.filter(e => !e.type_kid)); 
+        //   // not doing this way because when generating invoice need kids not linked to company
+        //   // so, keep showing kids with no linked_company in the menu
+        // } else if (props.companyFlag === false) {
+        //   setclients(getClients.data.message.filter(e => !e.company));
+        // } else {
+        //   setclients(getClients.data.message);
+        // }
+        if (props.invoiceFlag) {
           setclients(getClients.data.message.filter(e => !e.linked_company));
-          // setclients(getClients.data.message.filter(e => !e.type_kid)); 
-          // not doing this way because when generating invoice need kids not linked to company
-          // so, keep showing kids with no linked_company in the menu
-        } else if (props.companyFlag === false) {
+        } else if (props.punchinFlag) {
           setclients(getClients.data.message.filter(e => !e.company));
+        } else if (props.notKidFlag) {
+          setclients(getClients.data.message.filter(e => !e.type_kid));
         } else {
           setclients(getClients.data.message);
         }
@@ -66,7 +75,7 @@ function GetClients(props) {
   const populateDropbox = () => {
     return(
       <Dropdown>
-        <Dropdown.Toggle variant={ props.companyFlag ? "info" : "success"} id="dropdown-basic">
+        <Dropdown.Toggle variant={ props.invoiceFlag || props.notKidFlag ? "info" : "success"} id="dropdown-basic">
           {(props.client && (props.client.nickname || props.client.name)) || `Select Client` }
         </Dropdown.Toggle>
         

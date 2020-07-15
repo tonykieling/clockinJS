@@ -357,7 +357,7 @@ console.log("@@@sending invoice data:", data)
           <GetClients 
             client        = { this.state.client || this.state.company }
             getClientInfo = { this.getClientInfo }
-            companyFlag   = { true}
+            invoiceFlag   = { true }
           /> { /**
            * mount the Dropbox Button with all clients for the user
            * * invoice generation is not available for clients linked to a compnay, only for that company.
