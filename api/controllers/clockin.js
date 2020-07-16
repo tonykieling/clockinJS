@@ -5,6 +5,7 @@ const Clockin   = require("../models/clockin.js");
 const Client    = require("../models/client.js");
 // const Invoice   = require("../models/invoice.js");
 const Email = require("../helpers/send-email.js");
+// const invoice = require("../models/invoice.js");
 
 // mongoose.set("debug", true);
 
@@ -14,6 +15,7 @@ const get_all = async (req, res) => {
   const checkInvoiceCode = require("./aux/checkInvoiceCode.js");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
+console.log("^^^req.query", req. query)
 
   const 
     clientId  = req.query.clientId,
@@ -569,7 +571,6 @@ const get_clockins_by_invoice = async (req, res) => {
  */
 const get_general = async (req, res) => {
   console.log("inside clockins get_general");
-console.log("req.query", req.query)
     const userId    = req.userData.userId;
     const 
       // clientId  = req.query.clientId === "undefined" ? undefined : req.query.clientId,
@@ -610,6 +611,52 @@ console.log("req.query", req.query)
           $lte: dateEnd
         },        
       }
+    } else if (typeQuestion === "invoiceClockins") {
+      const invoiceId = req.query.invoiceId;
+      conditions = {
+        invoice_id  : mongoose.Types.ObjectId(invoiceId)
+      };
+      const allClockins = await Clockin
+        .aggregate([
+          { $match: conditions },
+          { $lookup: 
+            {
+              from: "clients",
+              localField: "client_id",
+              foreignField: "_id",
+              as: "client"
+            }
+          },
+          {
+            $unwind: {
+              path :'$client',
+              preserveNullAndEmptyArrays: true
+            }
+          },
+          {   
+            $project:{
+                date            : 1,
+                time_start      : 1,
+                time_end        : 1,
+                rate            : 1,
+                notes           : 1,
+                client_id       : 1,
+                user_id         : 1,
+                break_start     : 1,
+                break_end       : 1,
+                worked_hours    : 1,
+                invoice_id      : 1,
+                client_name     : "$client.name",
+                client_nickname : "$client.nickname"
+            } 
+        }
+        ])
+        .sort({ time_start: 1});
+
+      return res.json({
+        count: allClockins.length,
+        allClockins
+      });
     } else {
       conditions = {
           user_id   : mongoose.Types.ObjectId(userId),
@@ -675,7 +722,8 @@ console.log("req.query", req.query)
             } 
         }
         ])
-        .sort({time_start: 1}); 
+        .sort({time_start: 1});
+// console.log("^^^allClockins", allClockins)
 
       if (!allClockins || allClockins.length < 1) {
         return res.status(200).json({

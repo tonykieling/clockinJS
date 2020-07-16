@@ -211,6 +211,7 @@ renderDataTable = (invoices) => {
             updateScreen      = { this.updateScreen }
             openInvoiceModal  = { this.state.openInvoiceModal }
             changeInvoiceData = { data => this.updateInvoiceData(data)}
+            storeToken        = { this.props.storeToken}
          />
         : "" }
         

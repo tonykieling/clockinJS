@@ -10,6 +10,9 @@ const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
       case "toCompany":
         url = `/clockin/clockins/?userToken=${userToken}&dateStart=${moreArgs[0]}&dateEnd=${moreArgs[1]}&companyId=${moreArgs[2]}&queryLastInvoiceCode=${moreArgs[3]}&type=${typeOfOperation}`;
         break;
+      case "invoiceClockins":
+        url = `/clockin/clockins?userToken=${userToken}&invoiceId=${moreArgs[0]}&type=${typeOfOperation}`;
+        break
       case "normal":
         url = `/clockin?dateStart=${moreArgs[0]}&dateEnd=${moreArgs[1]}&clientId=${moreArgs[2]}&queryLastInvoiceCode=${moreArgs[3]}`;
         break;
