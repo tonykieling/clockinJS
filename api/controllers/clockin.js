@@ -15,7 +15,7 @@ const get_all = async (req, res) => {
   const checkInvoiceCode = require("./aux/checkInvoiceCode.js");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
-console.log("^^^req.query", req. query)
+// console.log("^^^req.query", req. query)
 
   const 
     clientId  = req.query.clientId,
