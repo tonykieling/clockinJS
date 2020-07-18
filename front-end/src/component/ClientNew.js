@@ -36,7 +36,8 @@ class KidClientNew extends Component {
       linkClientToCompany : false,
       rateAsPerCompany    : false,
       disableRate         : false,
-      companyRate         : ""
+      companyRate         : "",
+      companyFree         : true
     }
 
   handleChange = e => {
@@ -135,7 +136,7 @@ class KidClientNew extends Component {
       }
       
 
-    } else if ( this.state.linkClientToCompany && !this.state.company) {
+    } else if ( this.state.linkClientToCompany && !this.state.company && !this.state.companyFree) {
       this.setState({
         message   : "Please, select company.",
         className : "messageFailure"
@@ -161,7 +162,7 @@ class KidClientNew extends Component {
         typeKid     : true,
 
         linkedCompany     : this.state.company._id || undefined,
-        rateAsPerCompany  : this.state.rateAsPerCompany || undefined
+        rateAsPerCompany  : this.state.companyFree ? undefined : (this.state.rateAsPerCompany || undefined)
       }
 console.log("createClient:::", createClient)
       try {
@@ -222,7 +223,8 @@ console.log("createClient:::", createClient)
         disableBtn  : false,
         company     : "",
         companyRate : "",
-        rateAsPerCompany : false
+        rateAsPerCompany : false,
+        companyFree : true
       });
 
       window.scrollTo(0, 0);
@@ -244,7 +246,8 @@ console.log("createClient:::", createClient)
       message     : "",
       companyRate : company.default_rate,
       defaultRate : this.state.rateAsPerCompany ? company.default_rate : this.state.defaultRate,
-      messageControlDefaultRate : ""
+      messageControlDefaultRate : "",
+      companyFree : false
     });
   }
 
@@ -269,7 +272,7 @@ console.log("createClient:::", createClient)
                                       linkClientToCompany : true,
                                       rateAsPerCompany    : true,
                                       disableRate         : true,
-                                      defaultRate         : this.state.companyRate || ""
+                                      // defaultRate         : this.state.companyRate || ""
                                   })}
                     />
                     <Form.Check 
@@ -283,27 +286,29 @@ console.log("createClient:::", createClient)
                                       disableRate         : false,
                                       company             : "",
                                       companyRate         : "",
-                                      defaultRate         : ""
+                                      // defaultRate         : ""
                                   })}
                     />
 
                     { this.state.linkClientToCompany && window.innerWidth <= 700 &&
-                        <GetClients
-                          // company       = { this.state.company }
-                          client        = { this.state.company }
-                          notKidFlag    = { true}
-                          getClientInfo = { this.getClientInfo }
-                        />
+                        <div className="gridClientBtContainer">
+                          <GetClients
+                            client        = { this.state.company }
+                            notKidFlag    = { true}
+                            getClientInfo = { this.getClientInfo }
+                          />
+                        </div>
                     }
 
                 </Form.Group>
                 { this.state.linkClientToCompany && window.innerWidth > 700 &&
-                    <GetClients
-                      // company       = { this.state.company }
-                      client        = { this.state.company }
-                      notKidFlag    = { true}
-                      getClientInfo = { this.getClientInfo }
-                    />
+                    <div className="gridClientBtContainer">
+                      <GetClients
+                        client        = { this.state.company }
+                        notKidFlag    = { true}
+                        getClientInfo = { this.getClientInfo }
+                      />
+                    </div>
                 }
               </Form.Group>
             </React.Fragment>
@@ -504,7 +509,7 @@ console.log("createClient:::", createClient)
 
             <Form.Group controlId="formDefaultRate">
               <Form.Label className="cardLabel">Rate</Form.Label>
-              { this.state.linkClientToCompany &&
+              { this.state.linkClientToCompany && this.state.company &&
                 <Form.Check 
                   inline 
                   label     = "Rate as per company ?"
@@ -522,7 +527,7 @@ console.log("createClient:::", createClient)
                 value       = { this.state.defaultRate}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput13 = input }
-                disabled    = { this.state.disableRate }
+                disabled    = { !this.state.company ? false : this.state.disableRate }
               />
               <Form.Text className="messageControl-user">
                 {this.state.messageControlDefaultRate}

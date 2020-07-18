@@ -40,19 +40,9 @@ function GetClients(props) {
           }
         },
       );
-
-      // console.log("props", props)
+console.log("getClients.data=>", getClients.data)
+console.log("props", props)
       if (getClients.data.count) {
-        // if (props.companyFlag) {
-        //   setclients(getClients.data.message.filter(e => !e.linked_company));
-        //   // setclients(getClients.data.message.filter(e => !e.type_kid)); 
-        //   // not doing this way because when generating invoice need kids not linked to company
-        //   // so, keep showing kids with no linked_company in the menu
-        // } else if (props.companyFlag === false) {
-        //   setclients(getClients.data.message.filter(e => !e.company));
-        // } else {
-        //   setclients(getClients.data.message);
-        // }
         if (props.invoiceFlag) {
           setclients(getClients.data.message.filter(e => !e.linked_company));
         } else if (props.punchinFlag) {
@@ -128,10 +118,10 @@ function GetClients(props) {
                 noMethod  = { logout }
               />
         }
-
-        { clients
+        
+        { clients.length
           ? populateDropbox()
-          : errorMsg || "No clients at all" 
+          : errorMsg || props.notKidFlag ? "No company at this time" : "No clients at all" 
         }
 
       </>

@@ -353,66 +353,66 @@ console.log("@@@sending invoice data:", data)
         <Card className="card-settings">
           <Card.Header>Invoice Generator</Card.Header>
           <Card.Body>
+            <div className="gridClientBtContainer">
+              <GetClients 
+                client        = { this.state.client || this.state.company }
+                getClientInfo = { this.getClientInfo }
+                invoiceFlag   = { true }
+              /> { /**
+               * mount the Dropbox Button with all clients for the user
+               * * invoice generation is not available for clients linked to a compnay, only for that company.
+               */ }
+            </div>
 
-          <GetClients 
-            client        = { this.state.client || this.state.company }
-            getClientInfo = { this.getClientInfo }
-            invoiceFlag   = { true }
-          /> { /**
-           * mount the Dropbox Button with all clients for the user
-           * * invoice generation is not available for clients linked to a compnay, only for that company.
-           */ }
+            <br></br>
+            <Form>
 
-          <br></br>
-          {/* <Form onSubmit={this.handleGetClockins} > */}
-          <Form>
+              <Form.Group as={Row} controlId="formST">
+                <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
+                <Col sm="5">
+                  <Form.Control
+                    type        = "date"
+                    name        = "dateStart"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.dateStart} 
+                  />
+                </Col>
+              </Form.Group>
 
-            <Form.Group as={Row} controlId="formST">
-              <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
-              <Col sm="5">
-                <Form.Control
-                  type        = "date"
-                  name        = "dateStart"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.dateStart} 
-                />
-              </Col>
-            </Form.Group>
+              <Form.Group as={Row} controlId="formET">
+                <Col sm="3">
+                  <Form.Label className="cardLabel">Date End:</Form.Label>
+                </Col>
+                <Col sm="5">
+                  <Form.Control                
+                    type        = "date"
+                    name        = "dateEnd"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.dateEnd} 
+                  />
+                </Col>
+              </Form.Group>
 
-            <Form.Group as={Row} controlId="formET">
-              <Col sm="3">
-                <Form.Label className="cardLabel">Date End:</Form.Label>
-              </Col>
-              <Col sm="5">
-                <Form.Control                
-                  type        = "date"
-                  name        = "dateEnd"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.dateEnd} 
-                />
-              </Col>
-            </Form.Group>
+              <Card.Footer className= { this.state.classNameMessage}>          
+                { this.state.message
+                  ? this.state.message
+                  : <br /> }
+              </Card.Footer>
+              <br />
 
-          <Card.Footer className= { this.state.classNameMessage}>          
-            { this.state.message
-              ? this.state.message
-              : <br /> }
-          </Card.Footer>
-          <br />
+              <div className="d-flex flex-column">
+                <Button 
+                  variant   = "primary" 
+                  type      = "submit"
+                  onClick   = { this.handleGetClockins } 
+                  ref       = {input => this.getClockinsBtn = input }  
+                >
+                  Get Clockins
+                </Button>
+              </div>
 
-          <div className="d-flex flex-column">
-            <Button 
-              variant   = "primary" 
-              type      = "submit"
-              onClick   = { this.handleGetClockins } 
-              ref       = {input => this.getClockinsBtn = input }  
-            >
-              Get Clockins
-            </Button>
-          </div>
-
-          </Form>
-        </Card.Body>
+            </Form>
+          </Card.Body>
       </Card>
 
 

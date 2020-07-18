@@ -218,56 +218,58 @@ renderDataTable = (invoices) => {
         <Card className="card-settings">
           <Card.Header>Invoice's List and Edit</Card.Header>
           <Card.Body>
-          <GetClients 
-            client        = { this.state.client }
-            getClientInfo = { this.getClientInfo }
-            invoiceFlag   = { true }
-          /> { /* mount the Dropbox Button with all clients for the user */ }
+            <div className="gridClientBtContainer">
+              <GetClients 
+                client        = { this.state.client }
+                getClientInfo = { this.getClientInfo }
+                invoiceFlag   = { true }
+              /> { /* mount the Dropbox Button with all clients for the user */ }
+            </div>
 
-          <br></br>
-          <Form onSubmit={this.handleGetInvoices} >
+            <br></br>
+            <Form onSubmit={this.handleGetInvoices} >
 
-            <Form.Group as={Row} controlId="formST">
-              <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
-              <Col sm="5">
-                <Form.Control
-                  type        = "date"
-                  name        = "dateStart"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.dateStart} />
-              </Col>
-            </Form.Group>
+              <Form.Group as={Row} controlId="formST">
+                <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
+                <Col sm="5">
+                  <Form.Control
+                    type        = "date"
+                    name        = "dateStart"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.dateStart} />
+                </Col>
+              </Form.Group>
 
-            <Form.Group as={Row} controlId="formET">
-              <Col sm="3">
-                <Form.Label className="cardLabel">Date End:</Form.Label>
-              </Col>
-              <Col sm="5">
-                <Form.Control                
-                  type        = "date"
-                  name        = "dateEnd"
-                  onChange    = {this.handleChange}
-                  value       = {this.state.dateEnd} />
-              </Col>
-            </Form.Group>
+              <Form.Group as={Row} controlId="formET">
+                <Col sm="3">
+                  <Form.Label className="cardLabel">Date End:</Form.Label>
+                </Col>
+                <Col sm="5">
+                  <Form.Control                
+                    type        = "date"
+                    name        = "dateEnd"
+                    onChange    = {this.handleChange}
+                    value       = {this.state.dateEnd} />
+                </Col>
+              </Form.Group>
 
-          <Card.Footer className= { this.state.classNameMessage}>          
-            { this.state.message
-              ? this.state.message
-              : <br /> }
-          </Card.Footer>
-          <br />
+              <Card.Footer className= { this.state.classNameMessage}>          
+                { this.state.message
+                  ? this.state.message
+                  : <br /> }
+              </Card.Footer>
+              <br />
 
-          <div className="d-flex flex-column">
-            <Button 
-              variant   = "primary" 
-              type      = "submit" 
-              onClick   = { this.handleGetInvoices } 
-              ref       = {input => this.getInvoicesBtn = input }
-            >
-              Get Invoices
-            </Button>
-          </div>
+              <div className="d-flex flex-column">
+                <Button 
+                  variant   = "primary" 
+                  type      = "submit" 
+                  onClick   = { this.handleGetInvoices } 
+                  ref       = {input => this.getInvoicesBtn = input }
+                >
+                  Get Invoices
+                </Button>
+              </div>
             
           </Form>
         </Card.Body>
@@ -277,7 +279,6 @@ renderDataTable = (invoices) => {
       { this.state.tableVisibility
           ?
             <Card className="cardInvoiceGenListofInvoices">
-              {/* <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label> */}
               <Card.Header style={{textAlign: "center"}}>
                 Client: <b>{this.state.client.nickname || this.state.client.name}</b>, {" "}
                   <b>{this.state.invoiceList.length}</b> {this.state.invoiceList.length > 1 ? "Invoices" : "Invoice"}
