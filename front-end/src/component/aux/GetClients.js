@@ -40,14 +40,16 @@ function GetClients(props) {
           }
         },
       );
-console.log("getClients.data=>", getClients.data)
-console.log("props", props)
+      
       if (getClients.data.count) {
         if (props.invoiceFlag) {
           setclients(getClients.data.message.filter(e => !e.linked_company));
         } else if (props.punchinFlag) {
           setclients(getClients.data.message.filter(e => !e.company));
         } else if (props.notKidFlag) {
+          //it checks whether there is(are) company and inform to the parent component
+          props.sureCompany && props.sureCompany();
+
           setclients(getClients.data.message.filter(e => !e.type_kid));
         } else {
           setclients(getClients.data.message);
@@ -121,6 +123,7 @@ console.log("props", props)
         
         { clients.length
           ? populateDropbox()
+          // : props.noCompanyMethod || errorMsg || "No clients at all" 
           : errorMsg || props.notKidFlag ? "No company at this time" : "No clients at all" 
         }
 

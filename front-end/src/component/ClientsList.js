@@ -82,7 +82,8 @@ class ClientsList extends Component {
       linkClientToCompany : false,
       rateAsPerCompany    : false,
       disableRate         : false,
-      companyRate         : ""
+      companyRate         : "",
+      sureCompany         : false
     }
   }
 
@@ -207,7 +208,8 @@ class ClientsList extends Component {
               type_of_service : newClientData.data.newData.typeOfService || "",
               updateButton    : true,
               
-              inactive        : newClientData.data.newData.inactive || false
+              inactive        : newClientData.data.newData.inactive || false,
+              sureCompany     : false
             });
           else
             this.setState({
@@ -357,8 +359,8 @@ class ClientsList extends Component {
       showNotes     : this.state.tmp_showNotes,
 
       linkClientToCompany : false,
-      company             : ""
-
+      company             : "",
+      sureCompany         : false
     });
   }
 
@@ -384,10 +386,11 @@ class ClientsList extends Component {
   YNComponent = () => {
     return  <React.Fragment>
               <Form.Group controlId="formLinkClient">
-                <Form.Label className="cardLabel"> Link Client to a Company? </Form.Label>
-                <Form.Group className = "form-check-inline">
+                <Form.Label className="cardLabel form-check-inline"> Link Client to a Company? </Form.Label>
+                {/* <Form.Group className = "form-check-inline"> */}
                   <Form.Check
-                      style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
+                      // style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
+                      style     = {{marginLeft: "2rem"}}
                       inline
                       label     = "Yes"
                       checked   = { this.state.linkClientToCompany}
@@ -395,7 +398,7 @@ class ClientsList extends Component {
                       disabled  = { this.state.disableEditForm}
                       onChange  = { () => this.setState({ 
                                       linkClientToCompany : true,
-                                      rateAsPerCompany    : this.state.company ? true : undefined,
+                                      rateAsPerCompany    : this.state.sureCompany ? true : undefined,
                                       disableRate         : true
                                   })}
                     />
@@ -414,7 +417,7 @@ class ClientsList extends Component {
                                 })}
                   />
 
-                  { this.state.linkClientToCompany && window.innerWidth <= 700 &&
+                  {/* { this.state.linkClientToCompany && window.innerWidth <= 700 &&
                       <div className="gridClientBtContainer">
                         <GetClients
                           client          = { this.state.company }
@@ -423,21 +426,33 @@ class ClientsList extends Component {
                           getCompanyInfo  = { this.getCompanyInfo}
                         />
                       </div>
-                  }
+                  } */}
 
-                </Form.Group>
-                { this.state.linkClientToCompany && window.innerWidth > 700 &&
+                {/* </Form.Group> */}
+                {/* { this.state.linkClientToCompany && window.innerWidth > 700 && */}
+                { this.state.linkClientToCompany &&
                     <div className="gridClientBtContainer">
                       <GetClients
                         client          = { this.state.company }
                         notKidFlag      = { true}
                         clientListFlag  = { true}
+                        sureCompany     = { this.sureCompany}
                         getCompanyInfo  = { this.getCompanyInfo}
                       />
                     </div>
                 }
               </Form.Group>
             </React.Fragment>
+  }
+
+
+  // this method receive the confirmation that there is (are) company (ies)
+  sureCompany = () => {
+    // console.log("noCompanyMethod@@@@@@", this.state.rateAsPerCompany)
+    this.setState({
+      sureCompany       : true,
+      rateAsPerCompany  : true
+    });
   }
 
 
@@ -811,7 +826,7 @@ class ClientsList extends Component {
 
                 <Form.Group controlId="formDefaultRate">
                   <Form.Label className="cardLabel">Rate</Form.Label>
-                  { this.state.linkClientToCompany && this.state.company &&
+                  { this.state.linkClientToCompany && this.state.sureCompany &&
                       <Form.Check 
                         inline 
                         label     = "Rate as per company ?"
@@ -848,7 +863,8 @@ class ClientsList extends Component {
                     label     = "Yes"
                     checked   = { this.state.showRate}
                     type      = "radio"
-                    style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
+                    // style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
+                    style     = {{marginLeft: "2rem"}}
                     disabled    = {this.state.disableEditForm}
                     onChange  = { () => this.setState({ showRate: true})}
                   />
@@ -870,7 +886,8 @@ class ClientsList extends Component {
                     label     = "Yes"
                     checked   = { this.state.showNotes}
                     type      = "radio"
-                    style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
+                    // style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
+                    style     = {{marginLeft: "2rem"}}
                     disabled    = {this.state.disableEditForm}
                     onChange  = { () => this.setState({ showNotes: true})}
                   />
