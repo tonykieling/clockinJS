@@ -49,24 +49,25 @@ console.log("inside client get_all");
 // it gets one user
 const get_one = async (req, res) => {
 console.log("inside client get_one");
-
+console.log("$$$get client name$$$")
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;  
   
   try {
     const client = await Client
-      .findById(clientId)
-      .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
-
+      .find({ _id: clientId});
+      // .findById(clientId);
+      // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
+console.log("client", client)
     if (!client || client.length < 1)
       return res.status(200).json({
         error: `ECGO02: Client <id: ${clientId}> does not exist.`
       });
-    if (userId !== client.user_id && !userAdmin)
-      return res.status(200).json({
-        error: `ECGO03: Client <id: ${clientId}> belongs to another user.`
-      });
+    // if (userId !== client.user_id && !userAdmin)
+    //   return res.status(200).json({
+    //     error: `ECGO03: Client <id: ${clientId}> belongs to another user.`
+    //   });
 
     res.status(200).json({
       message: client
@@ -224,7 +225,7 @@ console.log("inside client add");
 // for now, only ADMIN is able to change any user's data
 const client_modify = async (req, res) => {
 console.log("inside client modify");
-
+console.log("$$$req.body", req.body)
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
@@ -258,9 +259,12 @@ console.log("inside client modify");
     type_of_service : typeOfService,
     inactive,
     showRate,
-    showNotes
-  } = req.body;
+    showNotes,
 
+    company,
+    rateAsPerCompany
+  } = req.body;
+console.log("$$$company", company)
   const birthday = req.body.birthday ? new Date(req.body.birthday) : undefined;
 
   try {
@@ -289,26 +293,29 @@ console.log("inside client modify");
 
           nickname, 
           birthday, 
-          mother      : mother ? mother.trim() : (client.mother ? "" : undefined),
-          mphone      : mPhone ? mPhone.trim() : (client.mphone ? "" : undefined),
-          memail      : mEmail ? mEmail.trim() : (client.memail ? "" : undefined),
-          father      : father ? father.trim() : (client.father ? "" : undefined),
-          fphone      : fPhone ? fPhone.trim() : (client.fphone ? "" : undefined),
-          femail      : fEmail ? fEmail.trim() : (client.femail ? "" : undefined),
-          consultant  : consultant ? consultant.trim() : (client.consultant ? "" : undefined), 
-          cphone      : cPhone ? cPhone.trim() : (client.cphone ? "" : undefined),
-          cemail      : cEmail ? cEmail.trim() : (client.cemail ? "" : undefined),
+          mother      : mother && mother.trim(),
+          mphone      : mPhone && mPhone.trim(),
+          memail      : mEmail && mEmail.trim(),
+          father      : father && father.trim(),
+          fphone      : fPhone && fPhone.trim(),
+          femail      : fEmail && fEmail.trim(),
+          consultant  : consultant && consultant.trim(), 
+          cphone      : cPhone && cPhone.trim(),
+          cemail      : cEmail && cEmail.trim(),
 
-          email           : email ? email.trim() : (client.email ? "" : undefined),
-          phone           : phone ? phone.trim() : (client.phone ? "" : undefined) ,
-          city            : city ? city.trim() : (client.city ? "" : undefined),
-          address         : address ? address.trim() : (client.address ? "" : undefined),
-          province        : province ? province.trim() : (client.province ? "" : undefined) ,
-          postal_code     : postalCode ? postalCode.trim() : (client.postal_code ? "" : undefined),
-          type_of_service : typeOfService ? typeOfService.trim() : (client.type_of_service ? "" : undefined),
+          email           : email && email.trim(),
+          phone           : phone && phone.trim(),
+          city            : city && city.trim(),
+          address         : address && address.trim(),
+          province        : province && province.trim(),
+          postal_code     : postalCode && postalCode.trim(),
+          type_of_service : typeOfService && typeOfService.trim(),
           inactive        : inactive === false ? false : (inactive == true ? true : undefined),
           showRate,
-          showNotes
+          showNotes,
+
+          linked_company  : mongoose.Types.ObjectId(company),
+          rate_as_per_company : rateAsPerCompany
         }, 
         {
           runValidators: true,
@@ -334,7 +341,7 @@ console.log("inside client modify");
       });
 
   } catch(err) {
-    console.trace("Error CM01: ", err.message);
+    console.trace("Error CM04: ", err.message);
     res.status(200).json({
       error: "Error CM04: Something bad"
     });

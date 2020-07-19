@@ -83,14 +83,16 @@ class ClientsList extends Component {
       rateAsPerCompany    : false,
       disableRate         : false,
       companyRate         : "",
-      sureCompany         : false
+      sureCompany         : false,
+
+      updateDropDown : false
     }
   }
 
 
   handleChange = event => {
     this.setState({
-      [event.target.name]: event.target.value || ""
+      [event.target.name]: event.target.value
     });
 
     event.target.name === "name"        && this.state.messageControlName && this.setState({ messageControlName: ""});
@@ -142,17 +144,17 @@ class ClientsList extends Component {
         default_rate  : defaultRate,
 
         nickname      : this.state.typeKid ? nickname : undefined,
-        birthday      : this.state.birthday || (this.state.tmp_birthday ? " " : undefined),
-        mother        : this.state.mother || (this.state.tmp_mother ? " " : undefined),
-        mPhone        : this.state.mPhone || (this.state.tmp_mPhone ? " " : undefined),
-        mEmail        : this.state.mEmail || (this.state.tmp_mEmail ? " " : undefined),
-        father        : this.state.father || (this.state.tmp_father ? " " : undefined),
-        fPhone        : this.state.fPhone || (this.state.tmp_fPhone ? " " : undefined),
-        fEmail        : this.state.fEmail || (this.state.tmp_fEmail ? " " : undefined),
-        consultant    : this.state.consultant || (this.state.tmp_consultant ? " " : undefined),
-        cPhone        : this.state.cPhone || (this.state.tmp_cPhone ? " " : undefined),
-        cEmail        : this.state.cEmail || (this.state.tmp_cEmail ? " " : undefined),
-        typeKid       : this.state.typeKid ? true : false,
+        birthday      : this.state.birthday,
+        mother        : this.state.mother,
+        mPhone        : this.state.mPhone,
+        mEmail        : this.state.mEmail,
+        father        : this.state.father,
+        fPhone        : this.state.fPhone,
+        fEmail        : this.state.fEmail,
+        consultant    : this.state.consultant,
+        cPhone        : this.state.cPhone,
+        cEmail        : this.state.cEmail,
+        typeKid       : this.state.typeKid,
 
         email           : this.state.email,
         phone           : this.state.phone,
@@ -166,10 +168,13 @@ class ClientsList extends Component {
 
         inactive        : this.state.inactive,
         showRate        : this.state.showRate,
-        showNotes       : this.state.showNotes
-      };
-      
+        showNotes       : this.state.showNotes,
 
+        company         : this.state.company._id,
+        rateAsPerCompany: this.state.rateAsPerCompany
+      };
+console.log("$$$data", data)
+if (1) return
       const url = `/client/${data.clientId}`;
       try {
         const newClientData = await axios.patch( 
@@ -180,35 +185,35 @@ class ClientsList extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-
+console.log("$$$newClientData", newClientData)
         if (newClientData.data.message) {
           if (newClientData.data.newData)
             this.setState({
               message:      `${newClientData.data.newData.nickname || newClientData.data.newData.name} has been changed`,
-              name          : newClientData.data.newData.name || "",
-              nickname      : newClientData.data.newData.nickname || "",
-              birthday      : newClientData.data.newData.birthday ? handlingDate.receivingDate(newClientData.data.newData.birthday) : "",
-              mother        : newClientData.data.newData.mother || "",
-              mPhone        : newClientData.data.newData.mphone || "",
-              mEmail        : newClientData.data.newData.memail || "",
-              father        : newClientData.data.newData.father || "",
-              fPhone        : newClientData.data.newData.fphone || "",
-              fEmail        : newClientData.data.newData.femail || "",
-              cPhone        : newClientData.data.newData.cphone || "",
-              cEmail        : newClientData.data.newData.cemail || "",
-              consultant    : newClientData.data.newData.consultant || "",
-              defaultRate  : newClientData.data.newData.default_rate || "",
+              name          : newClientData.data.newData.name,
+              nickname      : newClientData.data.newData.nickname,
+              birthday      : newClientData.data.newData.birthday && handlingDate.receivingDate(newClientData.data.newData.birthday),
+              mother        : newClientData.data.newData.mother,
+              mPhone        : newClientData.data.newData.mphone,
+              mEmail        : newClientData.data.newData.memail,
+              father        : newClientData.data.newData.father,
+              fPhone        : newClientData.data.newData.fphone,
+              fEmail        : newClientData.data.newData.femail,
+              cPhone        : newClientData.data.newData.cphone,
+              cEmail        : newClientData.data.newData.cemail,
+              consultant    : newClientData.data.newData.consultant,
+              defaultRate   : newClientData.data.newData.default_rate,
               className     : "messageSuccess",
-              email           : newClientData.data.newData.email || "",
-              phone           : newClientData.data.newData.phone || "",
-              city            : newClientData.data.newData.city || "",
-              address         : newClientData.data.newData.address || "",
-              province        : newClientData.data.newData.province || "",
-              postal_code     : newClientData.data.newData.postalCode || "",
-              type_of_service : newClientData.data.newData.typeOfService || "",
+              email           : newClientData.data.newData.email,
+              phone           : newClientData.data.newData.phone,
+              city            : newClientData.data.newData.city,
+              address         : newClientData.data.newData.address,
+              province        : newClientData.data.newData.province,
+              postal_code     : newClientData.data.newData.postalCode,
+              type_of_service : newClientData.data.newData.typeOfService,
               updateButton    : true,
               
-              inactive        : newClientData.data.newData.inactive || false,
+              inactive        : newClientData.data.newData.inactive,
               sureCompany     : false
             });
           else
@@ -237,7 +242,8 @@ class ClientsList extends Component {
 
   clearMessage = () => {
     this.setState({
-      disableEditForm : true
+      disableEditForm : true,
+      // linkClientToCompany: false
     });
 
     setTimeout(() => {
@@ -257,39 +263,40 @@ class ClientsList extends Component {
     this.setState({
       client,
       clientId        : _id,
-      name            : name || "",
+      name            : name,
       defaultRate     : client.default_rate,
       pcOutsideCanada : (client.postal_code && client.postal_code.length > 6) ? true : false,
 
-      birthday    : birthday ? handlingDate.receivingDate(birthday) : "",
-      nickname    : nickname || "",
-      mother      : mother || "",
-      mPhone      : client.mphone || "",
-      mEmail      : client.memail || "",
-      father      : father || "",
-      fPhone      : client.fphone || "",
-      fEmail      : client.femail || "",
-      consultant  : consultant || "",
-      cPhone      : client.cphone || "",
-      cEmail      : client.cemail || "",
+      birthday    : birthday && handlingDate.receivingDate(birthday),
+      nickname    : nickname,
+      mother      : mother,
+      mPhone      : client.mphone,
+      mEmail      : client.memail,
+      father      : father,
+      fPhone      : client.fphone,
+      fEmail      : client.femail,
+      consultant  : consultant,
+      cPhone      : client.cphone,
+      cEmail      : client.cemail,
       typeKid     : client.type_kid,
 
-      email         : client.email || "",
-      phone         : client.phone || "",
-      city          : client.city || "",
-      address       : client.address || "",
-      province      : client.province || "",
-      postalCode    : client.postal_code || "",
-      typeOfService : client.type_of_service || "",
+      email         : client.email,
+      phone         : client.phone,
+      city          : client.city,
+      address       : client.address,
+      province      : client.province,
+      postalCode    : client.postal_code,
+      typeOfService : client.type_of_service,
 
       disableEditForm : true,
       updateButton    : false,
 
-      inactive        : client.inactive || "",
+      inactive        : client.inactive,
       showRate        : client.showRate,
       showNotes       : client.showNotes,
 
-      clientLinkedToCompany : client.client_linked_to_company,
+      // clientLinkedToCompany : client.client_linked_to_company,
+      linkClientToCompany   : client.linked_company,
       rateAsPerCompany      : client.rate_as_per_company
     });
   }
@@ -323,7 +330,10 @@ class ClientsList extends Component {
 
       tmp_inactive      : this.state.inactive,
       tmp_showRate      : this.state.showRate,
-      tmp_showNotes     : this.state.showNotes
+      tmp_showNotes     : this.state.showNotes,
+
+      // updateDropDown: !this.state.updateDropDown
+      updateDropDown: true
     });
   }
 
@@ -358,9 +368,10 @@ class ClientsList extends Component {
       showRate      : this.state.tmp_showRate,
       showNotes     : this.state.tmp_showNotes,
 
-      linkClientToCompany : false,
-      company             : "",
-      sureCompany         : false
+      // linkClientToCompany : false,
+      // company             : "",
+      // sureCompany         : false
+      updateDropDown: false
     });
   }
 
@@ -431,13 +442,19 @@ class ClientsList extends Component {
                 {/* </Form.Group> */}
                 {/* { this.state.linkClientToCompany && window.innerWidth > 700 && */}
                 { this.state.linkClientToCompany &&
-                    <div className="gridClientBtContainer">
+                    <div 
+                      className = "gridClientBtContainer"
+                      // disabled  = {this.state.disableEditForm} 
+                    >
                       <GetClients
                         client          = { this.state.company }
                         notKidFlag      = { true}
                         clientListFlag  = { true}
                         sureCompany     = { this.sureCompany}
                         getCompanyInfo  = { this.getCompanyInfo}
+                        clientId        = { this.state.linkClientToCompany}
+                        onlyOneClient   = { this.state.disableEditForm }
+                        updateDropDown  = { this.state.updateDropDown}
                       />
                     </div>
                 }
@@ -447,11 +464,12 @@ class ClientsList extends Component {
 
 
   // this method receive the confirmation that there is (are) company (ies)
-  sureCompany = () => {
-    // console.log("noCompanyMethod@@@@@@", this.state.rateAsPerCompany)
+  sureCompany = company => {
+    // console.log("$$$COMPANY info", this.state.company)
     this.setState({
       sureCompany       : true,
-      rateAsPerCompany  : true
+      rateAsPerCompany  : true,
+      company
     });
   }
 
@@ -477,6 +495,7 @@ class ClientsList extends Component {
 
 
   render() {
+console.log("$$$THIS.STATE.updateDropDown", this.state.updateDropDown)
     return (
       <div className="formPosition">
         <br />
@@ -489,6 +508,7 @@ class ClientsList extends Component {
               getClientInfo   = { this.getClientInfo }     /* mount the Dropbox Button with all clients for the user */
               updateButton    = { this.state.updateButton}
               bringAllClients = { true}
+              // count = { this.state.count}
             />
           </div>
         </Card.Body>
@@ -834,6 +854,7 @@ class ClientsList extends Component {
                         type      = "checkbox"
                         style     = {{marginLeft: "1rem"}}
                         onChange  = { this.changeRateCheck }
+                        disabled  = { this.state.disableEditForm}
                       />
                   }
                   <Form.Control
@@ -843,7 +864,7 @@ class ClientsList extends Component {
                     onChange    = {this.handleChange}
                     value       = {this.state.defaultRate}
                     onKeyPress  = {this.handleChange}
-                    disabled    = {this.state.disableEditForm}
+                    disabled    = {this.state.disableEditForm || this.state.disableRate}
                     ref         = {input => this.textInput13 = input }  
                   />
                   <Form.Text className="messageControl-user">
