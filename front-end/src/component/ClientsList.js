@@ -85,7 +85,8 @@ class ClientsList extends Component {
       companyRate         : "",
       sureCompany         : false,
 
-      updateDropDown : false
+      updateDropDown      : false,
+      tmp_linkClientToCompany : ""
     }
   }
 
@@ -163,18 +164,19 @@ class ClientsList extends Component {
         province        : this.state.province,
         postal_code     : this.state.postalCodeChange && !this.state.pcOutsideCanada
                             ? this.state.postalCode.substr(0, 6).split(" ").join("") 
-                            : this.state.postalCode,
+                            : this.state.postalCode || undefined,
         type_of_service : this.state.typeOfService,
 
         inactive        : this.state.inactive,
         showRate        : this.state.showRate,
         showNotes       : this.state.showNotes,
 
-        company         : this.state.company._id,
-        rateAsPerCompany: this.state.rateAsPerCompany
+        company         : this.state.tmp_linkClientToCompany && !this.state.company._id ? undefined : this.state.company && this.state.company._id,
+        rateAsPerCompany: this.state.company && this.state.rateAsPerCompany
       };
+console.log("this.state.company", this.state.company)
 console.log("$$$data", data)
-if (1) return
+// if (1) return
       const url = `/client/${data.clientId}`;
       try {
         const newClientData = await axios.patch( 
@@ -219,7 +221,8 @@ console.log("$$$newClientData", newClientData)
           else
             this.setState({
               message   : newClientData.data.message,
-              className : "messageSuccess"
+              className : "messageSuccess",
+              linkClientToCompany : this.state.company || false
             });        
         } else if (newClientData.data.error)
           this.setState({
@@ -332,8 +335,8 @@ console.log("$$$newClientData", newClientData)
       tmp_showRate      : this.state.showRate,
       tmp_showNotes     : this.state.showNotes,
 
-      // updateDropDown: !this.state.updateDropDown
-      updateDropDown: true
+      updateDropDown    : true,
+      tmp_linkClientToCompany : this.state.linkClientToCompany
     });
   }
 
@@ -371,7 +374,8 @@ console.log("$$$newClientData", newClientData)
       // linkClientToCompany : false,
       // company             : "",
       // sureCompany         : false
-      updateDropDown: false
+      updateDropDown: false,
+      linkClientToCompany : this.state.tmp_linkClientToCompany
     });
   }
 
@@ -395,6 +399,7 @@ console.log("$$$newClientData", newClientData)
    * this method shows the option to link a client to a company
    */
   YNComponent = () => {
+console.log("this.state", this.state)
     return  <React.Fragment>
               <Form.Group controlId="formLinkClient">
                 <Form.Label className="cardLabel form-check-inline"> Link Client to a Company? </Form.Label>
@@ -424,7 +429,8 @@ console.log("$$$newClientData", newClientData)
                                     linkClientToCompany : false,
                                     disableRate         : false,
                                     defaultRate         : this.state.tmp_defaultRate,
-                                    company             : ""
+                                    company             : "",
+                                    rateAsPerCompany    : false
                                 })}
                   />
 
@@ -441,11 +447,8 @@ console.log("$$$newClientData", newClientData)
 
                 {/* </Form.Group> */}
                 {/* { this.state.linkClientToCompany && window.innerWidth > 700 && */}
-                { this.state.linkClientToCompany &&
-                    <div 
-                      className = "gridClientBtContainer"
-                      // disabled  = {this.state.disableEditForm} 
-                    >
+                { this.state.linkClientToCompany && !this.state.updateDropDown &&
+                    <div className = "gridClientBtContainer">
                       <GetClients
                         client          = { this.state.company }
                         notKidFlag      = { true}
@@ -454,7 +457,17 @@ console.log("$$$newClientData", newClientData)
                         getCompanyInfo  = { this.getCompanyInfo}
                         clientId        = { this.state.linkClientToCompany}
                         onlyOneClient   = { this.state.disableEditForm }
-                        updateDropDown  = { this.state.updateDropDown}
+                      />
+                    </div>
+                }
+                { this.state.linkClientToCompany && this.state.updateDropDown &&
+                    <div className = "gridClientBtContainer">
+                      <GetClients
+                        client          = { this.state.company }
+                        notKidFlag      = { true}
+                        clientListFlag  = { true}
+                        sureCompany     = { this.sureCompany}
+                        getCompanyInfo  = { this.getCompanyInfo}
                       />
                     </div>
                 }
@@ -495,7 +508,7 @@ console.log("$$$newClientData", newClientData)
 
 
   render() {
-console.log("$$$THIS.STATE.updateDropDown", this.state.updateDropDown)
+// console.log("$$$THIS.STATE.updateDropDown", this.state.updateDropDown)
     return (
       <div className="formPosition">
         <br />
@@ -508,7 +521,7 @@ console.log("$$$THIS.STATE.updateDropDown", this.state.updateDropDown)
               getClientInfo   = { this.getClientInfo }     /* mount the Dropbox Button with all clients for the user */
               updateButton    = { this.state.updateButton}
               bringAllClients = { true}
-              // count = { this.state.count}
+              // count = {this.state.count}
             />
           </div>
         </Card.Body>

@@ -314,7 +314,7 @@ console.log("$$$company", company)
           showRate,
           showNotes,
 
-          linked_company  : mongoose.Types.ObjectId(company),
+          // linked_company  : company && mongoose.Types.ObjectId(company),
           rate_as_per_company : rateAsPerCompany
         }, 
         {

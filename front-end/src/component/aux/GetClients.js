@@ -12,17 +12,17 @@ function GetClients(props) {
   const [goLand, setgoLand] = useState("");
   const [showModal, setshowModal] = useState("");
 
-  console.log("$$$$$$$$$$$$$$$$$$$$$$$$$: PROPS", props)
 
   // useeffect is not working when props.updateDropDown change. It is suppose to run useeffect again and get the data by getClientsFunction
   useEffect(() => {
-console.log("USEEFFECTTTTTTTTTTTTTTTTTT , updatedropdown", props.updateDropDown)
-    if (props.clientId)
+    if (props.clientId) {
       getClientName(props.clientId);
-    else getClientsFunction();
+    } else {
+      getClientsFunction();
+    }
     // }, [props.updateButton ? props.updateButton : 1]);
     // eslint-disable-next-line
-}, [],);
+}, []);
   
   
   const logout = () => {
@@ -116,7 +116,7 @@ console.log("USEEFFECTTTTTTTTTTTTTTTTTT , updatedropdown", props.updateDropDown)
               {clients.name}
             </Dropdown.Toggle>
           </Dropdown>
-        :
+        : 
           <Dropdown>
             <Dropdown.Toggle variant={ props.invoiceFlag || props.notKidFlag ? "info" : "success"} id="dropdown-basic">
               {(props.client && (props.client.nickname || props.client.name)) 
@@ -172,6 +172,8 @@ console.log("USEEFFECTTTTTTTTTTTTTTTTTT , updatedropdown", props.updateDropDown)
                 noMethod  = { logout }
               />
         }
+{/* {console.log("props.updateDropDown", props.updateDropDown, "clients", !clients.length)} */}
+        {/* {props.updateDropDown && !clients.length && getClientsFunction()} */}
         
         {/* { clients.length || clients.name 
           ? populateDropbox()
@@ -179,7 +181,9 @@ console.log("USEEFFECTTTTTTTTTTTTTTTTTT , updatedropdown", props.updateDropDown)
         } */}
 
         { clients.length || clients.name 
-          ? populateDropbox()
+          ? props.updateDropDown && !clients.length
+            ? getClientsFunction()
+            : populateDropbox()
           : errorMsg || props.notKidFlag ? "No company at this time" : "No clients at all" 
         }
       </>
