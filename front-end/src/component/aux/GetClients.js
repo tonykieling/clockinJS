@@ -15,6 +15,7 @@ function GetClients(props) {
 
   // useeffect is not working when props.updateDropDown change. It is suppose to run useeffect again and get the data by getClientsFunction
   useEffect(() => {
+console.log("useEffect, props:", props)
     if (props.clientId) {
       getClientName(props.clientId);
     } else {
@@ -118,6 +119,7 @@ function GetClients(props) {
           </Dropdown>
         : 
           <Dropdown>
+{console.log("###dropdown", props)}
             <Dropdown.Toggle variant={ props.invoiceFlag || props.notKidFlag ? "info" : "success"} id="dropdown-basic">
               {(props.client && (props.client.nickname || props.client.name)) 
                 || (props.notKidFlag ? "Select Company" : (props.invoiceFlag ? "Select Client/Company" : "Select Client")) }

@@ -314,7 +314,7 @@ console.log("$$$company", company)
           showRate,
           showNotes,
 
-          // linked_company  : company && mongoose.Types.ObjectId(company),
+          linked_company  : company && mongoose.Types.ObjectId(company),
           rate_as_per_company : rateAsPerCompany
         }, 
         {
@@ -323,10 +323,20 @@ console.log("$$$company", company)
         }
       );
 
-      if (clientToBeChanged.nModified) {
-      const clientModified = await Client
-        .findById({ _id: clientId})
-        // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
+      const removeCompanyData = !company && await Client
+        .updateOne(
+          { _id: clientId},
+          { $unset: {
+              linked_company    : 1,
+            rate_as_per_company : 1
+            }
+          }
+        );
+
+      if (clientToBeChanged.nModified || removeCompanyData.nModified) {
+        const clientModified = await Client
+          .findById({ _id: clientId})
+          // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
       
       if (typeKid)
         clientModified.birthday = Date.parse(clientModified.birthday);

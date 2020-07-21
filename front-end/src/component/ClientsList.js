@@ -171,11 +171,14 @@ class ClientsList extends Component {
         showRate        : this.state.showRate,
         showNotes       : this.state.showNotes,
 
-        company         : this.state.tmp_linkClientToCompany && !this.state.company._id ? undefined : this.state.company && this.state.company._id,
-        rateAsPerCompany: this.state.company && this.state.rateAsPerCompany
+        // company         : this.state.tmp_linkClientToCompany && !this.state.company ? undefined : this.state.company._id,
+        company         : this.state.company ? this.state.company._id : undefined,
+        rateAsPerCompany: this.state.company ? this.state.rateAsPerCompany : undefined
       };
-console.log("this.state.company", this.state.company)
-console.log("$$$data", data)
+// console.log("t###his.state.company", this.state.company)
+// console.log("###this.state.tmp_linkClientToCompany", this.state.tmp_linkClientToCompany)
+
+// console.log("$$$data", data)
 // if (1) return
       const url = `/client/${data.clientId}`;
       try {
@@ -187,7 +190,7 @@ console.log("$$$data", data)
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-console.log("$$$newClientData", newClientData)
+// console.log("$$$newClientData", newClientData)
         if (newClientData.data.message) {
           if (newClientData.data.newData)
             this.setState({
@@ -399,7 +402,7 @@ console.log("$$$newClientData", newClientData)
    * this method shows the option to link a client to a company
    */
   YNComponent = () => {
-console.log("this.state", this.state)
+// console.log("this.state", this.state)
     return  <React.Fragment>
               <Form.Group controlId="formLinkClient">
                 <Form.Label className="cardLabel form-check-inline"> Link Client to a Company? </Form.Label>
@@ -460,6 +463,9 @@ console.log("this.state", this.state)
                       />
                     </div>
                 }
+
+{ this.state.linkClientToCompany && this.state.updateDropDown && console.log("###company:",this.state.company)}
+
                 { this.state.linkClientToCompany && this.state.updateDropDown &&
                     <div className = "gridClientBtContainer">
                       <GetClients
@@ -497,6 +503,7 @@ console.log("this.state", this.state)
 
 
   getCompanyInfo = company => {
+console.log("###123company", company)
     this.setState({
       company,
       message     : "",
@@ -508,7 +515,7 @@ console.log("this.state", this.state)
 
 
   render() {
-// console.log("$$$THIS.STATE.updateDropDown", this.state.updateDropDown)
+// console.log("$$$THIS.STATE", this.state.disableRate)
     return (
       <div className="formPosition">
         <br />
