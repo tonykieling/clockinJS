@@ -86,7 +86,8 @@ class ClientsList extends Component {
       sureCompany         : false,
 
       updateDropDown      : false,
-      tmp_linkClientToCompany : ""
+      tmp_linkClientToCompany : "",
+      companyName         : ""
     }
   }
 
@@ -309,6 +310,7 @@ class ClientsList extends Component {
 
 
   editForm = () => {
+console.log("####-this.state.company", this.state.company)
     this.setState({
       disableEditForm: false,
 
@@ -339,7 +341,8 @@ class ClientsList extends Component {
       tmp_showNotes     : this.state.showNotes,
 
       updateDropDown    : true,
-      tmp_linkClientToCompany : this.state.linkClientToCompany
+      tmp_linkClientToCompany : this.state.linkClientToCompany,
+      companyName       : this.state.company.name
     });
   }
 
@@ -437,19 +440,6 @@ class ClientsList extends Component {
                                 })}
                   />
 
-                  {/* { this.state.linkClientToCompany && window.innerWidth <= 700 &&
-                      <div className="gridClientBtContainer">
-                        <GetClients
-                          client          = { this.state.company }
-                          notKidFlag      = { true}
-                          clientListFlag  = { true}
-                          getCompanyInfo  = { this.getCompanyInfo}
-                        />
-                      </div>
-                  } */}
-
-                {/* </Form.Group> */}
-                {/* { this.state.linkClientToCompany && window.innerWidth > 700 && */}
                 { this.state.linkClientToCompany && !this.state.updateDropDown &&
                     <div className = "gridClientBtContainer">
                       <GetClients
@@ -464,11 +454,10 @@ class ClientsList extends Component {
                     </div>
                 }
 
-{ this.state.linkClientToCompany && this.state.updateDropDown && console.log("###company:",this.state.company)}
-
                 { this.state.linkClientToCompany && this.state.updateDropDown &&
                     <div className = "gridClientBtContainer">
                       <GetClients
+                        companyName     = { this.state.companyName }
                         client          = { this.state.company }
                         notKidFlag      = { true}
                         clientListFlag  = { true}
@@ -484,7 +473,6 @@ class ClientsList extends Component {
 
   // this method receive the confirmation that there is (are) company (ies)
   sureCompany = company => {
-    // console.log("$$$COMPANY info", this.state.company)
     this.setState({
       sureCompany       : true,
       rateAsPerCompany  : true,
@@ -503,7 +491,6 @@ class ClientsList extends Component {
 
 
   getCompanyInfo = company => {
-console.log("###123company", company)
     this.setState({
       company,
       message     : "",
@@ -515,7 +502,6 @@ console.log("###123company", company)
 
 
   render() {
-// console.log("$$$THIS.STATE", this.state.disableRate)
     return (
       <div className="formPosition">
         <br />
@@ -528,7 +514,6 @@ console.log("###123company", company)
               getClientInfo   = { this.getClientInfo }     /* mount the Dropbox Button with all clients for the user */
               updateButton    = { this.state.updateButton}
               bringAllClients = { true}
-              // count = {this.state.count}
             />
           </div>
         </Card.Body>

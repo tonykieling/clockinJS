@@ -15,7 +15,6 @@ function GetClients(props) {
 
   // useeffect is not working when props.updateDropDown change. It is suppose to run useeffect again and get the data by getClientsFunction
   useEffect(() => {
-console.log("useEffect, props:", props)
     if (props.clientId) {
       getClientName(props.clientId);
     } else {
@@ -47,12 +46,11 @@ console.log("useEffect, props:", props)
           }
         },
       );
-// console.log("$$$=getclients", getClients)
+
       if (getClients.data.message) {
-        const company = getClients.data.message[0];
-        // console.log("$$$clientname is okay")
-        props.sureCompany(company);
-        // setclients(getClients.data.message);
+        // const company = getClients.data.message[0];
+        const company = getClients.data.message;
+        props.sureCompany(company[0]);
         setclients(company);
       } else
         seterrorMsg(getClients.data.error)
@@ -63,7 +61,7 @@ console.log("useEffect, props:", props)
 
 
   const getClientsFunction = async () => {
-    const url = "/client";    // this is dev setting
+    const url = "/client";
     const askInvoiceSample = props.askInvoiceSample || false;
 
     try {
@@ -102,26 +100,21 @@ console.log("useEffect, props:", props)
 
 
   const populateDropbox = () => {
-// console.log("$$$populateDropbox:", clients)
-    // if (props.updateDropDown && !clients.length)
-    //   await getClientsFunction();
-      // console.log("======> props.updateDropDown", props.updateDropDown, "clients", clients.length)
     return(
-      props.clientId && props.onlyOneClient
-        ?
+      // props.clientId && props.onlyOneClient
+      //   ?
+      //     <Dropdown>
+      //       <Dropdown.Toggle 
+      //         variant="info"
+      //         id="dropdown-basic"
+      //       >
+      //         {clients.name}
+      //       </Dropdown.Toggle>
+      //     </Dropdown>
+      //   : 
           <Dropdown>
-            <Dropdown.Toggle 
-              variant="info"
-              id="dropdown-basic"
-            >
-              {clients.name}
-            </Dropdown.Toggle>
-          </Dropdown>
-        : 
-          <Dropdown>
-{console.log("###dropdown", props)}
             <Dropdown.Toggle variant={ props.invoiceFlag || props.notKidFlag ? "info" : "success"} id="dropdown-basic">
-              {(props.client && (props.client.nickname || props.client.name)) 
+              {(props.companyName || (props.client && (props.client.nickname || props.client.name))) 
                 || (props.notKidFlag ? "Select Company" : (props.invoiceFlag ? "Select Client/Company" : "Select Client")) }
             </Dropdown.Toggle>
             
@@ -174,13 +167,6 @@ console.log("useEffect, props:", props)
                 noMethod  = { logout }
               />
         }
-{/* {console.log("props.updateDropDown", props.updateDropDown, "clients", !clients.length)} */}
-        {/* {props.updateDropDown && !clients.length && getClientsFunction()} */}
-        
-        {/* { clients.length || clients.name 
-          ? populateDropbox()
-          : errorMsg || props.notKidFlag ? "No company at this time" : "No clients at all" 
-        } */}
 
         { clients.length || clients.name 
           ? props.updateDropDown && !clients.length
