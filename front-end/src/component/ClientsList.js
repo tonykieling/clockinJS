@@ -85,9 +85,8 @@ class ClientsList extends Component {
       companyRate         : "",
       sureCompany         : false,
 
-      updateDropDown      : false,
-      tmp_linkClientToCompany : "",
-      companyName         : ""
+      // updateDropDown      : false,
+      tmp_linkClientToCompany : ""
     }
   }
 
@@ -302,15 +301,16 @@ class ClientsList extends Component {
       showRate        : client.showRate,
       showNotes       : client.showNotes,
 
-      // clientLinkedToCompany : client.client_linked_to_company,
-      linkClientToCompany   : client.linked_company,
+      // linkClientToCompany   : client.linked_company,
+      linkClientToCompany   : client.linked_company ? true : false,
+      companyId             : client.linked_company,
+      // NEED TO adjust this variable (companyId so it will work for situation when there is no linked_company for the kid)
       rateAsPerCompany      : client.rate_as_per_company
     });
   }
 
 
   editForm = () => {
-console.log("####-this.state.company", this.state.company)
     this.setState({
       disableEditForm: false,
 
@@ -340,9 +340,8 @@ console.log("####-this.state.company", this.state.company)
       tmp_showRate      : this.state.showRate,
       tmp_showNotes     : this.state.showNotes,
 
-      updateDropDown    : true,
-      tmp_linkClientToCompany : this.state.linkClientToCompany,
-      companyName       : this.state.company.name
+      // updateDropDown    : true,
+      tmp_linkClientToCompany : this.state.linkClientToCompany
     });
   }
 
@@ -380,7 +379,7 @@ console.log("####-this.state.company", this.state.company)
       // linkClientToCompany : false,
       // company             : "",
       // sureCompany         : false
-      updateDropDown: false,
+      // updateDropDown: false,
       linkClientToCompany : this.state.tmp_linkClientToCompany
     });
   }
@@ -440,29 +439,17 @@ console.log("####-this.state.company", this.state.company)
                                 })}
                   />
 
-                { this.state.linkClientToCompany && !this.state.updateDropDown &&
+                {/* { this.state.linkClientToCompany && this.state.updateDropDown && */}
+                { this.state.linkClientToCompany &&
                     <div className = "gridClientBtContainer">
                       <GetClients
+                        companyId       = { this.state.linkClientToCompany}
                         client          = { this.state.company }
                         notKidFlag      = { true}
                         clientListFlag  = { true}
                         sureCompany     = { this.sureCompany}
                         getCompanyInfo  = { this.getCompanyInfo}
-                        clientId        = { this.state.linkClientToCompany}
                         onlyOneClient   = { this.state.disableEditForm }
-                      />
-                    </div>
-                }
-
-                { this.state.linkClientToCompany && this.state.updateDropDown &&
-                    <div className = "gridClientBtContainer">
-                      <GetClients
-                        companyName     = { this.state.companyName }
-                        client          = { this.state.company }
-                        notKidFlag      = { true}
-                        clientListFlag  = { true}
-                        sureCompany     = { this.sureCompany}
-                        getCompanyInfo  = { this.getCompanyInfo}
                       />
                     </div>
                 }
@@ -496,12 +483,14 @@ console.log("####-this.state.company", this.state.company)
       message     : "",
       companyRate : company.default_rate,
       defaultRate : this.state.rateAsPerCompany ? company.default_rate : this.state.defaultRate,
-      messageControlDefaultRate : ""
+      messageControlDefaultRate : "",
+      linkClientToCompany       : company._id
     });
   }
 
 
   render() {
+console.log("this.state", this.state)
     return (
       <div className="formPosition">
         <br />

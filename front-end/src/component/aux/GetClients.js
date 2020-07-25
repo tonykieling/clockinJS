@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { connect } from "react-redux";
-import { Dropdown } from "react-bootstrap";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 import MessageModal from "../MessageModal.js";
 import { Redirect } from "react-router-dom";
 
@@ -13,14 +14,8 @@ function GetClients(props) {
   const [showModal, setshowModal] = useState("");
 
 
-  // useeffect is not working when props.updateDropDown change. It is suppose to run useeffect again and get the data by getClientsFunction
   useEffect(() => {
-    if (props.clientId) {
-      getClientName(props.clientId);
-    } else {
-      getClientsFunction();
-    }
-    // }, [props.updateButton ? props.updateButton : 1]);
+    getClientsFunction();
     // eslint-disable-next-line
 }, []);
   
@@ -30,34 +25,6 @@ function GetClients(props) {
     setgoLand(true);
     setshowModal(false);
   };
-
-
-  // it runs when need client name
-  const getClientName = async(clientId) => {
-    const url = `/client/${clientId}`;
-
-    try {
-      const getClients = await axios.get( 
-        url, 
-        {  
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization" : `Bearer ${props.storeToken}`
-          }
-        },
-      );
-
-      if (getClients.data.message) {
-        // const company = getClients.data.message[0];
-        const company = getClients.data.message;
-        props.sureCompany(company[0]);
-        setclients(company);
-      } else
-        seterrorMsg(getClients.data.error)
-    } catch(err) {
-      seterrorMsg(err.message);
-    }
-  }
 
 
   const getClientsFunction = async () => {
@@ -75,7 +42,10 @@ function GetClients(props) {
           }
         },
       );
-      
+if (props.companyId) {
+console.log("getClients", getClients)
+console.log("props::", props)
+}
       if (getClients.data.count) {
         if (props.invoiceFlag) {
           setclients(getClients.data.message.filter(e => !e.linked_company));
@@ -100,52 +70,50 @@ function GetClients(props) {
 
 
   const populateDropbox = () => {
+// console.log("props:::", props)
+props.companyId && console.log("FILTER::", clients.filter(e => (e._id === props.companyId))[0].name)
     return(
-      // props.clientId && props.onlyOneClient
-      //   ?
-      //     <Dropdown>
-      //       <Dropdown.Toggle 
-      //         variant="info"
-      //         id="dropdown-basic"
-      //       >
-      //         {clients.name}
-      //       </Dropdown.Toggle>
-      //     </Dropdown>
-      //   : 
-          <Dropdown>
-            <Dropdown.Toggle variant={ props.invoiceFlag || props.notKidFlag ? "info" : "success"} id="dropdown-basic">
-              {(props.companyName || (props.client && (props.client.nickname || props.client.name))) 
-                || (props.notKidFlag ? "Select Company" : (props.invoiceFlag ? "Select Client/Company" : "Select Client")) }
-            </Dropdown.Toggle>
-            
+          <DropdownButton
+            id        = "dropdown-basic"
+            disabled  = { props.onlyOneClient}
+            variant   = { props.invoiceFlag || props.notKidFlag ? "info" : "success"}
+            title     = {(props.companyId && clients.filter(e => (e._id === props.companyId))[0].name)
+              || (props.client && (props.client.nickname || props.client.name)) 
+              ||  (props.notKidFlag
+                      ? "Select Company"
+                      : props.invoiceFlag
+                        ? "Select Client/Company"
+                        : "Select Client"
+                  )}
+          >
             { props.bringAllClients 
               ?
-                <Dropdown.Menu>
+                <React.Fragment>
                   {clients.map( (client, id) =>
                       <Dropdown.Item 
-                        key = { id } 
-                        onClick = { e => changes(e, client) }
-                        // data-client = { JSON.stringify(client) }
-                        name = { client.name }
+                      key = { id } 
+                      onClick = { e => changes(e, client) }
+                      // data-client = { JSON.stringify(client) }
+                      name = { client.name }
                       > { client.nickname || client.name } 
                       </Dropdown.Item>
                   )}
-                </Dropdown.Menu>
+                </React.Fragment>
               :
-                <Dropdown.Menu>
+                <React.Fragment>
                   {clients.map( (client, id) =>
                       !client.inactive &&
-                        <Dropdown.Item 
-                          key = { id } 
-                          onClick = { e => changes(e, client) }
-                          // data-client = { JSON.stringify(client) }
-                          name = { client.name }
-                        > { client.nickname || client.name } 
+                      <Dropdown.Item 
+                      key = { id } 
+                      onClick = { e => changes(e, client) }
+                      // data-client = { JSON.stringify(client) }
+                      name = { client.name }
+                      > { client.nickname || client.name } 
                         </Dropdown.Item>
                   )}
-                  </Dropdown.Menu>
+                </React.Fragment>
                 }
-          </Dropdown>
+          </DropdownButton>
     );
   }
 
@@ -168,10 +136,10 @@ function GetClients(props) {
               />
         }
 
-        { clients.length || clients.name 
-          ? props.updateDropDown && !clients.length
-            ? getClientsFunction()
-            : populateDropbox()
+        { clients.length
+          // ? props.updateDropDown && !clients.length
+            // ? getClientsFunction()
+          ? populateDropbox()
           : errorMsg || props.notKidFlag ? "No company at this time" : "No clients at all" 
         }
       </>
