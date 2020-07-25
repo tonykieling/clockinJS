@@ -15,6 +15,7 @@ function GetClients(props) {
 
 
   useEffect(() => {
+console.log("@@@useEffect is running")
     getClientsFunction();
     // eslint-disable-next-line
 }, []);
@@ -42,10 +43,10 @@ function GetClients(props) {
           }
         },
       );
-if (props.companyId) {
-console.log("getClients", getClients)
-console.log("props::", props)
-}
+// if (props.companyId) {
+// console.log("getClients", getClients)
+// console.log("props::", props)
+// }
       if (getClients.data.count) {
         if (props.invoiceFlag) {
           setclients(getClients.data.message.filter(e => !e.linked_company));
@@ -71,7 +72,7 @@ console.log("props::", props)
 
   const populateDropbox = () => {
 // console.log("props:::", props)
-props.companyId && console.log("FILTER::", clients.filter(e => (e._id === props.companyId))[0].name)
+// props.companyId && console.log("FILTER::", clients.filter(e => (e._id === props.companyId))[0].name)
     return(
           <DropdownButton
             id        = "dropdown-basic"
@@ -125,6 +126,7 @@ props.companyId && console.log("FILTER::", clients.filter(e => (e._id === props.
 
     return (
       <>
+  {/* {console.log("@@@props:", props)} */}
         { goLand && <Redirect to = "/land" /> }
 
         { showModal

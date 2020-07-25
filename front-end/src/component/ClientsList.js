@@ -86,7 +86,9 @@ class ClientsList extends Component {
       sureCompany         : false,
 
       // updateDropDown      : false,
-      tmp_linkClientToCompany : ""
+      tmp_linkClientToCompany : "",
+      tmp_companyId           : "",
+      linkedCompany           : ""
     }
   }
 
@@ -143,43 +145,43 @@ class ClientsList extends Component {
         clientId      : this.state.clientId || undefined,
         name,
         default_rate  : defaultRate,
-
         nickname      : this.state.typeKid ? nickname : undefined,
-        birthday      : this.state.birthday,
-        mother        : this.state.mother,
-        mPhone        : this.state.mPhone,
-        mEmail        : this.state.mEmail,
-        father        : this.state.father,
-        fPhone        : this.state.fPhone,
-        fEmail        : this.state.fEmail,
-        consultant    : this.state.consultant,
-        cPhone        : this.state.cPhone,
-        cEmail        : this.state.cEmail,
-        typeKid       : this.state.typeKid,
 
-        email           : this.state.email,
-        phone           : this.state.phone,
-        city            : this.state.city,
-        address         : this.state.address,
-        province        : this.state.province,
+        birthday      : this.state.birthday || undefined,
+        mother        : this.state.mother || (this.state.tmp_mother ? "" : undefined),
+        mPhone        : this.state.mPhone || (this.state.tmp_mPhone ? "" : undefined),
+        mEmail        : this.state.mEmail || (this.state.tmp_mEmail ? "" : undefined),
+        father        : this.state.father || (this.state.tmp_father ? "" : undefined),
+        fPhone        : this.state.fPhone || (this.state.tmp_fPhone ? "" : undefined),
+        fEmail        : this.state.fEmail || (this.state.tmp_fEmail ? "" : undefined),
+        consultant    : this.state.consultant || (this.state.tmp_consultant ? "" : undefined),
+        cPhone        : this.state.cPhone || (this.state.tmp_cPhone ? "" : undefined),
+        cEmail        : this.state.cEmail || (this.state.tmp_cEmail ? "" : undefined),
+        typeKid       : this.state.typeKid || undefined,
+
+        email           : this.state.email || (this.state.tmp_email ? "" : undefined),
+        phone           : this.state.phone || (this.state.tmp_phone ? "" : undefined),
+        city            : this.state.city || (this.state.tmp_city ? "" : undefined),
+        address         : this.state.address || (this.state.tmp_address ? "" : undefined),
+        province        : this.state.province || (this.state.tmp_province ? "" : undefined),
         postal_code     : this.state.postalCodeChange && !this.state.pcOutsideCanada
                             ? this.state.postalCode.substr(0, 6).split(" ").join("") 
                             : this.state.postalCode || undefined,
-        type_of_service : this.state.typeOfService,
+        type_of_service : this.state.typeOfService || (this.state.tmp_typeOfService ? "" : undefined),
 
-        inactive        : this.state.inactive,
-        showRate        : this.state.showRate,
-        showNotes       : this.state.showNotes,
+        inactive        : this.state.inactive || undefined,
+        showRate        : this.state.showRate || undefined,
+        showNotes       : this.state.showNotes || undefined,
 
         // company         : this.state.tmp_linkClientToCompany && !this.state.company ? undefined : this.state.company._id,
-        company         : this.state.company ? this.state.company._id : undefined,
+        linkedCompany   : this.state.company ? this.state.company._id : undefined,
         rateAsPerCompany: this.state.company ? this.state.rateAsPerCompany : undefined
       };
 // console.log("t###his.state.company", this.state.company)
 // console.log("###this.state.tmp_linkClientToCompany", this.state.tmp_linkClientToCompany)
 
-// console.log("$$$data", data)
-// if (1) return
+console.log("@@@data to be sent", data)
+if (1) return
       const url = `/client/${data.clientId}`;
       try {
         const newClientData = await axios.patch( 
@@ -197,35 +199,35 @@ class ClientsList extends Component {
               message:      `${newClientData.data.newData.nickname || newClientData.data.newData.name} has been changed`,
               name          : newClientData.data.newData.name,
               nickname      : newClientData.data.newData.nickname,
-              birthday      : newClientData.data.newData.birthday && handlingDate.receivingDate(newClientData.data.newData.birthday),
-              mother        : newClientData.data.newData.mother,
-              mPhone        : newClientData.data.newData.mphone,
-              mEmail        : newClientData.data.newData.memail,
-              father        : newClientData.data.newData.father,
-              fPhone        : newClientData.data.newData.fphone,
-              fEmail        : newClientData.data.newData.femail,
-              cPhone        : newClientData.data.newData.cphone,
-              cEmail        : newClientData.data.newData.cemail,
-              consultant    : newClientData.data.newData.consultant,
-              defaultRate   : newClientData.data.newData.default_rate,
+              birthday      : (newClientData.data.newData.birthday && handlingDate.receivingDate(newClientData.data.newData.birthday)) || "",
+              mother        : newClientData.data.newData.mother || "",
+              mPhone        : newClientData.data.newData.mphone || "",
+              mEmail        : newClientData.data.newData.memail || "",
+              father        : newClientData.data.newData.father || "",
+              fPhone        : newClientData.data.newData.fphone || "",
+              fEmail        : newClientData.data.newData.femail || "",
+              cPhone        : newClientData.data.newData.cphone || "",
+              cEmail        : newClientData.data.newData.cemail || "",
+              consultant    : newClientData.data.newData.consultant || "",
+              defaultRate   : newClientData.data.newData.default_rate || "",
               className     : "messageSuccess",
-              email           : newClientData.data.newData.email,
-              phone           : newClientData.data.newData.phone,
-              city            : newClientData.data.newData.city,
-              address         : newClientData.data.newData.address,
-              province        : newClientData.data.newData.province,
-              postal_code     : newClientData.data.newData.postalCode,
-              type_of_service : newClientData.data.newData.typeOfService,
+              email           : newClientData.data.newData.email || "",
+              phone           : newClientData.data.newData.phone || "",
+              city            : newClientData.data.newData.city || "",
+              address         : newClientData.data.newData.address || "",
+              province        : newClientData.data.newData.province || "",
+              postal_code     : newClientData.data.newData.postalCode || "",
+              type_of_service : newClientData.data.newData.typeOfService || "",
               updateButton    : true,
               
-              inactive        : newClientData.data.newData.inactive,
+              inactive        : newClientData.data.newData.inactive || "",
               sureCompany     : false
             });
           else
             this.setState({
               message   : newClientData.data.message,
               className : "messageSuccess",
-              linkClientToCompany : this.state.company || false
+              // linkClientToCompany : this.state.company || false
             });        
         } else if (newClientData.data.error)
           this.setState({
@@ -261,51 +263,51 @@ class ClientsList extends Component {
 
 
   getClientInfo = client => {
-// console.log("getclientInfo::", client)
+console.log(":::getclientInfo::", client)
     const {
-      _id, name, nickname, birthday, mother, father, consultant
+      _id, name, nickname,
     } = client;
-
+// console.log("mother=", mother)
+// console.log("consultant=", consultant)
     this.setState({
       client,
       clientId        : _id,
-      name            : name,
+      name,
       defaultRate     : client.default_rate,
       pcOutsideCanada : (client.postal_code && client.postal_code.length > 6) ? true : false,
+      nickname,
 
-      birthday    : birthday && handlingDate.receivingDate(birthday),
-      nickname    : nickname,
-      mother      : mother,
-      mPhone      : client.mphone,
-      mEmail      : client.memail,
-      father      : father,
-      fPhone      : client.fphone,
-      fEmail      : client.femail,
-      consultant  : consultant,
-      cPhone      : client.cphone,
-      cEmail      : client.cemail,
-      typeKid     : client.type_kid,
+      birthday    : (client.birthday && handlingDate.receivingDate(client.birthday)) || "",
+      mother      : client.mother || "",
+      mPhone      : client.mphone || "",
+      mEmail      : client.memail || "",
+      father      : client.father || "",
+      fPhone      : client.fphone || "",
+      fEmail      : client.femail || "",
+      consultant  : client.consultant || "",
+      cPhone      : client.cphone || "",
+      cEmail      : client.cemail || "",
+      typeKid     : client.type_kid || "",
 
-      email         : client.email,
-      phone         : client.phone,
-      city          : client.city,
-      address       : client.address,
-      province      : client.province,
-      postalCode    : client.postal_code,
-      typeOfService : client.type_of_service,
+      email         : client.email || "",
+      phone         : client.phone || "",
+      city          : client.city || "",
+      address       : client.address || "",
+      province      : client.province || "",
+      postalCode    : client.postal_code || "",
+      typeOfService : client.type_of_service || "",
 
       disableEditForm : true,
       updateButton    : false,
 
-      inactive        : client.inactive,
-      showRate        : client.showRate,
-      showNotes       : client.showNotes,
+      inactive        : client.inactive || "",
+      showRate        : client.showRate || "",
+      showNotes       : client.showNotes || "",
 
-      // linkClientToCompany   : client.linked_company,
       linkClientToCompany   : client.linked_company ? true : false,
-      companyId             : client.linked_company,
+      companyId             : client.linked_company || "",
       // NEED TO adjust this variable (companyId so it will work for situation when there is no linked_company for the kid)
-      rateAsPerCompany      : client.rate_as_per_company
+      rateAsPerCompany      : client.rate_as_per_company || ""
     });
   }
 
@@ -341,7 +343,8 @@ class ClientsList extends Component {
       tmp_showNotes     : this.state.showNotes,
 
       // updateDropDown    : true,
-      tmp_linkClientToCompany : this.state.linkClientToCompany
+      tmp_linkClientToCompany : this.state.linkClientToCompany,
+      tmp_companyId     : this.state.companyId
     });
   }
 
@@ -380,7 +383,8 @@ class ClientsList extends Component {
       // company             : "",
       // sureCompany         : false
       // updateDropDown: false,
-      linkClientToCompany : this.state.tmp_linkClientToCompany
+      linkClientToCompany : this.state.tmp_linkClientToCompany,
+      companyId           : this.state.tmp_companyId
     });
   }
 
@@ -435,15 +439,15 @@ class ClientsList extends Component {
                                     disableRate         : false,
                                     defaultRate         : this.state.tmp_defaultRate,
                                     company             : "",
-                                    rateAsPerCompany    : false
+                                    rateAsPerCompany    : false,
+                                    companyId           : ""
                                 })}
                   />
 
-                {/* { this.state.linkClientToCompany && this.state.updateDropDown && */}
                 { this.state.linkClientToCompany &&
                     <div className = "gridClientBtContainer">
                       <GetClients
-                        companyId       = { this.state.linkClientToCompany}
+                        companyId       = { this.state.companyId}
                         client          = { this.state.company }
                         notKidFlag      = { true}
                         clientListFlag  = { true}
@@ -478,19 +482,20 @@ class ClientsList extends Component {
 
 
   getCompanyInfo = company => {
+console.log("this.getCompanyInfo: company::", company)
     this.setState({
       company,
       message     : "",
       companyRate : company.default_rate,
       defaultRate : this.state.rateAsPerCompany ? company.default_rate : this.state.defaultRate,
-      messageControlDefaultRate : "",
-      linkClientToCompany       : company._id
-    });
+      companyId   : company._id,
+      messageControlDefaultRate : ""
+    }, () => console.log("this.state after getCompanyInfo:", this.state));
   }
 
 
   render() {
-console.log("this.state", this.state)
+// console.log("this.state", this.state)
     return (
       <div className="formPosition">
         <br />

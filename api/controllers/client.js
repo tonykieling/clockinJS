@@ -261,10 +261,10 @@ console.log("$$$req.body", req.body)
     showRate,
     showNotes,
 
-    company,
+    linkedCompany,
     rateAsPerCompany
   } = req.body;
-console.log("$$$company", company)
+console.log("$$$company", linkedCompany)
   const birthday = req.body.birthday ? new Date(req.body.birthday) : undefined;
 
   try {
@@ -314,7 +314,7 @@ console.log("$$$company", company)
           showRate,
           showNotes,
 
-          linked_company  : company && mongoose.Types.ObjectId(company),
+          linked_company  : linkedCompany && mongoose.Types.ObjectId(linkedCompany),
           rate_as_per_company : rateAsPerCompany
         }, 
         {
@@ -323,12 +323,12 @@ console.log("$$$company", company)
         }
       );
 
-      const removeCompanyData = !company && await Client
+      const removeCompanyData = !linkedCompany && await Client
         .updateOne(
           { _id: clientId},
           { $unset: {
-              linked_company    : 1,
-            rate_as_per_company : 1
+              linked_company      : 1,
+              rate_as_per_company : 1
             }
           }
         );
