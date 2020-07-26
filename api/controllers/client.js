@@ -224,6 +224,7 @@ console.log("inside client add");
 // for now, only ADMIN is able to change any user's data
 const client_modify = async (req, res) => {
 console.log("inside client modify");
+console.log("***req.body", req.body)
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
@@ -309,8 +310,8 @@ console.log("inside client modify");
           postal_code     : postalCode && postalCode.trim(),
           type_of_service : typeOfService && typeOfService.trim(),
           inactive        : inactive === false ? false : (inactive == true ? true : undefined),
-          showRate,
-          showNotes,
+          showRate        : showRate || false,
+          showNotes       : showNotes || false,
 
           linked_company  : linkedCompany && mongoose.Types.ObjectId(linkedCompany),
           rate_as_per_company : rateAsPerCompany
