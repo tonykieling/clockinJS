@@ -95,9 +95,6 @@ console.log("*** inside USER signup");
     postalCode
   } = req.body;
 
-// console.log("req.body = signup", req.body);
-  // it checks whether the email is already been used by an user account
-  // if so, it returns an error message
   try {
     const userExist = await User
       .find({ email });

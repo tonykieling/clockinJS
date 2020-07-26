@@ -131,7 +131,6 @@ class InvoiceModal extends Component {
       
       try {
         const pastClockins = await getClockins(userToken, typeOfQuestion, invoiceId);
-// console.log("^^^getClockins", getClockins)
 
         if (pastClockins.error)
           throw(pastClockins.error);

@@ -125,10 +125,6 @@ console.log("inside invoice_add@@@@@@@@@@@@");
     code,
     clockinArray
   } = req.body;
-console.log("@@@req.body", req.body)
-console.log("compnay type", typeof company)
-
-// if (1) return res.json({error: "OKK"})
   
   const date = req.body.date ? new Date(req.body.date) : new Date();
 
@@ -204,7 +200,6 @@ console.log("compnay type", typeof company)
       });
     }
   }
-  console.log("%%%%%%%%%%%%invoiceFLAGG, company type:", typeof company)
 
 
   // lets record invoice after User and Client validation
@@ -311,8 +306,6 @@ const invoice_modify_status = async (req, res) => {
 
 
   const status = req.body.newStatus;
-// console.log("***req.body", req.body)
-// if (1) return res.send({message: "OK"});
   try {
     const invoiceToBeChanged = req.body.dateDelivered
       ?
@@ -369,7 +362,7 @@ const invoice_modify_status = async (req, res) => {
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
 const invoice_edit = async (req, res) => {
-  console.log("======== inside edit Invoice");
+  console.log("inside edit Invoice");
   // const invoiceId  = req.params.invoiceId;
   const userAdmin = req.userData.admin;
   const {

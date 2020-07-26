@@ -15,7 +15,6 @@ const get_all = async (req, res) => {
   const checkInvoiceCode = require("./aux/checkInvoiceCode.js");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
-// console.log("^^^req.query", req. query)
 
   const 
     clientId  = req.query.clientId,
@@ -110,20 +109,7 @@ const get_all = async (req, res) => {
       const client = await Client
         .findById( clientId )
         .select(" nickname ");
-        
 
-// console.clear();
-// console.log("--------------------------------------------------------");
-// let totalCadTmp = 0;
-// allClockins.forEach(async (clockin, i) => {
-// // console.log(allClockins[i]);
-//   const t = clockin.worked_hours 
-//               ? ((clockin.worked_hours / 3600000) * clockin.rate)
-//               : ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
-//   totalCadTmp += t;
-// console.log(i + 1 , t, "--> totalCadTmp", totalCadTmp, " - ", clockin.date);
-// if (i === 4 || i === 5) console.log(clockin);
-// });
 
       return res.status(200).json({
         count: allClockins.length,
@@ -527,20 +513,6 @@ const get_clockins_by_invoice = async (req, res) => {
         const client = await Client
           .findById( clientId )
           .select(" nickname ");
-          
-  
-  // console.clear();
-  // console.log("--------------------------------------------------------");
-  // let totalCadTmp = 0;
-  // allClockins.forEach(async (clockin, i) => {
-  // // console.log(allClockins[i]);
-  //   const t = clockin.worked_hours 
-  //               ? ((clockin.worked_hours / 3600000) * clockin.rate)
-  //               : ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
-  //   totalCadTmp += t;
-  // console.log(i + 1 , t, "--> totalCadTmp", totalCadTmp, " - ", clockin.date);
-  // if (i === 4 || i === 5) console.log(clockin);
-  // });
   
         return res.status(200).json({
           count: allClockins.length,
@@ -571,7 +543,6 @@ const get_clockins_by_invoice = async (req, res) => {
  */
 const get_general = async (req, res) => {
   console.log("inside clockins get_general");
-console.log("***req.query", req.query)
     const userId    = req.userData.userId;
     const 
       // clientId  = req.query.clientId === "undefined" ? undefined : req.query.clientId,

@@ -224,7 +224,6 @@ console.log("inside client add");
 // for now, only ADMIN is able to change any user's data
 const client_modify = async (req, res) => {
 console.log("inside client modify");
-console.log("$$$req.body", req.body)
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
@@ -263,7 +262,7 @@ console.log("$$$req.body", req.body)
     linkedCompany,
     rateAsPerCompany
   } = req.body;
-  
+
   const birthday = req.body.birthday ? new Date(req.body.birthday) : undefined;
 
   try {
