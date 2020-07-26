@@ -68,7 +68,7 @@ class ClientsList extends Component {
       tmp_postalCode    : "",
       tmp_typeOfService : "",
 
-      updateButton      : true,
+      updateButton      : false,
       pcOutsideCanada   : false,
       postalCodeChange  : false,
 
@@ -114,6 +114,7 @@ class ClientsList extends Component {
 
 
   handleSubmit = async event => {
+// console.log("BEFORE send data - this.state:", this.state)
     event.preventDefault();
 
     const
@@ -140,6 +141,7 @@ class ClientsList extends Component {
         this.textInput1.focus();
       }
     } else {
+console.log("BEFORE mount data - this.state:", this.state)
 
       const data = { 
         clientId      : this.state.clientId || undefined,
@@ -180,8 +182,8 @@ class ClientsList extends Component {
 // console.log("t###his.state.company", this.state.company)
 // console.log("###this.state.tmp_linkClientToCompany", this.state.tmp_linkClientToCompany)
 
-console.log("@@@data to be sent", data)
-if (1) return
+console.log("@@@data to be sent - data", data)
+// if (1) return
       const url = `/client/${data.clientId}`;
       try {
         const newClientData = await axios.patch( 
@@ -192,7 +194,7 @@ if (1) return
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-// console.log("$$$newClientData", newClientData)
+console.log("$$$newClientData", newClientData)
         if (newClientData.data.message) {
           if (newClientData.data.newData)
             this.setState({
@@ -218,7 +220,7 @@ if (1) return
               province        : newClientData.data.newData.province || "",
               postal_code     : newClientData.data.newData.postalCode || "",
               type_of_service : newClientData.data.newData.typeOfService || "",
-              updateButton    : true,
+              updateButton    : !this.state.updateButton,
               
               inactive        : newClientData.data.newData.inactive || "",
               sureCompany     : false
@@ -298,7 +300,7 @@ console.log(":::getclientInfo::", client)
       typeOfService : client.type_of_service || "",
 
       disableEditForm : true,
-      updateButton    : false,
+      // updateButton    : false,
 
       inactive        : client.inactive || "",
       showRate        : client.showRate || "",

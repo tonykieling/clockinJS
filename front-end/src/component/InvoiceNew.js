@@ -253,7 +253,7 @@ console.log("@@@sending invoice data:", data)
     }  
 
 
-  renderDataTable = (clockins) => {
+  renderDataTable = clockins => {
     return clockins.map((clockin, index) => {
       const clockinsToSend = renderClockinDataTable(clockin, index);
       if (thinScreen) {   // small devices
@@ -286,7 +286,8 @@ console.log("@@@sending invoice data:", data)
   editClockin = data => {
     this.setState({
       showModal       : true,
-      clockinToModal  : data
+      clockinToModal  : data,
+      client          : data.client
     });
   }
 
@@ -543,7 +544,8 @@ console.log("@@@sending invoice data:", data)
           ? <PunchInModal 
               showModal     = { this.state.showModal}
               clockinData   = { this.state.clockinToModal}
-              client        = { this.state.client.nickname}
+              // client        = { this.state.client.nickname}
+              client        = { this.state.client}
               deleteClockin = { (clockinId) => this.updateClockins(clockinId)}
               closeModal    = { this.closeClockinModal}
               thinScreen    = { thinScreen}

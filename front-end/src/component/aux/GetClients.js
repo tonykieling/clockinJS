@@ -15,10 +15,9 @@ function GetClients(props) {
 
 
   useEffect(() => {
-console.log("@@@useEffect is running")
     getClientsFunction();
     // eslint-disable-next-line
-}, []);
+}, [props.updateButton]);
   
   
   const logout = () => {
@@ -43,10 +42,7 @@ console.log("@@@useEffect is running")
           }
         },
       );
-// if (props.companyId) {
-// console.log("getClients", getClients)
-// console.log("props::", props)
-// }
+
       if (getClients.data.count) {
         if (props.invoiceFlag) {
           setclients(getClients.data.message.filter(e => !e.linked_company));
@@ -71,8 +67,6 @@ console.log("@@@useEffect is running")
 
 
   const populateDropbox = () => {
-// console.log("props:::", props)
-// props.companyId && console.log("FILTER::", clients.filter(e => (e._id === props.companyId))[0].name)
     return(
           <DropdownButton
             id        = "dropdown-basic"
@@ -126,7 +120,6 @@ console.log("@@@useEffect is running")
 
     return (
       <>
-  {/* {console.log("@@@props:", props)} */}
         { goLand && <Redirect to = "/land" /> }
 
         { showModal
@@ -139,8 +132,6 @@ console.log("@@@useEffect is running")
         }
 
         { clients.length
-          // ? props.updateDropDown && !clients.length
-            // ? getClientsFunction()
           ? populateDropbox()
           : errorMsg || props.notKidFlag ? "No company at this time" : "No clients at all" 
         }

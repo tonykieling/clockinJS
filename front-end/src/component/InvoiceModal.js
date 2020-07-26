@@ -123,7 +123,7 @@ class InvoiceModal extends Component {
       // dateEnd   = this.props.invoice.date_end,
       // clientId  = this.props.client._id;
       invoiceId       = this.props.invoice._id,
-      userToken      = this.props.storeToken,
+      userToken       = this.props.storeToken,
       typeOfQuestion  = "invoiceClockins";
 
       // const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;

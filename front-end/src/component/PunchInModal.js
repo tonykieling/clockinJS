@@ -219,6 +219,7 @@ function PunchInModal(props) {
             :
               <Modal.Body>
                 <Card className="card-settings" style={{marginLeft: 0, backgroundColor: "lightsteelblue"}}>
+{console.log("PROPSSS:", props)}
                   <Card.Header className="cardTitle">Client: {props.client}</Card.Header>
 
                   <Form style={{paddingLeft: letfSpace}}>

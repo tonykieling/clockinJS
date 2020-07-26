@@ -210,7 +210,7 @@ renderDataTable = (invoices) => {
             closeModal        = { this.closeModal }
             updateScreen      = { this.updateScreen }
             openInvoiceModal  = { this.state.openInvoiceModal }
-            changeInvoiceData = { data => this.updateInvoiceData(data)}
+            // changeInvoiceData = { data => this.updateInvoiceData(data)}
             storeToken        = { this.props.storeToken}
          />
         : "" }

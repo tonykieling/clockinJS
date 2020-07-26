@@ -323,6 +323,32 @@ console.log("$$$company", linkedCompany)
         }
       );
 
+      // checks if the client is gonna be linked to a Company Client
+      if (linkedCompany)  {
+        // if setting a kid for a Company Client, it adds a new boolean field (company) to the the Company Client
+        try {
+          await Client
+            .updateOne(
+              { 
+                _id: linkedCompany 
+              },
+              { 
+                company : true
+              },
+              { 
+                runValidators   : true,
+                ignoreUndefined : true
+              }
+            );
+
+        } catch(err) {
+          console.trace("Error ECAD03: ", err.message);
+          return res.json({
+            error: "CM05: Something wrong with Client's Company data."
+          });    
+        }
+      }
+
       const removeCompanyData = !linkedCompany && await Client
         .updateOne(
           { _id: clientId},
