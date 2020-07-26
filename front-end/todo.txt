@@ -267,6 +267,9 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
     In the end, there are two types of clients: Kids and Normal clients. Kids can be linked to a company and also without it. Normal clients can be a compnay, when linked to a kid, or only a noremal client. It helps to differentiate when PunchIn (only kids, both ones, or normal clients) and Invoice for all but kids linked to a company.
     In this way, Simone is gonna be able to PunchIn for all her clients, generate Invoices for them, but kids with company linked, she will be able to only controll them, whithout send them the pdf. Mainly, it's is possible to merge more than one client for one invoice
 
+    *** show client nickname instead at AT in PunchInList and InvoiceGenerate
+    *** invoicegeneration date - take it out
+
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - add report (invoices = all / per client / per period / per status)
               clockins

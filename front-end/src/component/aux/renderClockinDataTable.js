@@ -10,7 +10,7 @@ export const renderClockinDataTable = (clockin, index) => {
   const t = clockin.worked_hours 
               ? (clockin.worked_hours / 3600000)
               : (te - ts) / 3600000;
-  // console.log("tttt", t);
+
   const clockinsToSend = {
     id          : clockin._id,
     num         : index + 1,

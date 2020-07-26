@@ -112,14 +112,10 @@ class InvoiceNew extends Component {
             tableVisibility   : false,
             messageInvoice    : ""
           });
-// console.log("getClockins", getClockins)
-// console.log("###pastClockins", pastClockins)
-// if (1) return;
-
-        if (pastClockins.data.count){
+        else if (pastClockins.data.count){
           const tempClockins          = pastClockins.data.allClockins;
           const invoiceSuggestionCode = pastClockins.data.codeSuggestion || "";
-console.log("checkHERE", tempClockins)
+
           this.setState({
             clockinList       : tempClockins,
             clockInListTable  : this.renderDataTable(tempClockins),
@@ -254,30 +250,52 @@ console.log("@@@sending invoice data:", data)
 
 
   renderDataTable = clockins => {
-    return clockins.map((clockin, index) => {
-      const clockinsToSend = renderClockinDataTable(clockin, index);
+  return clockins.map((clockin, index) => {
+    const clockinsToSend = renderClockinDataTable(clockin, index);
       if (thinScreen) {   // small devices
+
         return (
-          <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-            {/* <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td> */}
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-          </tr>
+          this.state.company
+            ?
+              <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+              </tr>
+            :
+              <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+              </tr>
         );
 
       } else {
         return (
-          <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-          </tr>
+          this.state.company
+            ?
+              <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+              </tr>
+            :
+              <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
+                <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+              </tr>
         );
       }
     });
@@ -329,7 +347,8 @@ console.log("@@@sending invoice data:", data)
       company         : !!client.isCompany && client,
       clientId        : client._id,
       disabledIPBtn   : false,
-      tableVisibility : false
+      tableVisibility : false,
+      message         : ""
     });
   }
 
@@ -427,36 +446,71 @@ console.log("@@@sending invoice data:", data)
 
               {(this.state.clockinList.length > 0)
                 ? thinScreen 
-                  ? <Table striped bordered hover size="sm" responsive>
-                      <thead style={{textAlign: "center"}}>
-                        <tr>
-                          <th style={{verticalAlign: "middle"}}>#</th>
-                          <th style={{verticalAlign: "middle"}}>Date</th>
-                          <th style={{verticalAlign: "middle"}}>At</th>
-                          {/* <th style={{verticalAlign: "middle"}}>CAD$</th> */}
-                          <th style={{verticalAlign: "middle"}}>Duration</th>
-                          <th style={{verticalAlign: "middle"}}>Invoice</th>
-                        </tr>
-                      </thead>
-                      <tbody style={{textAlign: "center"}}>
-                        {this.state.clockInListTable}
-                      </tbody>
-                    </Table> 
-                  : <Table striped bordered hover size="sm" responsive>
-                      <thead style={{textAlign: "center"}}>
-                        <tr>
-                          <th style={{verticalAlign: "middle"}}>#</th>
-                          <th style={{verticalAlign: "middle"}}>Date</th>
-                          <th style={{verticalAlign: "middle"}}>Time Start</th>
-                          <th style={{verticalAlign: "middle"}}>Total Time</th>
-                          <th style={{verticalAlign: "middle"}}>CAD$</th>
-                          <th style={{verticalAlign: "middle"}}>Invoice</th>
-                        </tr>
-                      </thead>
-                      <tbody style={{textAlign: "center"}}>
-                        {this.state.clockInListTable}
-                      </tbody>
-                    </Table> 
+                  ? this.state.company
+                    ?
+                      <Table striped bordered hover size="sm" responsive>
+                        <thead style={{textAlign: "center"}}>
+                          <tr>
+                            <th style={{verticalAlign: "middle"}}>#</th>
+                            <th style={{verticalAlign: "middle"}}>Date</th>
+                            <th style={{verticalAlign: "middle"}}>Kid</th>
+                            <th style={{verticalAlign: "middle"}}>Duration</th>
+                            <th style={{verticalAlign: "middle"}}>Invoice</th>
+                          </tr>
+                        </thead>
+                        <tbody style={{textAlign: "center"}}>
+                          {this.state.clockInListTable}
+                        </tbody>
+                      </Table>
+                    :
+                      <Table striped bordered hover size="sm" responsive>
+                          <thead style={{textAlign: "center"}}>
+                            <tr>
+                              <th style={{verticalAlign: "middle"}}>#</th>
+                              <th style={{verticalAlign: "middle"}}>Date</th>
+                              <th style={{verticalAlign: "middle"}}>At</th>
+                              <th style={{verticalAlign: "middle"}}>Duration</th>
+                              <th style={{verticalAlign: "middle"}}>Invoice</th>
+                            </tr>
+                          </thead>
+                          <tbody style={{textAlign: "center"}}>
+                            {this.state.clockInListTable}
+                          </tbody>
+                        </Table>
+                  : this.state.company
+                    ?
+                      <Table striped bordered hover size="sm" responsive>
+                        <thead style={{textAlign: "center"}}>
+                          <tr>
+                            <th style={{verticalAlign: "middle"}}>#</th>
+                            <th style={{verticalAlign: "middle"}}>Date</th>
+                            <th style={{verticalAlign: "middle"}}>Kid</th>
+                            <th style={{verticalAlign: "middle"}}>Time Start</th>
+                            <th style={{verticalAlign: "middle"}}>Total Time</th>
+                            <th style={{verticalAlign: "middle"}}>CAD$</th>
+                            <th style={{verticalAlign: "middle"}}>Invoice</th>
+                          </tr>
+                        </thead>
+                        <tbody style={{textAlign: "center"}}>
+                          {this.state.clockInListTable}
+                        </tbody>
+                      </Table>
+                    :
+                      <Table striped bordered hover size="sm" responsive>
+                        <thead style={{textAlign: "center"}}>
+                          <tr>
+                            <th style={{verticalAlign: "middle"}}>#</th>
+                            <th style={{verticalAlign: "middle"}}>Date</th>
+                            <th style={{verticalAlign: "middle"}}>Time Start</th>
+                            <th style={{verticalAlign: "middle"}}>Total Time</th>
+                            <th style={{verticalAlign: "middle"}}>CAD$</th>
+                            <th style={{verticalAlign: "middle"}}>Invoice</th>
+                          </tr>
+                        </thead>
+                        <tbody style={{textAlign: "center"}}>
+                          {this.state.clockInListTable}
+                        </tbody>
+                      </Table> 
                 : null }
 
               <Row >
