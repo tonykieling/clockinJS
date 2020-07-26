@@ -141,7 +141,7 @@ const clientSchema = mongoose.Schema({
     type    : Boolean
   },
 
-  company : {
+  isCompany : {
     type  : Boolean
   }
   

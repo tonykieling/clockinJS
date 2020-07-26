@@ -223,13 +223,14 @@ console.log("$$$newClientData", newClientData)
               updateButton    : !this.state.updateButton,
               
               inactive        : newClientData.data.newData.inactive || "",
-              sureCompany     : false
+              sureCompany     : false,
+              linkClientToCompany : this.state.company || false
             });
           else
             this.setState({
               message   : newClientData.data.message,
               className : "messageSuccess",
-              // linkClientToCompany : this.state.company || false
+              linkClientToCompany : this.state.company || false
             });        
         } else if (newClientData.data.error)
           this.setState({
@@ -877,52 +878,57 @@ console.log("this.getCompanyInfo: company::", company)
 
                 { this.state.typeKid && !this.state.linkClientToCompany && this.YNComponent()}
 
+                {/* { this.state.client && this.state.client.isCompany && console.log("THIS IS A COMPANY!!!!!!!!!!!!")} */}
+                { this.state.client && !this.state.client.isCompany 
+                  &&
+                    <React.Fragment>
+                      <Form.Group controlId="formShowRate">
+                        <Form.Label className="cardLabel">Show Rate on PunchIn form?</Form.Label>
+                        <Form.Check 
+                          inline 
+                          label     = "Yes"
+                          checked   = { this.state.showRate}
+                          type      = "radio"
+                          // style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
+                          style     = {{marginLeft: "2rem"}}
+                          disabled    = {this.state.disableEditForm}
+                          onChange  = { () => this.setState({ showRate: true})}
+                        />
+                        <Form.Check 
+                          inline 
+                          label     = "No"
+                          checked   = { !this.state.showRate}
+                          type      = "radio"
+                          style     = {{marginLeft: "1rem"}}
+                          disabled    = {this.state.disableEditForm}
+                          onChange  = { () => this.setState({ showRate: false})}
+                        />
+                      </Form.Group>
 
-                <Form.Group controlId="formShowRate">
-                  <Form.Label className="cardLabel">Show Rate on PunchIn form?</Form.Label>
-                  <Form.Check 
-                    inline 
-                    label     = "Yes"
-                    checked   = { this.state.showRate}
-                    type      = "radio"
-                    // style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
-                    style     = {{marginLeft: "2rem"}}
-                    disabled    = {this.state.disableEditForm}
-                    onChange  = { () => this.setState({ showRate: true})}
-                  />
-                  <Form.Check 
-                    inline 
-                    label     = "No"
-                    checked   = { !this.state.showRate}
-                    type      = "radio"
-                    style     = {{marginLeft: "1rem"}}
-                    disabled    = {this.state.disableEditForm}
-                    onChange  = { () => this.setState({ showRate: false})}
-                  />
-                </Form.Group>
-
-                <Form.Group controlId="formShowNotes">
-                  <Form.Label className="cardLabel">Show Notes on PunchIn form?</Form.Label>
-                  <Form.Check 
-                    inline 
-                    label     = "Yes"
-                    checked   = { this.state.showNotes}
-                    type      = "radio"
-                    // style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
-                    style     = {{marginLeft: "2rem"}}
-                    disabled    = {this.state.disableEditForm}
-                    onChange  = { () => this.setState({ showNotes: true})}
-                  />
-                  <Form.Check 
-                    inline 
-                    label     = "No"
-                    checked   = { !this.state.showNotes}
-                    type      = "radio"
-                    style     = {{marginLeft: "1rem"}}
-                    disabled  = {this.state.disableEditForm}
-                    onChange  = { () => this.setState({ showNotes: false})}
-                  />
-                </Form.Group>
+                      <Form.Group controlId="formShowNotes">
+                        <Form.Label className="cardLabel">Show Notes on PunchIn form?</Form.Label>
+                        <Form.Check 
+                          inline 
+                          label     = "Yes"
+                          checked   = { this.state.showNotes}
+                          type      = "radio"
+                          // style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
+                          style     = {{marginLeft: "2rem"}}
+                          disabled    = {this.state.disableEditForm}
+                          onChange  = { () => this.setState({ showNotes: true})}
+                        />
+                        <Form.Check
+                          inline 
+                          label     = "No"
+                          checked   = { !this.state.showNotes}
+                          type      = "radio"
+                          style     = {{marginLeft: "1rem"}}
+                          disabled  = {this.state.disableEditForm}
+                          onChange  = { () => this.setState({ showNotes: false})}
+                        />
+                      </Form.Group>
+                    </React.Fragment>
+                }
 
           <Card.Footer className={this.state.className}>
             { this.state.message

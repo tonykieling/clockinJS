@@ -184,7 +184,7 @@ console.log("inside client add");
               _id: linkedCompany 
             },
             { 
-              company : true
+              isCompany : true
             },
             { 
               runValidators   : true,
@@ -333,7 +333,7 @@ console.log("$$$company", linkedCompany)
                 _id: linkedCompany 
               },
               { 
-                company : true
+                isCompany : true
               },
               { 
                 runValidators   : true,

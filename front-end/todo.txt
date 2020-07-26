@@ -292,7 +292,8 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
         - main screen is done, need to check for all screens related to Invoice
         - list and print (issue) is done
 - Link Company to Client is almost done. Missing:
-  - isCompany on Client collection database, backend and frontend
+  X- isCompany on Client collection database, backend and frontend
+    - when a company for sure, the edit client screen does not display "Show Rate" and "Show Notes"
   - bit more tests
 
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)

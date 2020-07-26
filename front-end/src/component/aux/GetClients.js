@@ -47,7 +47,8 @@ function GetClients(props) {
         if (props.invoiceFlag) {
           setclients(getClients.data.message.filter(e => !e.linked_company));
         } else if (props.punchinFlag) {
-          setclients(getClients.data.message.filter(e => !e.company));
+          // setclients(getClients.data.message.filter(e => !e.company));
+          setclients(getClients.data.message.filter(e => !e.isCompany));
         } else if (props.notKidFlag) {
           //it checks whether there is(are) company and inform to the parent component
           props.sureCompany && props.sureCompany();
