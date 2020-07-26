@@ -325,8 +325,8 @@ console.log("@@@sending invoice data:", data)
 
   getClientInfo = client => {
     this.setState({
-      client          : !client.company && client,
-      company         : !!client.company && client,
+      client          : !client.isCompany && client,
+      company         : !!client.isCompany && client,
       clientId        : client._id,
       disabledIPBtn   : false,
       tableVisibility : false

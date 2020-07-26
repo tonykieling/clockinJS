@@ -1,6 +1,7 @@
 const mongoose  = require("mongoose");
 const Client    = require("../models/client.js");
 
+// mongoose.set("debug", true);
 
 // it gets all users from the system - on purpose with no auth
 // it is an Admin action
@@ -49,7 +50,6 @@ console.log("inside client get_all");
 // it gets one user
 const get_one = async (req, res) => {
 console.log("inside client get_one");
-console.log("$$$get client name$$$")
   const clientId  = req.params.clientId;
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;  
@@ -59,7 +59,7 @@ console.log("$$$get client name$$$")
       .find({ _id: clientId});
       // .findById(clientId);
       // .select("name nickname birthday mother mphone memail father fphone femail consultant cphone cemail default_rate user_id");
-console.log("client", client)
+
     if (!client || client.length < 1)
       return res.status(200).json({
         error: `ECGO02: Client <id: ${clientId}> does not exist.`
@@ -88,7 +88,6 @@ console.log("client", client)
 // it creates a client register
 const client_add = async (req, res) => {
 console.log("inside client add");
-  // mongoose.set("debug", true);
 
   const {
         name,
@@ -264,7 +263,7 @@ console.log("$$$req.body", req.body)
     linkedCompany,
     rateAsPerCompany
   } = req.body;
-console.log("$$$company", linkedCompany)
+  
   const birthday = req.body.birthday ? new Date(req.body.birthday) : undefined;
 
   try {

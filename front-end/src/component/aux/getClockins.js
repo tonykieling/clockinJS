@@ -1,7 +1,6 @@
 import axios from "axios";
     
 const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
-
     let url = "";
     switch (typeOfOperation) {
       case "byDate":

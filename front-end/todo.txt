@@ -256,45 +256,16 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
   - Total column content centralized
 
 - link user to company, actually it is applicable only for kids due to Si's necessity of having some kids related to a company. This way she will be able to generate an invoice for the company, instead of each one of the kids
-  X- menu change to Clients / Add a New One / Company-General
-  X- client's model database has a field client_linked_to_company
-  - client's BE needs to receive and record it
-    X- addClient
-    - modify client
-    X- add clockin needs to add a field called company which is company_id Client's id
-      - right now punchin is being made without company info. In the future, it will be possible to consider recording companyId, as well.
-      ?! still in definition. Defined. See line above
-      --! line above changed. The definition: the field company_id was created on clockin schema to record the data regarding a company, when it is the case. Right now there are many clockins in database production, so because of this legacy, I choose to have a code to look up for company, at the clockins query. In the future only looking for company_id will be enough - this is typeQuestion = toCompany.
-    X- get clockins
-      - it's working for PunchInList, but need to check about client information when list is to company
-    - add invoice
-      - invoice also must have company_id field
-  - client's FE:
-    X- client's form needs to have a field "link this client to a company"
-      X- when it happes, there is an option in a field "rate as for the Company"
-      X- has to record a field in db called rateAsPerCompany
-        - change Client model to have the above field
-        - BE needs to process it
-    X- GetClient button with diff color when it comes to select company (apply for new kids and edit kids - ClientNew.js and ClientsList.js components)
-    X- Client schema should also have a field "company", type of Boolean. It will easy when it comes to Punchin and Invoice procedures.
-      After setting a Client as Company, the user is also able to revert it by editing the client and marking the field above as false. It also disconnect the clients linked to this client.
-      - change Client edit BE procedure to make it happen:
-        X- link client (kid) and set client as company (company)
-        - unlink client (kid) and unset client as company (company)
-        - when a kid is linked to a Client Company, this automatically will disable to Punchin to this client, only for the kids linked to it
-    X- update ClientsList, as well
-    X- on Clockin, show in the green button only kids' clients, not company
-      - on PunchIn, the button should not show clients set as company = true
-        - main screen is done, need to check for all screens related to PunchIn
-        - actually, PunchiInList component can show both the list of punchins for either client linked to company or company
-    X- on Invoice Generation, green button shows only Company and not kids's clients
-      - on Invoice, the button should not show clients with field client_linked_to_company
-        - main screen is done, need to check for all screens related to Invoice
-        - list and print (issue) is done
-- Link Company to Client is almost done. Missing:
-  X- isCompany on Client collection database, backend and frontend
-    - when a company for sure, the edit client screen does not display "Show Rate" and "Show Notes"
-  - bit more tests
+  it's done. Main changes:
+    - Client Collection had added the fields: linked_company (reference to the company client), rate_as_per_company (when the rate follows company definition, but also is possible to have it for the kid), and isCompany (it explicitly says the current client is a company)
+    - WHen recording a new client, it's possible to link it for another client (must be a normal company, not kid)
+    - When PunchIn, only kids and normal client are able to do so (company client are not)
+    - PunchInList is for all types of clients
+    - Invoice can be generated for kids (without company linked) and normal clienmt (both company or not)
+    - GetClients button has been refactored in order to support different states, regarding the client type
+
+    In the end, there are two types of clients: Kids and Normal clients. Kids can be linked to a company and also without it. Normal clients can be a compnay, when linked to a kid, or only a noremal client. It helps to differentiate when PunchIn (only kids, both ones, or normal clients) and Invoice for all but kids linked to a company.
+    In this way, Simone is gonna be able to PunchIn for all her clients, generate Invoices for them, but kids with company linked, she will be able to only controll them, whithout send them the pdf. Mainly, it's is possible to merge more than one client for one invoice
 
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - add report (invoices = all / per client / per period / per status)

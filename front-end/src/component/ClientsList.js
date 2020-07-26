@@ -114,7 +114,6 @@ class ClientsList extends Component {
 
 
   handleSubmit = async event => {
-// console.log("BEFORE send data - this.state:", this.state)
     event.preventDefault();
 
     const
@@ -141,8 +140,6 @@ class ClientsList extends Component {
         this.textInput1.focus();
       }
     } else {
-console.log("BEFORE mount data - this.state:", this.state)
-
       const data = { 
         clientId      : this.state.clientId || undefined,
         name,
@@ -171,19 +168,15 @@ console.log("BEFORE mount data - this.state:", this.state)
                             : this.state.postalCode || undefined,
         type_of_service : this.state.typeOfService || (this.state.tmp_typeOfService ? "" : undefined),
 
-        inactive        : this.state.inactive || undefined,
-        showRate        : this.state.showRate || undefined,
-        showNotes       : this.state.showNotes || undefined,
+        inactive        : this.state.inactive,
+        showRate        : this.state.showRate,
+        showNotes       : this.state.showNotes,
 
         // company         : this.state.tmp_linkClientToCompany && !this.state.company ? undefined : this.state.company._id,
         linkedCompany   : this.state.company ? this.state.company._id : undefined,
         rateAsPerCompany: this.state.company ? this.state.rateAsPerCompany : undefined
       };
-// console.log("t###his.state.company", this.state.company)
-// console.log("###this.state.tmp_linkClientToCompany", this.state.tmp_linkClientToCompany)
 
-console.log("@@@data to be sent - data", data)
-// if (1) return
       const url = `/client/${data.clientId}`;
       try {
         const newClientData = await axios.patch( 
@@ -194,7 +187,7 @@ console.log("@@@data to be sent - data", data)
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-console.log("$$$newClientData", newClientData)
+
         if (newClientData.data.message) {
           if (newClientData.data.newData)
             this.setState({
@@ -254,7 +247,6 @@ console.log("$$$newClientData", newClientData)
   clearMessage = () => {
     this.setState({
       disableEditForm : true,
-      // linkClientToCompany: false
     });
 
     setTimeout(() => {
@@ -266,12 +258,10 @@ console.log("$$$newClientData", newClientData)
 
 
   getClientInfo = client => {
-console.log(":::getclientInfo::", client)
     const {
       _id, name, nickname,
     } = client;
-// console.log("mother=", mother)
-// console.log("consultant=", consultant)
+
     this.setState({
       client,
       clientId        : _id,
@@ -309,7 +299,6 @@ console.log(":::getclientInfo::", client)
 
       linkClientToCompany   : client.linked_company ? true : false,
       companyId             : client.linked_company || "",
-      // NEED TO adjust this variable (companyId so it will work for situation when there is no linked_company for the kid)
       rateAsPerCompany      : client.rate_as_per_company || ""
     });
   }
@@ -411,7 +400,6 @@ console.log(":::getclientInfo::", client)
    * this method shows the option to link a client to a company
    */
   YNComponent = () => {
-// console.log("this.state", this.state)
     return  <React.Fragment>
               <Form.Group controlId="formLinkClient">
                 <Form.Label className="cardLabel form-check-inline"> Link Client to a Company? </Form.Label>
@@ -485,7 +473,6 @@ console.log(":::getclientInfo::", client)
 
 
   getCompanyInfo = company => {
-console.log("this.getCompanyInfo: company::", company)
     this.setState({
       company,
       message     : "",
@@ -493,12 +480,11 @@ console.log("this.getCompanyInfo: company::", company)
       defaultRate : this.state.rateAsPerCompany ? company.default_rate : this.state.defaultRate,
       companyId   : company._id,
       messageControlDefaultRate : ""
-    }, () => console.log("this.state after getCompanyInfo:", this.state));
+    });
   }
 
 
   render() {
-// console.log("this.state", this.state)
     return (
       <div className="formPosition">
         <br />
@@ -878,7 +864,6 @@ console.log("this.getCompanyInfo: company::", company)
 
                 { this.state.typeKid && !this.state.linkClientToCompany && this.YNComponent()}
 
-                {/* { this.state.client && this.state.client.isCompany && console.log("THIS IS A COMPANY!!!!!!!!!!!!")} */}
                 { this.state.client && !this.state.client.isCompany 
                   &&
                     <React.Fragment>

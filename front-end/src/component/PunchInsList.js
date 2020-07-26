@@ -80,7 +80,8 @@ class PunchInsList extends Component {
             clockinList       : pastClockins,
             clockInListTable  : this.renderDataTable(pastClockins),
             tableVisibility   : true,
-            cleanButton       : true
+            cleanButton       : true,
+            message           : ""
           });
 
         } catch(err) {
@@ -170,10 +171,11 @@ class PunchInsList extends Component {
 
   getClientInfo = client => {
     this.setState({
-      company         : !!client.company && client,
-      client          : !client.company && client,
+      company         : !!client.isCompany && client,
+      client          : !client.isCompany && client,
       clientId        : client._id,
-      tableVisibility : false
+      tableVisibility : false,
+      message         : ""
     });
   }
 

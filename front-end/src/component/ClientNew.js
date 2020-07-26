@@ -164,7 +164,7 @@ class KidClientNew extends Component {
         linkedCompany     : this.state.company._id || undefined,
         rateAsPerCompany  : this.state.companyFree ? undefined : (this.state.rateAsPerCompany || undefined)
       }
-console.log("createClient:::", createClient)
+
       try {
         const addClient = await axios.post( 
           url, 

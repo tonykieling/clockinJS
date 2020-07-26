@@ -571,6 +571,7 @@ const get_clockins_by_invoice = async (req, res) => {
  */
 const get_general = async (req, res) => {
   console.log("inside clockins get_general");
+console.log("***req.query", req.query)
     const userId    = req.userData.userId;
     const 
       // clientId  = req.query.clientId === "undefined" ? undefined : req.query.clientId,
@@ -723,14 +724,13 @@ const get_general = async (req, res) => {
         }
         ])
         .sort({time_start: 1});
-// console.log("^^^allClockins", allClockins)
 
       if (!allClockins || allClockins.length < 1) {
         return res.status(200).json({
           message: `No clockins at all.`
         });
       }
-console.log("flagggggggg", clientId)
+
       const checkInvoiceCode = req.query.queryLastInvoiceCode && require("./aux/checkInvoiceCode.js");
       const codeSuggestion = req.query.queryLastInvoiceCode ? await checkInvoiceCode(userId, clientId) : null;
 
