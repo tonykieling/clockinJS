@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { connect } from "react-redux";
-import { Dropdown } from "react-bootstrap";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 import MessageModal from "../MessageModal.js";
 import { Redirect } from "react-router-dom";
 
@@ -12,10 +13,11 @@ function GetClients(props) {
   const [goLand, setgoLand] = useState("");
   const [showModal, setshowModal] = useState("");
 
+
   useEffect(() => {
     getClientsFunction();
     // eslint-disable-next-line
-  }, [props.updateButton ? props.updateButton : 1]);
+}, [props.updateButton]);
   
   
   const logout = () => {
@@ -26,7 +28,7 @@ function GetClients(props) {
 
 
   const getClientsFunction = async () => {
-    const url = "/client";    // this is dev setting
+    const url = "/client";
     const askInvoiceSample = props.askInvoiceSample || false;
 
     try {
@@ -42,7 +44,19 @@ function GetClients(props) {
       );
 
       if (getClients.data.count) {
-        setclients(getClients.data.message);
+        if (props.invoiceFlag) {
+          setclients(getClients.data.message.filter(e => !e.linked_company));
+        } else if (props.punchinFlag) {
+          // setclients(getClients.data.message.filter(e => !e.company));
+          setclients(getClients.data.message.filter(e => !e.isCompany));
+        } else if (props.notKidFlag) {
+          //it checks whether there is(are) company and inform to the parent component
+          props.sureCompany && props.sureCompany();
+
+          setclients(getClients.data.message.filter(e => !e.type_kid));
+        } else {
+          setclients(getClients.data.message);
+        }
       } else if (getClients.data.error) {
         //call message modal to say the user needs to login again and redirect to /land
         setshowModal(true);
@@ -55,45 +69,53 @@ function GetClients(props) {
 
   const populateDropbox = () => {
     return(
-      <Dropdown>
-        <Dropdown.Toggle variant="success" id="dropdown-basic">
-          {(props.client && (props.client.nickname || props.client.name)) || `Select Client` }
-        </Dropdown.Toggle>
-        
-        { props.bringAllClients 
-          ?
-            <Dropdown.Menu>
-              {clients.map( (client, id) =>
-                  <Dropdown.Item 
-                    key = { id } 
-                    onClick = { (e) => changes(e, client) }
-                    // data-client = { JSON.stringify(client) }
-                    name = { client.name }
-                  > { client.nickname || client.name } 
-                  </Dropdown.Item>
-              )}
-            </Dropdown.Menu>
-          :
-            <Dropdown.Menu>
-              {clients.map( (client, id) =>
-                  !client.inactive &&
-                    <Dropdown.Item 
+          <DropdownButton
+            id        = "dropdown-basic"
+            disabled  = { props.onlyOneClient}
+            variant   = { props.invoiceFlag || props.notKidFlag ? "info" : "success"}
+            title     = {(props.companyId && clients.filter(e => (e._id === props.companyId))[0].name)
+              || (props.client && (props.client.nickname || props.client.name)) 
+              ||  (props.notKidFlag
+                      ? "Select Company"
+                      : props.invoiceFlag
+                        ? "Select Client/Company"
+                        : "Select Client"
+                  )}
+          >
+            { props.bringAllClients 
+              ?
+                <React.Fragment>
+                  {clients.map( (client, id) =>
+                      <Dropdown.Item 
                       key = { id } 
-                      onClick = { (e) => changes(e, client) }
+                      onClick = { e => changes(e, client) }
                       // data-client = { JSON.stringify(client) }
                       name = { client.name }
-                    > { client.nickname || client.name } 
-                    </Dropdown.Item>
-              )}
-              </Dropdown.Menu>
-            }
-      </Dropdown>
+                      > { client.nickname || client.name } 
+                      </Dropdown.Item>
+                  )}
+                </React.Fragment>
+              :
+                <React.Fragment>
+                  {clients.map( (client, id) =>
+                      !client.inactive &&
+                      <Dropdown.Item 
+                      key = { id } 
+                      onClick = { e => changes(e, client) }
+                      // data-client = { JSON.stringify(client) }
+                      name = { client.name }
+                      > { client.nickname || client.name } 
+                        </Dropdown.Item>
+                  )}
+                </React.Fragment>
+                }
+          </DropdownButton>
     );
   }
 
   const changes = (event, incommingClient) => {
     event.preventDefault();
-    props.getClientInfo(incommingClient);
+    props.clientListFlag ? props.getCompanyInfo(incommingClient) : props.getClientInfo(incommingClient);
   }
 
 
@@ -110,11 +132,10 @@ function GetClients(props) {
               />
         }
 
-        { clients
+        { clients.length
           ? populateDropbox()
-          : errorMsg || "No clients at all" 
+          : errorMsg || props.notKidFlag ? "No company at this time" : "No clients at all" 
         }
-
       </>
     )
 }

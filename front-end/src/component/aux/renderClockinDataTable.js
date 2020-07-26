@@ -10,7 +10,7 @@ export const renderClockinDataTable = (clockin, index) => {
   const t = clockin.worked_hours 
               ? (clockin.worked_hours / 3600000)
               : (te - ts) / 3600000;
-  // console.log("tttt", t);
+
   const clockinsToSend = {
     id          : clockin._id,
     num         : index + 1,
@@ -34,7 +34,9 @@ export const renderClockinDataTable = (clockin, index) => {
     totalTime   : t.toFixed(2),
     // totalCad    : (((te - ts) / ( 60 * 60 * 1000)) * (Number(clockin.rate))).toFixed(2),
     totalCad    : (t * (Number(clockin.rate))).toFixed(2),
-    invoice     : clockin.invoice_id ? clockin.invoice.code : "not yet",
+    // invoice     : clockin.invoice_id ? clockin.invoice.code : "not yet",
+    invoice     : clockin.invoice ? clockin.invoice.code : "not yet",
+    client      : clockin.client_nickname || clockin.client_name,
     // workedHours : (clockin.worked_hours ? (clockin.worked_hours / (1000 * 60 * 60)).toFixed(2) : ""),
     workedHours : (clockin.worked_hours ? t.toFixed(2) : ""),
     notes       : clockin.notes || " "

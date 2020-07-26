@@ -75,7 +75,7 @@ class ClientGeneralNew extends Component {
 
       const postalCode = this.state.postalCode
         ? !this.state.pcOutsideCanada
-          ? this.state.postalCode.substr(0, 6).split(" ").join("")
+          ? this.state.postalCode.substr(0, 7).split(" ").join("")
           : this.state.postalCode
         : undefined;
 

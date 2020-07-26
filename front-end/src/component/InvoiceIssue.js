@@ -4,18 +4,16 @@ import { connect } from "react-redux";
 import { Card, Button, Form, Row, Col, Table } from "react-bootstrap";
 
 import GetClients from "./aux/GetClients.js";
-import InvoiceModal from "./InvoiceModal.js";
-import * as formatDate from "./aux/formatDate.js";
-
+import { generatePdf } from "./aux/generatePdf.js";
+import { show } from "./aux/formatDate.js";
+import InvoicePdfModal from "./InvoicePdfModal";
 
 /**
  * how to use tooltips (TIPS)
  * https://www.w3schools.com/howto/howto_css_tooltip.asp
  */
 
-
-
-class InvoicesList extends Component {
+class InvoicesIssue extends Component {
 
   state = {
     dateStart         : "",
@@ -27,8 +25,8 @@ class InvoicesList extends Component {
     tableVisibility   : false,
     message           : "",
 
-    openInvoiceModal  : false,
-    invoice           : ""
+    invoice           : "",
+    openInvoicePdfModal  : false
   }
 
 
@@ -52,7 +50,6 @@ class InvoicesList extends Component {
         message           : "Select a client.",
         classNameMessage  : "messageFailure"
       });
-      // this.clearMessage();
     } else {
       const url = `/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
@@ -66,29 +63,31 @@ class InvoicesList extends Component {
         });
 
         if (getInvoices.data.allInvoices){
+          const hasInvoiceSample = this.state.client.invoice_sample ? true : false;
+
           this.setState({
             invoiceList       : getInvoices.data.allInvoices,
             invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
             tableVisibility   : true,
-            clientId
+            clientId,
+
+            classNameMessage  : `${hasInvoiceSample ? "messageSuccess" : "messageFailure"}`,
+            message           : `${hasInvoiceSample 
+              ? "Click on the invoice to generate a pdf document and check your download folder." 
+              // : "Client does not have invoice sample registered. Please contact tony.kieling@gmail.com and ask for it."}`
+              : "Click in the invoice to a general pdf invoice. Please, contact tony.kieling@gmail.com for any format changes."}`
           });
         } else {
-          this.setState({
-            message           : "No Invoices for this period.",
-            classNameMessage  : "messageFailure",
-            tableVisibility   : false
-          });
+          throw(getInvoices.data.message);
         }
-
-
       } catch(err) {
         this.setState({
-          message           : err.message,
+          message           : err,
           classNameMessage  : "messageFailure"
-       });
+        });
+        this.clearMessage();
       }
     }
-    this.clearMessage();
   }
 
 
@@ -97,25 +96,22 @@ renderDataTable = (invoices) => {
   return invoices.map((invoice, index) => {
     const invoiceToSend = {
       num         : index + 1,
-      date        : formatDate.show(invoice.date),
+      date        : show(invoice.date),
       totalCad    : Number(invoice.cad_adjustment) || Number(invoice.total_cad),
       code        : invoice.code,
       status      : invoice.status
     }
 
     return (
-      <tr key={invoiceToSend.num} onClick={() => this.invoiceEdit(invoice)}>
+      <tr key={invoiceToSend.num} onClick={this.state.client.invoice_sample 
+                        ? () => this.issuePdf(invoice) 
+                        : () => this.setState({ openInvoicePdfModal: true })}>
+      {/* <tr key={invoiceToSend.num} onClick={() => this.setState({ openInvoicePdfModal: true })}> */}
         <td>{invoiceToSend.num}</td>
         <td>{invoiceToSend.date}</td>
         <td>{invoiceToSend.totalCad.toFixed(2)}</td>
         <td>{invoiceToSend.code}</td>
         <td>{invoiceToSend.status}</td>
-        {/* <td>
-          <Button
-            variant   = "info"
-            onClick   = {() => this.invoiceEdit(invoice)}
-          > Edit</Button>
-        </td> */}
       </tr>
     );
   });
@@ -136,94 +132,52 @@ renderDataTable = (invoices) => {
       client,
       clientId        : client._id,
       disabledIPBtn   : false,
-      tableVisibility : false
+      tableVisibility : false,
+      message         : ""
     });
   }
 
 
 
-  invoiceEdit = (invoice) => {
-    this.setState({
-      openInvoiceModal: true,
-      invoice
-    });
-  }
-
-
-  closeModal = () => {
-    this.setState({
-      openInvoiceModal: false
-    });
-  }
-
-
-  updateScreen = newStatus => {
-    let tempInvoices;
-
-    if (newStatus) {
-      tempInvoices = this.state.invoiceList.map(invoice => {
-        if (invoice._id === this.state.invoice._id)
-          invoice.status = newStatus;
-
-          return invoice;
-        });
+  issuePdf = (invoice) => {
+    if (this.state.client.invoice_sample) {
+      const data = {
+        invoice,
+        user      : this.props.user,
+        client    : this.state.client
+      };
+      generatePdf(data);
     } else {
-      const invoiceToRemove   = this.state.invoice._id;
-      tempInvoices      = this.state.invoiceList.filter( invoice => invoice._id !== invoiceToRemove);
+      console.log("NO INVOICESAMPLE!");
+
     }
-    
-    const tempInvoicesTable = this.renderDataTable(tempInvoices);
-    this.setState({
-      invoiceList       : tempInvoices,
-      invoiceListTable  : tempInvoicesTable,
-      openInvoiceModal  : false
-    });
-  }
-
-
-  updateInvoiceData = data => {
-    const tempInvoice = { ...this.state.invoice};
-    tempInvoice.code              = data.newInvoiceCode;
-    tempInvoice.cad_adjustment    = data.newReceivedAmount;
-    tempInvoice.reason_adjustment = data.newReason;
-
-    // update invoiceList
-    const newInvoiceList = this.state.invoiceList.map(invoice => (invoice._id === data.invoiceId) ? invoice = tempInvoice : invoice);
-
-    this.setState({
-      invoice           : tempInvoice,
-      invoiceList       : newInvoiceList,
-      invoiceListTable  : this.renderDataTable(newInvoiceList)
-    });
-
   }
 
 
   render() {
     return (
       <div className="formPosition">
-        <br />
-        {this.state.openInvoiceModal ?
-          <InvoiceModal
-            invoice           = { this.state.invoice }
-            client            = { this.state.client }
-            closeModal        = { this.closeModal }
-            updateScreen      = { this.updateScreen }
-            openInvoiceModal  = { this.state.openInvoiceModal }
-            // changeInvoiceData = { data => this.updateInvoiceData(data)}
-            storeToken        = { this.props.storeToken}
-         />
-        : "" }
+        {this.state.openInvoicePdfModal 
+          &&
+            <InvoicePdfModal
+              user        = { this.props.user}
+              client      = { this.state.client}
+              openModal   = { this.state.openInvoicePdfModal}
+              closeModal  = { () => this.setState({ openInvoicePdfModal: false})}
+            />
         
+        }
+        <br />
         <Card className="card-settings">
-          <Card.Header>Invoice's List and Edit</Card.Header>
+          <Card.Header>Generate a Pdf file</Card.Header>
           <Card.Body>
             <div className="gridClientBtContainer">
               <GetClients 
-                client        = { this.state.client }
-                getClientInfo = { this.getClientInfo }
-                invoiceFlag   = { true }
-              /> { /* mount the Dropbox Button with all clients for the user */ }
+                client            = { this.state.client }
+                getClientInfo     = { this.getClientInfo } 
+                askInvoiceSample  = { true }
+                company           = { true}
+              />
             </div>
 
             <br></br>
@@ -265,47 +219,47 @@ renderDataTable = (invoices) => {
                   variant   = "primary" 
                   type      = "submit" 
                   onClick   = { this.handleGetInvoices } 
-                  ref       = {input => this.getInvoicesBtn = input }
-                >
+                  ref       = {input => this.getInvoicesBtn = input }  >
                   Get Invoices
                 </Button>
               </div>
             
-          </Form>
-        </Card.Body>
-      </Card>
+            </Form>
+          </Card.Body>
+        </Card>
 
 
-      { this.state.tableVisibility
-          ?
-            <Card className="cardInvoiceGenListofInvoices">
-              <Card.Header style={{textAlign: "center"}}>
-                Client: <b>{this.state.client.nickname || this.state.client.name}</b>, {" "}
-                  <b>{this.state.invoiceList.length}</b> {this.state.invoiceList.length > 1 ? "Invoices" : "Invoice"}
-              </Card.Header>
+        { this.state.tableVisibility
+            ?
+              <Card className="cardInvoiceGenListofInvoices">
+                {/* <Form.Label className="cardLabel">Client: {this.state.client.nickname}</Form.Label> */}
+                <Card.Header style={{textAlign: "center"}}>
+                  Client: <b>{ this.state.client.nickname || this.state.client.name }</b>, {" "}
+                    <b>{this.state.invoiceList.length}</b> {this.state.invoiceList.length > 1 ? "Invoices" : "Invoice"}
+                </Card.Header>
 
-              {(this.state.invoiceList.length > 0) 
-                ? 
-                  <div>
-                    <Table striped bordered hover size="sm" responsive>
-                      <thead>
-                        <tr style={{textAlign: "center", verticalAlign: "middle"}}>
-                          <th>#</th>
-                          <th>Date</th>
-                          <th>CAD$</th>
-                          <th>Code</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody style={{textAlign: "center"}}>
-                        {this.state.invoiceListTable}
-                      </tbody>
-                    </Table>
+                {(this.state.invoiceList.length > 0) 
+                  ? 
+                    <div>
+                      <Table striped bordered hover size="sm" responsive>
+                        <thead>
+                          <tr style={{textAlign: "center", verticalAlign: "middle"}}>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>CAD$</th>
+                            <th>Code</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody style={{textAlign: "center"}}>
+                          {this.state.invoiceListTable}
+                        </tbody>
+                      </Table>
 
-                  </div>
-                : null }
-            </Card>
-          : null }
+                    </div>
+                  : null }
+              </Card>
+            : null }
 
           </div>
     )
@@ -315,10 +269,11 @@ renderDataTable = (invoices) => {
 
 const mapStateToProps = store => {
   return {
-    storeToken    : store.token
+    storeToken  : store.token,
+    user        : store
   };
 };
 
 
 
-export default connect(mapStateToProps, null)(InvoicesList);
+export default connect(mapStateToProps, null)(InvoicesIssue);

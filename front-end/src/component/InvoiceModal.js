@@ -1,6 +1,5 @@
-import React, { Component } from 'react'
-import axios from "axios";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+// import { connect } from "react-redux";
 import { Card, Button, ButtonGroup, Form, Table, Col, Row } from "react-bootstrap";
 import InvoiceChangeStatusModal from "./InvoiceChangeStatusModal.js";
 import ReactModal from "react-modal";
@@ -9,6 +8,7 @@ import InvoiceModalDelete from "./InvoiceModalDelete.js";
 import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
 import PunchInModal from "./PunchInModal.js";
 import InvoiceEditModal from "./InvoiceEditModal.js";
+import { getClockins } from "./aux/getClockins.js";
 
 
 const thinScreen = window.innerWidth < 800 ? true : false;
@@ -119,37 +119,31 @@ class InvoiceModal extends Component {
 
   takeClockinData = async() => {
     const
-      dateStart = this.props.invoice.date_start,
-      dateEnd   = this.props.invoice.date_end,
-      clientId  = this.props.client._id;
+      // dateStart = this.props.invoice.date_start,
+      // dateEnd   = this.props.invoice.date_end,
+      // clientId  = this.props.client._id;
+      invoiceId       = this.props.invoice._id,
+      userToken       = this.props.storeToken,
+      typeOfQuestion  = "invoiceClockins";
 
-    const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-
+      // const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+      // const url = `/clockin/clockins?invoiceId=${invoiceId}&type=invoiceClockins`;
+      
       try {
-        const getClockins = await axios.get( 
-          url,
-          {  
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization" : `Bearer ${this.props.storeToken}` }
+        const pastClockins = await getClockins(userToken, typeOfQuestion, invoiceId);
+
+        if (pastClockins.error)
+          throw(pastClockins.error);
+
+        this.setState({
+          clockinList       : pastClockins,
+          clockInListTable  : this.renderDataTable(pastClockins),
+          tableVisibility   : true
         });
 
-        if (getClockins.data.allClockins){
-          this.setState({
-            clockinList       : getClockins.data.allClockins,
-            clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
-            tableVisibility   : true
-          });
-        } else {
-          //////////////////just in case
-          this.setState({
-            message         : getClockins.data.message,
-            tableVisibility : false
-          });
-        }
       } catch(err) {
         this.setState({
-          message         : err.message,
+          message         : err || err.message,
           tableVisibility : false
         });
         
@@ -168,7 +162,8 @@ class InvoiceModal extends Component {
   editClockin = data => {
     this.setState({
       showClockinModal: true,
-      clockinToModal  : data
+      clockinToModal  : data,
+      client          : data.client
     });
   }
 
@@ -176,7 +171,7 @@ class InvoiceModal extends Component {
   renderDataTable = clockins => {
     return clockins.map((clockin, index) => {
       const clockinsToSend = renderClockinDataTable(clockin, index);
-
+      
       return (
         <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
           <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
@@ -308,9 +303,7 @@ class InvoiceModal extends Component {
           ? <PunchInModal 
               showModal     = { this.state.showClockinModal}
               clockinData   = { this.state.clockinToModal}
-              client        = { this.props.client.nickname}
-              // deleteClockin = { (clockinId) => console.log("clockin got deleted", clockinId)}
-              // deleteClockin = { (clockinId) => this.updateClockins(clockinId)}
+              client        = { this.state.client }
               deleteClockin = { false}
               closeModal    = { this.closeClockinModal}
               thinScreen    = { thinScreen}
@@ -321,7 +314,7 @@ class InvoiceModal extends Component {
           <Card.Header as="h3">Invoice: { this.props.invoice.code }</Card.Header>
           <Card.Body>
 
-            <Card.Title style={{fontWeight: "bold", fontSize: "large"}}> Client: { this.props.client.nickname }</Card.Title>
+            <Card.Title style={{fontWeight: "bold", fontSize: "large"}}> Client: { this.props.client.nickname || this.props.client.name }</Card.Title>
 
 
             { thinScreen
@@ -516,12 +509,13 @@ class InvoiceModal extends Component {
 }
 
 
-const mapStateToProps = store => {
-  return {
-    storeToken    : store.token
-  };
-};
+// const mapStateToProps = store => {
+//   return {
+//     AstoreToken    : store.token
+//   };
+// };
 
 
 
-export default connect(mapStateToProps, null)(InvoiceModal);
+// export default connect(mapStateToProps, null)(InvoiceModal);
+export default InvoiceModal;

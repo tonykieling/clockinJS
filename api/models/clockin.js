@@ -58,6 +58,11 @@ const clockinSchema = mongoose.Schema({
 
   break_end: {
     type      : Date
+  },
+
+  company_id: {
+    type      : mongoose.Schema.Types.ObjectId,
+    ref       : "Client"
   }
 
 });

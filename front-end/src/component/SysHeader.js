@@ -89,7 +89,7 @@ function SysHeader(props) {
                     <NavDropdown title="Add a New One" id="basic-nav-submenu" drop="right" style={{paddingLeft: "1rem"}}>
                         <NavDropdown.Item href="clientNew">Kids</NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item href="clientGeneralNew">General</NavDropdown.Item>
+                        <NavDropdown.Item href="clientGeneralNew">General / Company</NavDropdown.Item>
                     </NavDropdown>
 
                     <NavDropdown.Divider />
@@ -139,7 +139,7 @@ function SysHeader(props) {
                 <NavDropdown title="Add a New One" id="basic-nav-submenu" drop="down">
                   <NavDropdown.Item href="clientNew">Kids</NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item href="clientGeneralNew">General</NavDropdown.Item>
+                  <NavDropdown.Item href="clientGeneralNew">General / Company</NavDropdown.Item>
                 </NavDropdown>
 
                 <NavDropdown.Divider />

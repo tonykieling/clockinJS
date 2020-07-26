@@ -246,6 +246,7 @@ X- invoice for BC Autism modified to accomodate multiple pages
 X- clientList button according what Si asked
 X- Punch in form able to not show rate and notes , user needs to set on client page
 - invoice for ordinary client
+<<<<<<< HEAD
   X- create API in BE and integrate with fe
   - handle the clockins in a table
   - offer option to be by day, week, or only one description
@@ -257,6 +258,35 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
   - started doing this with InvoicePdfModal, need to apply to other components
 
 - On PunchIn form, when user selects a date, the system will retrieve all clockins for that particular day
+=======
+
+- punchin show clockins for the day as soon the user selects it. If no client yet, it shows all clockins in a table regarding the selected day.
+  X- decided to show on PunchIn page all clockins for the day, regardles the client
+  X- when there is clockin, the system block time that alread been used for other client
+    - it is not possible to have shared time among clients at the same time. Checked with Si and she also think the same.
+  X- fix bug when recording clockin
+    it was validating hours even though no clocking for the day. Solved.
+  X- fix error when querying the clockins (rn it's showing only "OK").
+    find a return with the "OK" message. Solved.
+  X- set date picker in a diff way btw smalls reen and pc
+  - enable user clockin in a break (it's possible to work in a diff place if it is a break)
+  - expand pastClockins htmlTable
+  - set a frame around "Starting, Ending and Total"
+  - Total column content centralized
+
+- link user to company, actually it is applicable only for kids due to Si's necessity of having some kids related to a company. This way she will be able to generate an invoice for the company, instead of each one of the kids
+  it's done. Main changes:
+    - Client Collection had added the fields: linked_company (reference to the company client), rate_as_per_company (when the rate follows company definition, but also is possible to have it for the kid), and isCompany (it explicitly says the current client is a company)
+    - WHen recording a new client, it's possible to link it for another client (must be a normal company, not kid)
+    - When PunchIn, only kids and normal client are able to do so (company client are not)
+    - PunchInList is for all types of clients
+    - Invoice can be generated for kids (without company linked) and normal clienmt (both company or not)
+    - GetClients button has been refactored in order to support different states, regarding the client type
+
+    In the end, there are two types of clients: Kids and Normal clients. Kids can be linked to a company and also without it. Normal clients can be a compnay, when linked to a kid, or only a noremal client. It helps to differentiate when PunchIn (only kids, both ones, or normal clients) and Invoice for all but kids linked to a company.
+    In this way, Simone is gonna be able to PunchIn for all her clients, generate Invoices for them, but kids with company linked, she will be able to only controll them, whithout send them the pdf. Mainly, it's is possible to merge more than one client for one invoice
+
+>>>>>>> master
 - update invoice when change its status (right now need to close the modal and return to main screen, click on the invoice and it will be refreshed. Need to update when change status without needing to return to main screen)
 - add report (invoices = all / per client / per period / per status)
               clockins
