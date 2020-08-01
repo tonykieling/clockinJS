@@ -234,7 +234,6 @@ class PunchInNew extends Component {
   }
 
   getClientInfo = client => {
-console.log("client", client)
     this.setState({
       client  : client,
       rate    : client.default_rate,
