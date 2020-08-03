@@ -114,7 +114,7 @@ list of actions:
  - write down the invoice_id in each clockin
 */
 const invoice_add = async (req, res) => {
-console.log("inside invoice_add@@@@@@@@@@@@");
+console.log("inside invoice_add");
 
   const {
     dateStart,
@@ -171,8 +171,7 @@ console.log("inside invoice_add@@@@@@@@@@@@");
       error: "Error EIADD07"
     });
   }
-// if (1) return res.send({error: "gotcha!!"});
-console.log("111111----clockinArray:", clockinArray)
+
   let clockins = clockinArray || "";
 
   if (!clockinArray) {
@@ -186,7 +185,7 @@ console.log("111111----clockinArray:", clockinArray)
             $lte: dateEnd
           }
         });
-console.log("XXXX----clockins:", clockins)
+
       if (clockins.length < 1)
         return res.status(208).json({
           error: "No clockins at all.",
@@ -217,19 +216,14 @@ console.log("XXXX----clockins:", clockins)
       user_id     : userId,
       for_company : company || undefined
     });
-console.log("newInvoice", newInvoice)
+
     await newInvoice.save();
 
     let totalCadTmp = 0;
     clockins.forEach(async (clockin, i) => {
-console.log("22222--- forEach clockin:::", clockin);
-console.log("22222222222222 clockin.worked_hours:", clockin.worked_hours);
       totalCadTmp += clockin.worked_hours 
                       ? ((clockin.worked_hours / 3600000) * clockin.rate)
                       : ((new Date(clockin.time_end) - new Date(clockin.time_start)) / 3600000) * clockin.rate;
-      // totalCadTmp += clockin.worked_hours ? ((clockin.worked_hours / 3600000) * clockin.rate) : ((new Date(clockin.time_end) - new Date(clockin.time_start)) / 3600000) * clockin.rate;
-console.log("3333---forEach totalCadTmp", totalCadTmp, "     --- typeof totalCadTmp", typeof totalCadTmp);
-// if (1) return res.send({message: "OKKKK"})
 /**
  * the line above should be changed for just take worked_hours whrn all current clockins hav generated invoices
  * deadline = march-2020
@@ -244,7 +238,6 @@ console.log("3333---forEach totalCadTmp", totalCadTmp, "     --- typeof totalCad
         });
 
     });
-console.log("44444444444444after fiorEach totalCadTmp:", totalCadTmp, "    ---totalCadTmp.toFixed(2)", totalCadTmp.toFixed(2));
 
     await Invoice
       .updateOne({
