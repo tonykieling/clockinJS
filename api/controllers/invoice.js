@@ -114,7 +114,7 @@ list of actions:
  - write down the invoice_id in each clockin
 */
 const invoice_add = async (req, res) => {
-console.log("inside invoice_add@@@@@@@@@@@@");
+console.log("inside invoice_add");
 
   const {
     dateStart,
@@ -171,7 +171,6 @@ console.log("inside invoice_add@@@@@@@@@@@@");
       error: "Error EIADD07"
     });
   }
-// if (1) return res.send({error: "gotcha!!"});
 
   let clockins = clockinArray || "";
 
@@ -217,14 +216,14 @@ console.log("inside invoice_add@@@@@@@@@@@@");
       user_id     : userId,
       for_company : company || undefined
     });
-console.log("newInvoice", newInvoice)
+
     await newInvoice.save();
 
     let totalCadTmp = 0;
     clockins.forEach(async (clockin, i) => {
       totalCadTmp += clockin.worked_hours 
                       ? ((clockin.worked_hours / 3600000) * clockin.rate)
-                      : ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
+                      : ((new Date(clockin.time_end) - new Date(clockin.time_start)) / 3600000) * clockin.rate;
 /**
  * the line above should be changed for just take worked_hours whrn all current clockins hav generated invoices
  * deadline = march-2020
@@ -237,8 +236,8 @@ console.log("newInvoice", newInvoice)
             invoice_id: newInvoice._id
           }
         });
-    });
 
+    });
 
     await Invoice
       .updateOne({

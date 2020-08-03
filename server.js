@@ -96,6 +96,7 @@ app.use("/invoice", invoiceRoutes);
 
 
 app.get('/ping', (req, res) => {
+  console.log(` => ${new Date().toLocaleString('en-GB', {timeZone: "America/Vancouver"})} - PING/PONG`);
   return res.send('pong');
 })
 

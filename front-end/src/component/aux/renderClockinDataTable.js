@@ -1,6 +1,7 @@
 import * as formatDate from "./formatDate.js";
 
 export const renderClockinDataTable = (clockin, index) => {
+
   const 
         ts = new Date(clockin.time_start),
         te = new Date(clockin.time_end),
@@ -41,6 +42,6 @@ export const renderClockinDataTable = (clockin, index) => {
     workedHours : (clockin.worked_hours ? t.toFixed(2) : ""),
     notes       : clockin.notes || " "
   };
-// console.log("clockinsToSend", clockinsToSend)
+
   return clockinsToSend;
 }

@@ -38,7 +38,7 @@ function InvoiceModalDelete(props) {
       });
 
       if (deleteInvoice.data.message) {
-        setMessage(`Invoice ${props.invoiceCode} has been delete`);
+        setMessage(`Invoice ${props.invoiceCode} has been deleted`);
         setDeleted(true);
       } else {
         console.log("ERROR is present")

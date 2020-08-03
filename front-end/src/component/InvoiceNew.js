@@ -28,8 +28,8 @@ class InvoiceNew extends Component {
     super(props);
     this.textCode = React.createRef();
     this.state = {
-      // dateStart         : "2020-01-01",
-      // dateEnd           : "2020-07-13",
+      // dateStart         : "2020-07-01",
+      // dateEnd           : "2020-07-01",
       dateStart         : "",
       dateEnd           : "",
       clientId          : "",
@@ -234,7 +234,7 @@ console.log("@@@sending invoice data:", data)
             this.clearMessage();
 
           } else
-            throw (invoice.data.error);
+            throw (invoice.data.error || "Sorry, something bad has happened.");
 
         } catch(err) {
           console.log("errrr", err);

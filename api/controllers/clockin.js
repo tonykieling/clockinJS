@@ -632,6 +632,20 @@ const get_general = async (req, res) => {
               preserveNullAndEmptyArrays: true
             }
           },
+          { $lookup: 
+            {
+              from: "invoices",
+              localField: "invoice_id",
+              foreignField: "_id",
+              as: "invoice"
+            }
+          },
+          {
+            $unwind: {
+              path :'$invoice',
+              preserveNullAndEmptyArrays: true
+            }
+          },
           {   
             $project:{
                 date            : 1,
@@ -645,6 +659,7 @@ const get_general = async (req, res) => {
                 break_end       : 1,
                 worked_hours    : 1,
                 invoice_id      : 1,
+                invoice         : "$invoice",
                 client_name     : "$client.name",
                 client_nickname : "$client.nickname"
             } 
