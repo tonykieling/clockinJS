@@ -172,7 +172,7 @@ console.log("inside invoice_add@@@@@@@@@@@@");
     });
   }
 // if (1) return res.send({error: "gotcha!!"});
-
+console.log("----clockinArray:", clockinArray)
   let clockins = clockinArray || "";
 
   if (!clockinArray) {
@@ -186,7 +186,7 @@ console.log("inside invoice_add@@@@@@@@@@@@");
             $lte: dateEnd
           }
         });
-
+console.log("----clockins:", clockins)
       if (clockins.length < 1)
         return res.status(208).json({
           error: "No clockins at all.",
@@ -222,9 +222,12 @@ console.log("newInvoice", newInvoice)
 
     let totalCadTmp = 0;
     clockins.forEach(async (clockin, i) => {
+console.log("--- forEach clockin:::", clockin)
       totalCadTmp += clockin.worked_hours 
                       ? ((clockin.worked_hours / 3600000) * clockin.rate)
                       : ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
+console.log("---forEach totalCadTmp", totalCadTmp), "     --- typeof totalCadTmp", typeof totalCadTmp;
+// if (1) return res.send({message: "OKKKK"})
 /**
  * the line above should be changed for just take worked_hours whrn all current clockins hav generated invoices
  * deadline = march-2020
@@ -237,8 +240,9 @@ console.log("newInvoice", newInvoice)
             invoice_id: newInvoice._id
           }
         });
-    });
 
+    });
+console.log("after fiorEach totalCadTmp:", totalCadTmp, "    ---totalCadTmp.toFixed(2)", totalCadTmp.toFixed(2));
 
     await Invoice
       .updateOne({

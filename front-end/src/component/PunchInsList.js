@@ -55,7 +55,7 @@ class PunchInsList extends Component {
 
     const
       dateStart = this.state.dateStart,
-      dateEnd   = this.state.dateEnd,
+      dateEnd   = this.state.dateEnd, 
       clientId  = this.state.clientId;
 
     if (clientId) {
@@ -73,8 +73,8 @@ class PunchInsList extends Component {
             ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, this.state.company._id)
             : await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId)
 
-          if (pastClockins.error)
-            throw(pastClockins.error);
+          if (!pastClockins || pastClockins.error)
+            throw((!pastClockins && "No invoices at all.") || pastClockins.error);
 
           this.setState({
             clockinList       : pastClockins,
@@ -86,7 +86,7 @@ class PunchInsList extends Component {
 
         } catch(err) {
           this.setState({
-            message           : err,
+            message           : err || "No invoices at all.",
             classNameMessage  : "messageFailure",
             tableVisibility   : false
           });
