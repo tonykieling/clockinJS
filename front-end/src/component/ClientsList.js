@@ -68,7 +68,7 @@ class ClientsList extends Component {
       tmp_postalCode    : "",
       tmp_typeOfService : "",
 
-      updateButton      : true,
+      updateButton      : false,
       pcOutsideCanada   : false,
       postalCodeChange  : false,
 
@@ -76,14 +76,26 @@ class ClientsList extends Component {
       showRate          : true,
       showNotes         : true,
       tmp_showRate      : true,
-      tmp_showNotes     : true
+      tmp_showNotes     : true,
+
+      company             : "",
+      linkClientToCompany : false,
+      rateAsPerCompany    : false,
+      disableRate         : false,
+      companyRate         : "",
+      sureCompany         : false,
+
+      // updateDropDown      : false,
+      tmp_linkClientToCompany : "",
+      tmp_companyId           : "",
+      linkedCompany           : ""
     }
   }
 
 
   handleChange = event => {
     this.setState({
-      [event.target.name]: event.target.value || ""
+      [event.target.name]: event.target.value
     });
 
     event.target.name === "name"        && this.state.messageControlName && this.setState({ messageControlName: ""});
@@ -128,40 +140,42 @@ class ClientsList extends Component {
         this.textInput1.focus();
       }
     } else {
-
       const data = { 
         clientId      : this.state.clientId || undefined,
         name,
         default_rate  : defaultRate,
-
         nickname      : this.state.typeKid ? nickname : undefined,
-        birthday      : this.state.birthday || (this.state.tmp_birthday ? " " : undefined),
-        mother        : this.state.mother || (this.state.tmp_mother ? " " : undefined),
-        mPhone        : this.state.mPhone || (this.state.tmp_mPhone ? " " : undefined),
-        mEmail        : this.state.mEmail || (this.state.tmp_mEmail ? " " : undefined),
-        father        : this.state.father || (this.state.tmp_father ? " " : undefined),
-        fPhone        : this.state.fPhone || (this.state.tmp_fPhone ? " " : undefined),
-        fEmail        : this.state.fEmail || (this.state.tmp_fEmail ? " " : undefined),
-        consultant    : this.state.consultant || (this.state.tmp_consultant ? " " : undefined),
-        cPhone        : this.state.cPhone || (this.state.tmp_cPhone ? " " : undefined),
-        cEmail        : this.state.cEmail || (this.state.tmp_cEmail ? " " : undefined),
-        typeKid       : this.state.typeKid ? true : false,
 
-        email           : this.state.email,
-        phone           : this.state.phone,
-        city            : this.state.city,
-        address         : this.state.address,
-        province        : this.state.province,
+        birthday      : this.state.birthday || undefined,
+        mother        : this.state.mother || (this.state.tmp_mother ? "" : undefined),
+        mPhone        : this.state.mPhone || (this.state.tmp_mPhone ? "" : undefined),
+        mEmail        : this.state.mEmail || (this.state.tmp_mEmail ? "" : undefined),
+        father        : this.state.father || (this.state.tmp_father ? "" : undefined),
+        fPhone        : this.state.fPhone || (this.state.tmp_fPhone ? "" : undefined),
+        fEmail        : this.state.fEmail || (this.state.tmp_fEmail ? "" : undefined),
+        consultant    : this.state.consultant || (this.state.tmp_consultant ? "" : undefined),
+        cPhone        : this.state.cPhone || (this.state.tmp_cPhone ? "" : undefined),
+        cEmail        : this.state.cEmail || (this.state.tmp_cEmail ? "" : undefined),
+        typeKid       : this.state.typeKid || undefined,
+
+        email           : this.state.email || (this.state.tmp_email ? "" : undefined),
+        phone           : this.state.phone || (this.state.tmp_phone ? "" : undefined),
+        city            : this.state.city || (this.state.tmp_city ? "" : undefined),
+        address         : this.state.address || (this.state.tmp_address ? "" : undefined),
+        province        : this.state.province || (this.state.tmp_province ? "" : undefined),
         postal_code     : this.state.postalCodeChange && !this.state.pcOutsideCanada
                             ? this.state.postalCode.substr(0, 6).split(" ").join("") 
-                            : this.state.postalCode,
-        type_of_service : this.state.typeOfService,
+                            : this.state.postalCode || undefined,
+        type_of_service : this.state.typeOfService || (this.state.tmp_typeOfService ? "" : undefined),
 
         inactive        : this.state.inactive,
         showRate        : this.state.showRate,
-        showNotes       : this.state.showNotes
+        showNotes       : this.state.showNotes,
+
+        // company         : this.state.tmp_linkClientToCompany && !this.state.company ? undefined : this.state.company._id,
+        linkedCompany   : this.state.company ? this.state.company._id : undefined,
+        rateAsPerCompany: this.state.company ? this.state.rateAsPerCompany : undefined
       };
-      
 
       const url = `/client/${data.clientId}`;
       try {
@@ -178,9 +192,9 @@ class ClientsList extends Component {
           if (newClientData.data.newData)
             this.setState({
               message:      `${newClientData.data.newData.nickname || newClientData.data.newData.name} has been changed`,
-              name          : newClientData.data.newData.name || "",
-              nickname      : newClientData.data.newData.nickname || "",
-              birthday      : newClientData.data.newData.birthday ? handlingDate.receivingDate(newClientData.data.newData.birthday) : "",
+              name          : newClientData.data.newData.name,
+              nickname      : newClientData.data.newData.nickname,
+              birthday      : (newClientData.data.newData.birthday && handlingDate.receivingDate(newClientData.data.newData.birthday)) || "",
               mother        : newClientData.data.newData.mother || "",
               mPhone        : newClientData.data.newData.mphone || "",
               mEmail        : newClientData.data.newData.memail || "",
@@ -190,7 +204,7 @@ class ClientsList extends Component {
               cPhone        : newClientData.data.newData.cphone || "",
               cEmail        : newClientData.data.newData.cemail || "",
               consultant    : newClientData.data.newData.consultant || "",
-              defaultRate  : newClientData.data.newData.default_rate || "",
+              defaultRate   : newClientData.data.newData.default_rate || "",
               className     : "messageSuccess",
               email           : newClientData.data.newData.email || "",
               phone           : newClientData.data.newData.phone || "",
@@ -199,14 +213,17 @@ class ClientsList extends Component {
               province        : newClientData.data.newData.province || "",
               postal_code     : newClientData.data.newData.postalCode || "",
               type_of_service : newClientData.data.newData.typeOfService || "",
-              updateButton    : true,
+              updateButton    : !this.state.updateButton,
               
-              inactive        : newClientData.data.newData.inactive || false
+              inactive        : newClientData.data.newData.inactive || "",
+              sureCompany     : false,
+              linkClientToCompany : this.state.company || false
             });
           else
             this.setState({
               message   : newClientData.data.message,
-              className : "messageSuccess"
+              className : "messageSuccess",
+              linkClientToCompany : this.state.company || false
             });        
         } else if (newClientData.data.error)
           this.setState({
@@ -229,7 +246,7 @@ class ClientsList extends Component {
 
   clearMessage = () => {
     this.setState({
-      disableEditForm : true
+      disableEditForm : true,
     });
 
     setTimeout(() => {
@@ -242,28 +259,28 @@ class ClientsList extends Component {
 
   getClientInfo = client => {
     const {
-      _id, name, nickname, birthday, mother, father, consultant
+      _id, name, nickname,
     } = client;
 
     this.setState({
       client,
       clientId        : _id,
-      name            : name || "",
+      name,
       defaultRate     : client.default_rate,
       pcOutsideCanada : (client.postal_code && client.postal_code.length > 6) ? true : false,
+      nickname,
 
-      birthday    : birthday ? handlingDate.receivingDate(birthday) : "",
-      nickname    : nickname || "",
-      mother      : mother || "",
+      birthday    : (client.birthday && handlingDate.receivingDate(client.birthday)) || "",
+      mother      : client.mother || "",
       mPhone      : client.mphone || "",
       mEmail      : client.memail || "",
-      father      : father || "",
+      father      : client.father || "",
       fPhone      : client.fphone || "",
       fEmail      : client.femail || "",
-      consultant  : consultant || "",
+      consultant  : client.consultant || "",
       cPhone      : client.cphone || "",
       cEmail      : client.cemail || "",
-      typeKid     : client.type_kid,
+      typeKid     : client.type_kid || "",
 
       email         : client.email || "",
       phone         : client.phone || "",
@@ -274,11 +291,15 @@ class ClientsList extends Component {
       typeOfService : client.type_of_service || "",
 
       disableEditForm : true,
-      updateButton    : false,
+      // updateButton    : false,
 
       inactive        : client.inactive || "",
-      showRate        : client.showRate,
-      showNotes       : client.showNotes
+      showRate        : client.showRate || "",
+      showNotes       : client.showNotes || "",
+
+      linkClientToCompany   : client.linked_company ? true : false,
+      companyId             : client.linked_company || "",
+      rateAsPerCompany      : client.rate_as_per_company || ""
     });
   }
 
@@ -311,7 +332,11 @@ class ClientsList extends Component {
 
       tmp_inactive      : this.state.inactive,
       tmp_showRate      : this.state.showRate,
-      tmp_showNotes     : this.state.showNotes
+      tmp_showNotes     : this.state.showNotes,
+
+      // updateDropDown    : true,
+      tmp_linkClientToCompany : this.state.linkClientToCompany,
+      tmp_companyId     : this.state.companyId
     });
   }
 
@@ -344,7 +369,14 @@ class ClientsList extends Component {
 
       inactive      : this.state.tmp_inactive,
       showRate      : this.state.tmp_showRate,
-      showNotes     : this.state.tmp_showNotes
+      showNotes     : this.state.tmp_showNotes,
+
+      // linkClientToCompany : false,
+      // company             : "",
+      // sureCompany         : false
+      // updateDropDown: false,
+      linkClientToCompany : this.state.tmp_linkClientToCompany,
+      companyId           : this.state.tmp_companyId
     });
   }
 
@@ -364,6 +396,94 @@ class ClientsList extends Component {
   }
 
 
+  /**
+   * this method shows the option to link a client to a company
+   */
+  YNComponent = () => {
+    return  <React.Fragment>
+              <Form.Group controlId="formLinkClient">
+                <Form.Label className="cardLabel form-check-inline"> Link Client to a Company? </Form.Label>
+                {/* <Form.Group className = "form-check-inline"> */}
+                  <Form.Check
+                      // style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
+                      style     = {{marginLeft: "2rem"}}
+                      inline
+                      label     = "Yes"
+                      checked   = { this.state.linkClientToCompany}
+                      type      = "radio"
+                      disabled  = { this.state.disableEditForm}
+                      onChange  = { () => this.setState({ 
+                                      linkClientToCompany : true,
+                                      rateAsPerCompany    : this.state.sureCompany ? true : undefined,
+                                      disableRate         : true
+                                  })}
+                    />
+                  <Form.Check 
+                    inline
+                    label     = "No"
+                    checked   = { !this.state.linkClientToCompany}
+                    type      = "radio"
+                    style     = {{marginLeft: "1rem"}}
+                    disabled  = { this.state.disableEditForm}
+                    onChange  = { () => this.setState({ 
+                                    linkClientToCompany : false,
+                                    disableRate         : false,
+                                    defaultRate         : this.state.tmp_defaultRate,
+                                    company             : "",
+                                    rateAsPerCompany    : false,
+                                    companyId           : ""
+                                })}
+                  />
+
+                { this.state.linkClientToCompany &&
+                    <div className = "gridClientBtContainer">
+                      <GetClients
+                        companyId       = { this.state.companyId}
+                        client          = { this.state.company }
+                        notKidFlag      = { true}
+                        clientListFlag  = { true}
+                        sureCompany     = { this.sureCompany}
+                        getCompanyInfo  = { this.getCompanyInfo}
+                        onlyOneClient   = { this.state.disableEditForm }
+                      />
+                    </div>
+                }
+              </Form.Group>
+            </React.Fragment>
+  }
+
+
+  // this method receive the confirmation that there is (are) company (ies)
+  sureCompany = company => {
+    this.setState({
+      sureCompany       : true,
+      rateAsPerCompany  : true,
+      company
+    });
+  }
+
+
+  changeRateCheck = () => {
+    this.setState({
+      defaultRate       : !this.state.rateAsPerCompany ? this.state.companyRate : this.state.defaultRate,
+      rateAsPerCompany  : !this.state.rateAsPerCompany,
+      disableRate       : !this.state.disableRate
+    }, () => this.textInput13.focus());
+  }
+
+
+  getCompanyInfo = company => {
+    this.setState({
+      company,
+      message     : "",
+      companyRate : company.default_rate,
+      defaultRate : this.state.rateAsPerCompany ? company.default_rate : this.state.defaultRate,
+      companyId   : company._id,
+      messageControlDefaultRate : ""
+    });
+  }
+
+
   render() {
     return (
       <div className="formPosition">
@@ -371,12 +491,14 @@ class ClientsList extends Component {
         <Card className="card-settings">
           <Card.Header>Your Client's list</Card.Header>
         <Card.Body>
-          <GetClients 
-            client          = { this.state.client }
-            getClientInfo   = { this.getClientInfo }     /* mount the Dropbox Button with all clients for the user */
-            updateButton    = { this.state.updateButton}
-            bringAllClients = { true}
-          />
+          <div className="gridClientBtContainer">
+            <GetClients 
+              client          = { this.state.client }
+              getClientInfo   = { this.getClientInfo }     /* mount the Dropbox Button with all clients for the user */
+              updateButton    = { this.state.updateButton}
+              bringAllClients = { true}
+            />
+          </div>
         </Card.Body>
       </Card>        
 
@@ -420,7 +542,7 @@ class ClientsList extends Component {
                 </Form.Group>
                 { this.state.typeKid
                   ?
-                    <div>
+                    <React.Fragment>
                       <Form.Group controlId="formNickname">
                         <Form.Label className="cardLabel">Nickname</Form.Label>
                         <Form.Control
@@ -584,9 +706,9 @@ class ClientsList extends Component {
                           // ref         = {input => this.textInput12 = input }  
                         />
                       </Form.Group>
-                    </div>
+                    </React.Fragment>
                   :
-                    <div>
+                    <React.Fragment>
                       <Form.Group controlId="formEmail">
                         <Form.Label className="cardLabel">Email</Form.Label>
                         <Form.Control
@@ -701,11 +823,28 @@ class ClientsList extends Component {
                           // ref         = {input => this.typeOfService = input }
                         />
                       </Form.Group>
-                    </div>
+                    </React.Fragment>
                 }
+
+
+
+
+
+                { this.state.linkClientToCompany && this.YNComponent() }
 
                 <Form.Group controlId="formDefaultRate">
                   <Form.Label className="cardLabel">Rate</Form.Label>
+                  { this.state.linkClientToCompany && this.state.sureCompany &&
+                      <Form.Check 
+                        inline 
+                        label     = "Rate as per company ?"
+                        checked   = {this.state.rateAsPerCompany}
+                        type      = "checkbox"
+                        style     = {{marginLeft: "1rem"}}
+                        onChange  = { this.changeRateCheck }
+                        disabled  = { this.state.disableEditForm}
+                      />
+                  }
                   <Form.Control
                     type        = "number"
                     placeholder = {"Type the hourly rate - CAD$"}
@@ -713,7 +852,7 @@ class ClientsList extends Component {
                     onChange    = {this.handleChange}
                     value       = {this.state.defaultRate}
                     onKeyPress  = {this.handleChange}
-                    disabled    = {this.state.disableEditForm}
+                    disabled    = {this.state.disableEditForm || this.state.disableRate}
                     ref         = {input => this.textInput13 = input }  
                   />
                   <Form.Text className="messageControl-user">
@@ -722,67 +861,59 @@ class ClientsList extends Component {
                 </Form.Group>
 
                 <br />
-                <Form.Group controlId="formShowRate">
-                  <Form.Label className="cardLabel">Show Rate on PunchIn form?</Form.Label>
-                    {/* <ButtonGroup>
-                      <Button 
-                        variant   = "success"
-                        style     = { {width: "4rem"}}
-                        onClick   = { () => this.setState({ showRate: true})}
-                        disabled  = { !this.state.client.showRate}
-                      >
-                        Yes
-                      </Button>
 
-                      <Button 
-                        variant="warning"
-                        style   = { {width: "3rem"}}
-                        // onClick={ this.btnCancel } 
-                      >
-                        No
-                      </Button>
-                  </ButtonGroup> */}
-                  <Form.Check 
-                    inline 
-                    label     = "Yes"
-                    checked   = { this.state.showRate}
-                    type      = "radio"
-                    style     = {{marginLeft: "2rem"}}
-                    disabled    = {this.state.disableEditForm}
-                    onChange  = { () => this.setState({ showRate: true})}
-                  />
-                  <Form.Check 
-                    inline 
-                    label     = "No"
-                    checked   = { !this.state.showRate}
-                    type      = "radio"
-                    style     = {{marginLeft: "1rem"}}
-                    disabled    = {this.state.disableEditForm}
-                    onChange  = { () => this.setState({ showRate: false})}
-                  />
-                </Form.Group>
+                { this.state.typeKid && !this.state.linkClientToCompany && this.YNComponent()}
 
-                <Form.Group controlId="formShowNotes">
-                  <Form.Label className="cardLabel">Show Notes on PunchIn form?</Form.Label>
-                  <Form.Check 
-                    inline 
-                    label     = "Yes"
-                    checked   = { this.state.showNotes}
-                    type      = "radio"
-                    style     = {{marginLeft: "2rem"}}
-                    disabled    = {this.state.disableEditForm}
-                    onChange  = { () => this.setState({ showNotes: true})}
-                  />
-                  <Form.Check 
-                    inline 
-                    label     = "No"
-                    checked   = { !this.state.showNotes}
-                    type      = "radio"
-                    style     = {{marginLeft: "1rem"}}
-                    disabled  = {this.state.disableEditForm}
-                    onChange  = { () => this.setState({ showNotes: false})}
-                  />
-                </Form.Group>
+                { this.state.client && !this.state.client.isCompany 
+                  &&
+                    <React.Fragment>
+                      <Form.Group controlId="formShowRate">
+                        <Form.Label className="cardLabel">Show Rate on PunchIn form?</Form.Label>
+                        <Form.Check 
+                          inline 
+                          label     = "Yes"
+                          checked   = { this.state.showRate}
+                          type      = "radio"
+                          // style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
+                          style     = {{marginLeft: "2rem"}}
+                          disabled    = {this.state.disableEditForm}
+                          onChange  = { () => this.setState({ showRate: true})}
+                        />
+                        <Form.Check 
+                          inline 
+                          label     = "No"
+                          checked   = { !this.state.showRate}
+                          type      = "radio"
+                          style     = {{marginLeft: "1rem"}}
+                          disabled    = {this.state.disableEditForm}
+                          onChange  = { () => this.setState({ showRate: false})}
+                        />
+                      </Form.Group>
+
+                      <Form.Group controlId="formShowNotes">
+                        <Form.Label className="cardLabel">Show Notes on PunchIn form?</Form.Label>
+                        <Form.Check 
+                          inline 
+                          label     = "Yes"
+                          checked   = { this.state.showNotes}
+                          type      = "radio"
+                          // style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
+                          style     = {{marginLeft: "2rem"}}
+                          disabled    = {this.state.disableEditForm}
+                          onChange  = { () => this.setState({ showNotes: true})}
+                        />
+                        <Form.Check
+                          inline 
+                          label     = "No"
+                          checked   = { !this.state.showNotes}
+                          type      = "radio"
+                          style     = {{marginLeft: "1rem"}}
+                          disabled  = {this.state.disableEditForm}
+                          onChange  = { () => this.setState({ showNotes: false})}
+                        />
+                      </Form.Group>
+                    </React.Fragment>
+                }
 
           <Card.Footer className={this.state.className}>
             { this.state.message

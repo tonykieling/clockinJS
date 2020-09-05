@@ -7,7 +7,12 @@ import Button     from "react-bootstrap/Button";
 import Row        from "react-bootstrap/Row";
 import Col        from "react-bootstrap/Col";
 import Container  from "react-bootstrap/Container";
+import Table  from "react-bootstrap/Table";
 import { Link} from "react-router-dom";
+import { getClockins } from "./aux/getClockins.js";
+import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
+
+
 
 // import moment from "moment";
 // import DatePicker from "react-datepicker";
@@ -21,6 +26,7 @@ class PunchInNew extends Component {
 
   state = {
     date          : "",
+    // date          : "2020-03-05",
     startingTime  : "",
     endingTime    : "",
     rate          : "",
@@ -32,7 +38,13 @@ class PunchInNew extends Component {
     endingBreak   : "",
     validBreak    : true,
     classNameMessage  : "",
-    disabledBtn   : false
+    disabledBtn   : false,
+
+    showPastClockins  : false,
+    pastClockins      : "",
+    tablePastClockins : "",
+    messageNoClockins : "No clockins for this day",
+    blockedHours      : []
   };
 
 
@@ -40,6 +52,61 @@ class PunchInNew extends Component {
     this.setState({
       [event.target.name]: event.target.value
     });
+
+    (event.target.name === "date") && (window.innerWidth <= 800) && this.getPastClockins(event.target.value);
+  }
+
+
+  // it checks past clockins as soon the user selected a date
+  getPastClockins = async (date) => {
+    //it queries clockins
+    const pastClockins = await getClockins(this.props.storeToken, "byDate", (date || this.state.date));
+    const clockinsTable = pastClockins && await this.formatClockinsTable(pastClockins);
+    const blockedHours = pastClockins && await this.getBlockedHours(pastClockins);
+
+    this.setState({
+      showPastClockins  : true,
+      pastClockins,
+      tablePastClockins : clockinsTable,
+      blockedHours
+    });
+  }
+
+
+  getBlockedHours = clockins => {
+    return clockins.map( clockin => (
+      {
+        timeStart : new Date(clockin.time_start).getTime(),
+        timeEnd   : new Date(clockin.time_end).getTime()
+      }
+    ));
+  }
+
+
+  formatClockinsTable = (clockins) => {
+    return clockins.map((clockin, index) => {
+      const clockinsToSend = renderClockinDataTable(clockin, index);
+        return (
+          <tr key={clockinsToSend.num} >
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
+            <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeEnd}</td>
+          </tr>
+        );
+    });
+  }
+
+
+  checkHours = (st, en) => {
+    const 
+      sh = new Date(`${this.state.date}T${st}Z`).getTime(),
+      eh = new Date(`${this.state.date}T${en}Z`).getTime();
+
+    const result = this.state.blockedHours.filter(e => ((sh >= e.timeStart && sh <= e.timeEnd) || ( eh >= e.timeStart && eh <= e.timeEnd)));
+
+    return result.length;
   }
 
 
@@ -55,11 +122,21 @@ class PunchInNew extends Component {
       notes         : this.state.notes || undefined,
       clientId      : this.state.client._id,
       startingBreak : this.state.startingBreak || undefined,
-      endingBreak   : this.state.endingBreak || undefined
+      endingBreak   : this.state.endingBreak || undefined,
+      companyId     : this.state.client.linked_company || undefined
     };
-    
+
+
     if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak)
       !this.state.validBreak ? this.checkBreakIsValid(event) : this.messageValidationMethod();
+
+    else if (this.state.pastClockins && this.checkHours(data.timeStart, data.timeEnd))
+      this.setState({
+        message           : "Check time, please",
+        classNameMessage  : "messageFailure",
+        disabledBtn       : false
+      });
+
     else {
       const url = "/clockin";
       try {
@@ -74,20 +151,19 @@ class PunchInNew extends Component {
 
         if (addClockin.data.message) {
           this.setState({
-            message          : `Punched in!`,
-            classNameMessage : "messageSuccess",
-            addBreak         : false
+            message           : `Punched in!`,
+            classNameMessage  : "messageSuccess"
           });
         } else if (addClockin.data.error)
           this.setState({
-            message          : addClockin.data.error,
-            classNameMessage : "messageFailure"
+            message           : addClockin.data.error,
+            classNameMessage  : "messageFailure"
           });
         
       } catch(err) {
         this.setState({
-          message          : err.message,
-          classNameMessage : "messageFailure"
+          message           : err.message,
+          classNameMessage  : "messageFailure"
         });
       }
 
@@ -98,24 +174,26 @@ class PunchInNew extends Component {
 
   messageValidationMethod = () => {
     this.setState({
-      message          : (Object.entries(this.state.client).length === 0) ? "Please, select client." : "Please fill or correct the fields.",
-      classNameMessage : "messageFailure"
+      message           : (Object.entries(this.state.client).length === 0) ? "Please, select client." : "Please fill or correct the fields.",
+      classNameMessage  : "messageFailure",
+      disabledBtn       : false
     });
 
-    this.clearMessage();
+    // this.clearMessage();
   }
 
 
-  clearMessage = () => {
-    setTimeout(() => {
-      this.setState({
-        message     : "",
-        disabledBtn : false
-      });
-      // this.headerRef.focus();
-      // window.scrollTo(0,0); // goes to the top of the screen and can see the message
-    }, 3000);
-  }
+  // not using this anymore, just keeping for a while
+  // clearMessage = () => {
+  //   setTimeout(() => {
+  //     this.setState({
+  //       message     : "",
+  //       disabledBtn : false
+  //     });
+  //     // this.headerRef.focus();
+  //     // window.scrollTo(0,0); // goes to the top of the screen and can see the message
+  //   }, 3000);
+  // }
 
 
   clearForm = () => {
@@ -130,7 +208,9 @@ class PunchInNew extends Component {
         client        : {},
         disabledBtn   : false,
         startingBreak : "",
-        endingBreak   : ""
+        endingBreak   : "",
+        addBreak      : false,
+        showPastClockins  : false
       });
       window.scrollTo(0,0); // goes to the top of the screen and can see the message
     }, 3000);
@@ -156,7 +236,8 @@ class PunchInNew extends Component {
   getClientInfo = client => {
     this.setState({
       client  : client,
-      rate    : client.default_rate
+      rate    : client.default_rate,
+      message : ""
     });
   }
 
@@ -164,8 +245,8 @@ class PunchInNew extends Component {
   handleAddBreak = () => {
     this.setState({ 
       addBreak      : !this.state.addBreak,
-      startingBreak : this.state.startingBreak && "",
-      endingBreak   : this.state.endingBreak && "",
+      // startingBreak : this.state.startingBreak && "",
+      // endingBreak   : this.state.endingBreak && "",
       message       : this.state.message && ""
     });
   }
@@ -187,10 +268,11 @@ class PunchInNew extends Component {
           validBreak  : true,
           disabledBtn : false
         });
-        this.clearMessage();
-    } else {
-      this.clearMessage();
+        // this.clearMessage();
     }
+    //  else {
+    //   this.clearMessage();
+    // }
   }
 
 
@@ -215,7 +297,9 @@ class PunchInNew extends Component {
             <div className="gridClientBtContainer">
               <GetClients 
                 client        = { this.state.client }
-                getClientInfo = { this.getClientInfo } />
+                getClientInfo = { this.getClientInfo } 
+                punchinFlag   = { true }
+              />
                 
             </div>
           <br></br>
@@ -229,14 +313,36 @@ class PunchInNew extends Component {
                   name        = "date"
                   onChange    = {this.handleChange}
                   value       = {this.state.date}
-                  onKeyPress  = {this.handleChange}
+                  onBlur      = { () => window.innerWidth > 800 && this.getPastClockins()}
                 />
               </Col>
             </Form.Group>
 
+            {this.state.showPastClockins &&
+              <Card.Footer style = {{ color: "green", fontStyle: "bold"}}>          
+                {this.state.tablePastClockins
+                  ? <Table striped bordered hover size="sm" responsive>
+                      <thead style={{textAlign: "center"}}>
+                        <tr>
+                          <th style={{verticalAlign: "middle"}}>#</th>
+                          <th style={{verticalAlign: "middle"}}>Client</th>
+                          <th style={{verticalAlign: "middle"}}>Date</th>
+                          <th style={{verticalAlign: "middle"}}>From</th>
+                          <th style={{verticalAlign: "middle"}}>To</th>
+                        </tr>
+                      </thead>
+                      <tbody style={{textAlign: "center"}}>
+                        {this.state.tablePastClockins}
+                      </tbody>
+                    </Table>
+                  : this.state.messageNoClockins
+                }
+              </Card.Footer>
+            }
+
 
             <Container style={{paddingLeft: 0}}>
-              <Row style={{paddingLeft: 0}}>
+              <Row style={{paddingLeft: 0, textAlign: "center"}} >
                 <Col>
                   <Form.Label className="cardLabel" >Starting</Form.Label>
                 </Col>

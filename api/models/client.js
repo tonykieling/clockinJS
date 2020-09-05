@@ -130,6 +130,19 @@ const clientSchema = mongoose.Schema({
   showNotes: {
     type    : Boolean,
     default : true
+  },
+
+  linked_company: {
+    type    : mongoose.Schema.Types.ObjectId,
+    ref     : "Client"
+  },
+
+  rate_as_per_company : {
+    type    : Boolean
+  },
+
+  isCompany : {
+    type  : Boolean
   }
   
 });

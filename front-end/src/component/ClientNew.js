@@ -5,6 +5,8 @@ import axios from "axios";
 
 import MaskedInput from 'react-text-mask';
 
+import GetClients from "./aux/GetClients.js";
+
 
 class KidClientNew extends Component {
 
@@ -28,7 +30,14 @@ class KidClientNew extends Component {
 
       messageControlName        : "",
       messageControlNickname    : "",
-      messageControlDefaultRate : ""
+      messageControlDefaultRate : "",
+
+      company             : "",
+      linkClientToCompany : false,
+      rateAsPerCompany    : false,
+      disableRate         : false,
+      companyRate         : "",
+      companyFree         : true
     }
 
   handleChange = e => {
@@ -110,7 +119,7 @@ class KidClientNew extends Component {
     if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
       
       if (!this.state.defaultRate) {
-        this.setState({ messageControlDefaultRate: "Please inform the default rate($)."})
+        this.setState({ messageControlDefaultRate: "Please inform the default rate($) or Company."})
         this.textInput13.focus();
       }
 
@@ -127,6 +136,11 @@ class KidClientNew extends Component {
       }
       
 
+    } else if ( this.state.linkClientToCompany && !this.state.company && !this.state.companyFree) {
+      this.setState({
+        message   : "Please, select company.",
+        className : "messageFailure"
+      });
     } else {
       this.setState({ disableBtn: true });
 
@@ -145,7 +159,10 @@ class KidClientNew extends Component {
         cPhone      : this.state.cPhone || undefined,
         cEmail      : this.state.cEmail || undefined,
         defaultRate : this.state.defaultRate,
-        typeKid     : true
+        typeKid     : true,
+
+        linkedCompany     : this.state.company._id || undefined,
+        rateAsPerCompany  : this.state.companyFree ? undefined : (this.state.rateAsPerCompany || undefined)
       }
 
       try {
@@ -162,22 +179,9 @@ class KidClientNew extends Component {
 
           this.setState({
             message     : <p>Client <b>{this.state.nickname}</b> has been created.</p>,
-            className   : "messageSuccess",
-
-            name        : "",
-            nickname    : "",
-            birthday    : "",
-            mother      : "",
-            mPhone      : "",
-            mEmail      : "",
-            father      : "",
-            fPhone      : "",
-            fEmail      : "",
-            consultant  : "",
-            cPhone      : "",
-            cEmail      : "",
-            defaultRate : ""
+            className   : "messageSuccess"
           });
+          this.clearMessage();
 
         } else if (addClient.data.error) {
           this.setState({
@@ -190,9 +194,8 @@ class KidClientNew extends Component {
           message : err.message,
           className : "messageFailure"
         });
-        
+        this.clearMessage();
       }
-      this.clearMessage();
     }
   }
 
@@ -201,9 +204,28 @@ class KidClientNew extends Component {
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
+        name        : "",
+        nickname    : "",
+        birthday    : "",
+        mother      : "",
+        mPhone      : "",
+        mEmail      : "",
+        father      : "",
+        fPhone      : "",
+        fEmail      : "",
+        consultant  : "",
+        cPhone      : "",
+        cEmail      : "",
+        defaultRate : "",
+        disableRate : false,
+        linkClientToCompany : false,
         message     : "",
-        disableBtn  : false
-      })
+        disableBtn  : false,
+        company     : "",
+        companyRate : "",
+        rateAsPerCompany : false,
+        companyFree : true
+      });
 
       window.scrollTo(0, 0);
       this.textInput1.focus();
@@ -216,6 +238,91 @@ class KidClientNew extends Component {
       [event.target.name]: event.target.value
     })
   }
+
+
+  getClientInfo = company => {
+    this.setState({
+      company,
+      message     : "",
+      companyRate : company.default_rate,
+      defaultRate : this.state.rateAsPerCompany ? company.default_rate : this.state.defaultRate,
+      messageControlDefaultRate : "",
+      companyFree : false
+    });
+  }
+
+
+  /**
+   * this method shows the option to link a client to a company
+   */
+  YNComponent = () => {
+    return  <React.Fragment>
+              <Form.Group controlId="formLinkClient">
+                <Form.Label className="cardLabel"> Link Client to a Company? </Form.Label>
+                <Form.Group
+                  className = "form-check-inline"
+                >
+                  <Form.Check
+                      style     = { window.innerWidth <= 700 ? {marginLeft: "0px"} : {marginLeft: "2rem"}}
+                      inline
+                      label     = "Yes"
+                      checked   = { this.state.linkClientToCompany}
+                      type      = "radio"
+                      onChange  = { () => this.setState({ 
+                                      linkClientToCompany : true,
+                                      rateAsPerCompany    : true,
+                                      disableRate         : true,
+                                      // defaultRate         : this.state.companyRate || ""
+                                  })}
+                    />
+                    <Form.Check 
+                      inline
+                      label     = "No"
+                      checked   = { !this.state.linkClientToCompany}
+                      type      = "radio"
+                      style     = {{marginLeft: "1rem"}}
+                      onChange  = { () => this.setState({ 
+                                      linkClientToCompany : false,
+                                      disableRate         : false,
+                                      company             : "",
+                                      companyRate         : "",
+                                      // defaultRate         : ""
+                                  })}
+                    />
+
+                    { this.state.linkClientToCompany && window.innerWidth <= 700 &&
+                        <div className="gridClientBtContainer">
+                          <GetClients
+                            client        = { this.state.company }
+                            notKidFlag    = { true}
+                            getClientInfo = { this.getClientInfo }
+                          />
+                        </div>
+                    }
+
+                </Form.Group>
+                { this.state.linkClientToCompany && window.innerWidth > 700 &&
+                    <div className="gridClientBtContainer">
+                      <GetClients
+                        client        = { this.state.company }
+                        notKidFlag    = { true}
+                        getClientInfo = { this.getClientInfo }
+                      />
+                    </div>
+                }
+              </Form.Group>
+            </React.Fragment>
+  }
+
+
+  changeRateCheck = () => {
+    this.setState({
+      defaultRate       : !this.state.rateAsPerCompany ? this.state.companyRate : this.state.defaultRate,
+      rateAsPerCompany  : !this.state.rateAsPerCompany,
+      disableRate       : !this.state.disableRate
+    }, () => this.textInput13.focus());
+  }
+
 
 
   render() {
@@ -398,20 +505,37 @@ class KidClientNew extends Component {
                 ref         = {input => this.textInput12 = input }  />
             </Form.Group>
 
+            { this.state.linkClientToCompany && this.YNComponent() }
+
             <Form.Group controlId="formDefaultRate">
               <Form.Label className="cardLabel">Rate</Form.Label>
+              { this.state.linkClientToCompany && this.state.company &&
+                <Form.Check 
+                  inline 
+                  label     = "Rate as per company ?"
+                  checked   = {this.state.rateAsPerCompany}
+                  type      = "checkbox"
+                  style     = {{marginLeft: "1rem"}}
+                  onChange  = { this.changeRateCheck }
+                />
+              }
               <Form.Control
                 type        = "number"
                 placeholder = "Hourly rate - CAD$"
                 name        = "defaultRate"
                 onChange    = {this.handleChange}
-                value       = {this.state.defaultRate}
+                value       = { this.state.defaultRate}
                 onKeyPress  = {this.handleChange}
-                ref         = {input => this.textInput13 = input }  />
+                ref         = {input => this.textInput13 = input }
+                disabled    = { !this.state.company ? false : this.state.disableRate }
+              />
               <Form.Text className="messageControl-user">
                 {this.state.messageControlDefaultRate}
               </Form.Text>
             </Form.Group>
+
+            { !this.state.linkClientToCompany && this.YNComponent() }
+
 
           <Card.Footer className={ this.state.className }>          
             { this.state.message

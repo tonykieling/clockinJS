@@ -114,21 +114,19 @@ list of actions:
  - write down the invoice_id in each clockin
 */
 const invoice_add = async (req, res) => {
-console.log("Inside Invoice_add");
+console.log("inside invoice_add");
 
   const {
     dateStart,
     dateEnd,
     notes,
     clientId,
-    code
+    company,
+    code,
+    clockinArray
   } = req.body;
-console.log("received date::", req.body.date)
+  
   const date = req.body.date ? new Date(req.body.date) : new Date();
-  // const date = req.body.date ? new Date(req.body.date) : return();
-console.log("dates::", dateStart, dateEnd)
-console.log("date::", date)
-// if (1) return res.send({error: "wait"})
 
   const userId      = req.userData.userId;
   const checkUser   = require("../helpers/user-h.js");
@@ -141,15 +139,14 @@ console.log("date::", date)
   const userExist   = temp_user.checkUser;
 
   // it checks whether client is OK and grab info about them which will be used later
-  const client_id     = req.body.clientId;
+  // const client_id     = req.body.clientId;
   const checkClient   = require("../helpers/client-h.js");
-  const temp_client   = await checkClient.check(client_id, userId);
+  const temp_client   = await checkClient.check(clientId, userId);
   if (!temp_client.result)
     return res.send({
       error: temp_client.message || temp_client.text
     });
   const clientExist   = temp_client.checkClient;
-
 // if (1) return res.json({error: "wait!"})
   /**
    * it checks whether there is invoice for this user and client with the same code
@@ -174,31 +171,33 @@ console.log("date::", date)
       error: "Error EIADD07"
     });
   }
-// if (1) return res.send({error: "gotcha!!"});
 
-  let clockins = [];
-  try {
-    clockins = await Clockin
-      .find({
-        client_id: clientId,
-        user_id: userId,
-        date: {
-          $gte: dateStart,
-          $lte: dateEnd
-        }
+  let clockins = clockinArray || "";
+
+  if (!clockinArray) {
+    try {
+      clockins = await Clockin
+        .find({
+          client_id: clientId,
+          user_id: userId,
+          date: {
+            $gte: dateStart,
+            $lte: dateEnd
+          }
+        });
+
+      if (clockins.length < 1)
+        return res.status(208).json({
+          error: "No clockins at all.",
+          user: userExist.name,
+          client: clientExist.name
+        });
+
+    } catch(err) {
+      return res.status(409).json({
+        error: "EIADD06: Something got wrong."
       });
-
-    if (clockins.length < 1)
-      return res.status(208).json({
-        message: "No clockins at all.",
-        user: userExist.name,
-        client: clientExist.name
-      });
-
-  } catch(err) {
-    return res.status(409).json({
-      error: "EIADD06: Something got wrong."
-    });
+    }
   }
 
 
@@ -213,8 +212,9 @@ console.log("date::", date)
       status: "Generated",
       total_cad: 0,
       code,
-      client_id: clientId,
-      user_id: userId
+      client_id   : clientId,
+      user_id     : userId,
+      for_company : company || undefined
     });
 
     await newInvoice.save();
@@ -223,7 +223,7 @@ console.log("date::", date)
     clockins.forEach(async (clockin, i) => {
       totalCadTmp += clockin.worked_hours 
                       ? ((clockin.worked_hours / 3600000) * clockin.rate)
-                      : ((clockin.time_end - clockin.time_start) / 3600000) * clockin.rate;
+                      : ((new Date(clockin.time_end) - new Date(clockin.time_start)) / 3600000) * clockin.rate;
 /**
  * the line above should be changed for just take worked_hours whrn all current clockins hav generated invoices
  * deadline = march-2020
@@ -236,7 +236,8 @@ console.log("date::", date)
             invoice_id: newInvoice._id
           }
         });
-    })
+
+    });
 
     await Invoice
       .updateOne({
@@ -304,8 +305,6 @@ const invoice_modify_status = async (req, res) => {
 
 
   const status = req.body.newStatus;
-// console.log("***req.body", req.body)
-// if (1) return res.send({message: "OK"});
   try {
     const invoiceToBeChanged = req.body.dateDelivered
       ?
@@ -362,7 +361,7 @@ const invoice_modify_status = async (req, res) => {
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
 // for now, only ADMIN is able to change any user's data
 const invoice_edit = async (req, res) => {
-  console.log("======== inside edit Invoice");
+  console.log("inside edit Invoice");
   // const invoiceId  = req.params.invoiceId;
   const userAdmin = req.userData.admin;
   const {
@@ -468,35 +467,18 @@ const invoice_edit = async (req, res) => {
 // FIRST it needs to check whether the user is admin or the clockin belongs to the user which is proceeding
 const invoice_delete = async (req, res) => {
   const invoiceId = req.params.invoiceId;
-  // const userId    = req.userData.userId;
-  // const userAdmin = req.userData.admin;
-// console.log("-----------------------");
-// console.log(invoiceId);
-// return res.send({message: "deleted!!"});
+
   try {
-    // const invoiceToBeDeleted;
     await Invoice
       .deleteOne({ _id: invoiceId});
-// console.log("invoiceToBeDeleted", invoiceToBeDeleted);
 
-    const clockinsUpdated = await Clockin
+    await Clockin
       .updateMany(
         { invoice_id: invoiceId}, 
         { $unset: 
           { invoice_id: 1}
         }
       );
-// console.log("clockinsUpdated==>", clockinsUpdated.n, clockinsUpdated.nModified);
-
-    // if (!invoiceToBeDeleted || invoiceToBeDeleted.length < 1)
-    //   return res.send({
-    //     error: `Error EIDE01: Invoice <${invoiceId} NOT found.`
-    //   });
-
-    // if ((userId != invoiceToBeDeleted.user_id) && (!userAdmin))
-    //     return res.send({
-    //       error: `Error EIDE02: Invoice <${invoiceId}> does not belong to User <${userId}>.`
-    //     });
 
     return res.send({message: "OK"});
 
@@ -506,22 +488,6 @@ const invoice_delete = async (req, res) => {
       error: `EIDE03: Something went wrong.`
     });
   }
-
-  // try {
-  //   const clockinDeleted = await Invoice
-  //     .deleteOne({ _id: invoiceId});
-
-  //   if (clockinDeleted.deletedCount)
-  //     return res.status(200).json({
-  //       message: `Invoice <${invoiceId}> has been deleted`
-  //     });
-  //   else
-  //     throw Error;
-  // } catch (err) {
-  //   res.status(404).json({
-  //     error: `EIDE04: Something bad with Invoice id <${invoiceId}>`
-  //   })
-  // }
 }
 
 
