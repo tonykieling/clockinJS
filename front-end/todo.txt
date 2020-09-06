@@ -270,7 +270,7 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
 
 - reports
   - clockins
-    it allows for each client and also for all together
+    it allows a report for each client and also for all together
     it shows the total number of clockins (period is optional)
     it shows total of hours
     frontend needs:
@@ -285,13 +285,20 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
         },
         totalClockins,
         totalHours,
+        totalClockinsInvoiced,
+        totalHoursInvoiced,
+        totalClockinsNoInvoice,
+        totalHoursNoInvoice,
         clockins:[
           {
             client,
             totalClockins,
-            totalHours
+            totalHours,
+            totalClockinsInvoiced,
+            totalHoursInvoiced
           }
-        ]
+        ],
+        client
       }
 
       (1 client)

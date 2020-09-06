@@ -11,6 +11,7 @@ const userRoutes      = require("./api/routes/user.js");
 const clientRoutes    = require("./api/routes/client.js");
 const clockinRoutes   = require("./api/routes/clockin.js");
 const invoiceRoutes   = require("./api/routes/invoice.js");
+const reportRoutes    = require("./api/routes/reports.js");
 
 
 // this is a middleware to log but now it is disabled
@@ -93,6 +94,10 @@ app.use("/clockin", clockinRoutes);
 
 // it calls invoice routes
 app.use("/invoice", invoiceRoutes);
+
+
+// it calls report routes
+app.use("/report", reportRoutes);
 
 
 app.get('/ping', (req, res) => {
