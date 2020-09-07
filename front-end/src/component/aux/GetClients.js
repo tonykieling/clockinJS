@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from "axios";
-import { connect } from "react-redux";
-import Dropdown from "react-bootstrap/Dropdown";
+import axios          from "axios";
+import { connect }    from "react-redux";
+import Dropdown       from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import MessageModal from "../MessageModal.js";
-import { Redirect } from "react-router-dom";
+import MessageModal   from "../MessageModal.js";
+import { Redirect }   from "react-router-dom";
 
 
 function GetClients(props) {
@@ -17,7 +17,7 @@ function GetClients(props) {
   useEffect(() => {
     getClientsFunction();
     // eslint-disable-next-line
-}, [props.updateButton]);
+  }, [props.updateButton]);
   
   
   const logout = () => {

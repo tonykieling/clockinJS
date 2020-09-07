@@ -273,23 +273,26 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
     it allows a report for each client and also for all together
     it shows the total number of clockins (period is optional)
     it shows total of hours
-    frontend needs:
+    FE needs:
       change button to have "all" as option
       format result page
       allows to save in a pdf file
-    backend retuns an object with:
+    BE retuns an object with:
       {
         period: {
           dtStart
           dtEnd
         },
-        totalClockins,
-        totalHours,
-        totalClockinsInvoiced,
-        totalHoursInvoiced,
-        totalClockinsNoInvoice,
-        totalHoursNoInvoice,
-        clockins:[
+        summary: { 
+          totalClockins,
+          totalHours,
+          totalClockinsInvoiced,
+          totalHoursInvoiced,
+          totalClockinsNoInvoice,
+          totalHoursNoInvoice,
+          client
+        },
+        clockinsByClient:[
           {
             client,
             totalClockins,
@@ -299,8 +302,7 @@ X- Punch in form able to not show rate and notes , user needs to set on client p
             totalClockinsNoInvoice,
             totalHoursNoInvoice
           }
-        ],
-        client
+        ]
       }
 
       (1 client)

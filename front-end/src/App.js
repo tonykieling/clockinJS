@@ -154,7 +154,7 @@ class App extends Component {
             <Contact />
           </Route>
 
-          <Route exact path = "/clockins" >
+          <Route exact path = "/reports/clockins" >
             <PunchinsReport />
           </Route>
 

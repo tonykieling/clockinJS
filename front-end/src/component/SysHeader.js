@@ -111,7 +111,7 @@ function SysHeader(props) {
                   </NavDropdown>
 
                   <NavDropdown title="Reports" id="basic-nav-dropdown4">
-                    <NavDropdown.Item href="clockins">Clockins</NavDropdown.Item>
+                    <NavDropdown.Item href="reports/clockins">Clockins</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item href="invoices">Invoices</NavDropdown.Item>
                   </NavDropdown>

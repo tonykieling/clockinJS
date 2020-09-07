@@ -10,7 +10,7 @@ const Client    = require("../models/client.js");
 // main function for clockin's report
 const general = async(req, res) => {
   console.log("inside clockins' report - specific");
-// console.log("req.body", req.body)
+console.log("req.body", req.query)
   // if (!req.userData) {
   //   console.log("Error - Clockin Report - 01");
   //   return res.json({error: "Error: Clockin Report 01"});
@@ -19,11 +19,12 @@ const general = async(req, res) => {
   const userId  = "5db0d13c35d7c5475beb17fd";
 // console.trace("======> req.body", req.body)
   const 
-    clientId        = req.body.clientId,
-    dateStart       = new Date(req.body.dateStart),
-    dateEnd         = new Date(req.body.dateEnd),
-    checkAllClients = req.body.checkAllClients;
+    clientId        = req.query.clientId,
+    dateStart       = new Date(req.query.dateStart),
+    dateEnd         = new Date(req.query.dateEnd),
+    checkAllClients = req.query.checkAllClients;
 
+  // if (1) {
   if ((!clientId && !checkAllClients) || !dateStart || !dateEnd) {
     console.log("Error - Clockin Report - 02");
     return res.json({error: "Error: Clockin Report 02"});

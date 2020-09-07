@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+// import React, { Component } from 'react'
+import React, { useState } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
 import Card   from "react-bootstrap/Card";
@@ -10,227 +11,192 @@ import Table  from "react-bootstrap/Table";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 import GetClients from "./aux/GetClients.js";
-import PunchInModal from "./PunchInModal.js";
-
-import { renderClockinDataTable } from "./aux/renderClockinDataTable.js";
-
 
 const thinScreen = window.innerWidth < 800 ? true : false;
 
-class PunchInsList extends Component {
+function PunchInsList(props) {
 
-  constructor(props) {
-    super(props);
+  // general page variables
+  const [state, setState] = useState({
+    client: {
+      id    : "",
+      name  : ""
+    },
+    period: {
+      dateStart : "2020-01-01",
+      dateEnd   : "2020-12-30",
+    },
+    message: {
+      descripition      : "",
+      classNameMessage  : ""
+    },
+    showOutput      : false,
+    clearButton     : false,
+    checkAllClients : ""
+  })
 
-    this.state = {
-      dateStart         : "",
-      dateEnd           : "",
-      clientId          : "",
-      clockinList       : [],
-      clockInListTable  : "",
-      tableVisibility   : false,
-      message           : "",
-      classNameMessage  : "",
-      client            : {},
-      cleanButton       : false,
+  // function to change date
+  const handleChangeDate = event => {
+    const { name, value } = event.target;
 
-      showModal         : false,
-      clockinToModal    : {}
-    };
-}
-
-
-  handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
+    setState({
+      ...state,
+      period: {
+        ...state.period,
+        [name]: value
+      },
+      message: {
+        descripition: ""
+      }
     });
   }
 
 
-  handleSubmit = async event => {
+  // report variables
+  const [report, setreport] = useState({
+    period: {
+      dateStart : "",
+      dateEnd   : ""
+    },
+    summary : {
+      totalClockins         : "",
+      totalHours            : "",
+      totalClockinsInvoiced : "",
+      totalHoursInvoiced    : "",
+      totalClockinsNoInvoice: "",
+      totalHoursNoInvoice   : "",
+      client                : ""
+    },
+    clockinsByClient : []
+  });
+
+  const clearReport = () => {
+    console.log("Clear report function");
+  }
+
+  const handleSubmit = async event => {
+    // console.log("state::::::::", state)
+    setState({
+      ...state,
+      message: {
+        descripition: ""
+      }
+    });
+
     event.preventDefault();
-
-    const
-      dateStart = this.state.dateStart,
-      dateEnd   = this.state.dateEnd,
-      clientId  = this.state.clientId;
-
-    const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-
-    if (dateStart && dateEnd) {
+    const 
+      client    = state.client,
+      dateStart = state.period.dateStart,
+      dateEnd   = state.period.dateEnd;
+console.log("CLIENTTTTTTT", client)
+    if (client._id) {
       const a = new Date(dateStart).getTime();
       const b = new Date(dateEnd).getTime();
 
-      if (a > b)
-        this.setState({
-          message   : "Check your dates",
-          classNameMessage  : "messageFailure"
+      if (a > b) {
+        console.log("A > B");
+        setState({
+          ...state,
+          message: {
+            descripition      : "Check you dates.",
+            classNameMessage  : "messageFailure"
+          }
         });
-      else
+      } else {
         try {
-          const getClockins = await axios.get( 
+          const url = `/report/clockins?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${state.client._id}&checkAllClients=${state.checkAllClients}`;
+
+          const getClockinsReport = await axios.get( 
             url,
             {  
               headers: { 
                 "Content-Type": "application/json",
-                "Authorization" : `Bearer ${this.props.storeToken}` }
+                "Authorization" : `Bearer ${props.storeToken}` }
           });
-          
-          if (getClockins.data.allClockins){
-            this.setState({
-              clockinList       : getClockins.data.allClockins,
-              // client            : getClockins.data.client,
-              clockInListTable  : this.renderDataTable(getClockins.data.allClockins),
-              tableVisibility   : true,
-              cleanButton       : true
-            });
-          } else {
-            this.setState({
-              message         : getClockins.data.message,
-              classNameMessage: "messageFailure",
-              tableVisibility : false
+console.log("getclockinsREPORT", getClockinsReport)
+          if ("summary" in getClockinsReport.data){
+            setState({
+              ...state,
+              showOutput: true
             });
 
-            // setTimeout(() => {
-            //   this.clearMessage();
-            // }, 3000);
+            // console.log("asd" in getClockinsReport.data)
+            if ("clockinsByClient" in getClockinsReport.data) {
+              console.log("ALL clients report")
+              setreport({
+                ...report,
+                period            : getClockinsReport.data.period,
+                summary           : getClockinsReport.data.summary,
+                clockinsByClient  : getClockinsReport.data.clockinsByClient
+              });
+            } else {
+              console.log("NOTTTT all clients report:", getClockinsReport.data)
+              setreport({
+                ...report,
+                period            : getClockinsReport.data.period,
+                summary           : getClockinsReport.data.summary
+              });
+            }
+
+          } else {
+            console.log("ERRRRRRRRRRRRRRRRRRRRRR")
+            setState({
+              ...state,
+              message: {
+                descripition      : getClockinsReport.data.error,
+                classNameMessage  : "messageFailure"
+              }
+            });
           }
         } catch(err) {
-          this.setState({
-            message           : err.message,
-            classNameMessage  : "messageFailure"
+          console.log("Another ERRRRRRR")
+          setState({
+            ...state,
+            message: {
+              descripition    : err.message,
+              classNameMessage: "messageFailure"
+            }
           });
-        
+        }
       }
-    } else
-      this.messageValidationMethod();
-
-    // this.clearMessage();
-  }
-
-
-  editClockin = data => {
-    this.setState({
-      showModal       : true,
-      clockinToModal  : data
-    });
-  }
-
-
-  closeClockinModal = () => {
-    this.setState({
-      showModal: false
-    });
-  }
-
-
-  renderDataTable = (clockins) => {
-    return clockins.map((clockin, index) => {
-      const clockinsToSend = renderClockinDataTable(clockin, index);
-
-      if (thinScreen) {   // small devices
-        return (
-          <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-            {/* <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td> */}
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-          </tr>
-        );
-
-      } else {
-        return (
-          <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-            {/* <td>{client}</td> */}
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-            {/* <td>{clockinsToSend.timeEnd}</td> */}
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-            {/* <td>{clockinsToSend.rate}</td> */}
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
-            <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-          </tr>
-        );
-      }
-    });
-  }  
-
-
-  clearForm = () => {
-    this.setState({
-      date            : "",
-      timeStart       : "",
-      timeEnd         : "",
-      rate            : "",
-      clientId        : "",
-      message         : "",
-      client          : {},
-      tableVisibility : false,
-      cleanButton     : false
-    });
-  }
-
-
-  messageValidationMethod = () => {
-    this.setState({
-      message           : "Please, set a period of time.",
-      classNameMessage  : "messageFailure"
-    });
-
-    // setTimeout(() => {
-    //   this.clearMessage();
-    // }, 3000);
-  }
-
-
-  clearMessage = () => {
-    setTimeout(() => {
-      this.setState({
-        message: ""
+    } else {
+      console.log("VAlidation method has been fired!!!")
+      setState({
+        ...state,
+        message: {
+          descripition    : "Please, choose a client option.",
+          classNameMessage: "messageFailure"
+        }
       });
-    }, 3000);
+    }
   }
 
 
-  getClientInfo = client => {
-    this.setState({
-      client          : client,
-      clientId        : client._id,
-      tableVisibility : false
+  // set client info coming from the green button
+  const getClientInfo = client => {
+    setState({
+      ...state,
+      client,
+      message: {
+        descripition: ""
+      }
     });
   }
 
 
-  updateClockins = (clockinToRemove) => {
-    const tempClockins      = this.state.clockinList.filter( clockin => clockin._id !== clockinToRemove);
-    const tempClockinsTable = this.renderDataTable(tempClockins);
-
-    this.setState({
-      clockinList       : tempClockins,
-      clockInListTable  : tempClockinsTable
-    });
-  }
-
-
-  render() {
-// console.log("this.state.clockinList", this.state.clockinList)
     return (
       <div className="formPosition">
         <br />
 
-        {/* <Card style={{ width: '40rem' }}> */}
         <Card className="card-settings">
-          <Card.Header>List of PunchIns</Card.Header>
+          <Card.Header>Reports - Clockins</Card.Header>
           <Card.Body>
             
           { /* mount the Dropbox Button with all clients for the user */ }
           <div className="gridClientBtContainer">
             <GetClients
-              client        = { this.state.client }
-              getClientInfo = { this.getClientInfo } />
+              client        = { state.client }
+              getClientInfo = { getClientInfo } />
 
           </div>
 
@@ -244,8 +210,8 @@ class PunchInsList extends Component {
                   <Form.Control
                     type        = "date"
                     name        = "dateStart"
-                    onChange    = {this.handleChange}
-                    value       = {this.state.dateStart}
+                    onChange    = {handleChangeDate}
+                    value       = {state.period.dateStart}
                     // disabled    = {( this.state.clientId === "" ) ? true : false } 
                   />
                 </Col>
@@ -259,37 +225,37 @@ class PunchInsList extends Component {
                   <Form.Control                
                     type        = "date"
                     name        = "dateEnd"
-                    onChange    = {this.handleChange}
-                    value       = {this.state.dateEnd}
+                    onChange    = {handleChangeDate}
+                    value       = {state.period.dateEnd}
                     // disabled    = {( this.state.clientId === "" ) ? true : false } 
                   />
                 </Col>
               </Form.Group>
 
-              <Card.Footer className= { this.state.classNameMessage}>          
-                { this.state.message
-                  ? this.state.message
+              <Card.Footer className= { state.message.classNameMessage}>          
+                { state.message && state.message.descripition
+                  ? state.message.descripition
                   : <br /> }
               </Card.Footer>
               <br />
 
               <div className="d-flex flex-column">
-                { this.state.cleanButton
+                { state.clearButton
                   ? 
                     <ButtonGroup className="mt-3">
                       <Button 
                         variant="primary" 
-                        onClick = { this.handleSubmit } >
-                        Get List
+                        onClick = { handleSubmit } >
+                        Get Report
                       </Button>
-                      <Button variant="info" onClick = { this.clearForm }>
-                        Clean
+                      <Button variant="info" onClick = { clearReport }>
+                        Clear
                       </Button>
                     </ButtonGroup>
                   :
                     <Button 
                       variant="primary" 
-                      onClick = { this.handleSubmit } >
+                      onClick = { handleSubmit } >
                       Get List
                     </Button>
                 }
@@ -299,69 +265,56 @@ class PunchInsList extends Component {
         </Card>
 
 
-        { this.state.tableVisibility
-          ?
+        { state.showOutput &&
             <Card className="cardInvoiceGenListofClockins card">
               <Card.Header style={{textAlign: "center"}}>
-                Client: <b>{this.state.client.nickname || this.state.client.name}</b>, {" "}
-                <b>{this.state.clockinList.length}</b> {this.state.clockinList.length > 1 ? "Clockins" : "Clockin"}
+                {/* Client: <b>{state.client.nickname || state.client.name}</b> */}
+                Clockins' Report
               </Card.Header>
 
-{/* {console.log("this.state", this.state)} */}
-              {(this.state.clockinList.length > 0)
-                ? thinScreen 
-                ? <Table striped bordered hover size="sm" responsive>
-                    <thead style={{textAlign: "center"}}>
-                      <tr>
-                        <th style={{verticalAlign: "middle"}}>#</th>
-                        <th style={{verticalAlign: "middle"}}>Date</th>
-                        <th style={{verticalAlign: "middle"}}>At</th>
-                        <th style={{verticalAlign: "middle"}}>Duration</th>
-                        {/* <th style={{verticalAlign: "middle"}}>CAD$</th> */}
-                        <th style={{verticalAlign: "middle"}}>Invoice</th>
-                      </tr>
-                    </thead>
-                    <tbody style={{textAlign: "center"}}>
-                      {this.state.clockInListTable}
-                    </tbody>
-                  </Table> 
-                : <Table striped bordered hover size="sm" responsive>
-                    <thead style={{textAlign: "center"}}>
-                      <tr>
-                        <th style={{verticalAlign: "middle"}}>#</th>
-                        {/* <th>Client</th> */}
-                        <th style={{verticalAlign: "middle"}}>Date</th>
-                        <th style={{verticalAlign: "middle"}}>Time Start</th>
-                        {/* <th>Time End</th> */}
-                        <th style={{verticalAlign: "middle"}}>Total Time</th>
-                        {/* <th>Rate</th> */}
-                        <th style={{verticalAlign: "middle"}}>CAD$</th>
-                        <th style={{verticalAlign: "middle"}}>Invoice</th>
-                      </tr>
-                    </thead>
-                    <tbody style={{textAlign: "center"}}>
-                      {this.state.clockInListTable}
-                    </tbody>
-                  </Table> 
-                : null }
+              { console.log("REPORT:::", report) }
+              <Card.Text>
+                Period: {report.period.dateStart} -- {report.period.dateEnd}
+              </Card.Text>
             </Card>
-          : null }
-
-        {this.state.showModal
-          ? <PunchInModal 
-              showModal     = { this.state.showModal}
-              clockinData   = { this.state.clockinToModal}
-              client        = { this.state.client.nickname}
-              deleteClockin = { (clockinId) => this.updateClockins(clockinId)}
-              closeModal    = { this.closeClockinModal}
-              thinScreen    = { thinScreen}
-            />
-          : ""}
+        }
+{/*}
+            {(this.state.clockinList.length > 0)
+              ? thinScreen 
+              ? <Table striped bordered hover size="sm" responsive>
+                  <thead style={{textAlign: "center"}}>
+                    <tr>
+                      <th style={{verticalAlign: "middle"}}>#</th>
+                      <th style={{verticalAlign: "middle"}}>Date</th>
+                      <th style={{verticalAlign: "middle"}}>At</th>
+                      <th style={{verticalAlign: "middle"}}>Duration</th>
+                      <th style={{verticalAlign: "middle"}}>Invoice</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{textAlign: "center"}}>
+                    {this.state.clockInListTable}
+                  </tbody>
+                </Table> 
+              : <Table striped bordered hover size="sm" responsive>
+                  <thead style={{textAlign: "center"}}>
+                    <tr>
+                      <th style={{verticalAlign: "middle"}}>#</th>
+                      <th style={{verticalAlign: "middle"}}>Date</th>
+                      <th style={{verticalAlign: "middle"}}>Time Start</th>
+                      <th style={{verticalAlign: "middle"}}>Total Time</th>
+                      <th style={{verticalAlign: "middle"}}>CAD$</th>
+                      <th style={{verticalAlign: "middle"}}>Invoice</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{textAlign: "center"}}>
+                    {this.state.clockInListTable}
+                  </tbody>
+                </Table>
+            */}
 
         </div>
 
     );
-  }
 }
 
 
