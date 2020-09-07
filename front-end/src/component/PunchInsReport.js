@@ -32,7 +32,8 @@ function PunchInsList(props) {
     },
     showOutput      : false,
     clearButton     : false,
-    checkAllClients : ""
+    checkAllClients : true
+    // checkAllClients : ""
   })
 
   // function to change date
@@ -88,7 +89,7 @@ function PunchInsList(props) {
       client    = state.client,
       dateStart = state.period.dateStart,
       dateEnd   = state.period.dateEnd;
-console.log("CLIENTTTTTTT", client)
+
     if (client._id) {
       const a = new Date(dateStart).getTime();
       const b = new Date(dateEnd).getTime();
@@ -113,30 +114,21 @@ console.log("CLIENTTTTTTT", client)
                 "Content-Type": "application/json",
                 "Authorization" : `Bearer ${props.storeToken}` }
           });
-console.log("getclockinsREPORT", getClockinsReport)
+// console.log("getclockinsREPORT", getClockinsReport)
           if ("summary" in getClockinsReport.data){
+            // set variable to show output
             setState({
               ...state,
               showOutput: true
             });
 
-            // console.log("asd" in getClockinsReport.data)
-            if ("clockinsByClient" in getClockinsReport.data) {
-              console.log("ALL clients report")
-              setreport({
-                ...report,
-                period            : getClockinsReport.data.period,
-                summary           : getClockinsReport.data.summary,
-                clockinsByClient  : getClockinsReport.data.clockinsByClient
-              });
-            } else {
-              console.log("NOTTTT all clients report:", getClockinsReport.data)
-              setreport({
-                ...report,
-                period            : getClockinsReport.data.period,
-                summary           : getClockinsReport.data.summary
-              });
-            }
+            //load report variable
+            setreport({
+              ...report,
+              period            : getClockinsReport.data.period,
+              summary           : getClockinsReport.data.summary,
+              clockinsByClient  : getClockinsReport.data.clockinsByClient
+            });
 
           } else {
             console.log("ERRRRRRRRRRRRRRRRRRRRRR")
@@ -273,9 +265,29 @@ console.log("getclockinsREPORT", getClockinsReport)
               </Card.Header>
 
               { console.log("REPORT:::", report) }
+              {state.checkAllClients
+                ?
+                  <Card.Text>
+                    All clients' report
+                  </Card.Text>
+                :
+                  <Card.Text>
+                    Client: {state.client.nickname || state.client.name}
+                  </Card.Text>
+              }
+
               <Card.Text>
                 Period: {report.period.dateStart} -- {report.period.dateEnd}
               </Card.Text>
+              <Card.Text>
+                Summary: {JSON.stringify(report.summary)}
+              </Card.Text>
+
+              {state.checkAllClients &&
+                <Card.Text>
+                  Clockins by Client: {JSON.stringify(report.clockinsByClient)}
+                </Card.Text>
+              }
             </Card>
         }
 {/*}
