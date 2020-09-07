@@ -87,9 +87,9 @@ function SysHeader(props) {
                   <Link to="/user" className="nav-link">{props.storeEmail}</Link>
                   <NavDropdown title="Clients" id="basic-nav-dropdown1">
                     <NavDropdown title="Add a New One" id="basic-nav-submenu" drop="right" style={{paddingLeft: "1rem"}}>
-                        <NavDropdown.Item href="clientNew">Kids</NavDropdown.Item>
+                        <NavDropdown.Item href="/clientNew">Kids</NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item href="clientGeneralNew">General / Company</NavDropdown.Item>
+                        <NavDropdown.Item href="/clientGeneralNew">General / Company</NavDropdown.Item>
                     </NavDropdown>
 
                     <NavDropdown.Divider />
@@ -97,23 +97,23 @@ function SysHeader(props) {
                   </NavDropdown>
 
                   <NavDropdown title="Clockins" id="basic-nav-dropdown2">
-                    <NavDropdown.Item href="punchInNew"> Punch in </NavDropdown.Item>
+                    <NavDropdown.Item href="/punchInNew"> Punch in </NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="punchInsList">List them all</NavDropdown.Item>
+                    <NavDropdown.Item href="/punchInsList">List them all</NavDropdown.Item>
                   </NavDropdown>
 
                   <NavDropdown title="Invoices" id="basic-nav-dropdown3">
-                    <NavDropdown.Item href="invoiceNew">Generate a brand new one</NavDropdown.Item>
+                    <NavDropdown.Item href="/invoiceNew">Generate a brand new one</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="invoicesList">List, Check and Edit</NavDropdown.Item>
+                    <NavDropdown.Item href="/invoicesList">List, Check and Edit</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="invoiceIssue">Issue an Invoice</NavDropdown.Item>
+                    <NavDropdown.Item href="/invoiceIssue">Issue an Invoice</NavDropdown.Item>
                   </NavDropdown>
 
                   <NavDropdown title="Reports" id="basic-nav-dropdown4">
-                    <NavDropdown.Item href="reports/clockins">Clockins</NavDropdown.Item>
+                    <NavDropdown.Item href="/reports/clockins">Clockins</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="invoices">Invoices</NavDropdown.Item>
+                    <NavDropdown.Item href="/invoices">Invoices</NavDropdown.Item>
                   </NavDropdown>
 
                   <Link to="/guidance" className="nav-link">Guidance</Link>
@@ -143,9 +143,9 @@ function SysHeader(props) {
               <NavDropdown title="Clients" id="basic-nav-dropdown1" className="menu-item">
 
                 <NavDropdown title="Add a New One" id="basic-nav-submenu" drop="down">
-                  <NavDropdown.Item href="clientNew">Kids</NavDropdown.Item>
+                  <NavDropdown.Item href="/clientNew">Kids</NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item href="clientGeneralNew">General / Company</NavDropdown.Item>
+                  <NavDropdown.Item href="/clientGeneralNew">General / Company</NavDropdown.Item>
                 </NavDropdown>
 
                 <NavDropdown.Divider />
@@ -170,23 +170,23 @@ function SysHeader(props) {
 
               <br />
               <NavDropdown title="Clockins" id="basic-nav-dropdown2">
-                <NavDropdown.Item href="punchInNew"> Punch in </NavDropdown.Item>
+                <NavDropdown.Item href="/punchInNew"> Punch in </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="punchInsList">List them all</NavDropdown.Item>
+                <NavDropdown.Item href="/punchInsList">List them all</NavDropdown.Item>
               </NavDropdown>
               <br />
               <NavDropdown title="Invoices" id="basic-nav-dropdown3" className="font-color">
-                <NavDropdown.Item href="invoiceNew">Generate a brand new one</NavDropdown.Item>
+                <NavDropdown.Item href="/invoiceNew">Generate a brand new one</NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="invoicesList">List, Check and Edit</NavDropdown.Item>
+                <NavDropdown.Item href="/invoicesList">List, Check and Edit</NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="invoiceIssue">Issue an Invoice</NavDropdown.Item>
+                <NavDropdown.Item href="/invoiceIssue">Issue an Invoice</NavDropdown.Item>
               </NavDropdown>
 
               <NavDropdown title="Reports" id="basic-nav-dropdown4">
-                <NavDropdown.Item href="clockins">Clockins</NavDropdown.Item>
+                <NavDropdown.Item href="/clockins">Clockins</NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="invoices">Invoices</NavDropdown.Item>
+                <NavDropdown.Item href="/invoices">Invoices</NavDropdown.Item>
               </NavDropdown>  
 
               <br />

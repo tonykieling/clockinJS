@@ -32,7 +32,7 @@ function PunchInsList(props) {
     },
     showOutput      : false,
     clearButton     : false,
-    checkAllClients : true
+    checkAllClients : false
     // checkAllClients : ""
   })
 
@@ -90,7 +90,7 @@ function PunchInsList(props) {
       dateStart = state.period.dateStart,
       dateEnd   = state.period.dateEnd;
 
-    if (client._id) {
+    if (client._id || state.checkAllClients) {
       const a = new Date(dateStart).getTime();
       const b = new Date(dateEnd).getTime();
 
@@ -166,12 +166,14 @@ function PunchInsList(props) {
 
   // set client info coming from the green button
   const getClientInfo = client => {
+    console.log("client hereeee", client)
     setState({
       ...state,
       client,
       message: {
         descripition: ""
-      }
+      },
+      checkAllClients: !client._id ? true : false
     });
   }
 
@@ -188,7 +190,9 @@ function PunchInsList(props) {
           <div className="gridClientBtContainer">
             <GetClients
               client        = { state.client }
-              getClientInfo = { getClientInfo } />
+              getClientInfo = { getClientInfo }
+              report        = { true }
+            />
 
           </div>
 
@@ -267,12 +271,14 @@ function PunchInsList(props) {
               { console.log("REPORT:::", report) }
               {state.checkAllClients
                 ?
-                  <Card.Text>
-                    All clients' report
+                  // <Card.Text
+                  <Card.Text style={{backgroundColor: "#F8F8F8"}}>
+                    All {props.storeUser}'s clients report.
                   </Card.Text>
                 :
                   <Card.Text>
-                    Client: {state.client.nickname || state.client.name}
+                    {/* Client: {state.client.nickname || state.client.name} */}
+                    Client: {report.summary.client}
                   </Card.Text>
               }
 
@@ -332,7 +338,8 @@ function PunchInsList(props) {
 
 const mapStateToProps = store => {
   return {
-    storeToken    : store.token
+    storeUser   : store.name,
+    storeToken  : store.token
   };
 };
 

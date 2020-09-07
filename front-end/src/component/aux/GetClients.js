@@ -44,6 +44,12 @@ function GetClients(props) {
       );
 
       if (getClients.data.count) {
+        const arrayOfClients = await getClients.data.message.map(e => e);
+        const sortedArray = await arrayOfClients.sort((a, b) => {
+          const c1 = (a.nickname || a.name).toUpperCase();
+          const c2 = (b.nickname || b.name).toUpperCase();
+          return ((c1 > c2) ? 1 : -1);
+        });
         if (props.invoiceFlag) {
           setclients(getClients.data.message.filter(e => !e.linked_company));
         } else if (props.punchinFlag) {
@@ -54,6 +60,22 @@ function GetClients(props) {
           props.sureCompany && props.sureCompany();
 
           setclients(getClients.data.message.filter(e => !e.type_kid));
+        } else if (props.report) {
+          const resultedArray = [{name: "All Clients"}, ...sortedArray];
+          setclients(resultedArray);
+          /**
+           * 
+           * 
+           * need to set sorted array for all other situations
+           * 
+           * 
+           * 
+           * 
+           * 
+           * 
+           * 
+           * 
+           */
         } else {
           setclients(getClients.data.message);
         }
@@ -97,14 +119,14 @@ function GetClients(props) {
                 </React.Fragment>
               :
                 <React.Fragment>
+                  {/* { console.log("CLIENTS", clients)} */}
                   {clients.map( (client, id) =>
                       !client.inactive &&
-                      <Dropdown.Item 
-                      key = { id } 
-                      onClick = { e => changes(e, client) }
-                      // data-client = { JSON.stringify(client) }
-                      name = { client.name }
-                      > { client.nickname || client.name } 
+                        <Dropdown.Item 
+                          key = { id } 
+                          onClick = { e => changes(e, client) }
+                          name = { client.name }
+                          > { client.nickname || client.name } 
                         </Dropdown.Item>
                   )}
                 </React.Fragment>
