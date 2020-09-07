@@ -4,37 +4,35 @@ const mongoose  = require("mongoose");
 
 const Clockin   = require("../models/clockin.js");
 const Client    = require("../models/client.js");
-// const user = require("../models/user.js");
 
 // mongoose.set("debug", true);
 
-
+// main function for clockin's report
 const general = async(req, res) => {
   console.log("inside clockins' report - specific");
 // console.log("req.body", req.body)
   // if (!req.userData) {
   //   console.log("Error - Clockin Report - 01");
-  //   return res.json({error: "Error: Report 01"});
+  //   return res.json({error: "Error: Clockin Report 01"});
   // }
   // const userId    = req.userData.userId;
   const userId  = "5db0d13c35d7c5475beb17fd";
 // console.trace("======> req.body", req.body)
   const 
-    clientId  = req.body.clientId,
-    dateStart = new Date(req.body.dateStart),
-    dateEnd   = new Date(req.body.dateEnd),
-    all       = req.body.all;
+    clientId        = req.body.clientId,
+    dateStart       = new Date(req.body.dateStart),
+    dateEnd         = new Date(req.body.dateEnd),
+    checkAllClients = req.body.checkAllClients;
 
-  if ((!clientId && !all) || !dateStart || !dateEnd) {
+  if ((!clientId && !checkAllClients) || !dateStart || !dateEnd) {
     console.log("Error - Clockin Report - 02");
-    return res.json({error: "Error: Report 02"});
+    return res.json({error: "Error: Clockin Report 02"});
   }
 
-  // console.log("dateEnd", dateStart)
   let result = {};
-  if (all) {
-    // calls the function for all clients
-    const summary = await queryClockins(userId, dateStart, dateEnd)
+  if (checkAllClients === "true") {
+    // calls the function that proceed for all clients
+    const summary = await queryClockins(userId, dateStart, dateEnd);
     const clients = await allClients(userId);
     const arrayOfClockinsByClient = await clients.map(async e => 
       await queryClockins(userId, dateStart, dateEnd, e._id, (e.nickname || e.name))  
@@ -85,7 +83,7 @@ const allClients = async(userId) => {
 
 
 
-//it queries the dbs the clockins for either a user or a client
+//it queries the dbs the clockins for either a user (all clients) or a client
 const queryClockins = async (userId, dateStart, dateEnd, clientId, clientName) => {
   const conditions = {
     user_id: mongoose.Types.ObjectId(userId),
@@ -112,7 +110,7 @@ const queryClockins = async (userId, dateStart, dateEnd, clientId, clientName) =
   }
 
 
-
+  // it gets client's info
   let client = "";
   if (!clientName && clientId) {
     try {
@@ -128,6 +126,7 @@ const queryClockins = async (userId, dateStart, dateEnd, clientId, clientName) =
     }
   }
 
+  // if no clockins for the client
   if (!allClockins || allClockins.length < 1)
     return ({
       message: `No clockins at all.`,
@@ -135,25 +134,30 @@ const queryClockins = async (userId, dateStart, dateEnd, clientId, clientName) =
     });
 
 
-  const totalHours = (allClockins.reduce((a, b) => {
-    return b.worked_hours 
+  //below are the report's calculations
+  const totalClockins = allClockins.length;
+
+  const totalHours = (allClockins.reduce((a, b) =>
+    b.worked_hours 
       ? (a + b.worked_hours) 
       : (a + (new Date(b.time_end) - new Date(b.time_start)))
-  }, 0)) / 3600000;
+    , 0)) / 3600000;
 
   const invoicedClockins = allClockins.filter(e => e.invoice_id);
 
   const totalClockinsInvoiced = invoicedClockins.length;
+
   const totalHoursInvoiced    = (invoicedClockins.reduce((a, b) => 
       b.worked_hours
         ? (a + b.worked_hours)
-        : (a + (new Date(b.time_end) - new Date(b.time_start))), 0) / 3600000);
+        : (a + (new Date(b.time_end) - new Date(b.time_start)))
+    , 0) / 3600000);
 
-  const totalClockinsNoInvoice  = allClockins.length - totalClockinsInvoiced;
+  const totalClockinsNoInvoice  = totalClockins - totalClockinsInvoiced;
   const totalHoursNoInvoice     = totalHours - totalHoursInvoiced;
 
   const result = {
-    totalClockins : allClockins.length,
+    totalClockins,
     totalHours,
     totalClockinsInvoiced,
     totalHoursInvoiced,
@@ -164,7 +168,6 @@ const queryClockins = async (userId, dateStart, dateEnd, clientId, clientName) =
     result.client = client ? (client.nickname || client.name) : clientName;
 
   return (result);
-
 }
 
 
