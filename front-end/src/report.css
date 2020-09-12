@@ -1,0 +1,32 @@
+.report-card{
+  background-color: #f8f8f8
+}
+
+.report-header{
+  text-align  : center;
+  font-weight : bolder;
+  color       : blue;
+}
+
+.report-main-title{
+  text-align  : center;
+  font-size   : large;
+  margin-top  : 1rem;
+  font-weight : bolder;
+}
+
+.report-period{
+  margin-left: 1rem;
+}
+
+.report-general-subtitle{
+  margin-left: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: bolder;
+}
+
+.report-items{
+  margin-left: 2rem;
+  margin-bottom: 0.5rem;
+}

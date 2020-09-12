@@ -10,6 +10,8 @@ import Col    from "react-bootstrap/Col";
 import Table  from "react-bootstrap/Table";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
+import "../report.css";
+
 import GetClients from "./aux/GetClients.js";
 
 const thinScreen = window.innerWidth < 800 ? true : false;
@@ -262,8 +264,10 @@ function PunchInsList(props) {
 
 
         { state.showOutput &&
-            <Card className="cardInvoiceGenListofClockins card">
-              <Card.Header style={{textAlign: "center"}}>
+            // <Card className="cardInvoiceGenListofClockins card">
+            <Card className = "report-card">
+              {/* <Card.Header style={{textAlign: "center", fontWeight: "bolder"}}> */}
+              <Card.Header className = "report-header">
                 {/* Client: <b>{state.client.nickname || state.client.name}</b> */}
                 Clockins' Report
               </Card.Header>
@@ -272,8 +276,8 @@ function PunchInsList(props) {
               {state.checkAllClients
                 ?
                   // <Card.Text
-                  <Card.Text style={{backgroundColor: "#F8F8F8"}}>
-                    All {props.storeUser}'s clients report.
+                  <Card.Text className = "report-main-title">
+                    All {props.storeUser}'s clients report
                   </Card.Text>
                 :
                   <Card.Text>
@@ -282,17 +286,82 @@ function PunchInsList(props) {
                   </Card.Text>
               }
 
-              <Card.Text>
-                Period: {report.period.dateStart} -- {report.period.dateEnd}
+              <Card.Text className = "report-period">
+                <b>Period:</b> {report.period.dateStart} -- {report.period.dateEnd}
               </Card.Text>
-              <Card.Text>
-                Summary: {JSON.stringify(report.summary)}
+
+              <Card.Text className = "report-general-subtitle">
+                Summary:
+              </Card.Text>
+              <Card.Text className = "report-items">
+                Total of Clockins: {report.summary.totalClockins}
+              </Card.Text>
+              <Card.Text className = "report-items">
+                Total of Clockins Invoiced: {report.summary.totalClockinsInvoiced}
+              </Card.Text>
+              <Card.Text className = "report-items">
+                Total of Clockins no Invoice: {report.summary.totalClockinsNoInvoice}
+              </Card.Text>
+              <Card.Text className = "report-items">
+                Total of Hours: {report.summary.totalHours}
+              </Card.Text>
+              <Card.Text className = "report-items">
+                Total of Hours Invoiced: {report.summary.totalHoursInvoiced}
+              </Card.Text>
+              <Card.Text className = "report-items">
+                Total of Hours no Invoice: {report.summary.totalHoursNoInvoice}
               </Card.Text>
 
               {state.checkAllClients &&
-                <Card.Text>
-                  Clockins by Client: {JSON.stringify(report.clockinsByClient)}
-                </Card.Text>
+                <React.Fragment>
+                  <Card.Text className = "report-general-subtitle">
+                    Clockins by Client: 
+                    {/* {JSON.stringify(report.clockinsByClient)} */}
+                  </Card.Text>
+
+                  { report.clockinsByClient.forEach(e => 
+                    <Card.Text>
+                      Client: {e.client}
+                    </Card.Text>
+                  // console.log("eeee", e)
+                      // e.message
+                      //   ?
+                      //     <React.Fragment>
+                      //       <Card.Text className = "report-items">
+                      //         Client: {e.client}
+                      //       </Card.Text>
+                      //       <Card.Text>
+                      //         {e.message}
+                      //       </Card.Text>
+                      //     </React.Fragment>
+                      //   :
+                          // <React.Fragment>
+                            // <Card.Text className = "report-items">
+                            //   Client: {e.client}
+                            // </Card.Text>
+                          //   <Card.Text className = "report-items">
+                          //     Total of Clockins: {e.totalClockins}
+                          //   </Card.Text>
+                          //   <Card.Text className = "report-items">
+                          //     Total of Clockins Invoiced: {e.totalClockinsInvoiced}
+                          //   </Card.Text>
+                          //   <Card.Text className = "report-items">
+                          //     Total of Clockins no Invoice: {e.totalClockinsNoInvoice}
+                          //   </Card.Text>
+                          //   <Card.Text className = "report-items">
+                          //     Total of Hours: {e.totalHours}
+                          //   </Card.Text>
+                          //   <Card.Text className = "report-items">
+                          //     Total of Hours Invoiced: {e.totalHoursInvoiced}
+                          //   </Card.Text>
+                          //   <Card.Text className = "report-items">
+                          //     Total of Hours no Invoice: {e.totalHoursNoInvoice}
+                          //   </Card.Text>
+                          // </React.Fragment>
+                    )
+                  }
+
+                </React.Fragment>
               }
             </Card>
         }
