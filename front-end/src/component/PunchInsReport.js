@@ -1,4 +1,3 @@
-// import React, { Component } from 'react'
 import React, { useState } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
@@ -8,14 +7,13 @@ import Form   from "react-bootstrap/Form";
 import Row    from "react-bootstrap/Row";
 import Col    from "react-bootstrap/Col";
 // import Table  from "react-bootstrap/Table";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 import "../report.css";
 import { show as formatedDate} from "./aux/formatDate";
 
 import GetClients from "./aux/GetClients.js";
 
-const thinScreen = window.innerWidth < 800 ? true : false;
+// const thinScreen = window.innerWidth < 800 ? true : false;
 
 function PunchInsList(props) {
 
@@ -34,10 +32,9 @@ function PunchInsList(props) {
       classNameMessage  : ""
     },
     showOutput      : false,
-    clearButton     : false,
     checkAllClients : false
-    // checkAllClients : ""
   })
+
 
   // function to change date
   const handleChangeDate = event => {
@@ -71,15 +68,12 @@ function PunchInsList(props) {
       totalHoursNoInvoice   : "",
       client                : ""
     },
-    clockinsByClient : []
+    clockinsByClient  : [],
+    message           : ""
   });
 
-  const clearReport = () => {
-    console.log("Clear report function");
-  }
 
   const handleSubmit = async event => {
-    // console.log("state::::::::", state)
     setState({
       ...state,
       message: {
@@ -98,7 +92,6 @@ function PunchInsList(props) {
       const b = new Date(dateEnd).getTime();
 
       if (a > b) {
-        console.log("A > B");
         setState({
           ...state,
           message: {
@@ -117,20 +110,32 @@ function PunchInsList(props) {
                 "Content-Type": "application/json",
                 "Authorization" : `Bearer ${props.storeToken}` }
           });
-// console.log("getclockinsREPORT", getClockinsReport)
+          
           if ("summary" in getClockinsReport.data){
+            if ("message" in getClockinsReport.data.summary) {
+              setreport({
+                message : "There is no clockins for this period.",
+                summary : {
+                  client: getClockinsReport.data.summary.client
+                },
+                period  : getClockinsReport.data.period,
+              })
+            } else {
+              //load report variable
+              setreport({
+                ...report,
+                message           : "",
+                period            : getClockinsReport.data.period,
+                summary           : getClockinsReport.data.summary,
+                clockinsByClient  : getClockinsReport.data.clockinsByClient
+              });
+            }
+
             // set variable to show output
             setState({
               ...state,
-              showOutput: true
-            });
-
-            //load report variable
-            setreport({
-              ...report,
-              period            : getClockinsReport.data.period,
-              summary           : getClockinsReport.data.summary,
-              clockinsByClient  : getClockinsReport.data.clockinsByClient
+              showOutput  : true,
+              message     : ""
             });
 
           } else {
@@ -155,7 +160,6 @@ function PunchInsList(props) {
         }
       }
     } else {
-      console.log("VAlidation method has been fired!!!")
       setState({
         ...state,
         message: {
@@ -176,15 +180,22 @@ function PunchInsList(props) {
       message: {
         descripition: ""
       },
-      checkAllClients: !client._id ? true : false
+      checkAllClients: !client._id ? true : false,
+      showOutput: false
     });
   }
+
 
 
     return (
       <div className="formPosition">
         <br />
 
+{/**
+ * 
+ * this is the form 
+ * 
+ * */}
         <Card className="card-settings">
           <Card.Header>Reports - Clockins</Card.Header>
           <Card.Body>
@@ -239,120 +250,128 @@ function PunchInsList(props) {
               <br />
 
               <div className="d-flex flex-column">
-                { state.clearButton
-                  ? 
-                    <ButtonGroup className="mt-3">
-                      <Button 
-                        variant="primary" 
-                        onClick = { handleSubmit } >
-                        Get Report
-                      </Button>
-                      <Button variant="info" onClick = { clearReport }>
-                        Clear
-                      </Button>
-                    </ButtonGroup>
-                  :
-                    <Button 
-                      variant="primary" 
-                      onClick = { handleSubmit } >
-                      Get List
-                    </Button>
-                }
+                <Button 
+                  variant="primary" 
+                  onClick = { handleSubmit } 
+                >
+                  Get List
+                </Button>
               </div>
             </Form>
           </Card.Body>
         </Card>
 
 
+
+{/**
+ * 
+ * this is the report 
+ * 
+ * */}
         { state.showOutput &&
-            <Card className = "report-card">
-              <Card.Header className = "report-header">
-                Clockins' Report
-              </Card.Header>
+            <div>
+              <Card className = "report-card">
+                <Card.Header className = "report-header">
+                  Clockins' Report
+                </Card.Header>
 
-              { console.log("REPORT:::", report) }
-              {state.checkAllClients
-                ?
-                  <Card.Text className = "report-main-title">
-                    All {props.storeUser}'s clients report
-                  </Card.Text>
-                :
-                  <Card.Text>
-                    Client: {report.summary.client}
-                  </Card.Text>
-              }
+                {state.checkAllClients
+                  ?
+                    <Card.Text className = "report-main-title">
+                      All {props.storeUser}'s clients report
+                    </Card.Text>
+                  :
+                    <Card.Text className = "report-main-title">
+                      {props.storeUser}'s Client: {report.summary.client}
+                    </Card.Text>
+                }
 
-              <Card.Text className = "report-period">
-                <b>Period:</b> {formatedDate(report.period.dateStart)} to {formatedDate(report.period.dateEnd)}
-                {console.log("date:::::", formatedDate(report.period.dateEnd))}
-              </Card.Text>
+                <Card.Text className = "report-period">
+                  <b>Period:</b> {formatedDate(report.period.dateStart)} to {formatedDate(report.period.dateEnd)}
+                </Card.Text>
 
-              <Card.Text className = "report-general-subtitle">
-                Summary:
-              </Card.Text>
-              <Card.Text className = "report-items">
-                Total of Clockins: {report.summary.totalClockins}
-              </Card.Text>
-              <Card.Text className = "report-items">
-                Total of Clockins Invoiced: {report.summary.totalClockinsInvoiced}
-              </Card.Text>
-              <Card.Text className = "report-items">
-                Total of Clockins no Invoice: {report.summary.totalClockinsNoInvoice}
-              </Card.Text>
-              <Card.Text className = "report-items">
-                Total of Hours: {report.summary.totalHours}
-              </Card.Text>
-              <Card.Text className = "report-items">
-                Total of Hours Invoiced: {report.summary.totalHoursInvoiced}
-              </Card.Text>
-              <Card.Text className = "report-items">
-                Total of Hours no Invoice: {report.summary.totalHoursNoInvoice}
-              </Card.Text>
+                <Card.Text className = "report-general-subtitle">
+                  Summary:
+                </Card.Text>
 
-              {state.checkAllClients &&
-                <React.Fragment>
-                  <Card.Text className = "report-general-subtitle">
-                    Clockins by Client: 
-                  </Card.Text>
+                { !report.message
+                  ?
+                    <React.Fragment>
+                      <Card.Text className = "report-items">
+                        Total of Clockins: {report.summary.totalClockins}
+                      </Card.Text>
+                      <Card.Text className = "report-items">
+                        Total of Clockins Invoiced: {report.summary.totalClockinsInvoiced}
+                      </Card.Text>
+                      <Card.Text className = "report-items">
+                        Total of Clockins no Invoice: {report.summary.totalClockinsNoInvoice}
+                      </Card.Text>
+                      <Card.Text className = "report-items">
+                        Total of Hours: {report.summary.totalHours}
+                      </Card.Text>
+                      <Card.Text className = "report-items">
+                        Total of Hours Invoiced: {report.summary.totalHoursInvoiced}
+                      </Card.Text>
+                      <Card.Text className = "report-items">
+                        Total of Hours no Invoice: {report.summary.totalHoursNoInvoice}
+                      </Card.Text>
+                    </React.Fragment>
+                  :
+                    <Card.Text className = "report-items">
+                      {report.message}
+                    </Card.Text>
+                }
 
-                  { report.clockinsByClient.map((e, i) =>
-                      e.message
-                        ?
-                          <div key = {i}>
-                            <Card.Text className = "report-items-by-client-first">
-                              <b>{ i + 1}- Client: {e.client}</b> -- {e.message} (check whether is a company)
-                            </Card.Text>
-                          </div>
-                        :
-                          <div key = {i}>
-                            <Card.Text className = "report-items-by-client-first">
-                              <b>{ i + 1}- Client: {e.client}</b>
-                            </Card.Text>
-                            <Card.Text className = "report-items-by-client">
-                              Total of Clockins: {e.totalClockins}
-                            </Card.Text>
-                            <Card.Text className = "report-items-by-client">
-                              Total of Clockins Invoiced: {e.totalClockinsInvoiced}
-                            </Card.Text>
-                            <Card.Text className = "report-items-by-client">
-                              Total of Clockins no Invoice: {e.totalClockinsNoInvoice}
-                            </Card.Text>
-                            <Card.Text className = "report-items-by-client">
-                              Total of Hours: {e.totalHours}
-                            </Card.Text>
-                            <Card.Text className = "report-items-by-client">
-                              Total of Hours Invoiced: {e.totalHoursInvoiced}
-                            </Card.Text>
-                            <Card.Text className = "report-items-by-client">
-                              Total of Hours no Invoice: {e.totalHoursNoInvoice}
-                            </Card.Text>
-                          </div>
-                  )}
+                {state.checkAllClients &&
+                  <div>
+                    {console.log("reportsss", report)}
+                    <Card.Text className = "report-general-subtitle">
+                      Clockins by Client:
+                    </Card.Text>
 
-                </React.Fragment>
-              }
-              <br/>
-            </Card>
+                    { report.clockinsByClient.map((e, i) =>
+                        e.message
+                          ?
+                            <div key = {i}>
+                              <Card.Text className = "report-items-by-client-first">
+                                <b>{ i + 1}- Client: {e.client}</b>
+                              </Card.Text>
+                              <Card.Text className = "report-items-by-client">
+                                { e.message}
+                              </Card.Text>
+                            </div>
+                          :
+                            <div key = {i}>
+                              <Card.Text className = "report-items-by-client-first">
+                                <b>{ i + 1}- Client: {e.client}</b>
+                              </Card.Text>
+                              <Card.Text className = "report-items-by-client">
+                                Total of Clockins: {e.totalClockins}
+                              </Card.Text>
+                              <Card.Text className = "report-items-by-client">
+                                Total of Clockins Invoiced: {e.totalClockinsInvoiced}
+                              </Card.Text>
+                              <Card.Text className = "report-items-by-client">
+                                Total of Clockins no Invoice: {e.totalClockinsNoInvoice}
+                              </Card.Text>
+                              <Card.Text className = "report-items-by-client">
+                                Total of Hours: {e.totalHours}
+                              </Card.Text>
+                              <Card.Text className = "report-items-by-client">
+                                Total of Hours Invoiced: {e.totalHoursInvoiced}
+                              </Card.Text>
+                              <Card.Text className = "report-items-by-client">
+                                Total of Hours no Invoice: {e.totalHoursNoInvoice}
+                              </Card.Text>
+                            </div>
+                    )}
+
+                  </div>
+                }
+                <br/>
+              </Card>
+              <br />
+            </div>
         }
 {/*}
             {(this.state.clockinList.length > 0)

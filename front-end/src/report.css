@@ -26,6 +26,12 @@
   font-weight: bolder;
 }
 
+.report-items-by-client-first{
+  margin-top: 1rem;
+  margin-left: 2rem;
+  margin-bottom: 0.25rem;
+}
+
 .report-items{
   margin-left: 2rem;
   margin-bottom: 0.25rem;
@@ -33,12 +39,6 @@
 }
 
 .report-items-by-client{
-  margin-left: 3rem;
-  margin-bottom: 0.25rem;
-}
-
-.report-items-by-client-first{
-  margin-top: 1rem;
   margin-left: 3rem;
   margin-bottom: 0.25rem;
 }

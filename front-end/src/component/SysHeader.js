@@ -182,12 +182,12 @@ function SysHeader(props) {
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="/invoiceIssue">Issue an Invoice</NavDropdown.Item>
               </NavDropdown>
-
+              <br />
               <NavDropdown title="Reports" id="basic-nav-dropdown4">
-                <NavDropdown.Item href="/clockins">Clockins</NavDropdown.Item>
+                <NavDropdown.Item href="/reports/clockins">Clockins</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="/invoices">Invoices</NavDropdown.Item>
-              </NavDropdown>  
+              </NavDropdown>
 
               <br />
               <a id="guidance" className="menu-item" href="/guidance">Guide</a>

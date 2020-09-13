@@ -9,22 +9,18 @@ const Client    = require("../models/client.js");
 
 // main function for clockin's report
 const general = async(req, res) => {
-  console.log("inside clockins' report - specific");
-console.log("req.body", req.query)
-  // if (!req.userData) {
-  //   console.log("Error - Clockin Report - 01");
-  //   return res.json({error: "Error: Clockin Report 01"});
-  // }
-  // const userId    = req.userData.userId;
-  const userId  = "5db0d13c35d7c5475beb17fd";
-// console.trace("======> req.body", req.body)
+  if (!req.userData) {
+    console.log("Error - Clockin Report - 01");
+    return res.json({error: "Error: Clockin Report 01"});
+  }
+  const userId    = req.userData.userId;
+
   const 
     clientId        = req.query.clientId,
     dateStart       = new Date(req.query.dateStart),
     dateEnd         = new Date(req.query.dateEnd),
     checkAllClients = req.query.checkAllClients;
 
-  // if (1) {
   if ((!clientId && !checkAllClients) || !dateStart || !dateEnd) {
     console.log("Error - Clockin Report - 02");
     return res.json({error: "Error: Clockin Report 02"});
@@ -35,8 +31,15 @@ console.log("req.body", req.query)
     // calls the function that proceed for all clients
     const summary = await queryClockins(userId, dateStart, dateEnd);
     const clients = await allClients(userId);
-    const arrayOfClockinsByClient = await clients.map(async e => 
-      await queryClockins(userId, dateStart, dateEnd, e._id, (e.nickname || e.name))  
+    const arrayOfClockinsByClient = await clients.map(e => 
+      e.isCompany
+        ? 
+          {
+            client: e.nickname || e.name,
+            message: "It is a company",
+            isComapny: true
+          }
+        : queryClockins(userId, dateStart, dateEnd, e._id, (e.nickname || e.name))  
     );
     const clockinsByClient = await Promise.all(arrayOfClockinsByClient);
 
