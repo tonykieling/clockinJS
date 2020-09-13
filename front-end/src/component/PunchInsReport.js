@@ -7,10 +7,11 @@ import Button from "react-bootstrap/Button";
 import Form   from "react-bootstrap/Form";
 import Row    from "react-bootstrap/Row";
 import Col    from "react-bootstrap/Col";
-import Table  from "react-bootstrap/Table";
+// import Table  from "react-bootstrap/Table";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 import "../report.css";
+import { show as formatedDate} from "./aux/formatDate";
 
 import GetClients from "./aux/GetClients.js";
 
@@ -264,30 +265,26 @@ function PunchInsList(props) {
 
 
         { state.showOutput &&
-            // <Card className="cardInvoiceGenListofClockins card">
             <Card className = "report-card">
-              {/* <Card.Header style={{textAlign: "center", fontWeight: "bolder"}}> */}
               <Card.Header className = "report-header">
-                {/* Client: <b>{state.client.nickname || state.client.name}</b> */}
                 Clockins' Report
               </Card.Header>
 
               { console.log("REPORT:::", report) }
               {state.checkAllClients
                 ?
-                  // <Card.Text
                   <Card.Text className = "report-main-title">
                     All {props.storeUser}'s clients report
                   </Card.Text>
                 :
                   <Card.Text>
-                    {/* Client: {state.client.nickname || state.client.name} */}
                     Client: {report.summary.client}
                   </Card.Text>
               }
 
               <Card.Text className = "report-period">
-                <b>Period:</b> {report.period.dateStart} -- {report.period.dateEnd}
+                <b>Period:</b> {formatedDate(report.period.dateStart)} to {formatedDate(report.period.dateEnd)}
+                {console.log("date:::::", formatedDate(report.period.dateEnd))}
               </Card.Text>
 
               <Card.Text className = "report-general-subtitle">
@@ -316,53 +313,45 @@ function PunchInsList(props) {
                 <React.Fragment>
                   <Card.Text className = "report-general-subtitle">
                     Clockins by Client: 
-                    {/* {JSON.stringify(report.clockinsByClient)} */}
                   </Card.Text>
 
-                  { report.clockinsByClient.forEach(e => 
-                    <Card.Text>
-                      Client: {e.client}
-                    </Card.Text>
-                  // console.log("eeee", e)
-                      // e.message
-                      //   ?
-                      //     <React.Fragment>
-                      //       <Card.Text className = "report-items">
-                      //         Client: {e.client}
-                      //       </Card.Text>
-                      //       <Card.Text>
-                      //         {e.message}
-                      //       </Card.Text>
-                      //     </React.Fragment>
-                      //   :
-                          // <React.Fragment>
-                            // <Card.Text className = "report-items">
-                            //   Client: {e.client}
-                            // </Card.Text>
-                          //   <Card.Text className = "report-items">
-                          //     Total of Clockins: {e.totalClockins}
-                          //   </Card.Text>
-                          //   <Card.Text className = "report-items">
-                          //     Total of Clockins Invoiced: {e.totalClockinsInvoiced}
-                          //   </Card.Text>
-                          //   <Card.Text className = "report-items">
-                          //     Total of Clockins no Invoice: {e.totalClockinsNoInvoice}
-                          //   </Card.Text>
-                          //   <Card.Text className = "report-items">
-                          //     Total of Hours: {e.totalHours}
-                          //   </Card.Text>
-                          //   <Card.Text className = "report-items">
-                          //     Total of Hours Invoiced: {e.totalHoursInvoiced}
-                          //   </Card.Text>
-                          //   <Card.Text className = "report-items">
-                          //     Total of Hours no Invoice: {e.totalHoursNoInvoice}
-                          //   </Card.Text>
-                          // </React.Fragment>
-                    )
-                  }
+                  { report.clockinsByClient.map((e, i) =>
+                      e.message
+                        ?
+                          <div key = {i}>
+                            <Card.Text className = "report-items-by-client-first">
+                              <b>{ i + 1}- Client: {e.client}</b> -- {e.message} (check whether is a company)
+                            </Card.Text>
+                          </div>
+                        :
+                          <div key = {i}>
+                            <Card.Text className = "report-items-by-client-first">
+                              <b>{ i + 1}- Client: {e.client}</b>
+                            </Card.Text>
+                            <Card.Text className = "report-items-by-client">
+                              Total of Clockins: {e.totalClockins}
+                            </Card.Text>
+                            <Card.Text className = "report-items-by-client">
+                              Total of Clockins Invoiced: {e.totalClockinsInvoiced}
+                            </Card.Text>
+                            <Card.Text className = "report-items-by-client">
+                              Total of Clockins no Invoice: {e.totalClockinsNoInvoice}
+                            </Card.Text>
+                            <Card.Text className = "report-items-by-client">
+                              Total of Hours: {e.totalHours}
+                            </Card.Text>
+                            <Card.Text className = "report-items-by-client">
+                              Total of Hours Invoiced: {e.totalHoursInvoiced}
+                            </Card.Text>
+                            <Card.Text className = "report-items-by-client">
+                              Total of Hours no Invoice: {e.totalHoursNoInvoice}
+                            </Card.Text>
+                          </div>
+                  )}
 
                 </React.Fragment>
               }
+              <br/>
             </Card>
         }
 {/*}
