@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import Form   from "react-bootstrap/Form";
 import Row    from "react-bootstrap/Row";
 import Col    from "react-bootstrap/Col";
+
 // import Table  from "react-bootstrap/Table";
 
 import "../report.css";
@@ -24,8 +25,10 @@ function PunchInsList(props) {
       name  : ""
     },
     period: {
-      dateStart : "2020-01-01",
-      dateEnd   : "2020-12-30",
+      // dateStart : "2020-01-01",
+      // dateEnd   : "2020-12-30",
+      dateStart : "",
+      dateEnd   : "",
     },
     message: {
       descripition      : "",
@@ -87,7 +90,16 @@ function PunchInsList(props) {
       dateStart = state.period.dateStart,
       dateEnd   = state.period.dateEnd;
 
-    if (client._id || state.checkAllClients) {
+    console.log("dates:", dateEnd, dateStart)
+    if (!dateStart || !dateEnd) {
+      setState({
+        ...state,
+        message: {
+          descripition    : (client._id || state.checkAllClients) ? "Please, set period." : "Please, select client and set period.",
+          classNameMessage: "messageFailure"
+        }
+      });
+    } else if (client._id || state.checkAllClients) {
       const a = new Date(dateStart).getTime();
       const b = new Date(dateEnd).getTime();
 
@@ -110,7 +122,7 @@ function PunchInsList(props) {
                 "Content-Type": "application/json",
                 "Authorization" : `Bearer ${props.storeToken}` }
           });
-          
+console.log("getClockinsReport", getClockinsReport)
           if ("summary" in getClockinsReport.data){
             if ("message" in getClockinsReport.data.summary) {
               setreport({
@@ -139,17 +151,19 @@ function PunchInsList(props) {
             });
 
           } else {
-            console.log("ERRRRRRRRRRRRRRRRRRRRRR")
+            console.log("ERROR:", getClockinsReport.data.error)
             setState({
               ...state,
               message: {
-                descripition      : getClockinsReport.data.error,
-                classNameMessage  : "messageFailure"
+                classNameMessage  : "messageFailure",
+                descripition      : getClockinsReport.data.error.search("ECA01")
+                                      ? "Token expired - User needs to login again."
+                                      : getClockinsReport.data.error
               }
             });
           }
         } catch(err) {
-          console.log("Another ERRRRRRR")
+          console.log("Another ERRRRRRR", err.message || err);
           setState({
             ...state,
             message: {
@@ -173,7 +187,6 @@ function PunchInsList(props) {
 
   // set client info coming from the green button
   const getClientInfo = client => {
-    console.log("client hereeee", client)
     setState({
       ...state,
       client,
@@ -222,7 +235,6 @@ function PunchInsList(props) {
                     name        = "dateStart"
                     onChange    = {handleChangeDate}
                     value       = {state.period.dateStart}
-                    // disabled    = {( this.state.clientId === "" ) ? true : false } 
                   />
                 </Col>
               </Form.Group>
@@ -237,7 +249,6 @@ function PunchInsList(props) {
                     name        = "dateEnd"
                     onChange    = {handleChangeDate}
                     value       = {state.period.dateEnd}
-                    // disabled    = {( this.state.clientId === "" ) ? true : false } 
                   />
                 </Col>
               </Form.Group>
@@ -298,22 +309,19 @@ function PunchInsList(props) {
                   ?
                     <React.Fragment>
                       <Card.Text className = "report-items">
-                        Total of Clockins: {report.summary.totalClockins}
+                        Total of <b>{report.summary.totalHours} hours</b> in <b>{report.summary.totalClockins} clockins.</b>
                       </Card.Text>
                       <Card.Text className = "report-items">
-                        Total of Clockins Invoiced: {report.summary.totalClockinsInvoiced}
+                        Clockins Invoiced: {report.summary.totalClockinsInvoiced}
                       </Card.Text>
                       <Card.Text className = "report-items">
-                        Total of Clockins no Invoice: {report.summary.totalClockinsNoInvoice}
+                        Clockins no Invoice: {report.summary.totalClockinsNoInvoice}
                       </Card.Text>
                       <Card.Text className = "report-items">
-                        Total of Hours: {report.summary.totalHours}
+                        Hours Invoiced: {report.summary.totalHoursInvoiced}
                       </Card.Text>
                       <Card.Text className = "report-items">
-                        Total of Hours Invoiced: {report.summary.totalHoursInvoiced}
-                      </Card.Text>
-                      <Card.Text className = "report-items">
-                        Total of Hours no Invoice: {report.summary.totalHoursNoInvoice}
+                        Hours no Invoice: {report.summary.totalHoursNoInvoice}
                       </Card.Text>
                     </React.Fragment>
                   :
@@ -324,7 +332,6 @@ function PunchInsList(props) {
 
                 {state.checkAllClients &&
                   <div>
-                    {console.log("reportsss", report)}
                     <Card.Text className = "report-general-subtitle">
                       Clockins by Client:
                     </Card.Text>
@@ -346,22 +353,19 @@ function PunchInsList(props) {
                                 <b>{ i + 1}- Client: {e.client}</b>
                               </Card.Text>
                               <Card.Text className = "report-items-by-client">
-                                Total of Clockins: {e.totalClockins}
+                                Total of <b>{e.totalHours} hour{e.totalHours > 1 && "s"}</b> in <b>{e.totalClockins} clockin{e.totalClockins > 1 && "s"}.</b>
                               </Card.Text>
                               <Card.Text className = "report-items-by-client">
-                                Total of Clockins Invoiced: {e.totalClockinsInvoiced}
+                                Clockins Invoiced: {e.totalClockinsInvoiced}
                               </Card.Text>
                               <Card.Text className = "report-items-by-client">
-                                Total of Clockins no Invoice: {e.totalClockinsNoInvoice}
+                                Clockins no Invoice: {e.totalClockinsNoInvoice}
                               </Card.Text>
                               <Card.Text className = "report-items-by-client">
-                                Total of Hours: {e.totalHours}
+                                Hours Invoiced: {e.totalHoursInvoiced}
                               </Card.Text>
                               <Card.Text className = "report-items-by-client">
-                                Total of Hours Invoiced: {e.totalHoursInvoiced}
-                              </Card.Text>
-                              <Card.Text className = "report-items-by-client">
-                                Total of Hours no Invoice: {e.totalHoursNoInvoice}
+                                Hours no Invoice: {e.totalHoursNoInvoice}
                               </Card.Text>
                             </div>
                     )}

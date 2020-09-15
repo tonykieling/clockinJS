@@ -12,7 +12,8 @@ module.exports = ((req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
     const decodedToken  = tokenValidation(token);
-    if (!decodedToken) 
+    if (!decodedToken)
+    // if (1)
       return res.json({
         error     : "Error ECA01: Token expired"
       });
