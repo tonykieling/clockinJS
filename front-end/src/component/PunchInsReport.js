@@ -7,10 +7,10 @@ import Form   from "react-bootstrap/Form";
 import Row    from "react-bootstrap/Row";
 import Col    from "react-bootstrap/Col";
 
-// import Table  from "react-bootstrap/Table";
+import Table  from "react-bootstrap/Table";
 
 import "../report.css";
-import { show as formatedDate} from "./aux/formatDate";
+import { show as formatedDate } from "./aux/formatDate";
 
 import GetClients from "./aux/GetClients.js";
 
@@ -25,10 +25,10 @@ function PunchInsList(props) {
       name  : ""
     },
     period: {
-      // dateStart : "2020-01-01",
-      // dateEnd   : "2020-12-30",
-      dateStart : "",
-      dateEnd   : "",
+      dateStart : "2020-01-01",
+      dateEnd   : "2020-12-30",
+      // dateStart : "",
+      // dateEnd   : "",
     },
     message: {
       descripition      : "",
@@ -308,21 +308,31 @@ console.log("getClockinsReport", getClockinsReport)
                 { !report.message
                   ?
                     <React.Fragment>
-                      <Card.Text className = "report-items">
-                        Total of <b>{report.summary.totalHours} hours</b> in <b>{report.summary.totalClockins} clockins.</b>
-                      </Card.Text>
-                      <Card.Text className = "report-items">
-                        Clockins Invoiced: {report.summary.totalClockinsInvoiced}
-                      </Card.Text>
-                      <Card.Text className = "report-items">
-                        Clockins no Invoice: {report.summary.totalClockinsNoInvoice}
-                      </Card.Text>
-                      <Card.Text className = "report-items">
-                        Hours Invoiced: {report.summary.totalHoursInvoiced}
-                      </Card.Text>
-                      <Card.Text className = "report-items">
-                        Hours no Invoice: {report.summary.totalHoursNoInvoice}
-                      </Card.Text>
+                      <Table bordered size="sm" style={{width:"15rem", marginLeft: "3rem"}}>
+                        <thead style={{textAlign: "center"}}>
+                          <tr>
+                            <td colSpan="2">
+                              Total of <b>{report.summary.totalHours} hour{report.summary.totalHours > 1 && "s"}</b> in <b>{report.summary.totalClockins} clockin{report.summary.totalClockins > 1 && "s"}</b>
+                            </td>
+                          </tr>
+                        </thead>
+                          <tr style={{verticalAlign: "middle"}}>
+                            <td>Clockins Invoiced</td>
+                            <td style={{ textAlign: "center", width: "4rem"}}> {report.summary.totalClockinsInvoiced} </td>
+                          </tr>
+                          <tr style={{verticalAlign: "middle"}}>
+                            <td>Clockins no Invoice</td>
+                            <td style={{ textAlign: "center"}}> {report.summary.totalClockinsNoInvoice} </td>
+                          </tr>
+                          <tr style={{verticalAlign: "middle"}}>
+                            <td>Hours Invoiced</td>
+                            <td style={{ textAlign: "center"}}> {report.summary.totalHoursInvoiced} </td>
+                          </tr>
+                          <tr style={{verticalAlign: "middle"}}>
+                            <td>Hours no Invoice</td>
+                            <td style={{ textAlign: "center"}}> {report.summary.totalHoursNoInvoice} </td>
+                          </tr>
+                      </Table>
                     </React.Fragment>
                   :
                     <Card.Text className = "report-items">
@@ -332,6 +342,7 @@ console.log("getClockinsReport", getClockinsReport)
 
                 {state.checkAllClients &&
                   <div>
+                    <br />
                     <Card.Text className = "report-general-subtitle">
                       Clockins by Client:
                     </Card.Text>
@@ -352,64 +363,43 @@ console.log("getClockinsReport", getClockinsReport)
                               <Card.Text className = "report-items-by-client-first">
                                 <b>{ i + 1}- Client: {e.client}</b>
                               </Card.Text>
-                              <Card.Text className = "report-items-by-client">
-                                Total of <b>{e.totalHours} hour{e.totalHours > 1 && "s"}</b> in <b>{e.totalClockins} clockin{e.totalClockins > 1 && "s"}.</b>
-                              </Card.Text>
-                              <Card.Text className = "report-items-by-client">
-                                Clockins Invoiced: {e.totalClockinsInvoiced}
-                              </Card.Text>
-                              <Card.Text className = "report-items-by-client">
-                                Clockins no Invoice: {e.totalClockinsNoInvoice}
-                              </Card.Text>
-                              <Card.Text className = "report-items-by-client">
-                                Hours Invoiced: {e.totalHoursInvoiced}
-                              </Card.Text>
-                              <Card.Text className = "report-items-by-client">
-                                Hours no Invoice: {e.totalHoursNoInvoice}
-                              </Card.Text>
+
+                              <Table bordered size="sm" style={{width:"15rem", marginLeft: "3rem"}}>
+                                <thead style={{textAlign: "center"}}>
+                                  <tr>
+                                    <td colSpan="2">
+                                      Total of <b>{e.totalHours} hour{e.totalHours > 1 && "s"}</b> in <b>{e.totalClockins} clockin{e.totalClockins > 1 && "s"}</b>
+                                    </td>
+                                  </tr>
+                                </thead>
+                                  <tr style={{verticalAlign: "middle"}}>
+                                    <td>Clockins Invoiced</td>
+                                    <td style={{ textAlign: "center", width: "4rem"}}> {e.totalClockinsInvoiced} </td>
+                                  </tr>
+                                  <tr style={{verticalAlign: "middle"}}>
+                                    <td>Clockins no Invoice</td>
+                                    <td style={{ textAlign: "center"}}> {e.totalClockinsNoInvoice} </td>
+                                  </tr>
+                                  <tr style={{verticalAlign: "middle"}}>
+                                    <td>Hours Invoiced</td>
+                                    <td style={{ textAlign: "center"}}> {e.totalHoursInvoiced} </td>
+                                  </tr>
+                                  <tr style={{verticalAlign: "middle"}}>
+                                    <td>Hours no Invoice</td>
+                                    <td style={{ textAlign: "center"}}> {e.totalHoursNoInvoice} </td>
+                                  </tr>
+                              </Table>
                             </div>
                     )}
 
                   </div>
                 }
                 <br/>
+
               </Card>
               <br />
             </div>
         }
-{/*}
-            {(this.state.clockinList.length > 0)
-              ? thinScreen 
-              ? <Table striped bordered hover size="sm" responsive>
-                  <thead style={{textAlign: "center"}}>
-                    <tr>
-                      <th style={{verticalAlign: "middle"}}>#</th>
-                      <th style={{verticalAlign: "middle"}}>Date</th>
-                      <th style={{verticalAlign: "middle"}}>At</th>
-                      <th style={{verticalAlign: "middle"}}>Duration</th>
-                      <th style={{verticalAlign: "middle"}}>Invoice</th>
-                    </tr>
-                  </thead>
-                  <tbody style={{textAlign: "center"}}>
-                    {this.state.clockInListTable}
-                  </tbody>
-                </Table> 
-              : <Table striped bordered hover size="sm" responsive>
-                  <thead style={{textAlign: "center"}}>
-                    <tr>
-                      <th style={{verticalAlign: "middle"}}>#</th>
-                      <th style={{verticalAlign: "middle"}}>Date</th>
-                      <th style={{verticalAlign: "middle"}}>Time Start</th>
-                      <th style={{verticalAlign: "middle"}}>Total Time</th>
-                      <th style={{verticalAlign: "middle"}}>CAD$</th>
-                      <th style={{verticalAlign: "middle"}}>Invoice</th>
-                    </tr>
-                  </thead>
-                  <tbody style={{textAlign: "center"}}>
-                    {this.state.clockInListTable}
-                  </tbody>
-                </Table>
-            */}
 
         </div>
 
