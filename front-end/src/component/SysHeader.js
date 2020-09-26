@@ -113,7 +113,7 @@ function SysHeader(props) {
                   <NavDropdown title="Reports" id="basic-nav-dropdown4">
                     <NavDropdown.Item href="/reports/clockins">Clockins</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="/invoices">Invoices</NavDropdown.Item>
+                    <NavDropdown.Item href="/reports/invoices">Invoices</NavDropdown.Item>
                   </NavDropdown>
 
                   <Link to="/guidance" className="nav-link">Guidance</Link>
@@ -186,7 +186,7 @@ function SysHeader(props) {
               <NavDropdown title="Reports" id="basic-nav-dropdown4">
                 <NavDropdown.Item href="/reports/clockins">Clockins</NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="/invoices">Invoices</NavDropdown.Item>
+                <NavDropdown.Item href="/reports/invoices">Invoices</NavDropdown.Item>
               </NavDropdown>
 
               <br />
