@@ -25,10 +25,10 @@ function PunchInsList(props) {
       name  : ""
     },
     period: {
-      dateStart : "2020-01-01",
-      dateEnd   : "2020-12-30",
-      // dateStart : "",
-      // dateEnd   : "",
+      // dateStart : "2020-01-01",
+      // dateEnd   : "2020-12-30",
+      dateStart : "",
+      dateEnd   : "",
     },
     message: {
       descripition      : "",
@@ -289,7 +289,7 @@ console.log("getClockinsReport", getClockinsReport)
                 {state.checkAllClients
                   ?
                     <Card.Text className = "report-main-title">
-                      All {props.storeUser}'s clients report
+                      {props.storeUser}'s clients report
                     </Card.Text>
                   :
                     <Card.Text className = "report-main-title">

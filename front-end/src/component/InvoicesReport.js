@@ -12,7 +12,7 @@ import Table  from "react-bootstrap/Table";
 import "../report.css";
 import { show as formatedDate } from "./aux/formatDate";
 
-import GetClients from "./aux/GetClients.js";
+// import GetClients from "./aux/GetClients.js";
 
 // const thinScreen = window.innerWidth < 800 ? true : false;
 
@@ -186,17 +186,17 @@ console.log("getClockinsReport", getClockinsReport)
 
 
   // set client info coming from the green button
-  const getClientInfo = client => {
-    setState({
-      ...state,
-      client,
-      message: {
-        descripition: ""
-      },
-      checkAllClients: !client._id ? true : false,
-      showOutput: false
-    });
-  }
+  // const getClientInfo = client => {
+  //   setState({
+  //     ...state,
+  //     client,
+  //     message: {
+  //       descripition: ""
+  //     },
+  //     checkAllClients: !client._id ? true : false,
+  //     showOutput: false
+  //   });
+  // }
 
 
 
@@ -292,7 +292,7 @@ console.log("getClockinsReport", getClockinsReport)
                 {state.checkAllClients
                   ?
                     <Card.Text className = "report-main-title">
-                      All {props.storeUser}'s clients report
+                      {props.storeUser}'s clients report
                     </Card.Text>
                   :
                     <Card.Text className = "report-main-title">
