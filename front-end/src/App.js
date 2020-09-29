@@ -23,6 +23,7 @@ import Contact        from "./component/Contact.js";
 import InvoiceIssue   from "./component/InvoiceIssue.js";
 import ClientGeneralNew from "./component/ClientGeneralNew.js";
 import PunchinsReport from "./component/PunchInsReport.js";
+import InvoicesReport from "./component/InvoicesReport.js";
 
 
 class App extends Component {
@@ -158,8 +159,8 @@ class App extends Component {
             <PunchinsReport />
           </Route>
 
-          <Route exact path = "/invoices" >
-            {console.log("Invoices' report coming soon")}
+          <Route exact path = "/reports/invoices" >
+            <InvoicesReport />
           </Route>
 
           <Route component = { Land } />

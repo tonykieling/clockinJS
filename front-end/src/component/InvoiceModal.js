@@ -52,7 +52,7 @@ const customStyles = window.innerWidth < 800
 
 
 class InvoiceModal extends Component {
-  
+
   state = {
     dateStart         : "",
     dateEnd           : "",
@@ -169,9 +169,13 @@ class InvoiceModal extends Component {
 
 
   renderDataTable = clockins => {
-    return clockins.map((clockin, index) => {
+    let 
+      totalTime = 0,
+      totalCad  = 0;
+    const firstResult = clockins.map((clockin, index) => {
       const clockinsToSend = renderClockinDataTable(clockin, index);
-      
+      totalTime += Number(clockinsToSend.totalTime);
+      totalCad  += Number(clockinsToSend.totalCad);
       return (
         <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
           <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
@@ -180,20 +184,19 @@ class InvoiceModal extends Component {
           <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeEnd}</td> */}
           <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
           <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
-          {/*
-          ////////////////////MAYBE in the future I can allow delete clocking by this point of the process
-          <td>
-            <Button
-              variant   = "danger"
-              onClick   = {() => this.handleDelete(clockin._id, clockinsToSend.num)}
-              // variant   = "info"
-              // onClick   = {() => this.handleCallEdit(userToSend)}    // call modal to edit the clockin without invoice related to
-              // data-user = {JSON.stringify(userToSend)}
-            > Delete</Button>
-          </td> */}
         </tr>
       )
-    })
+    });
+    const addTotalTime = (
+      <tr key={firstResult.length + 1}>
+        <td></td>
+        <td style={{verticalAlign: "middle"}}><b>Totals</b></td>
+        <td style={{verticalAlign: "middle"}}><b>{totalTime} {totalTime > 1 ? "hours" : "hour"}</b></td>
+        <td style={{verticalAlign: "middle"}}><b>${totalCad.toFixed(2)}</b></td>
+      </tr>
+    );
+    const result = [...firstResult, addTotalTime];
+    return result;
   }
 
 

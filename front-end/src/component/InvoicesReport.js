@@ -12,7 +12,7 @@ import Table  from "react-bootstrap/Table";
 import "../report.css";
 import { show as formatedDate } from "./aux/formatDate";
 
-import GetClients from "./aux/GetClients.js";
+// import GetClients from "./aux/GetClients.js";
 
 // const thinScreen = window.innerWidth < 800 ? true : false;
 
@@ -25,10 +25,10 @@ function PunchInsList(props) {
       name  : ""
     },
     period: {
-      // dateStart : "2020-01-01",
-      // dateEnd   : "2020-12-30",
-      dateStart : "",
-      dateEnd   : "",
+      dateStart : "2020-01-01",
+      dateEnd   : "2020-12-30",
+      // dateStart : "",
+      // dateEnd   : "",
     },
     message: {
       descripition      : "",
@@ -186,17 +186,17 @@ console.log("getClockinsReport", getClockinsReport)
 
 
   // set client info coming from the green button
-  const getClientInfo = client => {
-    setState({
-      ...state,
-      client,
-      message: {
-        descripition: ""
-      },
-      checkAllClients: !client._id ? true : false,
-      showOutput: false
-    });
-  }
+  // const getClientInfo = client => {
+  //   setState({
+  //     ...state,
+  //     client,
+  //     message: {
+  //       descripition: ""
+  //     },
+  //     checkAllClients: !client._id ? true : false,
+  //     showOutput: false
+  //   });
+  // }
 
 
 
@@ -210,22 +210,22 @@ console.log("getClockinsReport", getClockinsReport)
  * 
  * */}
         <Card className="card-settings">
-          <Card.Header>Reports - Clockins</Card.Header>
+          <Card.Header>Report - Invoices - Coming soon</Card.Header>
           <Card.Body>
             
           { /* mount the Dropbox Button with all clients for the user */ }
           <div className="gridClientBtContainer">
-            <GetClients
+            {/* <GetClients
               client        = { state.client }
               getClientInfo = { getClientInfo }
               report        = { true }
-            />
+            /> */}
 
           </div>
 
 
             <br></br>
-            <Form >
+            <Form>
 
               <Form.Group as={Row} controlId="formST">
                 <Form.Label column sm="3" className="cardLabel">Date Start:</Form.Label>
@@ -235,6 +235,7 @@ console.log("getClockinsReport", getClockinsReport)
                     name        = "dateStart"
                     onChange    = {handleChangeDate}
                     value       = {state.period.dateStart}
+                    disabled    = {true}
                   />
                 </Col>
               </Form.Group>
@@ -249,6 +250,7 @@ console.log("getClockinsReport", getClockinsReport)
                     name        = "dateEnd"
                     onChange    = {handleChangeDate}
                     value       = {state.period.dateEnd}
+                    disabled    = {true}
                   />
                 </Col>
               </Form.Group>
@@ -262,8 +264,9 @@ console.log("getClockinsReport", getClockinsReport)
 
               <div className="d-flex flex-column">
                 <Button 
-                  variant="primary" 
-                  onClick = { handleSubmit } 
+                  variant   = "primary" 
+                  onClick   = { handleSubmit }
+                  disabled  = {true}
                 >
                   Get List
                 </Button>
