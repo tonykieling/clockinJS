@@ -326,11 +326,11 @@ function PunchInsList(props) {
                           </tr>
                           <tr style={{verticalAlign: "middle"}}>
                             <td>Hours Invoiced</td>
-                            <td style={{ textAlign: "center"}}> {report.summary.totalHoursInvoiced} </td>
+                            <td style={{ textAlign: "center"}}> {report.summary.totalHoursInvoiced.toFixed(2)} </td>
                           </tr>
                           <tr style={{verticalAlign: "middle"}}>
                             <td>Hours no Invoice</td>
-                            <td style={{ textAlign: "center"}}> {report.summary.totalHoursNoInvoice} </td>
+                            <td style={{ textAlign: "center"}}> {report.summary.totalHoursNoInvoice.toFixed(2)} </td>
                           </tr>
                         </tbody>
                       </Table>
@@ -384,11 +384,11 @@ function PunchInsList(props) {
                                   </tr>
                                   <tr style={{verticalAlign: "middle"}}>
                                     <td>Hours Invoiced</td>
-                                    <td style={{ textAlign: "center"}}> {e.totalHoursInvoiced} </td>
+                                    <td style={{ textAlign: "center"}}> {e.totalHoursInvoiced.toFixed(2)} </td>
                                   </tr>
                                   <tr style={{verticalAlign: "middle"}}>
                                     <td>Hours no Invoice</td>
-                                    <td style={{ textAlign: "center"}}> {e.totalHoursNoInvoice} </td>
+                                    <td style={{ textAlign: "center"}}> {e.totalHoursNoInvoice.toFixed(2)} </td>
                                   </tr>
                                 </tbody>
                               </Table>
