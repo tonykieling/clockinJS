@@ -25,10 +25,10 @@ function PunchInsList(props) {
       name  : ""
     },
     period: {
-      // dateStart : "2020-01-01",
-      // dateEnd   : "2020-12-30",
-      dateStart : "",
-      dateEnd   : "",
+      dateStart : "2020-01-01",
+      dateEnd   : "2020-12-30",
+      // dateStart : "",
+      // dateEnd   : "",
     },
     message: {
       descripition      : "",
@@ -122,7 +122,7 @@ function PunchInsList(props) {
                 "Content-Type": "application/json",
                 "Authorization" : `Bearer ${props.storeToken}` }
           });
-console.log("getClockinsReport", getClockinsReport)
+          
           if ("summary" in getClockinsReport.data){
             if ("message" in getClockinsReport.data.summary) {
               setreport({
@@ -312,10 +312,11 @@ console.log("getClockinsReport", getClockinsReport)
                         <thead style={{textAlign: "center"}}>
                           <tr>
                             <td colSpan="2">
-                              Total of <b>{report.summary.totalHours} hour{report.summary.totalHours > 1 && "s"}</b> in <b>{report.summary.totalClockins} clockin{report.summary.totalClockins > 1 && "s"}</b>
+                              Total of <b>{report.summary.totalHours.toFixed(2)} hour{report.summary.totalHours > 1 && "s"}</b> in <b>{report.summary.totalClockins} clockin{report.summary.totalClockins > 1 && "s"}</b>
                             </td>
                           </tr>
                         </thead>
+                        <tbody>
                           <tr style={{verticalAlign: "middle"}}>
                             <td>Clockins Invoiced</td>
                             <td style={{ textAlign: "center", width: "4rem"}}> {report.summary.totalClockinsInvoiced} </td>
@@ -332,6 +333,7 @@ console.log("getClockinsReport", getClockinsReport)
                             <td>Hours no Invoice</td>
                             <td style={{ textAlign: "center"}}> {report.summary.totalHoursNoInvoice} </td>
                           </tr>
+                        </tbody>
                       </Table>
                     </React.Fragment>
                   :
@@ -368,10 +370,11 @@ console.log("getClockinsReport", getClockinsReport)
                                 <thead style={{textAlign: "center"}}>
                                   <tr>
                                     <td colSpan="2">
-                                      Total of <b>{e.totalHours} hour{e.totalHours > 1 && "s"}</b> in <b>{e.totalClockins} clockin{e.totalClockins > 1 && "s"}</b>
+                                      Total of <b>{e.totalHours.toFixed(2)} hour{e.totalHours > 1 && "s"}</b> in <b>{e.totalClockins} clockin{e.totalClockins > 1 && "s"}</b>
                                     </td>
                                   </tr>
                                 </thead>
+                                <tbody>
                                   <tr style={{verticalAlign: "middle"}}>
                                     <td>Clockins Invoiced</td>
                                     <td style={{ textAlign: "center", width: "4rem"}}> {e.totalClockinsInvoiced} </td>
@@ -388,6 +391,7 @@ console.log("getClockinsReport", getClockinsReport)
                                     <td>Hours no Invoice</td>
                                     <td style={{ textAlign: "center"}}> {e.totalHoursNoInvoice} </td>
                                   </tr>
+                                </tbody>
                               </Table>
                             </div>
                     )}
