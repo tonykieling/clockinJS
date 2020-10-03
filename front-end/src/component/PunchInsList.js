@@ -113,8 +113,14 @@ class PunchInsList extends Component {
 
 
   renderDataTable = (clockins) => {
-    return clockins.map((clockin, index) => {
+    let
+      totalTime = 0,
+      totalCad  = 0;
+
+    const firstResult = clockins.map((clockin, index) => {
       const clockinsToSend = renderClockinDataTable(clockin, index);
+      totalTime += Number(clockinsToSend.totalTime);
+      totalCad  += Number(clockinsToSend.totalCad);
       if (thinScreen) {   // small devices
         return (
           this.state.company
@@ -161,6 +167,30 @@ class PunchInsList extends Component {
         );
       }
     });
+
+    const addTotals = (
+      <tr key={firstResult.length + 1}>
+        {thinScreen
+          ?
+            <React.Fragment>
+              <td></td>
+              <td colSpan="2" style={{verticalAlign: "middle"}}><b>Total</b></td>
+              <td style={{verticalAlign: "middle"}}><b>{totalTime.toFixed(2)} {totalTime > 1 ? "hours" : "hour"}</b></td>
+              <td></td>
+            </React.Fragment>
+          :
+            <React.Fragment>
+              <td></td>
+              <td colSpan={this.state.company ? 3 : 2} style={{verticalAlign: "middle"}}><b>Totals</b></td>
+              <td style={{verticalAlign: "middle"}}><b>{totalTime.toFixed(2)} {totalTime > 1 ? "hours" : "hour"}</b></td>
+              <td style={{verticalAlign: "middle"}}><b>${totalCad.toFixed(2)}</b></td>
+              <td></td>
+            </React.Fragment>
+        }
+      </tr>
+    );
+    const result = [...firstResult, addTotals];
+    return result;
   }  
 
 
