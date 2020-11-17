@@ -219,15 +219,37 @@ console.log("inside invoice_add");
 
     await newInvoice.save();
 
-    let totalCadTmp = 0;
+    // this is the old way.
+    // PROS: it would be possible to change the rate in the middle of a period because each day has a time and a total cad
+    // CONS: doing each day, it rounds the total cad at the end of a period.
+    // I checked this while working to FedEx. Maybe for Manpower had some situation, but there I received daily.
+    // *** The better solution should be the user has to set if the payment is daily or in a period ***
+
+    // let totalCadTmp = 0;
+    // clockins.forEach(async (clockin, i) => {
+    //   totalCadTmp += clockin.worked_hours 
+    //                   ? ((clockin.worked_hours / 3600000) * clockin.rate)
+    //                   : ((new Date(clockin.time_end) - new Date(clockin.time_start)) / 3600000) * clockin.rate;
+
+
+    // new solution below
+    // first sum up the hours and round it at the end of a period
+    // then, multiple the total hours by the rate
+    // still keeping the worked_hours checking
+    // *** sometimes it is better (for the client instead the user), to have round each day, others it is the opposite
+    // *** This type of situation should be better discussed in a contract, saying it is daily or in a period
+    // here, let's assume the hours will be sum up and rounded at the end of a period and multiplied by the hourly rate
+    let totalTime = 0;
     clockins.forEach(async (clockin, i) => {
-      totalCadTmp += clockin.worked_hours 
-                      ? ((clockin.worked_hours / 3600000) * clockin.rate)
-                      : ((new Date(clockin.time_end) - new Date(clockin.time_start)) / 3600000) * clockin.rate;
+      totalTime += clockin.worked_hours 
+                      ? ((clockin.worked_hours / 3600000))
+                      : ((new Date(clockin.time_end) - new Date(clockin.time_start)) / 3600000);
 /**
  * the line above should be changed for just take worked_hours whrn all current clockins hav generated invoices
  * deadline = march-2020
  */
+
+
       await Clockin
         .updateOne({
           _id: clockin._id
@@ -238,6 +260,10 @@ console.log("inside invoice_add");
         });
 
     });
+    
+    const totalCadTmp = totalTime * clockins[0].rate;
+    console.log("totalCadTmp", totalCadTmp)
+    console.log("totalCadTmp", totalCadTmp.toFixed(2));
 
     await Invoice
       .updateOne({

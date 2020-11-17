@@ -2,7 +2,7 @@ const express     = require("express");
 const PORT        = process.env.PORT || 3333;
 const path        = require('path');
 const app         = express();
-const morgan      = require("morgan");
+// const morgan      = require("morgan");
 const bodyParser  = require("body-parser");
 const mongoose    = require("mongoose");
 require('dotenv').config();
@@ -42,7 +42,7 @@ try {
 
 
 // it logs the actions on the screen
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 
 
 
