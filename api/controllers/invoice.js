@@ -262,8 +262,6 @@ console.log("inside invoice_add");
     });
     
     const totalCadTmp = totalTime * clockins[0].rate;
-    console.log("totalCadTmp", totalCadTmp)
-    console.log("totalCadTmp", totalCadTmp.toFixed(2));
 
     await Invoice
       .updateOne({
