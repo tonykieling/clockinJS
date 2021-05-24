@@ -4,9 +4,9 @@
   "private": true,
   "dependencies": {
     "@types/react": "^16.9.35",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.0",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.3.1",
     "jwt-decode": "^2.2.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -23,7 +23,8 @@
     "text-mask-addons": "^3.8.0"
   },
   "scripts": {
-    "start": "node ./others/cleanPort.js && react-scripts start",
+    "dev": "node /home/tonyk/dev/PATH/cleanport.js 3000 && react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
