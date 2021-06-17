@@ -174,15 +174,23 @@ class PunchInsList extends Component {
           ?
             <React.Fragment>
               <td></td>
-              <td colSpan="2" style={{verticalAlign: "middle"}}><b>Total</b></td>
-              <td style={{verticalAlign: "middle"}}><b>{totalTime.toFixed(2)} {totalTime > 1 ? "hours" : "hour"}</b></td>
-              <td></td>
+              <td style={{verticalAlign: "middle"}}><b>Total of</b></td>
+              <td 
+                colSpan="3" 
+                style={{verticalAlign: "middle"}}
+              >
+                <b>{totalTime.toFixed(2)} {totalTime > 1 ? "worked hours" : "worked hour"}</b>
+              </td>
             </React.Fragment>
           :
             <React.Fragment>
               <td></td>
-              <td colSpan={this.state.company ? 3 : 2} style={{verticalAlign: "middle"}}><b>Totals</b></td>
-              <td style={{verticalAlign: "middle"}}><b>{totalTime.toFixed(2)} {totalTime > 1 ? "hours" : "hour"}</b></td>
+              <td colSpan={this.state.company ? 3 : 2} style={{verticalAlign: "middle"}}><b>Total of</b></td>
+              <td 
+                style={{verticalAlign: "middle"}}
+              >
+                <b>{totalTime.toFixed(2)} {totalTime > 1 ? "worked hours" : "worked hour"}</b>
+              </td>
               <td style={{verticalAlign: "middle"}}><b>${totalCad.toFixed(2)}</b></td>
               <td></td>
             </React.Fragment>
@@ -355,7 +363,7 @@ class PunchInsList extends Component {
                             <th style={{verticalAlign: "middle"}}>#</th>
                             <th style={{verticalAlign: "middle"}}>Date</th>
                             <th style={{verticalAlign: "middle"}}>At</th>
-                            <th style={{verticalAlign: "middle"}}>Duration</th>
+                            <th style={{verticalAlign: "middle"}}>Span</th>
                             {/* <th style={{verticalAlign: "middle"}}>CAD$</th> */}
                             <th style={{verticalAlign: "middle"}}>Invoice</th>
                           </tr>

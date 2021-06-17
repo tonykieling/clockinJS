@@ -94,7 +94,13 @@ class InvoicesList extends Component {
 
 
 renderDataTable = (invoices) => {
-  return invoices.map((invoice, index) => {
+  let totalCadReceived  = 0;
+  let totalCadDelivered = 0;
+  let totalCadGenerated = 0;
+  let totalCad          = 0;
+
+
+  const result = invoices.map((invoice, index) => {
     const invoiceToSend = {
       num         : index + 1,
       date        : formatDate.show(invoice.date),
@@ -102,6 +108,14 @@ renderDataTable = (invoices) => {
       code        : invoice.code,
       status      : invoice.status
     }
+
+    totalCad += invoiceToSend.totalCad;
+    if (invoiceToSend.status === "Generated")
+      totalCadGenerated += invoiceToSend.totalCad;
+    else if (invoiceToSend.status === "Delivered")
+      totalCadDelivered += invoiceToSend.totalCad;
+    else if (invoiceToSend.status === "Received")
+      totalCadReceived += invoiceToSend.totalCad;
 
     return (
       <tr key={invoiceToSend.num} onClick={() => this.invoiceEdit(invoice)}>
@@ -119,6 +133,64 @@ renderDataTable = (invoices) => {
       </tr>
     );
   });
+
+  const addTotal = (
+    // something curious: React.Fragment need a key as well,
+    // but, I realized that for PunchinList, the key prop does not complain.. 
+    // maybe it is because here, the trs are under the fragmente, and so the fragment need the key
+    <React.Fragment key = {totalCad}>
+      <tr key = {totalCad + 1} style={{background: "gainsboro"}}>
+        <td colSpan="5"></td>
+      </tr>
+      
+      {/*raw total*/}
+      <tr key = {totalCad + 2}>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total - 3 status</b></td>
+        <td 
+          colSpan="3" 
+          style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
+        >
+          <b>CAD {totalCad.toFixed(2)}</b>
+        </td>
+      </tr>
+
+      {/*received total*/}
+      <tr key = {totalCad + 3}>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total - Received</b></td>
+        <td 
+          colSpan="3" 
+          style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
+        >
+          <b>CAD {totalCadReceived.toFixed(2)}</b>
+        </td>
+      </tr>
+
+      {/*delivered total*/}
+      <tr key = {totalCad + 4}>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total - Delivered</b></td>
+        <td 
+          colSpan="3" 
+          style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
+        >
+          <b>CAD {totalCadDelivered.toFixed(2)}</b>
+        </td>
+      </tr>
+
+      {/*generated total*/}
+      <tr key = {totalCad + 5}>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total - Generated</b></td>
+        <td 
+          colSpan="3" 
+          style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
+        >
+          <b>CAD {totalCadGenerated.toFixed(2)}</b>
+        </td>
+      </tr>
+    </React.Fragment>
+  );
+
+  result.push(addTotal);
+  return result;
 }  
 
   clearMessage = () => {
