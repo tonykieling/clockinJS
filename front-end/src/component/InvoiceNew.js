@@ -204,7 +204,6 @@ class InvoiceNew extends Component {
         company   : this.state.company._id ? true : undefined,
         clockinArray : this.state.clockinList
       }
-console.log("@@@sending invoice data:", data)
 
       const url = "/invoice";
         try {
@@ -250,56 +249,93 @@ console.log("@@@sending invoice data:", data)
 
 
   renderDataTable = clockins => {
-  return clockins.map((clockin, index) => {
-    const clockinsToSend = renderClockinDataTable(clockin, index);
-      if (thinScreen) {   // small devices
+    let result = [];
+    let totalHours  = 0;
 
-        return (
-          this.state.company
-            ?
-              <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-              </tr>
-            :
-              <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-              </tr>
-        );
+    const dataTable = clockins.map((clockin, index) => {
+      totalHours += (clockin.worked_hours / (3600000));
 
-      } else {
-        return (
-          this.state.company
-            ?
-              <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-              </tr>
-            :
-              <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
-                <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-              </tr>
-        );
-      }
+      // here, that question about round before or after the final result, considering the rate at the end or in each interaction
+      // choose doing the math at the end, after summin up all hours for the period, so calculate the totalCad
+      // totalCads += (currentHours * clockin.rate);
+      // console.log("clockin:", clockin);
+      // console.log("=> hours:", totalHours, " - Cads:", totalCads);
+      const clockinsToSend = renderClockinDataTable(clockin, index);
+      // console.log("clockintobesent", clockinsToSend);
+        if (thinScreen) {   // small devices
+
+          return (
+            this.state.company
+              ?
+                <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                </tr>
+              :
+                <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                </tr>
+          );
+
+        } else {
+          return (
+            this.state.company
+              ?
+                <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                </tr>
+              :
+                <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
+                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                </tr>
+          );
+        }
     });
+
+    const totalCads = (totalHours.toFixed(2)) * clockins[0].rate;
+
+    const addHoursAndCads = (
+      <React.Fragment key="1.1">
+        <tr key="2.1">
+          <td colSpan="5" style={{background: "gainsboro"}}></td>
+        </tr>
+
+        <tr key="2.2">
+          <td></td>
+          <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total of worked hours</b></td>
+          <td colSpan="2"><b>{totalHours.toFixed(2)}</b></td>
+        </tr>
+
+        <tr key="2.3">
+          <td></td>
+          <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total Cads</b></td>
+          <td colSpan="2">{totalCads.toFixed(2)}</td>
+        </tr>
+      </React.Fragment>
+    );
+
+    result = [...dataTable, addHoursAndCads];
+    return result;
   }
+
 
   editClockin = data => {
     this.setState({

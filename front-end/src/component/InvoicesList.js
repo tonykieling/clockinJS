@@ -145,7 +145,7 @@ renderDataTable = (invoices) => {
       
       {/*raw total*/}
       <tr key = {totalCad + 2}>
-        <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total - 3 status</b></td>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total - all 3 status</b></td>
         <td 
           colSpan="3" 
           style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
@@ -156,7 +156,7 @@ renderDataTable = (invoices) => {
 
       {/*received total*/}
       <tr key = {totalCad + 3}>
-        <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total - Received</b></td>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>1- in Received</b></td>
         <td 
           colSpan="3" 
           style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
@@ -167,7 +167,7 @@ renderDataTable = (invoices) => {
 
       {/*delivered total*/}
       <tr key = {totalCad + 4}>
-        <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total - Delivered</b></td>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>2- in Delivered</b></td>
         <td 
           colSpan="3" 
           style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
@@ -178,7 +178,7 @@ renderDataTable = (invoices) => {
 
       {/*generated total*/}
       <tr key = {totalCad + 5}>
-        <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total - Generated</b></td>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>3- in Generated</b></td>
         <td 
           colSpan="3" 
           style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
