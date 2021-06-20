@@ -143,9 +143,43 @@ renderDataTable = (invoices) => {
         <td colSpan="5"></td>
       </tr>
       
+
+      {/*generated total*/}
+      <tr key = {totalCad + 5}>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>Generated</b></td>
+        <td 
+          colSpan="3" 
+          style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
+        >
+          <b>{totalCadGenerated.toFixed(2)}</b>
+        </td>
+      </tr>
+
+      {/*delivered total*/}
+      <tr key = {totalCad + 4}>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>Delivered</b></td>
+        <td 
+          colSpan="3" 
+          style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
+        >
+          <b>{totalCadDelivered.toFixed(2)}</b>
+        </td>
+      </tr>
+
+      {/*received total*/}
+      <tr key = {totalCad + 3}>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>Received</b></td>
+        <td 
+          colSpan="3" 
+          style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
+        >
+          <b>{totalCadReceived.toFixed(2)}</b>
+        </td>
+      </tr>
+
       {/*raw total*/}
       <tr key = {totalCad + 2}>
-        <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total - all 3 status</b></td>
+        <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>Total</b></td>
         <td 
           colSpan="3" 
           style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
@@ -154,38 +188,6 @@ renderDataTable = (invoices) => {
         </td>
       </tr>
 
-      {/*received total*/}
-      <tr key = {totalCad + 3}>
-        <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>1- in Received</b></td>
-        <td 
-          colSpan="3" 
-          style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
-        >
-          <b>CAD {totalCadReceived.toFixed(2)}</b>
-        </td>
-      </tr>
-
-      {/*delivered total*/}
-      <tr key = {totalCad + 4}>
-        <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>2- in Delivered</b></td>
-        <td 
-          colSpan="3" 
-          style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
-        >
-          <b>CAD {totalCadDelivered.toFixed(2)}</b>
-        </td>
-      </tr>
-
-      {/*generated total*/}
-      <tr key = {totalCad + 5}>
-        <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>3- in Generated</b></td>
-        <td 
-          colSpan="3" 
-          style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
-        >
-          <b>CAD {totalCadGenerated.toFixed(2)}</b>
-        </td>
-      </tr>
     </React.Fragment>
   );
 

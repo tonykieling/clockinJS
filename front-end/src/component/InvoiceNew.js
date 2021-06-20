@@ -312,25 +312,26 @@ class InvoiceNew extends Component {
 
     const totalCads = (totalHours.toFixed(2)) * clockins[0].rate;
 
-    const addHoursAndCads = (
-      <React.Fragment key="1.1">
-        <tr key="2.1">
-          <td colSpan="5" style={{background: "gainsboro"}}></td>
-        </tr>
+    const addHoursAndCads =  this.state.clockinWithInvoiceCode &&
+      (
+        <React.Fragment key="1.1">
+          <tr key="2.1">
+            <td colSpan= { thinScreen ? 5 : 6 } style={{background: "gainsboro"}}></td>
+          </tr>
 
-        <tr key="2.2">
-          <td></td>
-          <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total of worked hours</b></td>
-          <td colSpan="2"><b>{totalHours.toFixed(2)}</b></td>
-        </tr>
+          <tr key="2.2">
+            <td></td>
+            <td colSpan= { thinScreen ? 2 : 3 } style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total of worked hours</b></td>
+            <td colSpan= { thinScreen ? 2 : 3 }><b>{totalHours.toFixed(2)}</b></td>
+          </tr>
 
-        <tr key="2.3">
-          <td></td>
-          <td colSpan="2" style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total Cads</b></td>
-          <td colSpan="2">{totalCads.toFixed(2)}</td>
-        </tr>
-      </React.Fragment>
-    );
+          <tr key="2.3">
+            <td></td>
+            <td colSpan= { thinScreen ? 2 : 3 } style={{textAlign: "left", paddingLeft: "1rem"}}><b>Total Cads</b></td>
+            <td colSpan= { thinScreen ? 2 : 3 }><b>$ {totalCads.toFixed(2)}</b></td>
+          </tr>
+        </React.Fragment>
+      );
 
     result = [...dataTable, addHoursAndCads];
     return result;
