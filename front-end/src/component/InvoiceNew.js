@@ -288,7 +288,10 @@ class InvoiceNew extends Component {
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                  {clockinsToSend.invoice !== "not yet"
+                    ? <td style={{verticalAlign: "middle", backgroundColor: "#c94c4c"}}>{clockinsToSend.invoice}</td>
+                    : <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                  }
                 </tr>
               :
                 <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
@@ -296,7 +299,10 @@ class InvoiceNew extends Component {
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                  {clockinsToSend.invoice !== "not yet"
+                    ? <td style={{verticalAlign: "middle", backgroundColor: "#c94c4c"}}>{clockinsToSend.invoice}</td>
+                    : <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                  }
                 </tr>
           );
 
