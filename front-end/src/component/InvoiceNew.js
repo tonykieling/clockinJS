@@ -116,21 +116,37 @@ class InvoiceNew extends Component {
           const tempClockins          = pastClockins.data.allClockins;
           const invoiceSuggestionCode = pastClockins.data.codeSuggestion || "";
 
+          // solution for the clockinWithInvoiceCode, right now, is to run another setState before the one that runs renderDataTable
+          // probably notthe best solution, but it is working.
+          // this.setState({
+          //   clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(tempClockins)
+          // });
+          // decide to handle another way:
+            // if there is invoice for any of the clockins, 
+            // the system will paint the cel in red and show a message
+            // and keep showing totals, but it will not able the button to generated a invoice
+
           this.setState({
             clockinList       : tempClockins,
+            clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(tempClockins),
+            disableInvGenBtn  : this.checkIfThereIsInvoiceCode(tempClockins),
             clockInListTable  : this.renderDataTable(tempClockins),
             // clockInListTable  : PunchInTableEdit(getClockins.data.allClockins),
             tableVisibility   : true,
             clientId,
             lastClockinDate   : new Date(tempClockins[tempClockins.length - 1].date.substring(0, 10)).getTime(),
-            clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(tempClockins),
-            disableInvGenBtn  : this.checkIfThereIsInvoiceCode(tempClockins),
             message           : "",
             invoiceCode       : invoiceSuggestionCode.newCode ||  invoiceSuggestionCode,
             codeMessage       : invoiceSuggestionCode ? (invoiceSuggestionCode.newCode ? "Suggested code" : "Last used code") : "",
             lastUsedCode      : invoiceSuggestionCode && !invoiceSuggestionCode.newCode && invoiceSuggestionCode,
             messageInvoice    : ""
           });
+
+          if (this.state.clockinWithInvoiceCode)
+            this.setState({
+              classNameMessage  : "messageFailure",
+              messageInvoice: "No clockins with invoice, please."
+            });
 
           this.generatorBtn.scrollIntoView({ behavior: "smooth" });
           // this.clearMessage();
@@ -295,7 +311,10 @@ class InvoiceNew extends Component {
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
-                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                  {clockinsToSend.invoice !== "not yet"
+                    ? <td style={{verticalAlign: "middle", backgroundColor: "#c94c4c"}}>{clockinsToSend.invoice}</td>
+                    : <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                  }
                 </tr>
               :
                 <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
@@ -304,15 +323,20 @@ class InvoiceNew extends Component {
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
-                  <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                  {clockinsToSend.invoice !== "not yet"
+                    ? <td style={{verticalAlign: "middle", backgroundColor: "#c94c4c"}}>{clockinsToSend.invoice}</td>
+                    : <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                  }
+                  {/* <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td> */}
                 </tr>
           );
         }
     });
 
+
     const totalCads = (totalHours.toFixed(2)) * clockins[0].rate;
 
-    const addHoursAndCads =  this.state.clockinWithInvoiceCode &&
+    const addHoursAndCads =  !this.state.clockinWithInvoiceCode &&
       (
         <React.Fragment key="1.1">
           <tr key="2.1">
