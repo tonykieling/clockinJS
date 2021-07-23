@@ -109,12 +109,9 @@ console.log("*** inside USER signup");
     });
   }
 
-  bcrypt.hash(password, 10, async (err, hash) => {
-    if (err)
-      return res.status(200).json({
-        error: "ESUP02: Something bad at the password process."
-      });
-    else {
+  try {
+    const hash = await bcrypt.hash(password, 10);
+    if (hash) {
       try{
         const user = new User({
           _id: new mongoose.Types.ObjectId(),
@@ -133,6 +130,7 @@ console.log("*** inside USER signup");
         user.postalCode = postalCode;
 
         // send email for me so I can add the new user as an Authorized Recipient.
+        console.log(" emailllll");
         sendEmail.gotNewUser(user);
 
         // send a welcome email to the new user
@@ -150,8 +148,57 @@ console.log("*** inside USER signup");
           error: "ESUP03: Something wrong with email."
         });
       };
-    }
-  });
+    } else throw ("error");
+
+  } catch(error) {
+    return res.status(200).json({
+      error: "ESUP02: Something bad at the password process."
+    });
+  }
+
+  // bcrypt.hash(password, 10, async (err, hash) => {
+  //   if (err)
+  //     return res.status(200).json({
+  //       error: "ESUP02: Something bad at the password process."
+  //     });
+  //   else {
+  //     try{
+  //       const user = new User({
+  //         _id: new mongoose.Types.ObjectId(),
+  //         name,
+  //         email,
+  //         password: hash,
+  //         address,
+  //         city,
+  //         postal_code: postalCode,
+  //         phone
+  //       });
+
+  //       await user.save();
+
+  //       const token = await tokenCreation(user.email, user._id, user.name, user.admin);
+  //       user.postalCode = postalCode;
+
+  //       // send email for me so I can add the new user as an Authorized Recipient.
+  //       sendEmail.gotNewUser(user);
+
+  //       // send a welcome email to the new user
+  //       sendEmail.welcomeEmail(user.name, user.email);
+
+  //       return res.send({
+  //         message: `User <${user.email}> has been created.`, 
+  //         user, 
+  //         token
+  //       });
+
+  //     } catch(err) {
+  //       console.trace("Error: ", err.message);
+  //       return res.status(200).json({
+  //         error: "ESUP03: Something wrong with email."
+  //       });
+  //     };
+  //   }
+  // });
 }
 
 
@@ -160,7 +207,7 @@ console.log("*** inside USER signup");
 // 1- need to check what to send as within token and user - for instance, password
 // 2- need to create a function to change only password
 const login = async (req, res) => {
-console.log("*** inside LOGIN");
+// console.log("*** inside LOGIN");
   const email     = req.body.email;
   const password  = req.body.password;
 
@@ -169,19 +216,17 @@ console.log("*** inside LOGIN");
       .findOne({ email });
 
     if (!user || user.length < 1)
-      return res.status(200).json({ 
+      return res.status(401).json({ 
         error: "ELIN01: Authentication has failed"
       });
     else {
-      bcrypt.compare(password, user.password, async (err, result) => {
-        if (err)
-          return res.status(401).json({ 
-            error: "ELIN02: Authentication has failed"
-          });
-          
-        if (result){
+      try {
+        const checking = await bcrypt.compare(password, user.password);
+
+        if (checking) {
           const token = await tokenCreation(user.email, user._id, user.name, user.admin);
-          res.json({
+          
+          return res.json({
             message: "success", 
             user: {
               _id         : user._id,
@@ -194,17 +239,20 @@ console.log("*** inside LOGIN");
               phone       : user.phone
             },
             token
-          });
+          });        
+        } else {
+          return res.status(401).json({ 
+            error: "ELIN02: Check your user and password"
+          });          
         }
-        else
-          res.status(200).json({ 
-            error: "ELIN03: Authentication has failed"
-          });
-      });
+      } catch(error){
+        res.status(401).json({ 
+          error: "ELIN03: Authentication has failed"
+        });
+      }
     }
   } catch(err) {
-    console.trace("Error: ", err.message);
-    res.status(200).json({ 
+    res.status(401).json({ 
       error: "ELIN04: Authentication has failed"
     });
   }

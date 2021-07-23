@@ -30,13 +30,15 @@ class Login extends Component {
       event.preventDefault();
 
       if (this.state.email !== "" && this.state.password !== "") {
-        const url = "/user/login";
+        // const url = "/user/login";
+        const url = "/api/user";
         fetch( url, {  
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
                 email     : this.state.email,
-                password  : this.state.password
+                password  : this.state.password,
+                whatToDo  : "login"
               })
         })
         .then(response => response.json())

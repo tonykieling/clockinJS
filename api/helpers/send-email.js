@@ -135,6 +135,7 @@ const sendResetPassword = (subject, user, code) => {
  * the caller method need to pass only the new user object
  *  */
 const gotNewUser = user => {
+  console.log(" got new user");
   const content = (`
     <div>
       <p>New user</p>
@@ -172,6 +173,7 @@ const welcomeEmail = (user, to) => {
 
 
 const generalSender = async (to, subject, html) => {
+  console.log("   general sender");
   try {
     await transporter.sendMail({
       from  : "Clockin.js<clockin.js@gmail.com>",

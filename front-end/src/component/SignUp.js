@@ -144,8 +144,11 @@ function SignUp(props) {
         });
       } else {
         setdisableForm(true);
-        const url = "/user/signup";
+        // const url = "/user/signup";
+        const url = "/api/user";
+
         const createUser  = {
+          whatToDo    : "signUp",
           name        : state.name,
           email       : state.email,
           password    : state.password,
@@ -157,6 +160,8 @@ function SignUp(props) {
 
         try {
           const addUser = await axios.post(url, createUser);
+          console.log("addUser:::", addUser);
+          
           if (addUser.data.message) {
             const user = {
               id      : addUser.data.user._id,

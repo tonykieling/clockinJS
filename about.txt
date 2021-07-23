@@ -1,0 +1,27 @@
+This is a migration version.
+The system is going to be deployed at vercel, so I need to refactor the backend for a serverless approach.
+The front-end need some adjustments mainly in the url to be reached.
+
+
+1- get rid of
+  /Procfile
+  /server.js
+
+2- edit /package.json
+  remove "start"
+
+3- thinking of a strategy for accomodating the backend routes and how the UI is gonna query it.
+
+4- 
+
+need to confirm which methods are being used: get, post, delete and patch? Yeah!
+
+
+? 
+  --- when trying to reach 'localhost:3000:/login' it does not load the fe, instead it tries the route.
+      after localhost:3000 and the fe is been loaded, it is okay
+      ? how to make it load the fe instead trying a be route???
+
+  --- signUp seems to be working,
+  but it is not sendind email
+    guess it needs a new sender id from gmail

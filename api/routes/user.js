@@ -4,20 +4,20 @@ const router          = express.Router();
 const checkAuth       = require("../middleware/check-auth.js")  // it calls the middleware which checks if user's authorized
 const userController  = require("../controllers/user.js");
 
-// it returns all users
-router.get("/", checkAuth, userController.get_all);
-
-
-// it returns info about a particular user
-router.get("/:userId", checkAuth, userController.get_one);
+// it logs the user into the system
+router.post("/login", userController.login);
 
 
 // it creates an user account
 router.post("/signup", userController.signup);
 
 
-// it logs the user into the system
-router.post("/login", userController.login);
+// it returns all users
+router.get("/", checkAuth, userController.get_all);
+
+
+// it returns info about a particular user
+router.get("/:userId", checkAuth, userController.get_one);
 
 
 // it modifies user's data

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 // this method creates the token and returns it
-const token_creation = (email, userId, name, admin) => {
+const token_creation = async (email, userId, name, admin) => {
 console.log("inside tokenCreation");
   try {
     return jwt.sign({
@@ -24,7 +24,7 @@ console.log("inside tokenCreation");
 
 
 // it validates the token and returns the decoded one 
-const token_validation = (token) => {
+const token_validation = async (token) => {
   try {
     const decodedToken  = jwt.verify(token, process.env.JWT_KEY);
     return decodedToken;
