@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
-const userControllers = require("./controllers/user.js");
+const modifyUser = require("./user/modify-user.js");
 
 module.exports = async (req, res) => {
-  console.log("INSIDE user.js");
+  console.log("INSIDE userIDDDD.js");
+  console.log("   1- req.query", req.query);
+  console.log("   2- req.query", JSON.stringify(req.query));
+
   const { method }      = req;
-  const { whatToDo }    = req.body;
+  // const { whatToDo }    = req.body;
 
 
   try {
@@ -20,26 +23,31 @@ module.exports = async (req, res) => {
         // res.status(200).json(getResponse);
         break;
   
+
       case "POST":
-        console.log("   POST");
-        if (whatToDo === "login") {
-          console.log("      login going to user controllers");
-          await userControllers.login(req, res);
-        } else if (whatToDo === "signUp") {
-          console.log("      login going to user controllers - signUp");
-          await userControllers.signup(req, res);
-        }
+        // console.log("   POST");
+        // if (whatToDo === "login") {
+        //   console.log("      login going to user controllers");
+        //   await userControllers.login(req, res);
+        // } else if (whatToDo === "signUp") {
+        //   console.log("      login going to user controllers - signUp");
+        //   await userControllers.signup(req, res);
+        // }
   
         break;
   
+
       case "DELETE":
   
         break;
   
+
       case "PATCH":
-  
+        //this is working
+        await modifyUser(req, res);
         break;
       
+
       default:
         res.setHeader("Allow", ["GET", "POST", "PATCH", "DELETE"]);
         res.status(405).end(`Method ${method} Not Allowed`);
@@ -53,5 +61,4 @@ module.exports = async (req, res) => {
   }
 
 };
-
 

@@ -1,4 +1,3 @@
-require('dotenv').config();
 const formatDT = require("./formatDT.js");
 
 const nodemailer = require("nodemailer");
@@ -12,7 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
-const sendClockinEmail = (subject, clockin, user, client) => {
+const sendClockinEmail = async (subject, clockin, user, client) => {
   const content = (`
     <div>
       <p>Hi <b>${user.name.split(" ")[0]}</b></p>
@@ -106,11 +105,11 @@ const sendClockinEmail = (subject, clockin, user, client) => {
     </div>
   `);
   
-  generalSender(user.email, subject, content);
+  await generalSender(user.email, subject, content);
 }
 
 
-const sendResetPassword = (subject, user, code) => {
+const sendResetPassword = async (subject, user, code) => {
 
   const content = (`
     <div>
@@ -125,7 +124,7 @@ const sendResetPassword = (subject, user, code) => {
     </div>
   `);
 
-  generalSender(user.email, subject, content);
+  await generalSender(user.email, subject, content);
 }
 
 
@@ -134,8 +133,7 @@ const sendResetPassword = (subject, user, code) => {
  * it is used to advise and let me knwo so I can add the nes user as mailgun authorized recipient
  * the caller method need to pass only the new user object
  *  */
-const gotNewUser = user => {
-  console.log(" got new user");
+const gotNewUser = async (user) => {
   const content = (`
     <div>
       <p>New user</p>
@@ -146,14 +144,14 @@ const gotNewUser = user => {
     </div>
   `);
 
-  generalSender("tony.kieling@gmail.com", "!!!!! Clockin.js got a new user", content);
+  await generalSender("tony.kieling@gmail.com", "!!!!! Clockin.js got a new user", content);
 }
 
 
 /**
  * it send a welcome message to the new user
  */
-const welcomeEmail = (user, to) => {
+const welcomeEmail = async (user, to) => {
   const content = (`
     <div>
       <p>Hi ${user.split(" ")[0]}.</p>
@@ -167,13 +165,12 @@ const welcomeEmail = (user, to) => {
     </div>
   `);
 
-  generalSender(to, "Welcome - Clockin.js", content);
+  await generalSender(to, "Welcome - Clockin.js", content);
 };
 
 
 
 const generalSender = async (to, subject, html) => {
-  console.log("   general sender");
   try {
     await transporter.sendMail({
       from  : "Clockin.js<clockin.js@gmail.com>",
@@ -181,8 +178,10 @@ const generalSender = async (to, subject, html) => {
       subject,
       html,
     });
-  } catch (err) {
-    console.log(`Error in GeneralSender`);
+  } catch(error) {
+    // this error is related to the email part, 
+    // it does not mean the system signed up the new user, that mean, the flow goes keeping
+    console.trace(error.message || message);
   }
 }
 

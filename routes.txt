@@ -1,0 +1,8 @@
+- login
+  post /api/user whatToDo = login
+
+- sign up
+  post /api/user whatToDo = signUp
+
+- mofify-user
+  patch /api/root/userId:<num>

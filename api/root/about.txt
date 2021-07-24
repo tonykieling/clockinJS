@@ -1,0 +1,1 @@
+This directory contains the routes for a specific function that receives the arguments automatically as a PATH SEGMENT.

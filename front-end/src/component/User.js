@@ -44,7 +44,8 @@ class Home extends Component {
     e.preventDefault();
 
     if (this.state.name && this.state.email) {
-      const url         = `user/${this.state.userId}`;
+      // const url         = `user/${this.state.userId}`;
+      const url         = `/api/root/${this.state.userId}`;
       const changeUser  = {
         name        : this.state.name,
         email       : this.state.email,
@@ -53,7 +54,7 @@ class Home extends Component {
         postalCode  : this.state.postalCode,
         phone       : this.state.phone
       }
-    
+console.log("going to url:", url)    ;
       try {
         const modUser = await axios.patch( 
           url,
@@ -63,6 +64,8 @@ class Home extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
+console.log("going to modify-user", modUser);
+
     
         if (modUser.data.message) {
           if (modUser.data.newData) {
