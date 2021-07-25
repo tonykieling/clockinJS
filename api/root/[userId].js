@@ -25,15 +25,7 @@ module.exports = async (req, res) => {
   
 
       case "POST":
-        // console.log("   POST");
-        // if (whatToDo === "login") {
-        //   console.log("      login going to user controllers");
-        //   await userControllers.login(req, res);
-        // } else if (whatToDo === "signUp") {
-        //   console.log("      login going to user controllers - signUp");
-        //   await userControllers.signup(req, res);
-        // }
-  
+        
         break;
   
 

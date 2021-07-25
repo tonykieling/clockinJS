@@ -399,10 +399,13 @@ console.log("*** inside FORGET PASSWORD");
             });
           }
 
+          //load sendemail module
+
+          const sendEmail = require("../helpers/send-email.js");
           //  send the email
-          sendEmail.sendResetPassword("Clockin.js - Reset Password", userExist[0], code);
+          await sendEmail.sendResetPassword("Clockin.js - Reset Password", userExist[0], code);
           return res.send({
-            message: "Email has been sent"
+            message: "An email has been sent to your recorded email."
           });
     }
     // } else  there is no else due to if there is no email, system does nothing.

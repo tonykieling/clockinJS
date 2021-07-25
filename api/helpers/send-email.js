@@ -110,7 +110,7 @@ const sendClockinEmail = async (subject, clockin, user, client) => {
 
 
 const sendResetPassword = async (subject, user, code) => {
-
+  // the link below will be received by the react app, react route.
   const content = (`
     <div>
       <p>Hi <b>${user.name.split(" ")[0]}</b></p>

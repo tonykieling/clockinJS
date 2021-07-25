@@ -28,6 +28,9 @@ module.exports = async (req, res) => {
         } else if (whatToDo === "signUp") {
           console.log("      login going to user controllers - signUp");
           await userControllers.signup(req, res);
+        } else if (whatToDo === "change-password") {
+          console.log("change password received");
+          await userControllers.forget_password(req, res);
         }
   
         break;

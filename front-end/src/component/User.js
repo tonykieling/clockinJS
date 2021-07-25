@@ -180,16 +180,19 @@ console.log("going to modify-user", modUser);
 
 
   handleChangePassword = async () => {
-    const url = `/user/forgetPassword`;
+    // const url = `/user/forgetPassword`;
+    const url = `/api/user`;
 
     try {
       const changePassword = await axios.post( 
         url,
         {
+          whatToDo: "change-password",
           data: {
             email: this.state.email
           }
       });
+console.log("changePassword=>", changePassword);
       
       if (changePassword.data.message){
         this.setState({

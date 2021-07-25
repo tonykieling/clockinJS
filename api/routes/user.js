@@ -35,13 +35,16 @@ router.delete("/:userId", checkAuth, userController.delete_user);
 
 
 // forget password method caller
+// has been migrated
 router.post("/forgetPassword", userController.forget_password);
 
-// get user by code method caller
-router.get("/get_by_code/:code", userController.get_by_code);
 
 // reset password method caller
 router.post("/reset_password/:code", userController.reset_password);
+
+
+// get user by code method caller
+router.get("/get_by_code/:code", userController.get_by_code);
 
 
 module.exports = router;
