@@ -186,9 +186,27 @@ const generalSender = async (to, subject, html) => {
 }
 
 
+const confirmPasswordChange = async(user) => {
+  // it sends an email to the user confirming the procedure
+  const content = (`
+    <div>
+      <p>Hi <b>${user.name.split(" ")[0]}</b></p>
+      <p>Your password has just changed.</p>
+      <br>
+      <br>
+      <br>
+      <p>Kind regards from</p>
+      <h4>Clockin.js Team :)</h4>
+    </div>
+  `);
+
+  await generalSender(user.email, "Clockin.js - Password changing process", content);
+}
+
 module.exports = {
   sendClockinEmail,
   sendResetPassword,
   gotNewUser,
-  welcomeEmail
+  welcomeEmail,
+  confirmPasswordChange
 };

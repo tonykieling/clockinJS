@@ -46,16 +46,17 @@ class ResetPassword extends Component {
       else if (this.state.newPassword !== this.state.confirmPassword)
         alert("New Password and Confirm Password have to be the same.");
       else {
-        const url = `/user${this.state.url}`;
+        // const url = `/user${this.state.url}`;
+        const url = "/api/user";
+// console.log("going to change password, url::", url);
 
         try {
           const resetPassword = await axios.post( 
             url,
             {
-              data: {
-                userId      : this.state.user._id,
-                newPassword : this.state.newPassword
-              }
+              userId      : this.state.user._id,
+              newPassword : this.state.newPassword,
+              whatToDo    : "reset-password"
           });
           
           if (resetPassword.data.message){
@@ -66,6 +67,8 @@ class ResetPassword extends Component {
             this.setState({
               logged: true
             });
+
+            this.clearMsg();
           } else {
             this.setState({
               message           : resetPassword.data.error,
@@ -79,7 +82,6 @@ class ResetPassword extends Component {
             classNameMessage  : "messageFailure",
           });
         }
-        this.clearMsg();
       }
   }
 
@@ -100,27 +102,29 @@ class ResetPassword extends Component {
   }
 
 
+  // this method will receive data from user, after they have clicked in the email with a link to change password
   componentDidMount = async () => {
+// console.log("DIDMOUNT inside reset password");
     const match = matchPath(window.location.pathname, {
       path: '/reset_password/:param',
       exact: true,
       strict: false
     });
+    const code = match.params.param;
 
     try {
-      const url = `/user/get_by_code/${match.params.param}`;
+      // const url = `/api/user/${code}`;  // req.params  did not work in vercel migration, maybe kz vercel routes
+      const url = `/api/user/?code=${code}`; // req.query
+
       const getUser = await axios.get( 
-        url,
-        {
-          data: {
-            code  : this.state.code
-          }
-      });
+        url
+      );
+// console.log("getUser", getUser.data);
 
       if (getUser.data.message){
         this.setState({
+          code,
           user  : getUser.data.user,
-          code  : match.params.param,
           url   : match.url
         });
       } else {
@@ -134,11 +138,11 @@ class ResetPassword extends Component {
           classNameMessage  : "messageFailure"
         });
 
-        setTimeout(() => {
-          this.setState({
-            newResetPassword: true
-          });
-        }, 5000);        
+        // setTimeout(() => {
+        //   this.setState({
+        //     newResetPassword: true
+        //   });
+        // }, 5000);        
       }
 
     } catch(err) {
@@ -148,7 +152,7 @@ class ResetPassword extends Component {
       });
     }
 
-    this.clearMsg();
+    // this.clearMsg();
 
   }
 
@@ -182,7 +186,7 @@ class ResetPassword extends Component {
                         ref         = {input => this.textInput1 = input }
                         />
                       <Form.Text className="text-muted">
-                        Never share your password. ;)
+                        Never share your password. ;D
                       </Form.Text>
                     </Form.Group>
 

@@ -227,8 +227,11 @@ const login = async (req, res) => {
 // for now, only ADMIN is able to change any user's data
 const modify_user = async (req, res) => {
 console.log("*** inside modify_user");
+// console.log("req.query", req.query, "req.params::", req.params);
+  
+  const { user }  = req.query;
+// console.log("  =user", user);
 
-  const user  = req.params.userId;
   const { name,
           email,
           admin,
@@ -351,7 +354,7 @@ const delete_user = async (req, res) => {
  * @param {*} res 
  */
 const forget_password = async (req, res) => {
-console.log("*** inside FORGET PASSWORD");
+// console.log("*** inside FORGET PASSWORD");
   const user  = req.body.data.email;
 
   try {
@@ -429,87 +432,102 @@ console.log("*** inside FORGET PASSWORD");
  * @param {*} res 
  */
 const reset_password = async (req, res) => {
-console.log("*** inside RESET PASSWORD");
-  const code  = req.params;
+// console.log("*** inside RESET PASSWORD");
+  // const code  = req.params;
   const {
     userId, 
     newPassword
-   } = req.body.data;
+  } = req.body;
 
-   try {
-    const userExist = await User
+  let userExist;
+
+  try {
+    userExist = await User
       .findOne({ _id: userId });
 
-      if (userExist.length < 1)
-      return res.status(200).json({ 
-        error: `Error: URP01` });
-        
-    else {
-        /**check timestamp!!!!!!!!!!!!!!!!!! */
-// http://localhost:3000/reset_password/485b7950-3cab-11ea-817d-57374e57b7c8
+    if (userExist.length < 1)
+      return res.status(200).json(
+        { error: "Error: URP01: Please, try again later." }
+      );
 
-      if (userExist.code_expiry_at < new Date().getTime())
-        return res.send({
-          error : "Code has already expired. Please, generate a new one.",
-          code  : "expired"
+    /**check timestamp!!!!!!!!!!!!!!!!!! */
+    // http://localhost:3000/reset_password/485b7950-3cab-11ea-817d-57374e57b7c8
+     
+    if (userExist.code_expiry_at < new Date().getTime())
+      return res.send({
+        error : "Code has already expired. Please, generate a new one.",
+        code  : "expired"
+      });
+
+  } catch(err) {
+    return res.status(200).json({
+      error: "Erros: URP01B: Try again later."
+    });
+  }
+      
+   
+  try {
+    const hash = await bcrypt.hash(newPassword, 10);
+
+    if (hash) {
+      try {
+
+        const resetPassword = await User
+          .updateOne({
+            _id: userExist._id
+          }, {
+            $set: {
+              password        : hash,
+              code            : "",
+              code_expiry_at  : ""
+            }
+          });
+
+        if (!resetPassword.nModified)
+          return res.send({
+            error: "Error URP02: Try again later."
+          });
+
+        const token = await tokenCreation(userExist.email, userExist._id, userExist.name, userExist.admin);
+
+
+        // load sendEmail helper
+        const sendEmail = require("../helpers/send-email.js");
+
+        // send an email to the user confirming the procedure
+        await sendEmail.confirmPasswordChange(userExist);
+
+
+        return res.json({
+          message: "success", 
+          user: {
+            _id         : userExist._id,
+            name        : userExist.name,
+            email       : userExist.email,
+            admin       : userExist.admin,
+            address     : userExist.address,
+            city        : userExist.city,
+            postalCode  : userExist.postal_code,
+            phone       : userExist.phone
+          },
+          token
         });
 
-        bcrypt.hash(newPassword, 10, async (err, hash) => {
-          if (err)
-            return res.json({
-              error: "Error: URP02"
-            });
-          else {
-            try {
-              const resetPassword = await User
-                .updateOne({
-                  _id: userExist._id
-                }, {
-                  $set: {
-                    password        : hash,
-                    code            : "",
-                    code_expiry_at  : ""
-                  }
-                });
-                
-              if (!resetPassword.nModified)
-                return res.send({
-                  error: "Error: URP03"
-                });
-
-                const token = await tokenCreation(userExist.email, userExist._id, userExist.name, userExist.admin);
-
-                res.json({
-                  message: "success", 
-                  user: {
-                    _id         : userExist._id,
-                    name        : userExist.name,
-                    email       : userExist.email,
-                    admin       : userExist.admin,
-                    address     : userExist.address,
-                    city        : userExist.city,
-                    postalCode  : userExist.postal_code,
-                    phone       : userExist.phone
-                  },
-                  token
-                });
-
-            } catch(err) {
-              console.trace("Error: URP04", err.message);
-              return res.status(200).json({
-                error: "Error: URP04"
-              });
-            }
-          }
+      } catch(err) {
+        console.trace("Error: URP03", err.message);
+        return res.status(200).json({
+          error: `Error URP04: ${err.message || err}`
         });
       }
 
-    } catch(err) {
-      console.trace("Error: ", err.message);
-      return res.status(200).json({
-        error: `Error: URP05`
-      });
-    }
+    } else throw(error);
+
+  } catch(err) {
+    console.trace("Error: URP04", err.message);
+    return res.status(200).json({
+      error: "Error: URP04"
+    });
+  }
 }
 
 
@@ -520,10 +538,14 @@ console.log("*** inside RESET PASSWORD");
  * @param {*} res 
  */
 const get_by_code = async (req, res) => {
-console.log("*** inside get_by_code")  ;
-  const code  = req.params.code;
+// console.log("*** inside get_by_code")  ;
 
   try {
+    const { code } = req.query;
+
+    if (!code)
+      return res.status(200).json({error: "Error: No user has been found"});
+
     const user = await User
       .findOne({ code });
 

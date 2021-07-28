@@ -139,7 +139,7 @@ class App extends Component {
                 return <InvoiceIssue />
             }} />
 
-          <Route exact path = "/reset_password" >
+          <Route exact path = "/reset_password/:code" >
             <ResetPassword />
           </Route>
 

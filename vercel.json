@@ -1,11 +1,5 @@
-it works well
-
 {
   "routes": [
-      {
-        "src": "/api",
-        "dest": "/api"
-      },
       {
         "src": "/api/user",
         "dest": "/api/user"

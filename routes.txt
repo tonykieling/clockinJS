@@ -1,19 +1,23 @@
-- login
-  post /api/user whatToDo = login
+# USER
+  - login
+    POST /api/user whatToDo = login
 
-- sign up
-  post /api/user whatToDo = signUp
+  - sign up
+    POST /api/user whatToDo = signUp
 
-- mofify-user
-  patch /api/root/userId:<num>
+  - mofify-user
+    PATCH /api/user/user=<userId>
 
-- forget-password
-  post /api/change-password
+  - change-password
+    POST /api/user whatToDo = request-change-password
 
-- afther that, the app will receive a call, by react router, which will open the componente reset_password
-  need to understand how the app routes work on vercel.
-  
-  1- send email and record on db the temp code for changing password
-  2- app receives the order to open the component with temp code on it
-  3- user send new password which is recorded on db
-  4- user enabled to login
+  - get_user_by_id
+    GET /api/user ?code
+
+  - reset-password
+    POST /api/user whatToDo = reset-password
+
+  - forget-password
+    POST /api/user whatToDo = forget-password
+
+# CLIENT

@@ -12,7 +12,7 @@ The front-end need some adjustments mainly in the url to be reached.
 
 3- thinking of a strategy for accomodating the backend routes and how the UI is gonna query it.
 
-4- 
+4- see routes-strategy.txt
 
 need to confirm which methods are being used: get, post, delete and patch? Yeah!
 

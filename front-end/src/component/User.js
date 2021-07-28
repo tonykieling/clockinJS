@@ -38,14 +38,15 @@ class Home extends Component {
   }
   
   
-  
-  // need to implement it
+  // it handles the modify_user
   handleSubmit = async e => {
     e.preventDefault();
 
     if (this.state.name && this.state.email) {
       // const url         = `user/${this.state.userId}`;
-      const url         = `/api/root/${this.state.userId}`;
+      // const url         = `/api/root/${this.state.userId}`;
+      const url         = `/api/user/?user=${this.state.userId}`;
+      // console.log("url::", url);
       const changeUser  = {
         name        : this.state.name,
         email       : this.state.email,
@@ -54,7 +55,7 @@ class Home extends Component {
         postalCode  : this.state.postalCode,
         phone       : this.state.phone
       }
-console.log("going to url:", url)    ;
+// console.log("going to url:", url);
       try {
         const modUser = await axios.patch( 
           url,
@@ -64,7 +65,7 @@ console.log("going to url:", url)    ;
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-console.log("going to modify-user", modUser);
+// console.log("going to modify-user", modUser);
 
     
         if (modUser.data.message) {
@@ -181,18 +182,18 @@ console.log("going to modify-user", modUser);
 
   handleChangePassword = async () => {
     // const url = `/user/forgetPassword`;
-    const url = `/api/user`;
+    const url = "/api/user";
 
     try {
       const changePassword = await axios.post( 
         url,
         {
-          whatToDo: "change-password",
+          whatToDo: "request-change-password",
           data: {
             email: this.state.email
           }
       });
-console.log("changePassword=>", changePassword);
+// console.log("changePassword=>", changePassword);
       
       if (changePassword.data.message){
         this.setState({
