@@ -159,14 +159,11 @@ function SignUp(props) {
           postalCode  : state.postalCode,
           phone       : state.phone
         }
-console.log("url:", url, "user to be created:", createUser);
 
         try {
-          const addUser = await axios.post(url, createUser);
-          console.log("addUser:::", addUser);
-          
+          const addUser = await axios.post(url, createUser);          
           const answer = addUser.data;
-console.log("answer", answer);
+
           if (answer.message) {
             const user = {
               id      : answer.user._id,
@@ -182,7 +179,6 @@ console.log("answer", answer);
             await props.dispatchLogin({ user });
 
           } else if (answer.error) {
-            console.log("it THROWS an ERROR:", answer.error);
             throw(answer.error)
           }
 

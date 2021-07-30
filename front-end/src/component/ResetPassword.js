@@ -17,7 +17,8 @@ class ResetPassword extends Component {
       cancel            : false,
       logged            : false,
       newResetPassword  : false,
-      message           : ""
+      message           : "",
+      flag              : "Processing..."
     }
 
 
@@ -58,17 +59,20 @@ class ResetPassword extends Component {
               newPassword : this.state.newPassword,
               whatToDo    : "reset-password"
           });
+console.log("resetPassword=>", resetPassword);
           
           if (resetPassword.data.message){
             const user  = resetPassword.data.user;
             user.id     = resetPassword.data.user._id;
-            user.token  = resetPassword.data.token
-            this.props.dispatchLogin({ user });
+            user.token  = resetPassword.data.token;
+
+            await this.props.dispatchLogin({ user });
+
             this.setState({
               logged: true
             });
 
-            this.clearMsg();
+            // this.clearMsg();
           } else {
             this.setState({
               message           : resetPassword.data.error,
@@ -76,9 +80,9 @@ class ResetPassword extends Component {
             });
           }
   
-        } catch(err) {
+        } catch(error) {
           this.setState({
-            message: err.message,
+            message: error.message,
             classNameMessage  : "messageFailure",
           });
         }
@@ -104,7 +108,6 @@ class ResetPassword extends Component {
 
   // this method will receive data from user, after they have clicked in the email with a link to change password
   componentDidMount = async () => {
-// console.log("DIDMOUNT inside reset password");
     const match = matchPath(window.location.pathname, {
       path: '/reset_password/:param',
       exact: true,
@@ -119,41 +122,34 @@ class ResetPassword extends Component {
       const getUser = await axios.get( 
         url
       );
-// console.log("getUser", getUser.data);
 
       if (getUser.data.message){
         this.setState({
           code,
           user  : getUser.data.user,
-          url   : match.url
+          url   : match.url,
+          flag  : ""
         });
       } else {
         const user = {
-          name: "<code is invaild>"
+          name: "<code_is_invaild>"
         };
 
         this.setState({
           user              : getUser.data.code ? getUser.data.user.name : user,
           message           : getUser.data.error,
-          classNameMessage  : "messageFailure"
+          classNameMessage  : "messageFailure",
+          flag              : ""
         });
-
-        // setTimeout(() => {
-        //   this.setState({
-        //     newResetPassword: true
-        //   });
-        // }, 5000);        
       }
 
     } catch(err) {
       this.setState({
         message           : err.message,
         classNameMessage  : "messageFailure",
+        flag              : ""
       });
     }
-
-    // this.clearMsg();
-
   }
 
 
@@ -169,7 +165,10 @@ class ResetPassword extends Component {
                 <br />
                 <h3>Reset Password</h3>
                 <br />
-                <p>Hi <b>{this.state.user ? this.state.user.name.split(" ")[0] : ""}</b></p>
+                <p>Hi <b>{this.state.flag
+                        ? <span className="messageSuccess">{this.state.flag}</span>
+                        : this.state.user ? this.state.user.name.split(" ")[0] : ""}
+                      </b></p>
                 <br />
                 <Card className="card-settings">
                   <Form onSubmit={this.handleSubmit}>

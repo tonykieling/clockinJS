@@ -1,0 +1,16 @@
+{
+  "routes": [
+      {
+        "src": "/api/user",
+        "dest": "/api/user"
+      },
+      {
+        "src": "/api/user/(.*)",
+        "dest": "/api/user"
+      },
+      { 
+        "src": "/[^.]+", 
+        "dest": "/"
+      }
+  ]
+}

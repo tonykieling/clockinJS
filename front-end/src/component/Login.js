@@ -7,16 +7,18 @@ import axios from "axios";
 class Login extends Component {
 
     state = {
-      email         : "",
-      password      : "",
-      errorMsg      : "",
+      email     : "",
+      password  : "",
+      errorMsg  : "",
+      disable   : false,
 
       forgetPasswordModal: false
     }
 
   handleChange = e => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
+      errorMsg: ""
     });
     
     if (e.key === "Enter" && e.target.name === "email") {
@@ -29,8 +31,17 @@ class Login extends Component {
   handleSubmit = async event => {
       event.preventDefault();
 
-      if (this.state.email !== "" && this.state.password !== "") {
-        // const url = "/user/login";
+      if (!this.state.email || !this.state.password) {
+        this.setState({
+          errorMsg: "Please, type email and passowrd."
+        });
+
+        this.textInput1.focus();
+      } else {
+
+        this.setState({
+          disable: true
+        });
 
         const url = "/api/user";
         try {
@@ -44,37 +55,31 @@ class Login extends Component {
           );
 
           const answer = login.data;
-console.log("answer", answer);
+
           if (answer.message) {
             const user = answer.user;
             user.id = user._id;
             user.token = login.data.token;
-console.log("user", user);
-            this.props.dispatchLogin( { user });
+
+            await this.props.dispatchLogin( { user });
           } else {
             this.setState({
               errorMsg  : answer.error,
               email     : "",
-              password  : ""
+              password  : "",
+              disable   : false
             });
           }
         } catch(error) {
           console.error(error);
-          this.setState({errorMsg: error.message});
+          this.setState({
+            errorMsg: error.message,
+            disable : false
+          });
         }
       }
   }
-
-  clearMsg = () => {
-    setTimeout(() => {
-      this.setState({
-        errorMsg: ""
-      });
-
-      this.textInput1.focus();
-    }, 3500);
-  }
-
+  
 
   openModal = event => {
     event.preventDefault();
@@ -151,7 +156,6 @@ console.log("user", user);
                   closeModal  = { this.closeModal }
                   email       = { this.state.email }
                 >
-
                 </ForgetPasswordModal>
               : ""
             }
@@ -163,7 +167,11 @@ console.log("user", user);
             </Card.Footer>
 
             <div className="d-flex flex-column">
-              <Button variant="primary" type="submit">
+              <Button 
+                variant   ="primary" 
+                type      ="submit"
+                disabled  = { this.state.disable }
+              >
                 Submit
               </Button>
             </div>
