@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import ForgetPasswordModal from "./LoginForgetPasswordModal.js";
-
+import axios from "axios";
 
 class Login extends Component {
 
@@ -26,45 +26,42 @@ class Login extends Component {
   }
 
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
       event.preventDefault();
 
       if (this.state.email !== "" && this.state.password !== "") {
         // const url = "/user/login";
+
         const url = "/api/user";
-        fetch( url, {  
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-                email     : this.state.email,
-                password  : this.state.password,
-                whatToDo  : "login"
-              })
-        })
-        .then(response => response.json())
-        .then((resJSON) => {
-          if ('message' in resJSON){
-            const user = resJSON.user;
-            user.id    = user._id;
-            user.token = resJSON.token;
-            this.props.dispatchLogin({ user });
-          }
-          else if ( 'error' in resJSON){
+        try {
+          const login = await axios.post(
+            url,
+            {
+              whatToDo  : "login",
+              email     : this.state.email,
+              password  : this.state.password,
+            }
+          );
+
+          const answer = login.data;
+console.log("answer", answer);
+          if (answer.message) {
+            const user = answer.user;
+            user.id = user._id;
+            user.token = login.data.token;
+console.log("user", user);
+            this.props.dispatchLogin( { user });
+          } else {
             this.setState({
-              errorMsg  : resJSON.error,
+              errorMsg  : answer.error,
               email     : "",
               password  : ""
             });
-
-            //it clears the error message after 3.5s
-            this.clearMsg();
           }
-        })
-        .catch((error) => {
+        } catch(error) {
           console.error(error);
           this.setState({errorMsg: error.message});
-          this.clearMsg();
-        })
+        }
       }
   }
 

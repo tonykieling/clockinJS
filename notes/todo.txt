@@ -1,6 +1,0 @@
-refactor
-  userExist
-  clientExist
-  clockinExist
-  invoiceExist
-   inside helpers

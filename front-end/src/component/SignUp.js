@@ -50,6 +50,7 @@ function SignUp(props) {
     
     if (key === "Enter") {
       event.preventDefault();
+      event.stopPropagation();
       switch (name){
         case "name":
           if (state.name)
@@ -126,6 +127,7 @@ function SignUp(props) {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    e.stopPropagation();
 
     if (state.email !== "" && state.name !== "") {
       if ((state.password !== state.confirmPassword) || (state.password === "")) {
@@ -145,7 +147,7 @@ function SignUp(props) {
       } else {
         setdisableForm(true);
         // const url = "/user/signup";
-        const url = "/api/user";
+        const url = `${window.location.origin}/api/user`;
 
         const createUser  = {
           whatToDo    : "signUp",
@@ -157,27 +159,31 @@ function SignUp(props) {
           postalCode  : state.postalCode,
           phone       : state.phone
         }
+console.log("url:", url, "user to be created:", createUser);
 
         try {
           const addUser = await axios.post(url, createUser);
           console.log("addUser:::", addUser);
           
-          if (addUser.data.message) {
+          const answer = addUser.data;
+console.log("answer", answer);
+          if (answer.message) {
             const user = {
-              id      : addUser.data.user._id,
-              name    : addUser.data.user.name,
-              email   : addUser.data.user.email,
-              token   : addUser.data.token,
-              address     : addUser.data.user.address,
-              city        : addUser.data.user.city,
-              postalCode  : addUser.data.user.postal_code,
-              phone       : addUser.data.user.phone
+              id      : answer.user._id,
+              name    : answer.user.name,
+              email   : answer.user.email,
+              token   : answer.token,
+              address     : answer.user.address,
+              city        : answer.user.city,
+              postalCode  : answer.user.postal_code,
+              phone       : answer.user.phone
             };
             
-            props.dispatchLogin({ user });
-          } else if (addUser.data.error) {
-            console.log("it THROWS an ERROR")
-            throw(addUser.data.error)
+            await props.dispatchLogin({ user });
+
+          } else if (answer.error) {
+            console.log("it THROWS an ERROR:", answer.error);
+            throw(answer.error)
           }
 
         } catch(err) {
@@ -415,6 +421,9 @@ function SignUp(props) {
                 onClick   = { handleSubmit}      
                 disabled  = { disableForm}
                 ref       = { refButtonSubmit}
+                disabled  = { disableForm }
+                //////
+                //////////////
               >
                 Submit
               </Button>

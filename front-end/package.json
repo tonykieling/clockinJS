@@ -1,7 +1,7 @@
 {
   "name": "webapp",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "@types/react": "^16.9.35",
     "axios": "^0.21.1",
