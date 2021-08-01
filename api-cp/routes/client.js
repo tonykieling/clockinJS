@@ -6,6 +6,7 @@ const clientController  = require("../controllers/client.js");
 
 
 // it returns all users
+// it is working
 router.get("/", checkAuth, clientController.get_all);
 
 

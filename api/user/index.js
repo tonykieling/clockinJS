@@ -3,8 +3,67 @@ const mongoose    = require("mongoose");
 
 const bcrypt      = require("bcrypt");
 const nodemailer  = require("nodemailer");
-const User        = require("../models/user.js");
 
+const User = mongoose.model("User", mongoose.Schema(
+  {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId
+    },
+
+    admin: {
+      type: Boolean,
+      default: false
+    },
+
+    name: {
+      type: String
+    },
+    
+    email: { 
+      type: String, 
+      required: true,
+      createIndexes: true,
+      // match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+    },
+    
+    password: { 
+      type: String, 
+      required: true
+    },
+    
+    deleted: {
+      type: Boolean
+    },
+
+    address: {
+      type: String,
+      // required: true
+    },
+
+    city: {
+      type: String,
+      // required: true
+    },
+
+    postal_code: {
+      type: String,
+      // required: true
+    },
+
+    phone: {
+      type: String,
+      // required: true
+    },
+
+    code: {
+      type: String
+    },
+
+    code_expiry_at: {
+      type: Number
+    }
+  })
+);
 
 const tokenCreation = async (email, userId, name, admin) => {
   const jwt = require("jsonwebtoken");
@@ -157,6 +216,7 @@ module.exports = async (req, res) => {
   "use strict";
   const { method }  = req;
   const whatToDo = req.body ? req.body.whatToDo : undefined;
+  console.log(" user/index.js");
   
   try {
     await mongoose.connect(process.env.DB, { 
@@ -220,7 +280,7 @@ console.log("code", code);
           try {
             const user = await User
               .findOne({ email });
-
+console.log("logging user:", user);
             if (!user || user.length < 1)
               res.status(200).json({ 
                 error: "ELIN01: Authentication has failed"

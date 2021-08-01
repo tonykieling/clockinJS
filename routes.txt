@@ -21,3 +21,7 @@
     POST /api/user whatToDo = forget-password
 
 # CLIENT
+  - get_all
+  GET /api/client header and authentication
+
+  - 

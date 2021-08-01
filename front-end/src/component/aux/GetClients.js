@@ -13,6 +13,7 @@ function GetClients(props) {
   const [goLand, setgoLand] = useState("");
   const [showModal, setshowModal] = useState("");
 
+  const [processingMessage, setProcessingMessage] = useState("Processing...");
 
   useEffect(() => {
     getClientsFunction();
@@ -28,9 +29,14 @@ function GetClients(props) {
 
 
   const getClientsFunction = async () => {
-    const url = "/client";
-    const askInvoiceSample = props.askInvoiceSample || false;
+        
+    setProcessingMessage("Processing...");
+    props.changeClass("gcbcgreen");
 
+    const url = "/api/client";
+
+    const askInvoiceSample = props.askInvoiceSample || false;
+// console.log("inside GetClients.js");
     try {
       const getClients = await axios.get( 
         url, 
@@ -42,6 +48,10 @@ function GetClients(props) {
           }
         },
       );
+// console.log("@@@ getClients", getClients);
+
+      setProcessingMessage("");
+      props.changeClass("");
 
       if (getClients.data.count) {
         const arrayOfClients = await getClients.data.message.map(e => e);
@@ -72,13 +82,11 @@ function GetClients(props) {
            * 
            * 
            * 
-           * 
-           * 
-           * 
            */
         } else {
           setclients(getClients.data.message);
         }
+
       } else if (getClients.data.error) {
         //call message modal to say the user needs to login again and redirect to /land
         setshowModal(true);
@@ -156,8 +164,9 @@ function GetClients(props) {
 
         { clients.length
           ? populateDropbox()
-          : errorMsg || props.notKidFlag ? "No company at this time" : "No clients at all" 
+          : processingMessage || errorMsg || (props.notKidFlag && "No company at this time") || "No clients at all" 
         }
+        {/* : processingMessage || errorMsg || props.notKidFlag ? "No company at this time" : "No clients at all"  */}
       </>
     )
 }

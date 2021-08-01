@@ -43,9 +43,9 @@ class Login extends Component {
           disable: true
         });
 
-        // const url = "/api/user";
-        const url = "https://clockinjs.herokuapp.com/user/login";
-
+        const url = "/api/user";
+        // const url = "https://clockinjs.herokuapp.com/user/login";
+console.log("url::::", url);
 
         try {
           const login = await axios.post(
