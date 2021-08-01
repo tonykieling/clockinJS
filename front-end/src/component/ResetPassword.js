@@ -17,8 +17,10 @@ class ResetPassword extends Component {
       cancel            : false,
       logged            : false,
       newResetPassword  : false,
-      message           : "",
-      flag              : "Processing..."
+      message           : "Processing...",
+      classNameMessage  : "messageSuccess",
+      flag              : "Processing...",
+      disableButton     : true
     }
 
 
@@ -51,6 +53,12 @@ class ResetPassword extends Component {
         const url = "/api/user";
 // console.log("going to change password, url::", url);
 
+        this.setState({
+          message         : "Processing...",
+          classNameMessage: "messageSuccess",
+          disableButton   : true
+        });
+
         try {
           const resetPassword = await axios.post( 
             url,
@@ -59,7 +67,7 @@ class ResetPassword extends Component {
               newPassword : this.state.newPassword,
               whatToDo    : "reset-password"
           });
-console.log("resetPassword=>", resetPassword);
+// console.log("resetPassword=>", resetPassword);
           
           if (resetPassword.data.message){
             const user  = resetPassword.data.user;
@@ -72,30 +80,22 @@ console.log("resetPassword=>", resetPassword);
               logged: true
             });
 
-            // this.clearMsg();
           } else {
             this.setState({
               message           : resetPassword.data.error,
               classNameMessage  : "messageFailure",
+              disableButton     : false,
             });
           }
   
         } catch(error) {
           this.setState({
-            message: error.message,
+            message           : error.message,
             classNameMessage  : "messageFailure",
+            disableButton     : false
           });
         }
       }
-  }
-
-
-  clearMsg = () => {
-    setTimeout(() => {
-      this.setState({
-        message: ""
-      })
-    }, 3500);
   }
 
   
@@ -115,9 +115,11 @@ console.log("resetPassword=>", resetPassword);
     });
     const code = match.params.param;
 
+
     try {
       // const url = `/api/user/${code}`;  // req.params  did not work in vercel migration, maybe kz vercel routes
-      const url = `/api/user/?code=${code}`; // req.query
+      // const url = `/api/user/?code=${code}`; // req.query
+      const url = "/api/user";
 
       const getUser = await axios.get( 
         url
@@ -126,9 +128,11 @@ console.log("resetPassword=>", resetPassword);
       if (getUser.data.message){
         this.setState({
           code,
-          user  : getUser.data.user,
-          url   : match.url,
-          flag  : ""
+          user    : getUser.data.user,
+          url     : match.url,
+          flag    : "",
+          message : "",
+          disableButton : false
         });
       } else {
         const user = {
@@ -139,7 +143,8 @@ console.log("resetPassword=>", resetPassword);
           user              : getUser.data.code ? getUser.data.user.name : user,
           message           : getUser.data.error,
           classNameMessage  : "messageFailure",
-          flag              : ""
+          flag              : "",
+          disableButton     : false
         });
       }
 
@@ -212,14 +217,18 @@ console.log("resetPassword=>", resetPassword);
                     <div className="d-flex flex-column">
                       <ButtonGroup className="mt-3">
                         <Button 
-                          variant="primary" 
-                          type="submit" >
+                          disabled  = { this.state.disableButton }
+                          variant   = "primary" 
+                          type      = "submit" 
+                        >
                           Submit
                         </Button>
 
                         <Button 
-                          variant = "danger"
-                          onClick = { this.cancelResetPassword } >
+                          disabled  = { this.state.disableButton }
+                          variant   = "danger"
+                          onClick   = { this.cancelResetPassword } 
+                        >
                           Cancel
                         </Button>
                       </ButtonGroup>

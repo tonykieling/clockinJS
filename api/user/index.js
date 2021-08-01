@@ -1,11 +1,9 @@
 "use strict";
 const mongoose    = require("mongoose");
-// const userControllers = require("../controllers/user.js");
 
 const bcrypt      = require("bcrypt");
 const nodemailer  = require("nodemailer");
 const User        = require("../models/user.js");
-
 
 
 const tokenCreation = async (email, userId, name, admin) => {
@@ -134,32 +132,30 @@ const confirmPasswordChange = async(user) => {
   await generalSender(user.email, "Clockin.js - Password changing success", content);
 }
 
-const showDate = incomingDate => {
-  const date = new Date(incomingDate);
-  const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const day = date.getUTCDate() > 9 ? date.getUTCDate() : `0${date.getUTCDate()}`;
-  return(`${month[date.getUTCMonth()]} ${day}, ${date.getUTCFullYear()}`);
-}
+// const showDate = incomingDate => {
+//   const date = new Date(incomingDate);
+//   const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+//   const day = date.getUTCDate() > 9 ? date.getUTCDate() : `0${date.getUTCDate()}`;
+//   return(`${month[date.getUTCMonth()]} ${day}, ${date.getUTCFullYear()}`);
+// }
 
 
-const showTime = incomingTime => {
-  const time = new Date(incomingTime);
-  return((time.getUTCHours() < 10 
-          ? ("0" + time.getUTCHours()) 
-          : time.getUTCHours()) 
-      + ":" + 
-      (time.getUTCMinutes() < 10 
-          ? ("0" + time.getUTCMinutes()) 
-          : time.getUTCMinutes()));
-}
+// const showTime = incomingTime => {
+//   const time = new Date(incomingTime);
+//   return((time.getUTCHours() < 10 
+//           ? ("0" + time.getUTCHours()) 
+//           : time.getUTCHours()) 
+//       + ":" + 
+//       (time.getUTCMinutes() < 10 
+//           ? ("0" + time.getUTCMinutes()) 
+//           : time.getUTCMinutes()));
+// }
 
 
 
 module.exports = async (req, res) => {
   "use strict";
-  // console.log("INSIDE user/index.js");
   const { method }  = req;
-  // console.log("=>req.body", req.body);
   const whatToDo = req.body ? req.body.whatToDo : undefined;
   
   try {
@@ -173,14 +169,15 @@ module.exports = async (req, res) => {
 
           try {
             const { code } = req.query;
+console.log("code", code);
 
             if (!code)
               throw({localError: "Error: No user has been found."});
         
             const user = await User
-              .findOne({ code });
+              .find({ code });
         
-            if (!user || user.length < 1)
+            if (user.length < 1)
               throw({localError: "Error: EGUBC01 - This code is not valid anymore. Try a new reset password."});
             
             if (user.code_expiry_at < new Date().getTime()) {
@@ -340,11 +337,10 @@ module.exports = async (req, res) => {
             });
           }
         
-        } else if (whatToDo === "request-change-password") {
-          //it is qorking
+        } else if ((whatToDo === "request-change-password")  || (whatToDo === "forget-password")) {
+          //it is working
 
           const email  = req.body.email;
-
           try {
             const userExist = await User
               .find( { email });
@@ -385,7 +381,7 @@ module.exports = async (req, res) => {
                 });
             } else
               res.send({
-                message: "EFP04: email is not valid"
+                error: "EFP04: email is not valid"
               });
 
           } catch(error) {  // system answer if there is an error
@@ -404,26 +400,20 @@ module.exports = async (req, res) => {
             userId, 
             newPassword
           } = req.body;
-console.log("req.body====>>>>>>>", req.body);
+
           let userExist;
         
           try {
             userExist = await User
-              // .findOne({ _id: userId });
-              .findOne({ _id: "610428d25c743e0009825dfb" });
-
+              .find({ _id: userId });
+              // .find({ _id: "610478d25c743e0009825dfb" });
 
               // need to check this question about the userExist being empty
               // also print processing in the FE while the request is being processed.
 
-console.log("userExist", userExist);
-console.log("userExist222", userExist.hasOwnProperty("email"));
-console.log("userExist2223333333333", !!userExist);
-            // if (userExist.length < 1)
-            if (!userExist.hasOwnProperty("email"))
+            if (userExist.length < 1)
               throw({localError: "Error: URP01: Please, try again later."});
 
-              throw({localError: "Error: URP01: Please, try again later."});
         
             /**check timestamp!!!!!!!!!!!!!!!!!! */
             // http://localhost:3000/reset_password/485b7950-3cab-11ea-817d-57374e57b7c8
@@ -449,7 +439,7 @@ console.log("userExist2223333333333", !!userExist);
            
           try {
             const hash = await bcrypt.hash(newPassword, 10);
-        
+
             if (hash) {       
               const resetPassword = await User
                 .updateOne({
@@ -486,29 +476,20 @@ console.log("userExist2223333333333", !!userExist);
                 },
                 token
               });
-        
-            } else throw({localError: "Error: URP03 - Hash issues"});
+
+            } else throw({localError: "Error URP03: Hash issues"});
 
           } catch(error) {
             console.log("Error: URP04===>>>", error);
             return res.status(200).json({
-              error: (error.localError || "Error: URP04 - general")
+              error: (error.localError || "Error URP04: general error")
             });
           }
-        }
         
-        // } else if (whatToDo === "forget-password") {
-        //   console.log("forget password is coming");
-        //   await userControllers.forget_password(req, res);
-        // }
-
+        } 
   
-        break;
-  
-      case "DELETE":
-  
-        break;
-  
+        break;  
+      
       case "PATCH":
         // not doing this function based on params, instead data is coming by req.body
         // it is working
@@ -583,7 +564,7 @@ console.log("userExist2223333333333", !!userExist);
         res.status(405).end(`Method ${method} Not Allowed`);
     }
 
-    console.log("........disconnecting............");
+    // console.log("........disconnecting............");
     await mongoose.disconnect();
   } catch (err) {
     console.log("error on MongoDB connection");

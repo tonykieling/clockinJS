@@ -417,9 +417,6 @@ function SignUp(props) {
                 onClick   = { handleSubmit}      
                 disabled  = { disableForm}
                 ref       = { refButtonSubmit}
-                disabled  = { disableForm }
-                //////
-                //////////////
               >
                 Submit
               </Button>

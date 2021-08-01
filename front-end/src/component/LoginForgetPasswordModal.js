@@ -87,7 +87,8 @@ class ForgetPasswordModal extends Component {
       this.resetPasswordEmail.focus();
       this.clearMessage();
     } else {
-      // const url = `/user/forgetPassword`;
+      // const url = `https://clockinjs.herokuapp.com/user/forgetPassword`;
+      
       const url = `/api/user`;
 
       try {
@@ -95,10 +96,10 @@ class ForgetPasswordModal extends Component {
           url,
           {
             whatToDo: "forget-password",
-            data: {
-              email: this.state.emailFP
-            }
-        });
+            email: this.state.emailFP
+          }
+        );
+console.log("  forgetPassword", forgetPassword);
 
         if (forgetPassword.data.message){
           this.setState({

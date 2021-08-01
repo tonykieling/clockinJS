@@ -43,7 +43,10 @@ class Login extends Component {
           disable: true
         });
 
-        const url = "/api/user";
+        // const url = "/api/user";
+        const url = "https://clockinjs.herokuapp.com/user/login";
+
+
         try {
           const login = await axios.post(
             url,
@@ -53,6 +56,7 @@ class Login extends Component {
               password  : this.state.password,
             }
           );
+console.log("===login", login);
 
           const answer = login.data;
 
