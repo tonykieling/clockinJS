@@ -144,7 +144,10 @@ class KidClientNew extends Component {
     } else {
       this.setState({ disableBtn: true });
 
-      const url = "/client";
+      const url = "/api/client";
+      // const url = "https://clockinjs.herokuapp.com/client";
+
+
       const createClient  = {
         name        : this.state.name,
         nickname    : this.state.nickname,
@@ -174,27 +177,29 @@ class KidClientNew extends Component {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-
+console.log("addClient", addClient);
         if (addClient.data.message) {
-
           this.setState({
             message     : <p>Client <b>{this.state.nickname}</b> has been created.</p>,
             className   : "messageSuccess"
           });
           this.clearMessage();
 
-        } else if (addClient.data.error) {
-          this.setState({
-            message   : addClient.data.error,
-            className : "messageFailure" });
-          }
+        } else {
+          // (addClient.data.error) 
+          throw new Error(addClient.data.error);
+        }
           
-      } catch(err) {
+      } catch(error) {
+console.log("error:::", error.name, error.message, JSON.stringify(error));
+
         this.setState({
-          message : err.message,
-          className : "messageFailure"
+          message     : error.message || error,
+          className   : "messageFailure",
+          disableBtn  : false
         });
-        this.clearMessage();
+
+        // this.clearMessage();
       }
     }
   }
@@ -291,10 +296,11 @@ class KidClientNew extends Component {
                     />
 
                     { this.state.linkClientToCompany && window.innerWidth <= 700 &&
-                        <div className="gridClientBtContainer">
+                        // <div className="gridClientBtContainer">
+                        <div>
                           <GetClients
                             client        = { this.state.company }
-                            notKidFlag    = { true}
+                            notKidFlag    = { true }
                             getClientInfo = { this.getClientInfo }
                           />
                         </div>
@@ -302,7 +308,8 @@ class KidClientNew extends Component {
 
                 </Form.Group>
                 { this.state.linkClientToCompany && window.innerWidth > 700 &&
-                    <div className="gridClientBtContainer">
+                    // <div className="gridClientBtContainer">
+                    <div>
                       <GetClients
                         client        = { this.state.company }
                         notKidFlag    = { true}

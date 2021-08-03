@@ -31,12 +31,13 @@ function GetClients(props) {
   const getClientsFunction = async () => {
         
     setProcessingMessage("Processing...");
-    props.changeClass("gcbcgreen");
+        // trying getting data from heroku and compiling by local env
 
     const url = "/api/client";
+    // const url = "https://clockinjs.herokuapp.com/client"
 
     const askInvoiceSample = props.askInvoiceSample || false;
-// console.log("inside GetClients.js");
+
     try {
       const getClients = await axios.get( 
         url, 
@@ -48,10 +49,8 @@ function GetClients(props) {
           }
         },
       );
-// console.log("@@@ getClients", getClients);
-
+console.log(" getClients:: ", getClients);
       setProcessingMessage("");
-      props.changeClass("");
 
       if (getClients.data.count) {
         const arrayOfClients = await getClients.data.message.map(e => e);
@@ -143,10 +142,23 @@ function GetClients(props) {
     );
   }
 
+
   const changes = (event, incommingClient) => {
     event.preventDefault();
     props.clientListFlag ? props.getCompanyInfo(incommingClient) : props.getClientInfo(incommingClient);
   }
+
+
+  const message = () => {
+    const text = processingMessage || errorMsg || (props.notKidFlag && "No company at this time") || "No clients at all";
+
+    return (
+      <div
+        className = { processingMessage ? "gcbcgreen" : "gcbcred"}>
+          { text }
+      </div>
+    );
+  };
 
 
     return (
@@ -164,9 +176,8 @@ function GetClients(props) {
 
         { clients.length
           ? populateDropbox()
-          : processingMessage || errorMsg || (props.notKidFlag && "No company at this time") || "No clients at all" 
+          : message()
         }
-        {/* : processingMessage || errorMsg || props.notKidFlag ? "No company at this time" : "No clients at all"  */}
       </>
     )
 }

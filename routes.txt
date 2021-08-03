@@ -24,4 +24,5 @@
   - get_all
   GET /api/client header and authentication
 
-  - 
+  - record new client
+  POST /api/client client data + authentication

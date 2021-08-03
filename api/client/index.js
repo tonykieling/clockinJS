@@ -178,7 +178,7 @@ const checkAuth = async (token) => {
     return decodedToken;
 
   } catch(error) {
-    console.log("Error: ", error);   // too big message. It's better without it due to avoid polluting the screen.
+    console.log("Error tokennnnn: ", error);   // too big message. It's better without it due to avoid polluting the screen.
     return ({
       localError: ((error.localError) || "Error ECA02: Auth has failed. Middleware")
     });
@@ -187,9 +187,7 @@ const checkAuth = async (token) => {
 
 
 module.exports = async (req, res) => {
-  "use strict";
   const { method }  = req;
-  // const whatToDo = req.body ? req.body.whatToDo : undefined;
 
   console.log(" ########### inside /api/client/index.js");
   
@@ -206,11 +204,15 @@ module.exports = async (req, res) => {
       // console.log("token=== ", token);
 
       const checkUser = await checkAuth(token);
-      const userId = checkUser.userId;
-// console.log("   ----- checkUser", checkUser, "userId", userId);
-      if (!userId)
-        throw ({localError: ((error.localError) || "Error: Authentication error")});
+// console.log("checkUser==", checkUser);
+      if (checkUser.localError) throw({localError: checkUser.localError});
 
+      const userId = checkUser.userId;
+// console.log("   ----- checkUser", checkUser);
+//       if (!userId) throw ({ localError: "Error: Authentication error" });
+
+
+      const { clientId } = req.query ? req.query : undefined;
 
 
       switch (method) {
@@ -218,39 +220,38 @@ module.exports = async (req, res) => {
           // it is working good
 
 
-          const { clientId } = req.query ? req.query : undefined;
 
-          console.log(" @GET clientId")
-          console.log("clientId", clientId);
+          // console.log(" @GET clientId")
+          // console.log("=========clientId", clientId, checkUser.userId, userId);
 
 
-          if (clientId) {
+          // if (clientId) {
 
-            //  have not tested yet
-            try {
-              if (clientId.length !== 24)
-                throw({localError: "ECGO04: ClientId mystyped."});
+          //   //  have not tested yet
+          //   try {
+          //     if (clientId.length !== 24)
+          //       throw({localError: "ECGO04: ClientId mystyped."});
 
-              const client = await Client
-                .find({ _id: clientId});
+          //     const client = await Client
+          //       .find({ _id: clientId});
           
-              if (!client || client.length < 1)
-                throw({localError: `ECGO02: Client <id: ${clientId}> does not exist.`});
+          //     if (!client || client.length < 1)
+          //       throw({localError: `ECGO02: Client <id: ${clientId}> does not exist.`});
           
-              res.status(200).json({
-                message: client
-              });
-            } catch(error) {
-              console.log("Error => ", error);
+          //     res.status(200).json({
+          //       message: client
+          //     });
+          //   } catch(error) {
+          //     console.log("Error => ", error);
   
-              res.status(200).json({
-                error: ((error.localError) || ("ECGO05: Something got wrong."))
-              });
-            }
-          } else {
+          //     res.status(200).json({
+          //       error: ((error.localError) || ("ECGO05: Something got wrong."))
+          //     });
+          //   }
+          // } else {
 
             // it is working
-            console.log(" @@@@@GET client get_all");
+            // console.log(" @@@@@GET client get_all", userId);
             
 
             const askInvoiceSample = req.headers.askinvoicesample || false;
@@ -279,7 +280,6 @@ module.exports = async (req, res) => {
                   message: allClients
                 });
               }
-          
 
             } catch (error) {
               if (error.message) {
@@ -290,11 +290,138 @@ module.exports = async (req, res) => {
                 });
               }
             }
-          }
+          // }
 
           break;
           
-      case "POST":  
+      case "POST":
+        // console.log("inside client add, req.body:", req.body);
+
+        const {
+              name,
+              nickname, 
+              mother, 
+              mPhone, 
+              mEmail, 
+              father, 
+              fPhone, 
+              fEmail, 
+              consultant, 
+              cPhone, 
+              cEmail, 
+              defaultRate,
+              typeKid,
+      
+              email,
+              phone,
+              address,
+              city,
+              province,
+              postalCode,
+              typeOfService,
+      
+              linkedCompany,
+              rateAsPerCompany
+           } = req.body;
+           
+        // const userId = checkUser.userId
+        const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : undefined;
+      
+        try {
+          const clientExistName = await Client
+            .find({ name });
+console.log("----- name:", clientExistName);
+          const clientExistNickname = 
+            typeKid 
+              ? await Client
+                .find({ nickname }) 
+              : null;
+console.log("----- nickName:", clientExistNickname);
+          if (clientExistName.length > 0)
+            throw ({ localError: `Client <name: ${name}> already exists.` });
+            // throw new Error(`Client <name: ${name}> already exists.`); // this would be best because it is a pattern
+            // but I should keep consistency and the way I've been using works, too.
+      
+          if (clientExistNickname.length > 0)
+            throw ({ localError: `Client <nickname: ${nickname}> already exists.` });
+
+      
+        } catch(error) {
+          console.log("351 Error: ", error);
+          throw ({ localError: error.localError || error.message || error });
+        }
+      
+        //it adds the new client
+        try {
+          const newClient = new Client({
+            _id           : new mongoose.Types.ObjectId(),
+            name          : name,
+            nickname      : nickname, 
+            birthday      : birthday, 
+            mother        : mother, 
+            mphone        : mPhone, 
+            memail        : mEmail, 
+            father        : father, 
+            fphone        : fPhone, 
+            femail        : fEmail, 
+            consultant    : consultant, 
+            cphone        : cPhone, 
+            cemail        : cEmail, 
+            default_rate  : defaultRate,
+            user_id       : userId,
+            type_kid      : typeKid,
+      
+            email,
+            phone,
+            city,
+            address,
+            province,
+            postal_code   : postalCode,
+            type_of_service : typeOfService,
+      
+            linked_company      : linkedCompany,
+            rate_as_per_company : rateAsPerCompany
+          });
+      
+          // checks if the new client is gonna be linked to a Company Client
+          if (linkedCompany)  {
+            // if setting a kid for a Company Client, it adds a new boolean field (company) to the the Company Client
+            try {
+              await Client
+                .updateOne(
+                  { 
+                    _id: linkedCompany 
+                  },
+                  { 
+                    isCompany : true
+                  },
+                  { 
+                    runValidators   : true,
+                    ignoreUndefined : true
+                  }
+                );
+
+            } catch(error) {
+              // console.log("Error ECAD03: ", error);
+              throw ({ localError: "ECAD03: Something wrong with Client's Company data." });
+            }
+          }
+      
+          // *no rollback for both add newClient and update Client to Company
+          // as newClient.save comes after the updating Company Client, at least if something happen in this method, the system will send an error.
+            // but, if something happen in newClient.save, the Company Client will be set as it and the kid client will not be saved
+          await newClient.save();
+      
+          res.json({
+            message: `Client <${newClient.name}> has been created.`,
+            newClient
+          });
+
+        } catch(error) {
+          console.log("Error ECAD02: ", error);
+          throw ({ localError: (error.localError || "ECAD02: Something wrong with client's data.") });
+        };
+
         break;  
       
       case "PATCH":
@@ -317,7 +444,7 @@ module.exports = async (req, res) => {
       error: (error.localError || error.message || error)
     });
   } finally {
-    // console.log("........disconnecting............");
+    console.log("........disconnecting............");
     await mongoose.disconnect();
   }
 

@@ -10,13 +10,14 @@ const clientController  = require("../controllers/client.js");
 router.get("/", checkAuth, clientController.get_all);
 
 
-// it returns info about a particular user
+// it returns info about a particular client
+// not sure whether this method is being used
 router.get("/:clientId", checkAuth, clientController.get_one);
 
 
 // it creates an user account
 router.post("/", checkAuth, clientController.client_add);
-// router.post("/", checkAuth, clientController.client_add);
+// it is working
 
 
 // it modifies user's data
@@ -24,6 +25,8 @@ router.patch("/:clientId", checkAuth, clientController.client_modify);
 
 
 // it deletes a client account
+// not being considered right now.
+// instead of deleting, there is the option to inactived a particular client
 router.delete("/:clientId", checkAuth, clientController.client_delete);
 
 

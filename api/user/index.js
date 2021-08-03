@@ -280,7 +280,7 @@ console.log("code", code);
           try {
             const user = await User
               .findOne({ email });
-console.log("logging user:", user);
+console.log("logging user:", user.name);
             if (!user || user.length < 1)
               res.status(200).json({ 
                 error: "ELIN01: Authentication has failed"

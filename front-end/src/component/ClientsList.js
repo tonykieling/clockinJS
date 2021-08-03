@@ -19,7 +19,7 @@ class ClientsList extends Component {
     this.state = {
       message         : "",
       disableEditForm : true,
-      btStyleClass    : "gcbcred",
+      // btStyleClass    : "gcbcred",
 
       client          : "",
       clientId        : "",
@@ -485,13 +485,6 @@ class ClientsList extends Component {
   }
 
 
-  changeBtStyleClass = nameClass => {
-    // console.log("changiong classname: ", nameClass || "tstsss");
-    this.setState({
-      btStyleClass: nameClass || "gcbcred"
-    });
-  };
-
 
   render() {
     return (
@@ -501,15 +494,12 @@ class ClientsList extends Component {
           <Card.Header>Your Client's list</Card.Header>
         <Card.Body>
 
-          {/* <div className="gridClientBtContainer"> */}
-          <div className= { this.state.btStyleClass }>
+          <div>
             <GetClients 
               client          = { this.state.client }
               getClientInfo   = { this.getClientInfo }     /* mount the Dropbox Button with all clients for the user */
               updateButton    = { this.state.updateButton}
               bringAllClients = { true }
-              changeClass     = { this.changeBtStyleClass }
-
             />
           </div>
         </Card.Body>
