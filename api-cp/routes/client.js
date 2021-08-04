@@ -6,13 +6,13 @@ const clientController  = require("../controllers/client.js");
 
 
 // it returns all users
-// it is working
 router.get("/", checkAuth, clientController.get_all);
+// it is working
 
 
 // it returns info about a particular client
-// not sure whether this method is being used
 router.get("/:clientId", checkAuth, clientController.get_one);
+// not sure whether this method is being used
 
 
 // it creates an user account
@@ -22,6 +22,7 @@ router.post("/", checkAuth, clientController.client_add);
 
 // it modifies user's data
 router.patch("/:clientId", checkAuth, clientController.client_modify);
+// it is working fine
 
 
 // it deletes a client account

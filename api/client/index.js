@@ -1,7 +1,6 @@
 "use strict";
 const mongoose    = require("mongoose");
 
-// const bcrypt      = require("bcrypt");
 
 const Client = mongoose.model("Client", mongoose.Schema(
   {
@@ -208,11 +207,6 @@ module.exports = async (req, res) => {
       if (checkUser.localError) throw({localError: checkUser.localError});
 
       const userId = checkUser.userId;
-// console.log("   ----- checkUser", checkUser);
-//       if (!userId) throw ({ localError: "Error: Authentication error" });
-
-
-      const { clientId } = req.query ? req.query : undefined;
 
 
       switch (method) {
@@ -294,12 +288,148 @@ module.exports = async (req, res) => {
 
           break;
           
-      case "POST":
-        // console.log("inside client add, req.body:", req.body);
+        case "POST":
+          // console.log("inside client add, req.body:", req.body);
+          {
+            const {
+                  name,
+                  nickname, 
+                  mother, 
+                  mPhone, 
+                  mEmail, 
+                  father, 
+                  fPhone, 
+                  fEmail, 
+                  consultant, 
+                  cPhone, 
+                  cEmail, 
+                  defaultRate,
+                  typeKid,
+          
+                  email,
+                  phone,
+                  address,
+                  city,
+                  province,
+                  postalCode,
+                  typeOfService,
+          
+                  linkedCompany,
+                  rateAsPerCompany
+              } = req.body;
 
-        const {
+console.log("===req.body", req.body);
+            // const userId = checkUser.userId
+            const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : undefined;
+          
+            try {
+              const clientExistName = await Client
+                .find({ name });
+    console.log("----- name:", clientExistName);
+              const clientExistNickname = 
+                typeKid 
+                  ? await Client
+                    .find({ nickname }) 
+                  : null;
+    console.log("----- nickName:", clientExistNickname);
+              if (clientExistName.length > 0)
+                throw ({ localError: `Client <name: ${name}> already exists.` });
+                // throw new Error(`Client <name: ${name}> already exists.`); // this would be best because it is a pattern
+                // but I should keep consistency and the way I've been using works, too.
+          
+              if (clientExistNickname.length > 0)
+                throw ({ localError: `Client <nickname: ${nickname}> already exists.` });
+
+          
+            } catch(error) {
+              console.log("351 Error: ", error);
+              throw ({ localError: error.localError || error.message || error });
+            }
+          
+            //it adds the new client
+            try {
+              const newClient = new Client({
+                _id           : new mongoose.Types.ObjectId(),
+                name,
+                nickname, 
+                birthday, 
+                mother, 
+                mphone        : mPhone, 
+                memail        : mEmail, 
+                father, 
+                fphone        : fPhone, 
+                femail        : fEmail, 
+                consultant, 
+                cphone        : cPhone, 
+                cemail        : cEmail, 
+                default_rate  : defaultRate,
+                user_id       : userId,
+                type_kid      : typeKid,
+          
+                email,
+                phone,
+                city,
+                address,
+                province,
+                postal_code   : postalCode,
+                type_of_service : typeOfService,
+          
+                linked_company      : linkedCompany,
+                rate_as_per_company : rateAsPerCompany
+              });
+          
+            // checks if the new client is gonna be linked to a Company Client
+            if (linkedCompany)  {
+              // if setting a kid for a Company Client, it adds a new boolean field (company) to the the Company Client
+              try {
+                await Client
+                  .updateOne(
+                    { 
+                      _id: linkedCompany 
+                    },
+                    { 
+                      isCompany : true
+                    },
+                    { 
+                      runValidators   : true,
+                      ignoreUndefined : true
+                    }
+                  );
+
+              } catch(error) {
+                // console.log("Error ECAD03: ", error);
+                throw ({ localError: "ECAD03: Something wrong with Client's Company data." });
+              }
+            }
+        
+            // *no rollback for both add newClient and update Client to Company
+            // as newClient.save comes after the updating Company Client, at least if something happen in this method, the system will send an error.
+              // but, if something happen in newClient.save, the Company Client will be set as it and the kid client will not be saved
+            await newClient.save();
+        
+            res.json({
+              message: `Client <${newClient.name}> has been created.`,
+              newClient
+            });
+
+          } catch(error) {
+            console.log("Error ECAD02: ", error);
+            throw ({ localError: (error.localError || "ECAD02: Something wrong with client's data.") });
+          };
+
+          break;
+        }
+
+
+      
+        case "PATCH":
+          {
+            const {
+              clientId,
               name,
-              nickname, 
+              default_rate,
+          
+              nickname,
               mother, 
               mPhone, 
               mEmail, 
@@ -309,127 +439,136 @@ module.exports = async (req, res) => {
               consultant, 
               cPhone, 
               cEmail, 
-              defaultRate,
               typeKid,
-      
+          
               email,
               phone,
-              address,
               city,
+              address,
               province,
-              postalCode,
-              typeOfService,
-      
+              postal_code   : postalCode,
+              type_of_service : typeOfService,
+              inactive,
+              showRate,
+              showNotes,
+          
               linkedCompany,
               rateAsPerCompany
-           } = req.body;
-           
-        // const userId = checkUser.userId
-        const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : undefined;
-      
-        try {
-          const clientExistName = await Client
-            .find({ name });
-console.log("----- name:", clientExistName);
-          const clientExistNickname = 
-            typeKid 
-              ? await Client
-                .find({ nickname }) 
-              : null;
-console.log("----- nickName:", clientExistNickname);
-          if (clientExistName.length > 0)
-            throw ({ localError: `Client <name: ${name}> already exists.` });
-            // throw new Error(`Client <name: ${name}> already exists.`); // this would be best because it is a pattern
-            // but I should keep consistency and the way I've been using works, too.
-      
-          if (clientExistNickname.length > 0)
-            throw ({ localError: `Client <nickname: ${nickname}> already exists.` });
+            } = req.body;
 
-      
-        } catch(error) {
-          console.log("351 Error: ", error);
-          throw ({ localError: error.localError || error.message || error });
-        }
-      
-        //it adds the new client
-        try {
-          const newClient = new Client({
-            _id           : new mongoose.Types.ObjectId(),
-            name          : name,
-            nickname      : nickname, 
-            birthday      : birthday, 
-            mother        : mother, 
-            mphone        : mPhone, 
-            memail        : mEmail, 
-            father        : father, 
-            fphone        : fPhone, 
-            femail        : fEmail, 
-            consultant    : consultant, 
-            cphone        : cPhone, 
-            cemail        : cEmail, 
-            default_rate  : defaultRate,
-            user_id       : userId,
-            type_kid      : typeKid,
-      
-            email,
-            phone,
-            city,
-            address,
-            province,
-            postal_code   : postalCode,
-            type_of_service : typeOfService,
-      
-            linked_company      : linkedCompany,
-            rate_as_per_company : rateAsPerCompany
-          });
-      
-          // checks if the new client is gonna be linked to a Company Client
-          if (linkedCompany)  {
-            // if setting a kid for a Company Client, it adds a new boolean field (company) to the the Company Client
+            const birthday = req.body.birthday ? new Date(req.body.birthday) : undefined;
+          
             try {
-              await Client
+          
+              const client = await Client
+              .findById(clientId);
+
+              if (!client || client.length < 1)
+                throw({ localError: `Error CM01: Client <id: ${clientId}> does not exist.`});
+
+              if (userId.toString() !== client.user_id.toString())
+                throw({ localError: `Error CM02: Client <id: ${clientId}> belongs to another user.` });
+
+          
+              const clientToBeChanged = await Client
                 .updateOne(
-                  { 
-                    _id: linkedCompany 
-                  },
-                  { 
-                    isCompany : true
-                  },
-                  { 
-                    runValidators   : true,
-                    ignoreUndefined : true
+                  {
+                  _id: clientId
+                  }, 
+                  {
+                    name, 
+                    default_rate: default_rate, 
+                    user_id: userId,
+          
+                    nickname, 
+                    birthday, 
+                    mother      : mother && mother.trim(),
+                    mphone      : mPhone && mPhone.trim(),
+                    memail      : mEmail && mEmail.trim(),
+                    father      : father && father.trim(),
+                    fphone      : fPhone && fPhone.trim(),
+                    femail      : fEmail && fEmail.trim(),
+                    consultant  : consultant && consultant.trim(), 
+                    cphone      : cPhone && cPhone.trim(),
+                    cemail      : cEmail && cEmail.trim(),
+          
+                    email           : email && email.trim(),
+                    phone           : phone && phone.trim(),
+                    city            : city && city.trim(),
+                    address         : address && address.trim(),
+                    province        : province && province.trim(),
+                    postal_code     : postalCode && postalCode.trim(),
+                    type_of_service : typeOfService && typeOfService.trim(),
+                    inactive        : inactive === false ? false : (inactive == true ? true : undefined),
+                    showRate        : showRate || false,
+                    showNotes       : showNotes || false,
+          
+                    linked_company  : linkedCompany && mongoose.Types.ObjectId(linkedCompany),
+                    rate_as_per_company : rateAsPerCompany
+                  }, 
+                  {
+                    runValidators: true,
+                    ignoreUndefined: true
                   }
                 );
-
-            } catch(error) {
-              // console.log("Error ECAD03: ", error);
-              throw ({ localError: "ECAD03: Something wrong with Client's Company data." });
-            }
-          }
-      
-          // *no rollback for both add newClient and update Client to Company
-          // as newClient.save comes after the updating Company Client, at least if something happen in this method, the system will send an error.
-            // but, if something happen in newClient.save, the Company Client will be set as it and the kid client will not be saved
-          await newClient.save();
-      
-          res.json({
-            message: `Client <${newClient.name}> has been created.`,
-            newClient
-          });
-
-        } catch(error) {
-          console.log("Error ECAD02: ", error);
-          throw ({ localError: (error.localError || "ECAD02: Something wrong with client's data.") });
-        };
-
-        break;  
-      
-      case "PATCH":
-        break;
   
-        
-      case "DELETE":
-        break;
+                // checks if the client is gonna be linked to a Company Client
+                if (linkedCompany)  {
+                  // if setting a kid for a Company Client, it adds a new boolean field (company) to the the Company Client
+                  try {
+                    await Client
+                      .updateOne(
+                        { 
+                          _id: linkedCompany 
+                        },
+                        { 
+                          isCompany : true
+                        },
+                        { 
+                          runValidators   : true,
+                          ignoreUndefined : true
+                        }
+                      );
+          
+                  } catch(error) {
+                    throw({ localError: "CM05: Something wrong with Client's Company data."});
+                  }
+                }
+          
+                // if the linkedCompany field is not present, it will unset linked_company and rate_as_per_company
+                const removeCompanyData = !linkedCompany && await Client
+                  .updateOne(
+                    { _id: clientId},
+                    { $unset: {
+                        linked_company      : 1,
+                        rate_as_per_company : 1
+                      }
+                    }
+                  );
+
+                if (clientToBeChanged.nModified || removeCompanyData.nModified) {
+                  const clientModified = await Client
+                    .findById({ _id: clientId});
+  
+                if (typeKid)
+                  clientModified.birthday = Date.parse(clientModified.birthday);
+          
+                res.json({
+                  message: `Client <${clientModified.nickname}> has been modified.`,
+                  newData: clientModified
+                });
+              } else
+                res.status(200).json({
+                  message: "Client NOT changed - no new data."
+                });
+          
+            } catch(error) {
+              console.log("Error CM04: ", error);
+              throw({ localError: "Error CM04: Somethiong happened, please try again later"});
+            }
+
+          break;
+        }
 
 
       default:

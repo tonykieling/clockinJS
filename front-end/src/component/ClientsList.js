@@ -19,7 +19,6 @@ class ClientsList extends Component {
     this.state = {
       message         : "",
       disableEditForm : true,
-      // btStyleClass    : "gcbcred",
 
       client          : "",
       clientId        : "",
@@ -114,6 +113,8 @@ class ClientsList extends Component {
   }
 
 
+
+  // this method updates client's data
   handleSubmit = async event => {
     event.preventDefault();
 
@@ -122,7 +123,8 @@ class ClientsList extends Component {
       nickname    = this.state.nickname ? this.state.nickname.trim() : false,
       defaultRate = this.state.defaultRate ? this.state.defaultRate.trim() : false;
 
-    if (!name || !defaultRate || (this.state.typeKid ? !nickname : false)) {
+      // if (!name || !defaultRate || (this.state.typeKid ? !nickname : false)) {
+    if (!name || !defaultRate || (this.state.typeKid && !nickname )) {
       if (!defaultRate) {
         this.setState({ messageControlDefaultRate: "Please inform the default rate($)."})
         this.textInput13.focus();
@@ -173,12 +175,15 @@ class ClientsList extends Component {
         showRate        : this.state.showRate,
         showNotes       : this.state.showNotes,
 
-        // company         : this.state.tmp_linkClientToCompany && !this.state.company ? undefined : this.state.company._id,
+        company         : this.state.tmp_linkClientToCompany && this.state.company,
         linkedCompany   : this.state.company ? this.state.company._id : undefined,
-        rateAsPerCompany: this.state.company ? this.state.rateAsPerCompany : undefined
+        rateAsPerCompany: ((this.state.rateAsPerCompany === "true") ? true : false )
       };
 
-      const url = `/client/${data.clientId}`;
+      // const url = `https://clockinjs.herokuapp.com/client/${data.clientId}`;
+      const url = "/api/client";
+
+
       try {
         const newClientData = await axios.patch( 
           url,
@@ -239,7 +244,11 @@ class ClientsList extends Component {
         });
       }
 
-      this.clearMessage();
+      this.setState({
+        disableEditForm : true,
+      });
+
+      // this.clearMessage();
     }
 
   }
@@ -300,7 +309,9 @@ class ClientsList extends Component {
 
       linkClientToCompany   : client.linked_company ? true : false,
       companyId             : client.linked_company || "",
-      rateAsPerCompany      : client.rate_as_per_company || ""
+      // rateAsPerCompany      : client.rate_as_per_company || "",
+      rateAsPerCompany      : ((client.rate_as_per_company === "true") ? true : false),
+      message : ""
     });
   }
 
@@ -337,7 +348,9 @@ class ClientsList extends Component {
 
       // updateDropDown    : true,
       tmp_linkClientToCompany : this.state.linkClientToCompany,
-      tmp_companyId     : this.state.companyId
+      tmp_companyId     : this.state.companyId,
+      message           : "",
+      tmp_rateAsPerCompany: this.state.rateAsPerCompany
     });
   }
 
@@ -377,14 +390,16 @@ class ClientsList extends Component {
       // sureCompany         : false
       // updateDropDown: false,
       linkClientToCompany : this.state.tmp_linkClientToCompany,
-      companyId           : this.state.tmp_companyId
+      companyId           : this.state.tmp_companyId,
+      rateAsPerCompany  : this.state.tmp_rateAsPerCompany
     });
   }
 
 
   afterChange = event => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
+      message: ""
     });
   }
 
@@ -415,7 +430,8 @@ class ClientsList extends Component {
                       disabled  = { this.state.disableEditForm}
                       onChange  = { () => this.setState({ 
                                       linkClientToCompany : true,
-                                      rateAsPerCompany    : this.state.sureCompany ? true : undefined,
+                                      // rateAsPerCompany    : this.state.sureCompany ? true : undefined,
+                                      rateAsPerCompany    : (this.state.rateAsPerCompany === "true") ? true : false,
                                       disableRate         : true
                                   })}
                     />
@@ -458,7 +474,7 @@ class ClientsList extends Component {
   sureCompany = company => {
     this.setState({
       sureCompany       : true,
-      rateAsPerCompany  : true,
+      rateAsPerCompany  : (this.state.rateAsPerCompany === "true" ? true : false ),
       company
     });
   }
@@ -848,6 +864,7 @@ class ClientsList extends Component {
                         disabled  = { this.state.disableEditForm}
                       />
                   }
+
                   <Form.Control
                     type        = "number"
                     placeholder = {"Type the hourly rate - CAD$"}

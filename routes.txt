@@ -26,3 +26,9 @@
 
   - record new client
   POST /api/client client data + authentication
+
+  - modify client's data
+  PATCH /api/client new client's data + authentication
+
+# CLOCKIN
+  
