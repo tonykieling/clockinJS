@@ -273,7 +273,7 @@ console.log("inside clockins ADD");
   };
 }
 
-
+/*
 // change user data
 // input: token, which should be admin
 // TODO: the code has to distinguish between admin and the user which has to change their data (only email or email
@@ -373,7 +373,7 @@ client_modify = async (req, res) => {
     });
   }
 }
-
+*/
 
 
 // FIRST it needs to check whether the user is admin or the clockin belongs to the user which is proceeding

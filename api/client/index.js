@@ -314,8 +314,8 @@ module.exports = async (req, res) => {
                   postalCode,
                   typeOfService,
           
-                  linkedCompany,
-                  rateAsPerCompany
+                  // linkedCompany,
+                  // rateAsPerCompany
               } = req.body;
 
 console.log("===req.body", req.body);
@@ -336,8 +336,8 @@ console.log("===req.body", req.body);
                 throw ({ localError: `Client <name: ${name}> already exists.` });
                 // throw new Error(`Client <name: ${name}> already exists.`); // this would be best because it is a pattern
                 // but I should keep consistency and the way I've been using works, too.
-          
-              if (clientExistNickname.length > 0)
+console.log("req.body.typeKid", req.body.typeKid);
+              if (req.body.typeKid && clientExistNickname.length > 0)
                 throw ({ localError: `Client <nickname: ${nickname}> already exists.` });
 
           
@@ -374,33 +374,33 @@ console.log("===req.body", req.body);
                 postal_code   : postalCode,
                 type_of_service : typeOfService,
           
-                linked_company      : linkedCompany,
-                rate_as_per_company : rateAsPerCompany
+                // linked_company      : linkedCompany,
+                // rate_as_per_company : rateAsPerCompany
               });
           
-            // checks if the new client is gonna be linked to a Company Client
-            if (linkedCompany)  {
-              // if setting a kid for a Company Client, it adds a new boolean field (company) to the the Company Client
-              try {
-                await Client
-                  .updateOne(
-                    { 
-                      _id: linkedCompany 
-                    },
-                    { 
-                      isCompany : true
-                    },
-                    { 
-                      runValidators   : true,
-                      ignoreUndefined : true
-                    }
-                  );
+            // // checks if the new client is gonna be linked to a Company Client
+            // if (linkedCompany)  {
+            //   // if setting a kid for a Company Client, it adds a new boolean field (company) to the the Company Client
+            //   try {
+            //     await Client
+            //       .updateOne(
+            //         { 
+            //           _id: linkedCompany 
+            //         },
+            //         { 
+            //           isCompany : true
+            //         },
+            //         { 
+            //           runValidators   : true,
+            //           ignoreUndefined : true
+            //         }
+            //       );
 
-              } catch(error) {
-                // console.log("Error ECAD03: ", error);
-                throw ({ localError: "ECAD03: Something wrong with Client's Company data." });
-              }
-            }
+            //   } catch(error) {
+            //     // console.log("Error ECAD03: ", error);
+            //     throw ({ localError: "ECAD03: Something wrong with Client's Company data." });
+            //   }
+            // }
         
             // *no rollback for both add newClient and update Client to Company
             // as newClient.save comes after the updating Company Client, at least if something happen in this method, the system will send an error.
@@ -452,8 +452,8 @@ console.log("===req.body", req.body);
               showRate,
               showNotes,
           
-              linkedCompany,
-              rateAsPerCompany
+              // linkedCompany,
+              // rateAsPerCompany
             } = req.body;
 
             const birthday = req.body.birthday ? new Date(req.body.birthday) : undefined;
@@ -499,12 +499,13 @@ console.log("===req.body", req.body);
                     province        : province && province.trim(),
                     postal_code     : postalCode && postalCode.trim(),
                     type_of_service : typeOfService && typeOfService.trim(),
+
                     inactive        : inactive === false ? false : (inactive == true ? true : undefined),
                     showRate        : showRate || false,
                     showNotes       : showNotes || false,
           
-                    linked_company  : linkedCompany && mongoose.Types.ObjectId(linkedCompany),
-                    rate_as_per_company : rateAsPerCompany
+                    // linked_company  : linkedCompany && mongoose.Types.ObjectId(linkedCompany),
+                    // rate_as_per_company : rateAsPerCompany
                   }, 
                   {
                     runValidators: true,
@@ -512,39 +513,39 @@ console.log("===req.body", req.body);
                   }
                 );
   
-                // checks if the client is gonna be linked to a Company Client
-                if (linkedCompany)  {
-                  // if setting a kid for a Company Client, it adds a new boolean field (company) to the the Company Client
-                  try {
-                    await Client
-                      .updateOne(
-                        { 
-                          _id: linkedCompany 
-                        },
-                        { 
-                          isCompany : true
-                        },
-                        { 
-                          runValidators   : true,
-                          ignoreUndefined : true
-                        }
-                      );
+                // // checks if the client is gonna be linked to a Company Client
+                // if (linkedCompany)  {
+                //   // if setting a kid for a Company Client, it adds a new boolean field (company) to the the Company Client
+                //   try {
+                //     await Client
+                //       .updateOne(
+                //         { 
+                //           _id: linkedCompany 
+                //         },
+                //         { 
+                //           isCompany : true
+                //         },
+                //         { 
+                //           runValidators   : true,
+                //           ignoreUndefined : true
+                //         }
+                //       );
           
-                  } catch(error) {
-                    throw({ localError: "CM05: Something wrong with Client's Company data."});
-                  }
-                }
+                //   } catch(error) {
+                //     throw({ localError: "CM05: Something wrong with Client's Company data."});
+                //   }
+                // }
           
-                // if the linkedCompany field is not present, it will unset linked_company and rate_as_per_company
-                const removeCompanyData = !linkedCompany && await Client
-                  .updateOne(
-                    { _id: clientId},
-                    { $unset: {
-                        linked_company      : 1,
-                        rate_as_per_company : 1
-                      }
-                    }
-                  );
+                // // if the linkedCompany field is not present, it will unset linked_company and rate_as_per_company
+                // const removeCompanyData = !linkedCompany && await Client
+                //   .updateOne(
+                //     { _id: clientId},
+                //     { $unset: {
+                //         linked_company      : 1,
+                //         rate_as_per_company : 1
+                //       }
+                //     }
+                //   );
 
                 if (clientToBeChanged.nModified || removeCompanyData.nModified) {
                   const clientModified = await Client

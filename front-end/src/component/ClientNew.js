@@ -5,7 +5,7 @@ import axios from "axios";
 
 import MaskedInput from 'react-text-mask';
 
-import GetClients from "./aux/GetClients.js";
+// import GetClients from "./aux/GetClients.js";
 
 
 class KidClientNew extends Component {
@@ -32,12 +32,12 @@ class KidClientNew extends Component {
       messageControlNickname    : "",
       messageControlDefaultRate : "",
 
-      company             : "",
-      linkClientToCompany : false,
-      rateAsPerCompany    : false,
-      disableRate         : false,
-      companyRate         : "",
-      companyFree         : true
+      // company             : "",
+      // linkClientToCompany : false,
+      // rateAsPerCompany    : false,
+      // disableRate         : false,
+      // companyRate         : "",
+      // companyFree         : true
     }
 
   handleChange = e => {
@@ -119,7 +119,7 @@ class KidClientNew extends Component {
     if (!this.state.name || !this.state.nickname || !this.state.defaultRate) {
       
       if (!this.state.defaultRate) {
-        this.setState({ messageControlDefaultRate: "Please inform the default rate($) or Company."})
+        this.setState({ messageControlDefaultRate: "Please inform the default rate($)."})
         this.textInput13.focus();
       }
 
@@ -136,11 +136,11 @@ class KidClientNew extends Component {
       }
       
 
-    } else if ( this.state.linkClientToCompany && !this.state.company && !this.state.companyFree) {
-      this.setState({
-        message   : "Please, select company.",
-        className : "messageFailure"
-      });
+    // } else if ( this.state.linkClientToCompany && !this.state.company && !this.state.companyFree) {
+    //   this.setState({
+    //     message   : "Please, select company.",
+    //     className : "messageFailure"
+    //   });
     } else {
       this.setState({ disableBtn: true });
 
@@ -164,8 +164,8 @@ class KidClientNew extends Component {
         defaultRate : this.state.defaultRate,
         typeKid     : true,
 
-        linkedCompany     : this.state.company._id || undefined,
-        rateAsPerCompany  : this.state.companyFree ? undefined : (this.state.rateAsPerCompany || undefined)
+        // linkedCompany     : this.state.company._id || undefined,
+        // rateAsPerCompany  : this.state.companyFree ? undefined : (this.state.rateAsPerCompany || undefined)
       }
 
       try {
@@ -223,13 +223,13 @@ console.log("error:::", error.name, error.message, JSON.stringify(error));
         cEmail      : "",
         defaultRate : "",
         disableRate : false,
-        linkClientToCompany : false,
         message     : "",
         disableBtn  : false,
-        company     : "",
-        companyRate : "",
-        rateAsPerCompany : false,
-        companyFree : true
+        // linkClientToCompany : false,
+        // company     : "",
+        // companyRate : "",
+        // rateAsPerCompany : false,
+        // companyFree : true
       });
 
       window.scrollTo(0, 0);
@@ -245,90 +245,90 @@ console.log("error:::", error.name, error.message, JSON.stringify(error));
   }
 
 
-  getClientInfo = company => {
-    this.setState({
-      company,
-      message     : "",
-      companyRate : company.default_rate,
-      defaultRate : this.state.rateAsPerCompany ? company.default_rate : this.state.defaultRate,
-      messageControlDefaultRate : "",
-      companyFree : false
-    });
-  }
+  // getClientInfo = company => {
+  //   this.setState({
+  //     company,
+  //     message     : "",
+  //     companyRate : company.default_rate,
+  //     defaultRate : this.state.rateAsPerCompany ? company.default_rate : this.state.defaultRate,
+  //     messageControlDefaultRate : "",
+  //     companyFree : false
+  //   });
+  // }
 
 
   /**
    * this method shows the option to link a client to a company
    */
-  YNComponent = () => {
-    return  <React.Fragment>
-              <Form.Group controlId="formLinkClient">
-                <Form.Label className="cardLabel"> Link Client to a Company? </Form.Label>
-                <Form.Group
-                  className = "form-check-inline"
-                >
-                  <Form.Check
-                      style     = { window.innerWidth <= 700 ? {marginLeft: "0px"} : {marginLeft: "2rem"}}
-                      inline
-                      label     = "Yes"
-                      checked   = { this.state.linkClientToCompany}
-                      type      = "radio"
-                      onChange  = { () => this.setState({ 
-                                      linkClientToCompany : true,
-                                      rateAsPerCompany    : true,
-                                      disableRate         : true,
-                                      // defaultRate         : this.state.companyRate || ""
-                                  })}
-                    />
-                    <Form.Check 
-                      inline
-                      label     = "No"
-                      checked   = { !this.state.linkClientToCompany}
-                      type      = "radio"
-                      style     = {{marginLeft: "1rem"}}
-                      onChange  = { () => this.setState({ 
-                                      linkClientToCompany : false,
-                                      disableRate         : false,
-                                      company             : "",
-                                      companyRate         : "",
-                                      // defaultRate         : ""
-                                  })}
-                    />
+  // YNComponent = () => {
+  //   return  <React.Fragment>
+  //             <Form.Group controlId="formLinkClient">
+  //               <Form.Label className="cardLabel"> Link Client to a Company? </Form.Label>
+  //               <Form.Group
+  //                 className = "form-check-inline"
+  //               >
+  //                 <Form.Check
+  //                     style     = { window.innerWidth <= 700 ? {marginLeft: "0px"} : {marginLeft: "2rem"}}
+  //                     inline
+  //                     label     = "Yes"
+  //                     checked   = { this.state.linkClientToCompany}
+  //                     type      = "radio"
+  //                     onChange  = { () => this.setState({ 
+  //                                     linkClientToCompany : true,
+  //                                     rateAsPerCompany    : true,
+  //                                     disableRate         : true,
+  //                                     // defaultRate         : this.state.companyRate || ""
+  //                                 })}
+  //                   />
+  //                   <Form.Check 
+  //                     inline
+  //                     label     = "No"
+  //                     checked   = { !this.state.linkClientToCompany}
+  //                     type      = "radio"
+  //                     style     = {{marginLeft: "1rem"}}
+  //                     onChange  = { () => this.setState({ 
+  //                                     linkClientToCompany : false,
+  //                                     disableRate         : false,
+  //                                     company             : "",
+  //                                     companyRate         : "",
+  //                                     // defaultRate         : ""
+  //                                 })}
+  //                   />
 
-                    { this.state.linkClientToCompany && window.innerWidth <= 700 &&
-                        // <div className="gridClientBtContainer">
-                        <div>
-                          <GetClients
-                            client        = { this.state.company }
-                            notKidFlag    = { true }
-                            getClientInfo = { this.getClientInfo }
-                          />
-                        </div>
-                    }
-
-                </Form.Group>
-                { this.state.linkClientToCompany && window.innerWidth > 700 &&
-                    // <div className="gridClientBtContainer">
-                    <div>
-                      <GetClients
-                        client        = { this.state.company }
-                        notKidFlag    = { true}
-                        getClientInfo = { this.getClientInfo }
-                      />
-                    </div>
-                }
-              </Form.Group>
-            </React.Fragment>
-  }
+  //                   {/* { this.state.linkClientToCompany && window.innerWidth <= 700 &&
+  //                       // <div className="gridClientBtContainer">
+  //                       <div>
+  //                         <GetClients
+  //                           client        = { this.state.company }
+  //                           notKidFlag    = { true }
+  //                           getClientInfo = { this.getClientInfo }
+  //                         />
+  //                       </div>
+  //                   } */}
 
 
-  changeRateCheck = () => {
-    this.setState({
-      defaultRate       : !this.state.rateAsPerCompany ? this.state.companyRate : this.state.defaultRate,
-      rateAsPerCompany  : !this.state.rateAsPerCompany,
-      disableRate       : !this.state.disableRate
-    }, () => this.textInput13.focus());
-  }
+  //               </Form.Group>
+  //               {/* { this.state.linkClientToCompany && window.innerWidth > 700 &&
+  //                   <div>
+  //                     <GetClients
+  //                       client        = { this.state.company }
+  //                       notKidFlag    = { true}
+  //                       getClientInfo = { this.getClientInfo }
+  //                     />
+  //                   </div>
+  //               } */}
+  //             </Form.Group>
+  //           </React.Fragment>
+  // }
+
+
+  // changeRateCheck = () => {
+  //   this.setState({
+  //     defaultRate       : !this.state.rateAsPerCompany ? this.state.companyRate : this.state.defaultRate,
+  //     rateAsPerCompany  : !this.state.rateAsPerCompany,
+  //     disableRate       : !this.state.disableRate
+  //   }, () => this.textInput13.focus());
+  // }
 
 
 
@@ -512,11 +512,11 @@ console.log("error:::", error.name, error.message, JSON.stringify(error));
                 ref         = {input => this.textInput12 = input }  />
             </Form.Group>
 
-            { this.state.linkClientToCompany && this.YNComponent() }
+            {/* { this.state.linkClientToCompany && this.YNComponent() } */}
 
             <Form.Group controlId="formDefaultRate">
               <Form.Label className="cardLabel">Rate</Form.Label>
-              { this.state.linkClientToCompany && this.state.company &&
+              {/* { this.state.linkClientToCompany && this.state.company &&
                 <Form.Check 
                   inline 
                   label     = "Rate as per company ?"
@@ -525,7 +525,7 @@ console.log("error:::", error.name, error.message, JSON.stringify(error));
                   style     = {{marginLeft: "1rem"}}
                   onChange  = { this.changeRateCheck }
                 />
-              }
+              } */}
               <Form.Control
                 type        = "number"
                 placeholder = "Hourly rate - CAD$"
@@ -534,14 +534,14 @@ console.log("error:::", error.name, error.message, JSON.stringify(error));
                 value       = { this.state.defaultRate}
                 onKeyPress  = {this.handleChange}
                 ref         = {input => this.textInput13 = input }
-                disabled    = { !this.state.company ? false : this.state.disableRate }
+                // disabled    = { !this.state.company ? false : this.state.disableRate }
               />
               <Form.Text className="messageControl-user">
                 {this.state.messageControlDefaultRate}
               </Form.Text>
             </Form.Group>
 
-            { !this.state.linkClientToCompany && this.YNComponent() }
+            {/* { !this.state.linkClientToCompany && this.YNComponent() } */}
 
 
           <Card.Footer className={ this.state.className }>          

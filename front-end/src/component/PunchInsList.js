@@ -38,7 +38,9 @@ class PunchInsList extends Component {
 
       showModal         : false,
       clockinToModal    : {},
-      company           : ""
+      company           : "",
+
+      disableButton     : false
     };
 }
 
@@ -67,14 +69,20 @@ class PunchInsList extends Component {
           message   : "Check your dates",
           classNameMessage  : "messageFailure"
         });
-      else
+      else {
+        this.setState({
+          disableButton: true
+        });
+
         try {
           const pastClockins  = this.state.company
             ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, this.state.company._id)
             : await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId)
+console.log("pastClockins::", pastClockins);
 
           if (!pastClockins || pastClockins.error)
-            throw((!pastClockins && "No invoices at all.") || pastClockins.error);
+            // throw((!pastClockins && "No invoices at all.") || pastClockins.error);
+            throw((!pastClockins && "No clockins at all.") || pastClockins.error);
 
           this.setState({
             clockinList       : pastClockins,
@@ -90,7 +98,11 @@ class PunchInsList extends Component {
             classNameMessage  : "messageFailure",
             tableVisibility   : false
           });
-        
+        }
+
+        this.setState({
+          disableButton: false
+        });
       }
     } else
       this.messageValidationMethod();
@@ -308,8 +320,10 @@ class PunchInsList extends Component {
                   ? 
                     <ButtonGroup className="mt-3">
                       <Button 
-                        variant="primary" 
-                        onClick = { this.handleSubmit } >
+                        variant   ="primary" 
+                        onClick   = { this.handleSubmit } 
+                        disabled  = { this.state.disableButton }
+                      >
                         Get List
                       </Button>
                       <Button variant="info" onClick = { this.clearForm }>
@@ -318,8 +332,10 @@ class PunchInsList extends Component {
                     </ButtonGroup>
                   :
                     <Button 
-                      variant="primary" 
-                      onClick = { this.handleSubmit } >
+                      variant   = "primary" 
+                      onClick   = { this.handleSubmit } 
+                      disabled  = { this.state.disableButton }
+                    >
                       Get List
                     </Button>
                 }

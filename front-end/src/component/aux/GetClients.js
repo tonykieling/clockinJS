@@ -16,6 +16,7 @@ function GetClients(props) {
   const [processingMessage, setProcessingMessage] = useState("Processing...");
 
   useEffect(() => {
+    console.log("updating button");
     getClientsFunction();
     // eslint-disable-next-line
   }, [props.updateButton]);
@@ -31,10 +32,9 @@ function GetClients(props) {
   const getClientsFunction = async () => {
         
     setProcessingMessage("Processing...");
-        // trying getting data from heroku and compiling by local env
 
     const url = "/api/client";
-    // const url = "https://clockinjs.herokuapp.com/client"
+    // const url = "https://clockinjs.herokuapp.com/client";
 
     const askInvoiceSample = props.askInvoiceSample || false;
 
@@ -59,32 +59,19 @@ console.log(" **********getClients:: ", getClients);
           const c2 = (b.nickname || b.name).toUpperCase();
           return ((c1 > c2) ? 1 : -1);
         });
-        if (props.invoiceFlag) {
-          setclients(getClients.data.message.filter(e => !e.linked_company));
-        } else if (props.punchinFlag) {
-          // setclients(getClients.data.message.filter(e => !e.company));
-          setclients(getClients.data.message.filter(e => !e.isCompany));
-        } else if (props.notKidFlag) {
-          //it checks whether there is(are) company and inform to the parent component
-          props.sureCompany && props.sureCompany();
 
-          setclients(getClients.data.message.filter(e => !e.type_kid));
-        } else if (props.report) {
-          const resultedArray = [{name: "All Clients"}, ...sortedArray];
-          setclients(resultedArray);
-          /**
-           * 
-           * 
-           * need to set sorted array for all other situations
-           * 
-           * 
-           * 
-           * 
-           * 
-           */
-        } else {
-          setclients(getClients.data.message);
-        }
+        // const resultedArray = [{name: "All Clients"}, ...sortedArray];    
+        // need to check when to use all clients in the clients button
+        // right now, all clients are off
+        // do not recall backend method to all clients such ass clockins for all clients
+        //
+        //
+        //
+        //
+        //
+        //
+        const resultedArray = [...sortedArray];
+        setclients(resultedArray);
 
       } else if (getClients.data.error) {
         //call message modal to say the user needs to login again and redirect to /land
@@ -101,43 +88,29 @@ console.log(" **********getClients:: ", getClients);
           <DropdownButton
             id        = "dropdown-basic"
             disabled  = { props.onlyOneClient}
-            variant   = { props.invoiceFlag || props.notKidFlag ? "info" : "success"}
-            title     = {(props.companyId && clients.filter(e => (e._id === props.companyId))[0].name)
-              || (props.client && (props.client.nickname || props.client.name)) 
-              ||  (props.notKidFlag
-                      ? "Select Company"
-                      : props.invoiceFlag
-                        ? "Select Client/Company"
-                        : "Select Client"
-                  )}
+            // variant   = { props.invoiceFlag || props.notKidFlag ? "info" : "success"}
+            variant   = { "success" }
+            // title     = {(props.companyId && clients.filter(e => (e._id === props.companyId))[0].name)
+            //   || (props.client && (props.client.nickname || props.client.name)) 
+            //   ||  (props.notKidFlag
+            //           ? "Select Company"
+            //           : props.invoiceFlag
+            //             ? "Select Client/Company"
+            //             : "Select Client"
+            //       )}
+            title = { (props.client && (props.client.nickname || props.client.name)) || "Select client" }
           >
-            { props.bringAllClients 
-              ?
-                <React.Fragment>
-                  {clients.map( (client, id) =>
-                      <Dropdown.Item 
-                      key = { id } 
-                      onClick = { e => changes(e, client) }
-                      // data-client = { JSON.stringify(client) }
-                      name = { client.name }
-                      > { client.nickname || client.name } 
-                      </Dropdown.Item>
-                  )}
-                </React.Fragment>
-              :
-                <React.Fragment>
-                  {/* { console.log("CLIENTS", clients)} */}
-                  {clients.map( (client, id) =>
-                      !client.inactive &&
-                        <Dropdown.Item 
-                          key = { id } 
-                          onClick = { e => changes(e, client) }
-                          name = { client.name }
-                          > { client.nickname || client.name } 
-                        </Dropdown.Item>
-                  )}
-                </React.Fragment>
-                }
+            <React.Fragment>
+              {clients.map( (client, id) =>
+                  <Dropdown.Item 
+                  key = { id } 
+                  onClick = { e => changes(e, client) }
+                  // data-client = { JSON.stringify(client) }
+                  name = { client.name }
+                  > { client.nickname || client.name } 
+                  </Dropdown.Item>
+              )}
+            </React.Fragment>
           </DropdownButton>
     );
   }
@@ -150,7 +123,8 @@ console.log(" **********getClients:: ", getClients);
 
 
   const message = () => {
-    const text = processingMessage || errorMsg || (props.notKidFlag && "No company at this time") || "No clients at all";
+    // const text = processingMessage || errorMsg || (props.notKidFlag && "No company at this time") || "No clients at all";
+    const text = processingMessage || errorMsg || "No clients at all";
 
     return (
       <div

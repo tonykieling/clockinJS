@@ -44,7 +44,9 @@ class PunchInNew extends Component {
     pastClockins      : "",
     tablePastClockins : "",
     messageNoClockins : "No clockins for this day",
-    blockedHours      : []
+    blockedHours      : [],
+
+    pastClockinsMessage: ""
   };
 
 
@@ -60,11 +62,16 @@ class PunchInNew extends Component {
   // it checks past clockins as soon the user selected a date
   getPastClockins = async (date) => {
     //it queries clockins
+    this.setState({
+      pastClockinsMessage: "Checking clockins..."
+    });
+
     const pastClockins = await getClockins(this.props.storeToken, "byDate", (date || this.state.date));
     const clockinsTable = pastClockins && await this.formatClockinsTable(pastClockins);
     const blockedHours = pastClockins && await this.getBlockedHours(pastClockins);
 
     this.setState({
+      pastClockinsMessage: "",
       showPastClockins  : true,
       pastClockins,
       tablePastClockins : clockinsTable,
@@ -125,7 +132,7 @@ class PunchInNew extends Component {
       endingBreak   : this.state.endingBreak || undefined,
       companyId     : this.state.client.linked_company || undefined
     };
-
+console.log("data to be sent:", data);
 
     if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak)
       !this.state.validBreak ? this.checkBreakIsValid(event) : this.messageValidationMethod();
@@ -138,7 +145,9 @@ class PunchInNew extends Component {
       });
 
     else {
-      const url = "/clockin";
+      // const url = "/clockin";
+
+      const url = "/api/clockin";
       try {
         const addClockin = await axios.post( 
           url,
@@ -148,7 +157,7 @@ class PunchInNew extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-
+console.log("addClockin", addClockin);
         if (addClockin.data.message) {
           this.setState({
             message           : `Punched in!`,
@@ -318,7 +327,13 @@ class PunchInNew extends Component {
               </Col>
             </Form.Group>
 
-            {this.state.showPastClockins &&
+            { this.state.pastClockinsMessage && 
+              <Card.Footer style = {{ color: "green", fontStyle: "bold"}}>
+                { this.state.pastClockinsMessage }
+              </Card.Footer> 
+            }
+
+            {this.state.showPastClockins && !this.state.pastClockinsMessage &&
               <Card.Footer style = {{ color: "green", fontStyle: "bold"}}>          
                 {this.state.tablePastClockins
                   ? <Table striped bordered hover size="sm" responsive>

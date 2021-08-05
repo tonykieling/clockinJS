@@ -31,4 +31,8 @@
   PATCH /api/client new client's data + authentication
 
 # CLOCKIN
-  
+  - punchin
+    POST /api/clockin + auth + checking user, client, past clockins, and invoice
+
+  - 
+

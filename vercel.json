@@ -13,8 +13,12 @@
         "dest": "/api/client"
       },
       {
-        "src": "/api/client",
-        "dest": "/api/client"
+        "src": "/api/clockin",
+        "dest": "/api/clockin"
+      },
+      {
+        "src": "/api/clockin/(.*)",
+        "dest": "/api/clockin"
       },
       { 
         "src": "/[^.]+", 
