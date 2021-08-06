@@ -75,9 +75,10 @@ class PunchInsList extends Component {
         });
 
         try {
-          const pastClockins  = this.state.company
-            ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, this.state.company._id)
-            : await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId)
+          // const pastClockins  = this.state.company
+          //   ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, this.state.company._id)
+          //   : await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId)
+          const pastClockins = await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId);
 console.log("pastClockins::", pastClockins);
 
           if (!pastClockins || pastClockins.error)
@@ -326,7 +327,10 @@ console.log("pastClockins::", pastClockins);
                       >
                         Get List
                       </Button>
-                      <Button variant="info" onClick = { this.clearForm }>
+                      <Button 
+                        variant="info" 
+                        onClick = { this.clearForm }
+                      >
                         Clean
                       </Button>
                     </ButtonGroup>
