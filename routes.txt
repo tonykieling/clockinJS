@@ -20,6 +20,7 @@
   - forget-password
     POST /api/user whatToDo = forget-password
 
+
 # CLIENT
   - get_all
   GET /api/client header and authentication
@@ -30,9 +31,17 @@
   - modify client's data
   PATCH /api/client new client's data + authentication
 
+
 # CLOCKIN
   - punchin
-    POST /api/clockin + auth + checking user, client, past clockins, and invoice
+  POST /api/clockin + auth + checking user, client, past clockins, and invoice
 
+  - list
+  GET /api/clockin
+
+  - remove
+  DELETE /api/clockin + auth + clockinId
+
+
+# INVOICE 
   - 
-

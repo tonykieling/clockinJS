@@ -911,7 +911,7 @@ module.exports = async (req, res) => {
               await sendClockinEmail(`Clockin added - ${clientExist.type_kid ? clientExist.nickname : clientExist.name}: ${showDate(newClockin.date)} - ${showTime(newClockin.time_start)}`, newClockin, userExist, clientExist);
               
               // everything is ok, so lets fe knows it
-              return res.json({
+              res.json({
                 message : "Clockin has been created.",
                 user    : userExist.name,
                 client  : clientExist.name
@@ -921,9 +921,35 @@ module.exports = async (req, res) => {
               throw({ localError: error.localError || "ECKA06: Something wrong with clockin's data." });
             };
             
+            break;
           }
 
 
+        case "DELETE":
+          {
+            console.log("inside CLOCKIN DELETE");
+            console.log("req.body", req.body);
+            const clockinId = req.body.clockinId;
+
+            try {
+              const clockinDeleted = await Clockin.deleteOne({ _id: clockinId});
+console.log("::::::::::::clockinDeleted:", clockinDeleted);
+              if (clockinDeleted.deletedCount) {      
+                res.send({
+                  message: `Clockin has been deleted`
+                });
+              } else
+                throw ({ localError: `ECKD04: Something bad with Clockin id <${clockinId}>`});
+
+            } catch (error) {
+              res.send({
+                error: error.localError || error.message || error
+              });
+            }
+
+            break;
+          }
+        
         default:
           // console.log("user.js DEFAULT!!!!");
           res.setHeader("Allow", ["GET", "POST", "PATCH", "DELETE"]);

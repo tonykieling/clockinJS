@@ -36,7 +36,9 @@ function PunchInModal(props) {
 
   const yesDelete = async () => {
     setOpenModal(false);
-    const url = `/clockin`;
+    // const url = `/clockin`;
+    const url = "/api/clockin";
+
     try {
       const deleteClockin = await axios.delete( 
         url,
@@ -48,7 +50,7 @@ function PunchInModal(props) {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${props.storeToken}` }
       });
-      
+console.log("::::::deleteClockin:", deleteClockin);
       if (deleteClockin.data.error)
         throw (deleteClockin.data.error);
       else {
