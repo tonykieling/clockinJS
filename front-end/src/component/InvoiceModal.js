@@ -449,13 +449,17 @@ class InvoiceModal extends Component {
                         variant   = "info"
                         disabled  = { this.state.currentStatus === "Received" ? true : false }
                         onClick   = { this.handleChangeInvoiceStatus }
-                      >{ this.state.currentStatus }</Button>
+                      >
+                        { this.state.currentStatus }
+                      </Button>
                       <Button
                         style     = { { width: "50%" }}
                         variant   = "danger"
                         disabled  = { this.state.currentStatus === "Received" ? true : false }
                         onClick   = { this.setShowModalDeleteInvoice }
-                      > Delete </Button>
+                      > 
+                        Delete 
+                      </Button>
                     </ButtonGroup>
                 }
               </div>

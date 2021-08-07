@@ -691,9 +691,11 @@ module.exports = async (req, res) => {
                           ? new Date(`${req.query.date}T23:59:59.000Z`)
                           : new Date(req.query.dateEnd || "2100-03-01T09:00:00.000Z");
 
+            let conditions = "";
             // when it is a simple query regarding one day
             if (typeQuestion === "byDate") {
-              const conditions = {
+console.log("...............byDate - clockin GET");
+              conditions = {
                 user_id : mongoose.Types.ObjectId(userId),
                 date    : {
                             $gte: dateStart,
@@ -722,40 +724,34 @@ module.exports = async (req, res) => {
                     allClockins
                   });
                 }
-
-                break;
               } catch(error) {
                 // console.log("errrrrorrrrrr:", error);
 
                 throw({ localError: error.message || error});
               }
-            }
+            } else if (typeQuestion === "invoiceClockins") {
+console.log("..................invoiceCLoclins clockin GET");
+              const invoiceId = req.query.invoiceId;
+              conditions = {
+                invoice_id  : mongoose.Types.ObjectId(invoiceId)
+              };
 
-            try { 
-              let allClockins = null;
-
-                // https://stackoverflow.com/questions/6502541/mongodb-query-multiple-collections-at-once
-                // this code works - BEFORE doing a $lookup
-                // allClockins = await Clockin
-                  // .find({ 
-                  //   user_id: userId,
-                  //   date: {
-                  //     $gte: dateStart,
-                  //     $lte: dateEnd
-                  //   },
-                  //   client_id: clientId
-                  // })
-                  // .select(" date time_start time_end rate notes invoice_id client_id user_id ");
-                allClockins = await Clockin
+              try {
+                const allClockins = await Clockin
                   .aggregate([
-                    { $match: 
+                    { $match: conditions },
+                    { $lookup: 
                       {
-                        user_id: mongoose.Types.ObjectId(userId),
-                        date: {
-                          $gte: dateStart,
-                          $lte: dateEnd
-                        },
-                        client_id: mongoose.Types.ObjectId(clientId)
+                        from: "clients",
+                        localField: "client_id",
+                        foreignField: "_id",
+                        as: "client"
+                      }
+                    },
+                    {
+                      $unwind: {
+                        path :'$client',
+                        preserveNullAndEmptyArrays: true
                       }
                     },
                     { $lookup: 
@@ -768,69 +764,150 @@ module.exports = async (req, res) => {
                     },
                     {
                       $unwind: {
-                        path :'$invoice', 
+                        path :'$invoice',
                         preserveNullAndEmptyArrays: true
                       }
                     },
-                    {
-                        $project: {
-                            "invoice.__v": 0,
-                            // "invoice._id": 0,
-                            "invoice.date": 0,
-                            "invoice.date_start": 0,
-                            "invoice.date_end": 0,
-                            "invoice.notes": 0,
-                            "invoice.status": 0,
-                            "invoice.total_cad": 0,
-                            "invoice.client_id": 0,
-                            "invoice.user_id": 0
-                        }
-                    }
+                    {   
+                      $project:{
+                          date            : 1,
+                          time_start      : 1,
+                          time_end        : 1,
+                          rate            : 1,
+                          notes           : 1,
+                          client_id       : 1,
+                          user_id         : 1,
+                          break_start     : 1,
+                          break_end       : 1,
+                          worked_hours    : 1,
+                          invoice_id      : 1,
+                          invoice         : "$invoice",
+                          client_name     : "$client.name",
+                          client_nickname : "$client.nickname"
+                      } 
+                  }
                   ])
-                  .sort({date: 1});
-          // console.log("-----allClockins", allClockins);
-              if (!allClockins || allClockins.length < 1) {
-                throw({ localError: "No clockins at all."});
-                // return res.status(200).json({
-                //   error: `No clockins at all.`
-                // });
+                  .sort({ time_start: 1});
+          
+                res.json({
+                  count: allClockins.length,
+                  allClockins
+                });
+              } catch (error) {
+                throw({ error: error.message || error});
               }
 
+            } else {
+console.log("..........another way clockin  GET");
+              conditions = {
+                  user_id   : mongoose.Types.ObjectId(userId),
+                  date      : {
+                                $gte: dateStart,
+                                $lte: dateEnd
+                              },
+                };      
 
-              /**
-               * it checks whether the application is querying for last invoice code (queryLastInvoiceCode) used
-               * if so, it calls checkInvoiceCode, which returns either:
-               *  - null
-               *  - the last code used (when the code is not ended with a valid number)
-               *  - a new code, adding one to its ending part - here, it is an object with a attribute newCode
-               *  */
-              // const codeSuggestion = allClockins.length && await checkInvoiceCode(allClockins);
-              const codeSuggestion = req.query.queryLastInvoiceCode ? await checkInvoiceCode(userId, clientId) : null;
-          // console.log("----codeSuggestion", codeSuggestion);
+              try { 
+                let allClockins = null;
 
-              if (clientId) {
-                const client = await Client
-                  .findById( clientId )
-                  .select(" nickname ");
+                  // https://stackoverflow.com/questions/6502541/mongodb-query-multiple-collections-at-once
+                  // this code works - BEFORE doing a $lookup
+                  // allClockins = await Clockin
+                    // .find({ 
+                    //   user_id: userId,
+                    //   date: {
+                    //     $gte: dateStart,
+                    //     $lte: dateEnd
+                    //   },
+                    //   client_id: clientId
+                    // })
+                    // .select(" date time_start time_end rate notes invoice_id client_id user_id ");
+                  allClockins = await Clockin
+                    .aggregate([
+                      { $match: 
+                        {
+                          user_id: mongoose.Types.ObjectId(userId),
+                          date: {
+                            $gte: dateStart,
+                            $lte: dateEnd
+                          },
+                          client_id: mongoose.Types.ObjectId(clientId)
+                        }
+                      },
+                      { $lookup: 
+                        {
+                          from: "invoices",
+                          localField: "invoice_id",
+                          foreignField: "_id",
+                          as: "invoice"
+                        }
+                      },
+                      {
+                        $unwind: {
+                          path :'$invoice', 
+                          preserveNullAndEmptyArrays: true
+                        }
+                      },
+                      {
+                          $project: {
+                              "invoice.__v": 0,
+                              // "invoice._id": 0,
+                              "invoice.date": 0,
+                              "invoice.date_start": 0,
+                              "invoice.date_end": 0,
+                              "invoice.notes": 0,
+                              "invoice.status": 0,
+                              "invoice.total_cad": 0,
+                              "invoice.client_id": 0,
+                              "invoice.user_id": 0
+                          }
+                      }
+                    ])
+                    .sort({date: 1});
+              // console.log("-----allClockins", allClockins);
+                if (!allClockins || allClockins.length < 1) {
+                  throw({ localError: "No clockins at all."});
+                  // return res.status(200).json({
+                  //   error: `No clockins at all.`
+                  // });
+                }
+
+
+                /**
+                 * it checks whether the application is querying for last invoice code (queryLastInvoiceCode) used
+                 * if so, it calls checkInvoiceCode, which returns either:
+                 *  - null
+                 *  - the last code used (when the code is not ended with a valid number)
+                 *  - a new code, adding one to its ending part - here, it is an object with a attribute newCode
+                 *  */
+                // const codeSuggestion = allClockins.length && await checkInvoiceCode(allClockins);
+                const codeSuggestion = req.query.queryLastInvoiceCode ? await checkInvoiceCode(userId, clientId) : null;
+            // console.log("----codeSuggestion", codeSuggestion);
+
+                if (clientId) {
+                  const client = await Client
+                    .findById( clientId )
+                    .select(" nickname ");
+
+                  res.status(200).json({
+                    count: allClockins.length,
+                    allClockins,
+                    client: client.nickname, 
+                    codeSuggestion
+                  });
+
+                  break;
+                };
 
                 res.status(200).json({
                   count: allClockins.length,
-                  allClockins,
-                  client: client.nickname, 
-                  codeSuggestion
+                  allClockins
                 });
-
-                break;
-              };
-
-              res.status(200).json({
-                count: allClockins.length,
-                allClockins
-              });
-            
-            } catch(error) {
-              // console.log("Error => ", error);
-              throw({ localError: error.localError || "EACK02: Something's got wrong." });
+              
+              } catch(error) {
+                // console.log("Error => ", error);
+                throw({ localError: error.localError || "EACK02: Something's got wrong." });
+              }
             }
 
             break;
@@ -933,7 +1010,7 @@ module.exports = async (req, res) => {
 
             try {
               const clockinDeleted = await Clockin.deleteOne({ _id: clockinId});
-console.log("::::::::::::clockinDeleted:", clockinDeleted);
+
               if (clockinDeleted.deletedCount) {      
                 res.send({
                   message: `Clockin has been deleted`

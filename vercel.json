@@ -20,6 +20,14 @@
         "src": "/api/clockin/(.*)",
         "dest": "/api/clockin"
       },
+      {
+        "src": "/api/invoice",
+        "dest": "/api/invoice"
+      },
+      {
+        "src": "/api/invoice/(.*)",
+        "dest": "/api/invoice"
+      },
       { 
         "src": "/[^.]+", 
         "dest": "/"

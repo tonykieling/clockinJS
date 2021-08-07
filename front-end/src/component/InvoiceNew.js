@@ -93,17 +93,11 @@ class InvoiceNew extends Component {
 
       // const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}&queryLastInvoiceCode=${queryLastInvoiceCode}`;
 
-        const pastClockins  = this.state.company
-          ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, clientId, queryLastInvoiceCode)
-          : await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId, queryLastInvoiceCode)
-
-        // const pastClockins = await axios.get( 
-        //   url,
-        //   {  
-        //     headers: { 
-        //       "Content-Type": "application/json",
-        //       "Authorization" : `Bearer ${this.props.storeToken}` }
-        // });
+        // const pastClockins  = this.state.company
+        //   ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, clientId, queryLastInvoiceCode)
+        //   : 
+      const pastClockins = await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId, queryLastInvoiceCode);
+console.log("...........pastClockins", pastClockins);
 
         if (pastClockins.error)
           this.setState({
@@ -217,11 +211,13 @@ class InvoiceNew extends Component {
         notes     : this.state.notes,
         clientId  : this.state.clientId,
         code      : this.state.invoiceCode.toUpperCase(),
-        company   : this.state.company._id ? true : undefined,
+        // company   : this.state.company._id ? true : undefined,
         clockinArray : this.state.clockinList
       }
 
-      const url = "/invoice";
+      // const url = "/invoice";
+      const url = "/api/invoice";
+
         try {
           const invoice = await axios.post( 
             url,
@@ -231,6 +227,7 @@ class InvoiceNew extends Component {
                 "Content-Type": "application/json",
                 "Authorization" : `Bearer ${this.props.storeToken}` }
           });
+console.log("........invoice", invoice);
 
           if (invoice.data.message) {
             const newClockinTable = this.state.clockinList.map(e => ({...e, invoice: {code: data.code}}));

@@ -26,7 +26,9 @@ function InvoiceModalDelete(props) {
 
 
   const handleDelete = async () => {
-    const url = `/invoice/${props.invoiceId}`;
+    // const url = `/invoice/${props.invoiceId}`;
+    const url = `/api/invoice/?invoiceId=${props.invoiceId}`;
+
 
     try {
       const deleteInvoice = await axios.delete( 
@@ -36,6 +38,8 @@ function InvoiceModalDelete(props) {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${props.storeToken}` }
       });
+console.log(".............deleting invoice::", deleteInvoice);
+
 
       if (deleteInvoice.data.message) {
         setMessage(`Invoice ${props.invoiceCode} has been deleted`);

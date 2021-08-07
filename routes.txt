@@ -36,7 +36,7 @@
   - punchin
   POST /api/clockin + auth + checking user, client, past clockins, and invoice
 
-  - list
+  - list clockins
   GET /api/clockin
 
   - remove
@@ -44,4 +44,12 @@
 
 
 # INVOICE 
-  - 
+  - retrieve invoices
+  GET /api/
+
+  - add new invoice
+  POST
+
+  - remove an invoice
+  DELETE /api/invoice + auth + invoiceId
+

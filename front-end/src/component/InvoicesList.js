@@ -54,7 +54,9 @@ class InvoicesList extends Component {
       });
       // this.clearMessage();
     } else {
-      const url = `/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+      // const url = `/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+      const url = `/api/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+
 
       try {
         const getInvoices = await axios.get( 
@@ -64,6 +66,7 @@ class InvoicesList extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
+console.log(".....................getInvoices:", getInvoices);
 
         if (getInvoices.data.allInvoices){
           this.setState({
@@ -79,7 +82,6 @@ class InvoicesList extends Component {
             tableVisibility   : false
           });
         }
-
 
       } catch(err) {
         this.setState({

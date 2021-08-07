@@ -15,11 +15,11 @@ const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
         // which means it uses .get_general
         url = `/api/clockin/?userToken=${userToken}&date=${moreArgs[0]}&type=${typeOfOperation}`;
         break;
-      case "toCompany":
-        // url = `/clockin/clockins/?userToken=${userToken}&dateStart=${moreArgs[0]}&dateEnd=${moreArgs[1]}&companyId=${moreArgs[2]}&queryLastInvoiceCode=${moreArgs[3]}&type=${typeOfOperation}`;
-        // get_general
-        url = `/api/clockin/?userToken=${userToken}&dateStart=${moreArgs[0]}&dateEnd=${moreArgs[1]}&companyId=${moreArgs[2]}&queryLastInvoiceCode=${moreArgs[3]}&type=${typeOfOperation}`;
-        break;
+      // case "toCompany":
+      //   // url = `/clockin/clockins/?userToken=${userToken}&dateStart=${moreArgs[0]}&dateEnd=${moreArgs[1]}&companyId=${moreArgs[2]}&queryLastInvoiceCode=${moreArgs[3]}&type=${typeOfOperation}`;
+      //   // get_general
+      //   url = `/api/clockin/?userToken=${userToken}&dateStart=${moreArgs[0]}&dateEnd=${moreArgs[1]}&companyId=${moreArgs[2]}&queryLastInvoiceCode=${moreArgs[3]}&type=${typeOfOperation}`;
+      //   break;
       case "invoiceClockins":
         // url = `/clockin/clockins?userToken=${userToken}&invoiceId=${moreArgs[0]}&type=${typeOfOperation}`;
         // get_all

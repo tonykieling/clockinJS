@@ -21,6 +21,7 @@ const Clockin   = require("../models/clockin.js");
  * @returns
  */
 const get_all = async (req, res) => {
+  ///////////// migration is doneit 
 console.log("GET_ALL Invoices");
   const userAdmin = req.userData.admin;
   const userId    = req.userData.userId;
@@ -114,6 +115,7 @@ list of actions:
  - write down the invoice_id in each clockin
 */
 const invoice_add = async (req, res) => {
+  ////////////// migration doing
 console.log("inside invoice_add");
 
   const {
@@ -490,6 +492,7 @@ const invoice_edit = async (req, res) => {
 
 // FIRST it needs to check whether the user is admin or the clockin belongs to the user which is proceeding
 const invoice_delete = async (req, res) => {
+  //////// migration done
   const invoiceId = req.params.invoiceId;
 
   try {
