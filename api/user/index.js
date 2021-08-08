@@ -216,7 +216,6 @@ module.exports = async (req, res) => {
   "use strict";
   const { method }  = req;
   const whatToDo = req.body ? req.body.whatToDo : undefined;
-  console.log(" user/index.js");
   
   try {
     await mongoose.connect(process.env.DB, { 
@@ -229,7 +228,6 @@ module.exports = async (req, res) => {
 
           try {
             const { code } = req.query;
-console.log("code", code);
 
             if (!code)
               throw({localError: "Error: No user has been found."});
@@ -280,7 +278,7 @@ console.log("code", code);
           try {
             const user = await User
               .findOne({ email });
-console.log("logging user:", user.name);
+
             if (!user || user.length < 1)
               res.status(200).json({ 
                 error: "ELIN01: Authentication has failed"
@@ -429,7 +427,6 @@ console.log("logging user:", user.name);
                   throw({localError: "EFP01: Error in recording code."});
       
                 } catch(error) {
-                  console.log("Error EFP02: ", error);
                   throw(error || "EFP02: Error in recording code");
                 }
                 
@@ -445,7 +442,6 @@ console.log("logging user:", user.name);
               });
 
           } catch(error) {  // system answer if there is an error
-            console.log("Error: ", error);
             res.status(200).json({
               error: (error.localError || "Error: EFP03 - Please, try again later.")
             });
@@ -540,7 +536,6 @@ console.log("logging user:", user.name);
             } else throw({localError: "Error URP03: Hash issues"});
 
           } catch(error) {
-            console.log("Error: URP04===>>>", error);
             return res.status(200).json({
               error: (error.localError || "Error URP04: general error")
             });
@@ -619,7 +614,6 @@ console.log("logging user:", user.name);
         break;
       
       default:
-        console.log("user.js DEFAULT!!!!");
         res.setHeader("Allow", ["GET", "POST", "PATCH", "DELETE"]);
         res.status(405).end(`Method ${method} Not Allowed`);
     }
@@ -627,10 +621,16 @@ console.log("logging user:", user.name);
     // console.log("........disconnecting............");
     await mongoose.disconnect();
   } catch (err) {
-    console.log("error on MongoDB connection");
-    console.log(err.message);
+    // console.log(err.message);
+    res.json({
+      error: (error.localError || error.message || error)
+    });
+  } finally {
+    // console.log("........disconnecting............");
+    await mongoose.disconnect();
   }
-
 };
+
+
 
 

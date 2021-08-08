@@ -38,18 +38,14 @@ function InvoiceModalDelete(props) {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${props.storeToken}` }
       });
-console.log(".............deleting invoice::", deleteInvoice);
-
 
       if (deleteInvoice.data.message) {
         setMessage(`Invoice ${props.invoiceCode} has been deleted`);
         setDeleted(true);
       } else {
-        console.log("ERROR is present")
         setMessage(deleteInvoice.data.error + "!!!");
       }
     } catch(err) {
-      console.log(err.message);
       setMessage(err.message);
     }
     setDone(true);

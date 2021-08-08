@@ -79,7 +79,6 @@ class PunchInsList extends Component {
           //   ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, this.state.company._id)
           //   : await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId)
           const pastClockins = await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId);
-console.log("pastClockins::", pastClockins);
 
           if (!pastClockins || pastClockins.error)
             // throw((!pastClockins && "No invoices at all.") || pastClockins.error);

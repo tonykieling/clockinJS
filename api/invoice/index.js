@@ -357,7 +357,6 @@ const Invoice = mongoose.model("Invoice", mongoose.Schema({
 
 
 const checkUserFunction = async(id) => {
-  // console.log("inside USER CHECK, id:", id);
     try {
       const checkUser = await User
         .find({ _id: mongoose.Types.ObjectId(id) });
@@ -371,7 +370,6 @@ const checkUserFunction = async(id) => {
       });
 
     } catch(error) {
-      console.log("Error: ", error.message);
       return ({ error: error.localError || error.message || error});
     }
 }
@@ -526,34 +524,25 @@ const checkInvoiceCode = async (userId, clientId) => {
 
 module.exports = async (req, res) => {
   const { method }  = req;
-
-  console.log(" ########### inside /api/INVOICEEEEEEEEEEEEEE/index.js");
   
   try {
     await mongoose.connect(process.env.DB, { 
       useNewUrlParser: true,
       useUnifiedTopology: true })
 
-      // console.log("==> req.headers", req.headers);
-      // console.log("==> req.body", req.body);
-
 
     // here, it only validates the user by its token
       const token = req.headers.authorization.split(" ")[1];
-      // console.log("token=== ", token);
 
       const checkUser = await checkAuth(token);
-// console.log("checkUser==", checkUser);
+
       if (checkUser.localError) throw({localError: checkUser.localError});
 
       const userId = checkUser.userId;
-// console.log("userId", userId);
 
       switch (method) {
         case "GET":
           {
-            console.log(".................GET_ALL Invoices");
-
             const 
               clientId  = req.query.clientId,
               dateStart = new Date(req.query.dateStart || "2000-03-01T09:00:00.000Z"),
@@ -571,7 +560,6 @@ module.exports = async (req, res) => {
                   })
                   // .select(" date date_start date_end notes total_cad status code")
                   .sort({date: 1});
-console.log("..........allInvoices", allInvoices);
 
               if (!allInvoices || allInvoices.length < 1) {
                 res.status(200).json({
@@ -586,7 +574,6 @@ console.log("..........allInvoices", allInvoices);
               }
 
             } catch(err) {
-              console.log("Error => ", err.message);
               throw ({ localError: "EIGA01: Something got wrong."});
             }
 
@@ -596,8 +583,6 @@ console.log("..........allInvoices", allInvoices);
 
         case "POST":
           {
-            console.log(".............inside invoice_add");
-
             const {
               dateStart,
               dateEnd,
@@ -607,10 +592,8 @@ console.log("..........allInvoices", allInvoices);
               code,
               clockinArray
             } = req.body;
-            
-            console.log("............req,body", req.body);
 
-            const date = req.body.date ? new Date(req.body.date) : new Date();
+            const date = (req.body.date ? (new Date(req.body.date)) : (new Date()));
 
             // it checks whether user is OK and grab info about them which will be used later
             const temp_user   = await checkUserFunction(userId);
@@ -637,13 +620,12 @@ console.log("..........allInvoices", allInvoices);
                   client_id : clientId,
                   code
                 });
-              
+
               if (checkInvoiceCode.length && checkInvoiceCode.length > 0)
                 throw({ localError: "This code is already been used in other invoice for this client."});
               
             } catch(error) {
-              console.log("Error checking InvoiceCode", error);
-              throw({ localError: "Error EIADD07"});
+              throw({ localError: error.localError || "Error EIADD07: SOmething bad with invoice code."});
             }
 
             let clockins = clockinArray || "";
@@ -693,7 +675,7 @@ console.log("..........allInvoices", allInvoices);
               });
 
               await newInvoice.save();
-console.log("...............newInvoice:", newInvoice);
+
               // this is the old way.
               // PROS: it would be possible to change the rate in the middle of a period because each day has a time and a total cad
               // CONS: doing each day, it rounds the total cad at the end of a period.
@@ -763,14 +745,102 @@ console.log("...............newInvoice:", newInvoice);
         case "PATCH":
           {
 
+            // PATCH modify_status
+            const { flag } = req.body;
+
+            const invoiceId  = req.query.invoiceId;
+            
+              // this try is for check is the invoiceId passed from the frontend is alright (exists in database), plus
+              //  check whether either the invoice to be changed belongs for the user or the user is admin - if not, not allowed to change invoice's data
+              let invoice = "";
+              try {
+                invoice = await Invoice
+                  .findById(invoiceId);
+
+                if (!invoice)
+                  throw ({ localError: `Invoice <id: ${invoice.code}> does not exist.` });
+                  
+                if ((userId != invoice.user_id) && !userAdmin)
+                  throw({ localError: `Invoice <id: ${invoice.code}> belongs to another user.` });
+            
+              } catch(error) {
+                throw({ localError: (
+                  (invoiceId.length !== 24) 
+                    ? "InvoiceId mystyped." 
+                    : (error.localError || "EIMS: Something got wrong.")) });
+              }
+
+              try {
+                let invoiceToBeChanged;
+                
+                if (flag === "modify_status") {
+                  const status = req.body.newStatus;
+
+                  invoiceToBeChanged = (req.body.dateDelivered
+                    ?
+                      await Invoice
+                        .updateOne(
+                          {
+                            _id: invoiceId
+                          }, 
+                          {
+                            $set: {
+                              status,
+                              date_delivered: req.body.dateDelivered
+                            }
+                        })
+                    :
+                      await Invoice
+                        .updateOne(
+                          {
+                            _id: invoiceId
+                          }, {
+                            $set: {
+                              status,
+                              date_received: req.body.dateReceived
+                            }
+                          })
+                  );
+                } else if (flag === "invoice_edit") {
+                  const {
+                    code,
+                    cad_adjustment,
+                    reason_adjustment
+                  } = req.body;
+            
+                  
+                  invoiceToBeChanged = await Invoice
+                    .updateOne({
+                      _id: invoiceId
+                    }, {
+                      $set: {
+                          code,
+                          cad_adjustment,
+                          reason_adjustment,
+                      }
+                    });
+                }
+            
+                if (invoiceToBeChanged.nModified) {
+                  res.json({
+                    message: `Invoice <${invoice.code}> has been modified.`
+                  });
+                } else {
+                  res.json({
+                    message: `Invoice <${invoice.code}> not changed.`
+                  });
+                }
+              } catch(error) {
+                console.trace("Error: ", error.message || error);
+                throw({ localError: error.localError || "ECM02: Something bad happened. Try again later."});
+              }
+
             break;
           }
           
         case "DELETE":
           {
-console.log("....................delete invoice");
             const invoiceId = req.query.invoiceId;
-console.log("............invoiceId::", invoiceId);
 
             try {
               await Invoice

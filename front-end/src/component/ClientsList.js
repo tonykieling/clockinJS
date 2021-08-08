@@ -200,7 +200,6 @@ class ClientsList extends Component {
 
       // const url = `https://clockinjs.herokuapp.com/client/${data.clientId}`;
       const url = "/api/client";
-console.log("sending data:", data);
 
       try {
         const newClientData = await axios.patch( 
@@ -211,7 +210,7 @@ console.log("sending data:", data);
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-console.log("newClientData", newClientData);
+
         if (newClientData.data.message) {
           if (newClientData.data.newData)
             this.setState({

@@ -187,6 +187,7 @@ function SignUp(props) {
             content   :  err,
             cssClass  : "messageFailure"
           });
+          
           setdisableForm(false);
         }
       }

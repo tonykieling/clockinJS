@@ -50,7 +50,7 @@ function PunchInModal(props) {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${props.storeToken}` }
       });
-console.log("::::::deleteClockin:", deleteClockin);
+
       if (deleteClockin.data.error)
         throw (deleteClockin.data.error);
       else {
@@ -62,7 +62,6 @@ console.log("::::::deleteClockin:", deleteClockin);
         }, 2500);
       }
     } catch(err) {
-      console.log(err);
       setClassNameMessage("messageFailure"); 
       setMessage(err);
     }

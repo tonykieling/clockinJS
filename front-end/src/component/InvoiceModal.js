@@ -85,17 +85,6 @@ class InvoiceModal extends Component {
   }
 
 
-
-  clearMessage = () => {
-    setTimeout(() => {
-      this.setState({
-        message     : "",
-        invoiceCode : ""
-      });
-    }, 3500);
-  }
-
-
   updateInvoice = (status, date) => {
     if (status === "Delivered")
       this.setState({
@@ -130,6 +119,9 @@ class InvoiceModal extends Component {
       // const url = `/clockin/clockins?invoiceId=${invoiceId}&type=invoiceClockins`;
       
       try {
+        this.setState({
+
+        });
         const pastClockins = await getClockins(userToken, typeOfQuestion, invoiceId);
 
         if (pastClockins.error)
@@ -467,6 +459,14 @@ class InvoiceModal extends Component {
           </Card.Body>
         </Card>
 
+        
+        {!this.state.tableVisibility &&
+          <Card>
+            <Card.Footer className= "messageSuccess">
+              Processing...
+            </Card.Footer>
+          </Card>
+        }
 
 
         {this.state.tableVisibility 
@@ -493,18 +493,20 @@ class InvoiceModal extends Component {
             </Card>
           :
             <Card>
-              <Card.Title>
+              <Card.Footer>
                 { this.state.message }
-              </Card.Title>
+              </Card.Footer>
             </Card>
         }
 
-        <Button
-          variant = "primary"
-          onClick = { this.backToThePrevious }
-        >
-          Close Window
-        </Button>
+        { (this.state.tableVisibility || this.state.message) &&
+          <Button
+            variant = "primary"
+            onClick = { this.backToThePrevious }
+          >
+            Close Window
+          </Button>
+        }
 
 
 

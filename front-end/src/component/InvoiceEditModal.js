@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { connect } from "react-redux";
 import { Modal, Card, Button, ButtonGroup, Form, Row, Col } from "react-bootstrap";
@@ -25,6 +25,7 @@ import { show } from "./aux/formatDate.js";
 
 
 function InvoiceEditModal(props) {
+
   const [showEditInvoice, setShowEditInvoice] = useState(props.showEditInvoiceModal);
 
   const handleClose = () => {
@@ -55,7 +56,7 @@ function InvoiceEditModal(props) {
     if ((invoiceCode === newInvoiceCode) && (receivedAmount === newReceivedAmount) && (reason === newReason)) {
       setClassNameMessage("messageFailure");
       setMessage("Nothing to be changed");
-      setNewReason("");
+      // setNewReason("");
     } else {
       if (newInvoiceCode === "") {
         setClassNameMessage("messageFailure");
@@ -71,16 +72,22 @@ function InvoiceEditModal(props) {
         setClassNameMessage("messageFailure");
         setMessage("'Received $' has to be a number.");
       } else {
+
+        setMessage("Processing...");
+        setClassNameMessage("messageSuccess");
+
         const data = {
-          invoiceId         : props.invoice._id,
+          // invoiceId         : props.invoice._id,
           code              : newInvoiceCode,
           cad_adjustment    : newReceivedAmount,
-          reason_adjustment : newReason
+          reason_adjustment : newReason,
+          flag              : "invoice_edit"
         };
 
 
         // perform the action to send data to be recorded bu the server
-        const url = `/invoice/edit`;
+        // const url = `/invoice/edit`;
+        const url = `/api/invoice/?invoiceId=${props.invoice._id}`;
 
         try {
           const updateInvoice = await axios.patch( 
@@ -90,36 +97,28 @@ function InvoiceEditModal(props) {
               headers: { 
                 "Content-Type": "application/json",
                 "Authorization" : `Bearer ${props.storeToken}` },
-            
           });
   
           if (updateInvoice.data.message){
             setClassNameMessage("messageSuccess");
-            setMessage("Invoice has been modified");
+            setMessage(updateInvoice.data.message);
             setChanges(true);
           } else {
-            console.log("something wrong!!");
             setClassNameMessage("messageFailure");
             setMessage(updateInvoice.data.error);
           }
         } catch(err) {
-          console.log("ERRRRRRRRRRRRRRRRR");
           setClassNameMessage("messageFailure");
           setMessage(err.message);
         }
       }
     }
 
-    clearMessage();
   }
 
-
-  const clearMessage = () => {
-    setTimeout(() => {
-      setClassNameMessage("");
-      setMessage("");
-    }, 3000);
-  }
+  useEffect(() => {
+    setMessage("");
+  }, [newInvoiceCode, newReceivedAmount, newReason]);
 
 
   return (

@@ -45,11 +45,17 @@
 
 # INVOICE 
   - retrieve invoices
-  GET /api/
+  GET /api/invoice
 
   - add new invoice
-  POST
+  POST /api/invoice
 
   - remove an invoice
   DELETE /api/invoice + auth + invoiceId
+
+  - edit invoice
+  PATCH
+
+  - edit invoice status
+  PATCH
 

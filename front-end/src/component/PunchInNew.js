@@ -132,7 +132,6 @@ class PunchInNew extends Component {
       endingBreak   : this.state.endingBreak || undefined,
       companyId     : this.state.client.linked_company || undefined
     };
-console.log("data to be sent:", data);
 
     if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak)
       !this.state.validBreak ? this.checkBreakIsValid(event) : this.messageValidationMethod();
@@ -157,7 +156,7 @@ console.log("data to be sent:", data);
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-console.log("addClockin", addClockin);
+
         if (addClockin.data.message) {
           this.setState({
             message           : `Punched in!`,

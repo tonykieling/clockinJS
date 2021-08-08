@@ -59,6 +59,11 @@ class InvoicesList extends Component {
 
 
       try {
+        this.setState({
+          message           : "Processing...",
+          classNameMessage  : "messageSuccess"
+        });
+
         const getInvoices = await axios.get( 
           url,
           {  
@@ -66,14 +71,14 @@ class InvoicesList extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-console.log(".....................getInvoices:", getInvoices);
 
         if (getInvoices.data.allInvoices){
           this.setState({
             invoiceList       : getInvoices.data.allInvoices,
             invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
             tableVisibility   : true,
-            clientId
+            message           : "",
+            clientId,
           });
         } else {
           this.setState({
@@ -286,7 +291,7 @@ renderDataTable = (invoices) => {
             closeModal        = { this.closeModal }
             updateScreen      = { this.updateScreen }
             openInvoiceModal  = { this.state.openInvoiceModal }
-            // changeInvoiceData = { data => this.updateInvoiceData(data)}
+            changeInvoiceData = { data => this.updateInvoiceData(data)}
             storeToken        = { this.props.storeToken}
          />
         : "" }

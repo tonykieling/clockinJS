@@ -357,7 +357,6 @@ const Invoice = mongoose.model("Invoice", mongoose.Schema({
 
 
 const checkUserFunction = async(id) => {
-  // console.log("inside USER CHECK, id:", id);
     try {
       const checkUser = await User
         .find({ _id: mongoose.Types.ObjectId(id) });
@@ -371,7 +370,6 @@ const checkUserFunction = async(id) => {
       });
 
     } catch(error) {
-      console.log("Error: ", error.message);
       return ({ error: error.localError || error.message || error});
     }
 }
@@ -652,34 +650,25 @@ const checkInvoiceCode = async (userId, clientId) => {
 
 module.exports = async (req, res) => {
   const { method }  = req;
-
-  // console.log(" ########### inside /api/clockin/index.js");
   
   try {
     await mongoose.connect(process.env.DB, { 
       useNewUrlParser: true,
       useUnifiedTopology: true })
 
-      // console.log("==> req.headers", req.headers);
-      // console.log("==> req.body", req.body);
-
-
     // here, it only validates the user by its token
       const token = req.headers.authorization.split(" ")[1];
       // console.log("token=== ", token);
 
       const checkUser = await checkAuth(token);
-// console.log("checkUser==", checkUser);
+
       if (checkUser.localError) throw({localError: checkUser.localError});
 
       const userId = checkUser.userId;
-// console.log("userId", userId);
 
       switch (method) {
         case "GET":
           {
-            console.log("inside clockins get_all");
-
             const typeQuestion = req.query.type;
 
             const 
@@ -694,7 +683,6 @@ module.exports = async (req, res) => {
             let conditions = "";
             // when it is a simple query regarding one day
             if (typeQuestion === "byDate") {
-console.log("...............byDate - clockin GET");
               conditions = {
                 user_id : mongoose.Types.ObjectId(userId),
                 date    : {
@@ -725,12 +713,9 @@ console.log("...............byDate - clockin GET");
                   });
                 }
               } catch(error) {
-                // console.log("errrrrorrrrrr:", error);
-
                 throw({ localError: error.message || error});
               }
             } else if (typeQuestion === "invoiceClockins") {
-console.log("..................invoiceCLoclins clockin GET");
               const invoiceId = req.query.invoiceId;
               conditions = {
                 invoice_id  : mongoose.Types.ObjectId(invoiceId)
@@ -798,7 +783,6 @@ console.log("..................invoiceCLoclins clockin GET");
               }
 
             } else {
-console.log("..........another way clockin  GET");
               conditions = {
                   user_id   : mongoose.Types.ObjectId(userId),
                   date      : {
@@ -864,12 +848,9 @@ console.log("..........another way clockin  GET");
                       }
                     ])
                     .sort({date: 1});
-              // console.log("-----allClockins", allClockins);
+
                 if (!allClockins || allClockins.length < 1) {
                   throw({ localError: "No clockins at all."});
-                  // return res.status(200).json({
-                  //   error: `No clockins at all.`
-                  // });
                 }
 
 
@@ -882,7 +863,6 @@ console.log("..........another way clockin  GET");
                  *  */
                 // const codeSuggestion = allClockins.length && await checkInvoiceCode(allClockins);
                 const codeSuggestion = req.query.queryLastInvoiceCode ? await checkInvoiceCode(userId, clientId) : null;
-            // console.log("----codeSuggestion", codeSuggestion);
 
                 if (clientId) {
                   const client = await Client
@@ -905,7 +885,6 @@ console.log("..........another way clockin  GET");
                 });
               
               } catch(error) {
-                // console.log("Error => ", error);
                 throw({ localError: error.localError || "EACK02: Something's got wrong." });
               }
             }
@@ -1004,8 +983,6 @@ console.log("..........another way clockin  GET");
 
         case "DELETE":
           {
-            console.log("inside CLOCKIN DELETE");
-            console.log("req.body", req.body);
             const clockinId = req.body.clockinId;
 
             try {
@@ -1028,7 +1005,6 @@ console.log("..........another way clockin  GET");
           }
         
         default:
-          // console.log("user.js DEFAULT!!!!");
           res.setHeader("Allow", ["GET", "POST", "PATCH", "DELETE"]);
           res.status(405).end(`Method ${method} Not Allowed`);
       }

@@ -177,7 +177,7 @@ class KidClientNew extends Component {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-console.log("addClient", addClient);
+
         if (addClient.data.message) {
           this.setState({
             message     : <p>Client <b>{this.state.nickname}</b> has been created.</p>,
@@ -191,8 +191,6 @@ console.log("addClient", addClient);
         }
           
       } catch(error) {
-console.log("error:::", error.name, error.message, JSON.stringify(error));
-
         this.setState({
           message     : error.message || error,
           className   : "messageFailure",

@@ -11,6 +11,7 @@ class Login extends Component {
       password  : "",
       errorMsg  : "",
       disable   : false,
+      classNameMessage: "",
 
       forgetPasswordModal: false
     }
@@ -43,9 +44,14 @@ class Login extends Component {
           disable: true
         });
 
+        this.setState({
+          disable   : true,
+          errorMsg  : "Processing...",
+          classNameMessage: "messageSuccess",
+        });
+
         const url = "/api/user";
         // const url = "https://clockinjs.herokuapp.com/user/login";
-console.log("url::::", url);
 
         try {
           const login = await axios.post(
@@ -56,7 +62,6 @@ console.log("url::::", url);
               password  : this.state.password,
             }
           );
-console.log("===login", login);
 
           const answer = login.data;
 
@@ -71,14 +76,15 @@ console.log("===login", login);
               errorMsg  : answer.error,
               email     : "",
               password  : "",
-              disable   : false
+              disable   : false,
+              classNameMessage: "messageFailure"
             });
           }
         } catch(error) {
-          console.error(error);
           this.setState({
-            errorMsg: error.message,
-            disable : false
+            disable   : false,
+            errorMsg  : error.message,
+            classNameMessage: "messageFailure"
           });
         }
       }
@@ -164,7 +170,7 @@ console.log("===login", login);
               : ""
             }
             
-            <Card.Footer className= "messageFailure">
+            <Card.Footer className= { this.state.classNameMessage }>
               { this.state.errorMsg
                 ? this.state.errorMsg
                 : <br /> }

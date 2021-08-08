@@ -44,9 +44,6 @@ const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
         }
       );
 
-console.log("past clockinsss url::", url, "and:", clockins);
-
-
       if (clockins.data.error)
         throw(clockins.data.error);
 

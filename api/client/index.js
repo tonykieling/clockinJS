@@ -177,7 +177,6 @@ const checkAuth = async (token) => {
     return decodedToken;
 
   } catch(error) {
-    console.log("Error tokennnnn: ", error);   // too big message. It's better without it due to avoid polluting the screen.
     return ({
       localError: ((error.localError) || "Error ECA02: Auth has failed. Middleware")
     });
@@ -187,8 +186,6 @@ const checkAuth = async (token) => {
 
 module.exports = async (req, res) => {
   const { method }  = req;
-
-  console.log(" ########### inside /api/client/index.js");
   
   try {
     await mongoose.connect(process.env.DB, { 
@@ -318,31 +315,29 @@ module.exports = async (req, res) => {
                   // rateAsPerCompany
               } = req.body;
 
-console.log("===req.body", req.body);
             // const userId = checkUser.userId
             const birthday = (new Date(req.body.birthday).getTime()) ? new Date(req.body.birthday) : undefined;
           
             try {
               const clientExistName = await Client
                 .find({ name });
-    console.log("----- name:", clientExistName);
+
               const clientExistNickname = 
                 typeKid 
                   ? await Client
                     .find({ nickname }) 
                   : null;
-    console.log("----- nickName:", clientExistNickname);
+
               if (clientExistName.length > 0)
                 throw ({ localError: `Client <name: ${name}> already exists.` });
                 // throw new Error(`Client <name: ${name}> already exists.`); // this would be best because it is a pattern
                 // but I should keep consistency and the way I've been using works, too.
-console.log("req.body.typeKid", req.body.typeKid);
+
               if (req.body.typeKid && clientExistNickname.length > 0)
                 throw ({ localError: `Client <nickname: ${nickname}> already exists.` });
 
           
             } catch(error) {
-              console.log("351 Error: ", error);
               throw ({ localError: error.localError || error.message || error });
             }
           
@@ -413,7 +408,6 @@ console.log("req.body.typeKid", req.body.typeKid);
             });
 
           } catch(error) {
-            console.log("Error ECAD02: ", error);
             throw ({ localError: (error.localError || "ECAD02: Something wrong with client's data.") });
           };
 
@@ -564,7 +558,6 @@ console.log("req.body.typeKid", req.body.typeKid);
                 });
           
             } catch(error) {
-              console.log("Error CM04: ", error);
               throw({ localError: "Error CM04: Somethiong happened, please try again later"});
             }
 
@@ -573,18 +566,17 @@ console.log("req.body.typeKid", req.body.typeKid);
 
 
       default:
-        console.log("user.js DEFAULT!!!!");
         res.setHeader("Allow", ["GET", "POST", "PATCH", "DELETE"]);
         res.status(405).end(`Method ${method} Not Allowed`);
     }
 
   } catch (error) {
-    console.log("most upper level - errorrrrrrrrrrrrrrr: ", error);
+    // console.log("most upper level - errorrrrrrrrrrrrrrr: ", error);
     res.json({
       error: (error.localError || error.message || error)
     });
   } finally {
-    console.log("........disconnecting............");
+    // console.log("........disconnecting............");
     await mongoose.disconnect();
   }
 

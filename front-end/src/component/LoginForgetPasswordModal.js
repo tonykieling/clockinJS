@@ -99,7 +99,6 @@ class ForgetPasswordModal extends Component {
             email: this.state.emailFP
           }
         );
-console.log("  forgetPassword", forgetPassword);
 
         if (forgetPassword.data.message){
           this.setState({

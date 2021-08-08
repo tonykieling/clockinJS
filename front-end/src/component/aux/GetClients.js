@@ -16,7 +16,6 @@ function GetClients(props) {
   const [processingMessage, setProcessingMessage] = useState("Processing...");
 
   useEffect(() => {
-    console.log("updating button");
     getClientsFunction();
     // eslint-disable-next-line
   }, [props.updateButton]);
@@ -49,7 +48,7 @@ function GetClients(props) {
           }
         },
       );
-console.log(" **********getClients:: ", getClients);
+
       setProcessingMessage("");
 
       if (getClients.data.count) {
