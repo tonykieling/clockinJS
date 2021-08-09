@@ -193,11 +193,6 @@ class ClientsList extends Component {
       // data.showRate = this.state.showRate;
       // data.showNotes = this.state.showNotes;
 
-        // company         : this.state.tmp_linkClientToCompany && this.state.company,
-        // linkedCompany   : this.state.company ? this.state.company._id : undefined,
-        // rateAsPerCompany: ((this.state.rateAsPerCompany === "true") ? true : false )
-      // };
-
       // const url = `https://clockinjs.herokuapp.com/client/${data.clientId}`;
       const url = "/api/client";
 
@@ -240,14 +235,11 @@ class ClientsList extends Component {
               updateButton    : !this.state.updateButton,
               
               inactive        : newClientData.data.newData.inactive || "",
-              // sureCompany     : false,
-              // linkClientToCompany : this.state.company || false
             });
           else
             this.setState({
               message   : newClientData.data.message,
-              className : "messageSuccess",
-              // linkClientToCompany : this.state.company || false
+              className : "messageSuccess"
             });        
         } else if (newClientData.data.error)
           this.setState({
@@ -268,7 +260,6 @@ class ClientsList extends Component {
 
       // this.clearMessage();
     }
-
   }
 
 

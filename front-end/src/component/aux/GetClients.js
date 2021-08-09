@@ -20,11 +20,24 @@ function GetClients(props) {
     // eslint-disable-next-line
   }, [props.updateButton]);
   
+
+  useEffect(() => {
+    if (clients) {
+      populateDropbox();
+
+      if (Object.keys(props.client).length) {
+        const incommingClient = clients.filter(e => (e._id === props.client._id));
+        props.getClientInfo(incommingClient[0]);
+      }
+    }
+    // eslint-disable-next-line
+  }, [clients]);
+  
   
   const logout = () => {
     props.noUser();
-    setgoLand(true);
     setshowModal(false);
+    setgoLand(true);
   };
 
 
@@ -65,12 +78,16 @@ function GetClients(props) {
         // do not recall backend method to all clients such ass clockins for all clients
         //
         //
-        //
-        //
-        //
-        //
+
         const resultedArray = [...sortedArray];
-        setclients(resultedArray);
+
+        if (props.bringAllClients)
+          setclients(resultedArray);
+        else {
+          const result = resultedArray.filter(e => !e.inactive);
+
+          setclients(result);
+        }
 
       } else if (getClients.data.error) {
         //call message modal to say the user needs to login again and redirect to /land
@@ -86,9 +103,8 @@ function GetClients(props) {
     return(
           <DropdownButton
             id        = "dropdown-basic"
-            disabled  = { props.onlyOneClient}
-            // variant   = { props.invoiceFlag || props.notKidFlag ? "info" : "success"}
-            variant   = { "success" }
+            // disabled  = { props.onlyOneClient}
+            variant   = { props.bringAllClients ? "success" : "info"}
             // title     = {(props.companyId && clients.filter(e => (e._id === props.companyId))[0].name)
             //   || (props.client && (props.client.nickname || props.client.name)) 
             //   ||  (props.notKidFlag
@@ -101,13 +117,13 @@ function GetClients(props) {
           >
             <React.Fragment>
               {clients.map( (client, id) =>
-                  <Dropdown.Item 
-                  key = { id } 
-                  onClick = { e => changes(e, client) }
-                  // data-client = { JSON.stringify(client) }
-                  name = { client.name }
-                  > { client.nickname || client.name } 
-                  </Dropdown.Item>
+                <Dropdown.Item 
+                key = { id } 
+                onClick = { e => changes(e, client) }
+                // data-client = { JSON.stringify(client) }
+                name = { client.name }
+                > { client.nickname || client.name } 
+                </Dropdown.Item>
               )}
             </React.Fragment>
           </DropdownButton>
@@ -117,12 +133,11 @@ function GetClients(props) {
 
   const changes = (event, incommingClient) => {
     event.preventDefault();
-    props.clientListFlag ? props.getCompanyInfo(incommingClient) : props.getClientInfo(incommingClient);
+    props.getClientInfo(incommingClient);
   }
 
 
   const message = () => {
-    // const text = processingMessage || errorMsg || (props.notKidFlag && "No company at this time") || "No clients at all";
     const text = processingMessage || errorMsg || "No clients at all";
 
     return (

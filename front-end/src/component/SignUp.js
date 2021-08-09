@@ -186,16 +186,17 @@ function SignUp(props) {
           setmessage({
             content   :  err,
             cssClass  : "messageFailure"
-          });
-          
-          setdisableForm(false);
+          });  
         }
+
+        setdisableForm(false);
       }
     } else {
       setmessage({
         content   :  "Please, entry at least Name, Email, Password and Confirm Password",
         cssClass  : "messageFailure"
       });
+      
       refTop.current.scrollIntoView({ behavior: "smooth" });
       state.name ? refEmail.current.focus() : refName.current.focus();
       setdisableForm(false);

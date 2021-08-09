@@ -130,7 +130,7 @@ class PunchInNew extends Component {
       clientId      : this.state.client._id,
       startingBreak : this.state.startingBreak || undefined,
       endingBreak   : this.state.endingBreak || undefined,
-      companyId     : this.state.client.linked_company || undefined
+      // companyId     : this.state.client.linked_company || undefined
     };
 
     if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak)
@@ -144,9 +144,9 @@ class PunchInNew extends Component {
       });
 
     else {
-      // const url = "/clockin";
-
+      // const url = "https://clockinjs.herokuapp.com/clockin";
       const url = "/api/clockin";
+
       try {
         const addClockin = await axios.post( 
           url,
@@ -306,7 +306,7 @@ class PunchInNew extends Component {
               <GetClients 
                 client        = { this.state.client }
                 getClientInfo = { this.getClientInfo } 
-                punchinFlag   = { true }
+                // punchinFlag   = { true }
               />
                 
             </div>

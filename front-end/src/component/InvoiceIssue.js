@@ -176,7 +176,6 @@ renderDataTable = (invoices) => {
                 client            = { this.state.client }
                 getClientInfo     = { this.getClientInfo } 
                 askInvoiceSample  = { true }
-                company           = { true}
               />
             </div>
 

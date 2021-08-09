@@ -443,7 +443,7 @@ class InvoiceNew extends Component {
                 // client        = { this.state.client || this.state.company }
                 client        = { this.state.client }
                 getClientInfo = { this.getClientInfo }
-                invoiceFlag   = { true }
+                // invoiceFlag   = { true }
               /> { /**
                * mount the Dropbox Button with all clients for the user
                * * invoice generation is not available for clients linked to a compnay, only for that company.
