@@ -36,20 +36,43 @@ need to confirm which methods are being used: get, post, delete and patch? Yeah!
 
   - when punchin, the list of clockins for that day must show client, rn is not showing that
     PunchinNew.js
+    need to send the client name, not just client_id
+  FIXED: clockin query "byDate"
 
   - "Processing..." to punchin
     PunchinNew.js
+  DONE
 
   - "Processing..." to punchinlist
     PunchinsList.js
+  DONE
 
-  - "Processing..." when delete punchin
+  - "Processing..." when deleting punchin
     PunchInModal.js
+  DONE
+
+  - check clockins get_all
+
+  - what to do in this case???
+  InvoiceIssue.js
+
+  - "Getting clockins..." & disable button & hide table
+    invoiceNew.js
+  DONE
 
   tests:
     - signup
     - change password
     - forget password
     - change user data
-    
+    - punchin
+    - list punchins
+    - delete punchin
+    - generate invoice
+    - list invoices
+    - change invoice status
+    - delete invoice
+    - list punchins
+    - edit invoice
+change all references pointing to heroku, such as emails and README.md    
 

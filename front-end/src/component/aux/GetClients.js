@@ -43,10 +43,10 @@ function GetClients(props) {
 
   const getClientsFunction = async () => {
         
-    setProcessingMessage("Processing...");
+    setProcessingMessage("Getting Client's List...");
 
-    const url = "/api/client";
     // const url = "https://clockinjs.herokuapp.com/client";
+    const url = "/api/client";
 
     const askInvoiceSample = props.askInvoiceSample || false;
 

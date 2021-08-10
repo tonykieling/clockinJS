@@ -37,9 +37,13 @@ function PunchInModal(props) {
   const yesDelete = async () => {
     setOpenModal(false);
     // const url = `/clockin`;
+    // const url = "https://clockinjs.herokuapp.com/clockin";
     const url = "/api/clockin";
 
     try {
+      setClassNameMessage("messageSuccess");
+      setMessage("Deleting...");
+
       const deleteClockin = await axios.delete( 
         url,
         {
@@ -50,11 +54,12 @@ function PunchInModal(props) {
             "Content-Type": "application/json",
             "Authorization" : `Bearer ${props.storeToken}` }
       });
+console.log("===deleteClockin", deleteClockin);
 
       if (deleteClockin.data.error)
         throw (deleteClockin.data.error);
+
       else {
-        setClassNameMessage("messageSuccess");
         setMessage("Clocking has been deleted.");
         setTimeout(() => {
           props.deleteClockin(props.clockinData.id);

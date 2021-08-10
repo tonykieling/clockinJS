@@ -48,8 +48,8 @@ class InvoiceNew extends Component {
       messageInvoice    : "",
       disableInvGenBtn  : false,
       codeMessage       : "",
-      lastUsedCode      : ""
-      // company           : ""
+      lastUsedCode      : "",
+      disableGetBt      : false
     }
   };
 
@@ -92,11 +92,17 @@ class InvoiceNew extends Component {
         clientId              = this.state.clientId,
         queryLastInvoiceCode  = true;
 
-      // const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}&queryLastInvoiceCode=${queryLastInvoiceCode}`;
-
         // const pastClockins  = this.state.company
         //   ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, clientId, queryLastInvoiceCode)
         //   : 
+
+      this.setState({
+        message           : "Getting clockins...",
+        classNameMessage  : "messageSuccess",
+        tableVisibility   : false,
+        disableGetBt      : true
+      });
+
       const pastClockins = await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId, queryLastInvoiceCode);
 
         if (pastClockins.error)
@@ -165,7 +171,9 @@ class InvoiceNew extends Component {
       // this.clearMessage();
     }
 
-    // this.clearMessage();
+    this.setState({
+      disableGetBt : false
+    });
   }
 
 
@@ -241,7 +249,7 @@ class InvoiceNew extends Component {
               clockInListTable        : this.renderDataTable(newClockinTable)
             });
 
-            this.clearMessage();
+            // this.clearMessage();
 
           } else
             throw (invoice.data.error || "Sorry, something bad has happened.");
@@ -491,6 +499,7 @@ class InvoiceNew extends Component {
                   variant   = "primary" 
                   type      = "submit"
                   onClick   = { this.handleGetClockins } 
+                  disabled  = { this.state.disableGetBt }
                   ref       = {input => this.getClockinsBtn = input }  
                 >
                   Get Clockins

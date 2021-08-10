@@ -92,7 +92,9 @@ class PunchInNew extends Component {
 
   formatClockinsTable = (clockins) => {
     return clockins.map((clockin, index) => {
+console.log("clockin=", clockin);
       const clockinsToSend = renderClockinDataTable(clockin, index);
+console.log("clockinsToSend=", clockinsToSend);
         return (
           <tr key={clockinsToSend.num} >
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
@@ -130,7 +132,6 @@ class PunchInNew extends Component {
       clientId      : this.state.client._id,
       startingBreak : this.state.startingBreak || undefined,
       endingBreak   : this.state.endingBreak || undefined,
-      // companyId     : this.state.client.linked_company || undefined
     };
 
     if ( !data.clientId || !data.date || !data.timeStart || !data.timeEnd || !data.rate || !this.state.validBreak)
@@ -144,6 +145,11 @@ class PunchInNew extends Component {
       });
 
     else {
+      this.setState({
+        message           : "Processing...",
+        classNameMessage  : "messageSuccess"
+      });
+
       // const url = "https://clockinjs.herokuapp.com/clockin";
       const url = "/api/clockin";
 
@@ -156,7 +162,7 @@ class PunchInNew extends Component {
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-
+console.log("===addClockin", addClockin);
         if (addClockin.data.message) {
           this.setState({
             message           : `Punched in!`,

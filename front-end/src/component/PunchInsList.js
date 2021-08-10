@@ -69,7 +69,9 @@ class PunchInsList extends Component {
         });
       else {
         this.setState({
-          disableButton: true
+          disableButton     : true,
+          classNameMessage  : "messageSuccess",
+          message           : "Processing..."
         });
 
         try {

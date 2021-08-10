@@ -189,9 +189,6 @@ class ClientsList extends Component {
       }
 
       data = {...data, ...additionalData};
-      // data.inactive = this.state.inactive;
-      // data.showRate = this.state.showRate;
-      // data.showNotes = this.state.showNotes;
 
       // const url = `https://clockinjs.herokuapp.com/client/${data.clientId}`;
       const url = "/api/client";

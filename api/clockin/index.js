@@ -698,8 +698,41 @@ module.exports = async (req, res) => {
                   .aggregate([
                     { $match: 
                       conditions
-                    }
-                  ]);
+                    },
+                    { $lookup: 
+                      {
+                        from: "clients",
+                        localField: "client_id",
+                        foreignField: "_id",
+                        as: "client"
+                      }
+                    },
+                    {
+                      $unwind: {
+                        path :'$client',
+                        preserveNullAndEmptyArrays: true
+                      }
+                    },
+                    {   
+                      $project:{
+                          // _id : 1,
+                          date            : 1,
+                          time_start      : 1,
+                          time_end        : 1,
+                          rate            : 1,
+                          notes           : 1,
+                          client_id       : 1,
+                          user_id         : 1,
+                          break_start     : 1,
+                          break_end       : 1,
+                          worked_hours    : 1,
+                          client_name     : "$client.name",
+                          client_nickname : "$client.nickname"
+                      } 
+                  }
+                  ])
+                  .sort({time_start: 1});
+
           // console.log("##########++++++++allclockins:", allClockins);
 
                 if (!allClockins.length) {
@@ -716,6 +749,7 @@ module.exports = async (req, res) => {
                 throw({ localError: error.message || error});
               }
             } else if (typeQuestion === "invoiceClockins") {
+
               const invoiceId = req.query.invoiceId;
               conditions = {
                 invoice_id  : mongoose.Types.ObjectId(invoiceId)
@@ -773,7 +807,8 @@ module.exports = async (req, res) => {
                   }
                   ])
                   .sort({ time_start: 1});
-          
+// console.log("##########++++++++   invoice/clockins  allclockins:", allClockins);
+
                 res.json({
                   count: allClockins.length,
                   allClockins
@@ -848,6 +883,7 @@ module.exports = async (req, res) => {
                       }
                     ])
                     .sort({date: 1});
+// console.log("222222 ##########++++++++   invoice/clockins  allclockins:", allClockins);
 
                 if (!allClockins || allClockins.length < 1) {
                   throw({ localError: "No clockins at all."});
