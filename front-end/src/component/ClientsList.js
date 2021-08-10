@@ -78,17 +78,17 @@ class ClientsList extends Component {
       tmp_showRate      : true,
       tmp_showNotes     : true,
 
-      company             : "",
-      linkClientToCompany : false,
-      rateAsPerCompany    : false,
-      disableRate         : false,
-      companyRate         : "",
-      sureCompany         : false,
+      // company             : "",
+      // linkClientToCompany : false,
+      // rateAsPerCompany    : false,
+      // disableRate         : false,
+      // companyRate         : "",
+      // sureCompany         : false,
 
       // updateDropDown      : false,
-      tmp_linkClientToCompany : "",
-      tmp_companyId           : "",
-      linkedCompany           : ""
+      // tmp_linkClientToCompany : "",
+      // tmp_companyId           : "",
+      // linkedCompany           : ""
     }
   }
 
@@ -113,6 +113,8 @@ class ClientsList extends Component {
   }
 
 
+
+  // this method updates client's data
   handleSubmit = async event => {
     event.preventDefault();
 
@@ -121,7 +123,8 @@ class ClientsList extends Component {
       nickname    = this.state.nickname ? this.state.nickname.trim() : false,
       defaultRate = this.state.defaultRate ? this.state.defaultRate.trim() : false;
 
-    if (!name || !defaultRate || (this.state.typeKid ? !nickname : false)) {
+      // if (!name || !defaultRate || (this.state.typeKid ? !nickname : false)) {
+    if (!name || !defaultRate || (this.state.typeKid && !nickname )) {
       if (!defaultRate) {
         this.setState({ messageControlDefaultRate: "Please inform the default rate($)."})
         this.textInput13.focus();
@@ -140,44 +143,56 @@ class ClientsList extends Component {
         this.textInput1.focus();
       }
     } else {
-      const data = { 
-        clientId      : this.state.clientId || undefined,
-        name,
-        default_rate  : defaultRate,
-        nickname      : this.state.typeKid ? nickname : undefined,
 
-        birthday      : this.state.birthday || undefined,
-        mother        : this.state.mother || (this.state.tmp_mother ? "" : undefined),
-        mPhone        : this.state.mPhone || (this.state.tmp_mPhone ? "" : undefined),
-        mEmail        : this.state.mEmail || (this.state.tmp_mEmail ? "" : undefined),
-        father        : this.state.father || (this.state.tmp_father ? "" : undefined),
-        fPhone        : this.state.fPhone || (this.state.tmp_fPhone ? "" : undefined),
-        fEmail        : this.state.fEmail || (this.state.tmp_fEmail ? "" : undefined),
-        consultant    : this.state.consultant || (this.state.tmp_consultant ? "" : undefined),
-        cPhone        : this.state.cPhone || (this.state.tmp_cPhone ? "" : undefined),
-        cEmail        : this.state.cEmail || (this.state.tmp_cEmail ? "" : undefined),
-        typeKid       : this.state.typeKid || undefined,
+      this.setState({
+        disableEditForm: true
+      });
 
-        email           : this.state.email || (this.state.tmp_email ? "" : undefined),
-        phone           : this.state.phone || (this.state.tmp_phone ? "" : undefined),
-        city            : this.state.city || (this.state.tmp_city ? "" : undefined),
-        address         : this.state.address || (this.state.tmp_address ? "" : undefined),
-        province        : this.state.province || (this.state.tmp_province ? "" : undefined),
-        postal_code     : this.state.postalCodeChange && !this.state.pcOutsideCanada
-                            ? this.state.postalCode.substr(0, 6).split(" ").join("") 
-                            : this.state.postalCode || undefined,
-        type_of_service : this.state.typeOfService || (this.state.tmp_typeOfService ? "" : undefined),
+      let data = (this.state.typeKid
+        ?
+          { 
+            // clientId      : this.state.clientId || undefined,
+            name,
+            default_rate  : defaultRate,
+            nickname      : this.state.typeKid ? nickname : undefined,
 
-        inactive        : this.state.inactive,
-        showRate        : this.state.showRate,
-        showNotes       : this.state.showNotes,
+            birthday      : this.state.birthday || undefined,
+            mother        : this.state.mother || (this.state.tmp_mother ? "" : undefined),
+            mPhone        : this.state.mPhone || (this.state.tmp_mPhone ? "" : undefined),
+            mEmail        : this.state.mEmail || (this.state.tmp_mEmail ? "" : undefined),
+            father        : this.state.father || (this.state.tmp_father ? "" : undefined),
+            fPhone        : this.state.fPhone || (this.state.tmp_fPhone ? "" : undefined),
+            fEmail        : this.state.fEmail || (this.state.tmp_fEmail ? "" : undefined),
+            consultant    : this.state.consultant || (this.state.tmp_consultant ? "" : undefined),
+            cPhone        : this.state.cPhone || (this.state.tmp_cPhone ? "" : undefined),
+            cEmail        : this.state.cEmail || (this.state.tmp_cEmail ? "" : undefined),
+            // typeKid       : this.state.typeKid || undefined,
+          }
+        : {
+            email           : this.state.email || (this.state.tmp_email ? "" : undefined),
+            phone           : this.state.phone || (this.state.tmp_phone ? "" : undefined),
+            city            : this.state.city || (this.state.tmp_city ? "" : undefined),
+            address         : this.state.address || (this.state.tmp_address ? "" : undefined),
+            province        : this.state.province || (this.state.tmp_province ? "" : undefined),
+            postal_code     : this.state.postalCodeChange && !this.state.pcOutsideCanada
+                                ? this.state.postalCode.substr(0, 6).split(" ").join("") 
+                                : this.state.postalCode || undefined,
+            type_of_service : this.state.typeOfService || (this.state.tmp_typeOfService ? "" : undefined),
+          }
+      );
 
-        // company         : this.state.tmp_linkClientToCompany && !this.state.company ? undefined : this.state.company._id,
-        linkedCompany   : this.state.company ? this.state.company._id : undefined,
-        rateAsPerCompany: this.state.company ? this.state.rateAsPerCompany : undefined
-      };
+      const additionalData = {
+        clientId  : this.state.clientId,
+        inactive  : this.state.inactive,
+        showRate  : this.state.showRate,
+        showNotes : this.state.showNotes,
+      }
 
-      const url = `/client/${data.clientId}`;
+      data = {...data, ...additionalData};
+
+      // const url = `https://clockinjs.herokuapp.com/client/${data.clientId}`;
+      const url = "/api/client";
+
       try {
         const newClientData = await axios.patch( 
           url,
@@ -206,6 +221,7 @@ class ClientsList extends Component {
               consultant    : newClientData.data.newData.consultant || "",
               defaultRate   : newClientData.data.newData.default_rate || "",
               className     : "messageSuccess",
+
               email           : newClientData.data.newData.email || "",
               phone           : newClientData.data.newData.phone || "",
               city            : newClientData.data.newData.city || "",
@@ -216,14 +232,11 @@ class ClientsList extends Component {
               updateButton    : !this.state.updateButton,
               
               inactive        : newClientData.data.newData.inactive || "",
-              sureCompany     : false,
-              linkClientToCompany : this.state.company || false
             });
           else
             this.setState({
               message   : newClientData.data.message,
-              className : "messageSuccess",
-              linkClientToCompany : this.state.company || false
+              className : "messageSuccess"
             });        
         } else if (newClientData.data.error)
           this.setState({
@@ -238,9 +251,12 @@ class ClientsList extends Component {
         });
       }
 
-      this.clearMessage();
-    }
+      // this.setState({
+      //   disableEditForm : true,
+      // });
 
+      // this.clearMessage();
+    }
   }
 
 
@@ -297,9 +313,11 @@ class ClientsList extends Component {
       showRate        : client.showRate || "",
       showNotes       : client.showNotes || "",
 
-      linkClientToCompany   : client.linked_company ? true : false,
-      companyId             : client.linked_company || "",
-      rateAsPerCompany      : client.rate_as_per_company || ""
+      // linkClientToCompany   : client.linked_company ? true : false,
+      // companyId             : client.linked_company || "",
+      // rateAsPerCompany      : client.rate_as_per_company || "",
+      // rateAsPerCompany      : ((client.rate_as_per_company === "true") ? true : false),
+      message : ""
     });
   }
 
@@ -334,9 +352,11 @@ class ClientsList extends Component {
       tmp_showRate      : this.state.showRate,
       tmp_showNotes     : this.state.showNotes,
 
-      // updateDropDown    : true,
-      tmp_linkClientToCompany : this.state.linkClientToCompany,
-      tmp_companyId     : this.state.companyId
+      message           : "",
+      updateDropDown    : true,
+      // tmp_linkClientToCompany : this.state.linkClientToCompany,
+      // tmp_companyId     : this.state.companyId,
+      // tmp_rateAsPerCompany: this.state.rateAsPerCompany
     });
   }
 
@@ -371,19 +391,21 @@ class ClientsList extends Component {
       showRate      : this.state.tmp_showRate,
       showNotes     : this.state.tmp_showNotes,
 
+      updateDropDown: false,
       // linkClientToCompany : false,
       // company             : "",
       // sureCompany         : false
-      // updateDropDown: false,
-      linkClientToCompany : this.state.tmp_linkClientToCompany,
-      companyId           : this.state.tmp_companyId
+      // linkClientToCompany : this.state.tmp_linkClientToCompany,
+      // companyId           : this.state.tmp_companyId,
+      // rateAsPerCompany  : this.state.tmp_rateAsPerCompany
     });
   }
 
 
   afterChange = event => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
+      message: ""
     });
   }
 
@@ -396,93 +418,6 @@ class ClientsList extends Component {
   }
 
 
-  /**
-   * this method shows the option to link a client to a company
-   */
-  YNComponent = () => {
-    return  <React.Fragment>
-              <Form.Group controlId="formLinkClient">
-                <Form.Label className="cardLabel form-check-inline"> Link Client to a Company? </Form.Label>
-                {/* <Form.Group className = "form-check-inline"> */}
-                  <Form.Check
-                      // style     = { window.innerWidth <= 700 ? {marginLeft: "1rem"} : {marginLeft: "2rem"}}
-                      style     = {{marginLeft: "2rem"}}
-                      inline
-                      label     = "Yes"
-                      checked   = { this.state.linkClientToCompany}
-                      type      = "radio"
-                      disabled  = { this.state.disableEditForm}
-                      onChange  = { () => this.setState({ 
-                                      linkClientToCompany : true,
-                                      rateAsPerCompany    : this.state.sureCompany ? true : undefined,
-                                      disableRate         : true
-                                  })}
-                    />
-                  <Form.Check 
-                    inline
-                    label     = "No"
-                    checked   = { !this.state.linkClientToCompany}
-                    type      = "radio"
-                    style     = {{marginLeft: "1rem"}}
-                    disabled  = { this.state.disableEditForm}
-                    onChange  = { () => this.setState({ 
-                                    linkClientToCompany : false,
-                                    disableRate         : false,
-                                    defaultRate         : this.state.tmp_defaultRate,
-                                    company             : "",
-                                    rateAsPerCompany    : false,
-                                    companyId           : ""
-                                })}
-                  />
-
-                { this.state.linkClientToCompany &&
-                    <div className = "gridClientBtContainer">
-                      <GetClients
-                        companyId       = { this.state.companyId}
-                        client          = { this.state.company }
-                        notKidFlag      = { true}
-                        clientListFlag  = { true}
-                        sureCompany     = { this.sureCompany}
-                        getCompanyInfo  = { this.getCompanyInfo}
-                        onlyOneClient   = { this.state.disableEditForm }
-                      />
-                    </div>
-                }
-              </Form.Group>
-            </React.Fragment>
-  }
-
-
-  // this method receive the confirmation that there is (are) company (ies)
-  sureCompany = company => {
-    this.setState({
-      sureCompany       : true,
-      rateAsPerCompany  : true,
-      company
-    });
-  }
-
-
-  changeRateCheck = () => {
-    this.setState({
-      defaultRate       : !this.state.rateAsPerCompany ? this.state.companyRate : this.state.defaultRate,
-      rateAsPerCompany  : !this.state.rateAsPerCompany,
-      disableRate       : !this.state.disableRate
-    }, () => this.textInput13.focus());
-  }
-
-
-  getCompanyInfo = company => {
-    this.setState({
-      company,
-      message     : "",
-      companyRate : company.default_rate,
-      defaultRate : this.state.rateAsPerCompany ? company.default_rate : this.state.defaultRate,
-      companyId   : company._id,
-      messageControlDefaultRate : ""
-    });
-  }
-
 
   render() {
     return (
@@ -491,12 +426,13 @@ class ClientsList extends Component {
         <Card className="card-settings">
           <Card.Header>Your Client's list</Card.Header>
         <Card.Body>
-          <div className="gridClientBtContainer">
+
+          <div>
             <GetClients 
               client          = { this.state.client }
               getClientInfo   = { this.getClientInfo }     /* mount the Dropbox Button with all clients for the user */
-              updateButton    = { this.state.updateButton}
-              bringAllClients = { true}
+              updateButton    = { this.state.updateButton }
+              bringAllClients = { true }
             />
           </div>
         </Card.Body>
@@ -830,11 +766,11 @@ class ClientsList extends Component {
 
 
 
-                { this.state.linkClientToCompany && this.YNComponent() }
+                {/* { this.state.linkClientToCompany && this.YNComponent() } */}
 
                 <Form.Group controlId="formDefaultRate">
                   <Form.Label className="cardLabel">Rate</Form.Label>
-                  { this.state.linkClientToCompany && this.state.sureCompany &&
+                  {/* { this.state.linkClientToCompany && this.state.sureCompany &&
                       <Form.Check 
                         inline 
                         label     = "Rate as per company ?"
@@ -844,7 +780,8 @@ class ClientsList extends Component {
                         onChange  = { this.changeRateCheck }
                         disabled  = { this.state.disableEditForm}
                       />
-                  }
+                  } */}
+
                   <Form.Control
                     type        = "number"
                     placeholder = {"Type the hourly rate - CAD$"}
@@ -862,10 +799,10 @@ class ClientsList extends Component {
 
                 <br />
 
-                { this.state.typeKid && !this.state.linkClientToCompany && this.YNComponent()}
+                {/* { this.state.typeKid && !this.state.linkClientToCompany && this.YNComponent()} */}
 
-                { this.state.client && !this.state.client.isCompany 
-                  &&
+                {/* { this.state.client && !this.state.client.isCompany 
+                  && */}
                     <React.Fragment>
                       <Form.Group controlId="formShowRate">
                         <Form.Label className="cardLabel">Show Rate on PunchIn form?</Form.Label>
@@ -913,7 +850,7 @@ class ClientsList extends Component {
                         />
                       </Form.Group>
                     </React.Fragment>
-                }
+                {/* } */}
 
           <Card.Footer className={this.state.className}>
             { this.state.message

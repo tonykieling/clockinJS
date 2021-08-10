@@ -39,7 +39,7 @@ class InvoiceChangeStatusModal extends Component {
   clearMessage = () => {
     setTimeout(() => {
       this.setState({
-        message       : "",
+        // message       : "",
         disableButtons : false
       });
     }, 3500);
@@ -74,12 +74,15 @@ class InvoiceChangeStatusModal extends Component {
       const data = {
         newStatus     : this.state.newStatus,
         dateDelivered : this.state.dateReceived ? null : this.state.dateDelivered,
-        dateReceived  : this.state.dateReceived
+        dateReceived  : this.state.dateReceived,
+        flag          : "modify_status"
       };
       
-      const url = `/invoice/${this.props.invoice._id}`;
+      // const url = `/invoice/${this.props.invoice._id}`;
+      const url = `/api/invoice/?invoiceId=${this.props.invoice._id}`;
+
       try {
-        const Invoice = await axios.patch( 
+        const invoice = await axios.patch( 
           url,
           data,
           {  
@@ -88,7 +91,7 @@ class InvoiceChangeStatusModal extends Component {
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
 
-        if (Invoice.data.message) {
+        if (invoice.data.message) {
           this.setState({
             message           : `Invoice's status changed to ${this.state.newStatus}`,
             disableButtons    : true,
@@ -103,14 +106,13 @@ class InvoiceChangeStatusModal extends Component {
             this.props.closeChangeModal();
           }, 3500);
         } else {
-          this.setState({
-            message           : "Something wrong happened.",
-            classNameMessage  : "messageFailure"
-          });
-          
+          throw new Error(invoice.data.error);
         }
-      } catch(err) {
-        console.log("Error:", err.message);
+      } catch(error) {
+        this.setState({
+          message           : error.message || "Something wrong happened.",
+          classNameMessage  : "messageFailure"
+        });
       }
     }
 

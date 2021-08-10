@@ -32,28 +32,37 @@ class Home extends Component {
       tmp_address     : "",
       tmp_phone       : "",
       tmp_postalCode  : "",
-      
+      disableButton   : false,
+
       showModal      : false 
     }
   }
   
   
-  
-  // need to implement it
+  // it handles the modify_user
   handleSubmit = async e => {
     e.preventDefault();
 
     if (this.state.name && this.state.email) {
-      const url         = `user/${this.state.userId}`;
+      const url = "/api/user";
+
       const changeUser  = {
+        userId      : this.state.userId,
         name        : this.state.name,
         email       : this.state.email,
         address     : this.state.address,
         city        : this.state.city,
         postalCode  : this.state.postalCode,
         phone       : this.state.phone
-      }
-    
+      };
+
+      this.setState({
+        disableButton : true,
+        disableEdit   : true,
+        message           : "Processing...",
+        classNameMessage  : "messageSuccess",
+      });
+
       try {
         const modUser = await axios.patch( 
           url,
@@ -80,29 +89,32 @@ class Home extends Component {
             this.setState({
               message           : "Info has been updated.",
               classNameMessage  : "messageSuccess",
-              disableEdit       : true
+              // disableEdit       : true,
+              disableButton     : false
             });
       
             this.props.dispatchLogin({ user });
           } else 
             this.setState({
-              disableEdit       : true,
+              // disableEdit       : true,
+              disableButton     : false,
               message           : modUser.data.message,
               classNameMessage  : "messageSuccess"
-            });          
-    
+            });
+
+          this.clearMessage();
         } else if (modUser.data.error) {
           this.setState({
-            disableEdit       : true,
+            // disableEdit       : true,
+            disableButton     : false,
             message           : modUser.data.error,
             classNameMessage  : "messageFailure"
           });
         }
     
       } catch(error) {
-        console.log("catch error: ", error.message);
         this.setState({
-          disableEdit       : true,
+          disableButton     : false,
           message           : error.message,
           classNameMessage  : "messageFailure"
         });
@@ -131,8 +143,6 @@ class Home extends Component {
         this.textInput1.focus();
       }
     }
-
-    this.clearMessage();
   }
 
 
@@ -177,15 +187,21 @@ class Home extends Component {
 
 
   handleChangePassword = async () => {
-    const url = `/user/forgetPassword`;
+    // const url = `/user/forgetPassword`;
+    const url = "/api/user";
+
+    this.setState({
+      disableButton: true,
+      message           : "Processing...",
+      classNameMessage  : "messageSuccess",
+    });
 
     try {
       const changePassword = await axios.post( 
         url,
         {
-          data: {
-            email: this.state.email
-          }
+          whatToDo: "request-change-password",
+          email: this.state.email
       });
       
       if (changePassword.data.message){
@@ -199,18 +215,22 @@ class Home extends Component {
           classNameMessage  : "messageFailure",
         });
 
-        this.clearMessage();
+        // this.clearMessage();
       }
 
     } catch(err) {
       this.setState({
-        message: err.message 
+        message: err.message,
+        classNameMessage  : "messageFailure",
       });
     }
 
-    setTimeout(() => {
-      this.clearMessage();
-    }, 2000);
+    this.setState({
+      disableButton: false
+    });
+    // setTimeout(() => {
+    //   this.clearMessage();
+    // }, 2000);
   }
 
 
@@ -413,11 +433,13 @@ class Home extends Component {
                     style   = { btnStyle }
                     onClick = { this.handleSubmit }
                     ref     = { input => this.buttonSave = input }
+                    disabled= { this.state.disableButton}
                   >Save </Button>
                   <Button 
                     variant = "danger"
                     style   = { btnStyle }
                     onClick = { this.btnCancel }
+                    disabled= { this.state.disableButton}
                   > Cancel </Button>
                 </ButtonGroup>
               :
@@ -426,13 +448,17 @@ class Home extends Component {
                     variant = "info"
                     style   = { btnStyle }
                     // onClick = { this.handleChangePassword } >
-                    onClick = { this.handleAskChangePassowrd } >
+                    onClick = { this.handleAskChangePassowrd } 
+                    disabled= { this.state.disableButton}
+                  >
                     Change Password
                   </Button>
                   <Button 
                     variant = "primary"
                     style   = { btnStyle }
-                    onClick = { this.editForm } >
+                    onClick = { this.editForm } 
+                    disabled= { this.state.disableButton}
+                  >
                     Edit data
                   </Button>
                 </ButtonGroup>
@@ -450,7 +476,9 @@ class Home extends Component {
               yesMethod   = { () => {
                 if (this.state.modalMessage === "You are going to receive an email with the instructions to modify your password.") {
                   this.handleChangePassword();
-                  this.setState({ showModal: false});
+                  this.setState({ 
+                    showModal : false
+                  });
                 } else
                   this.setState({
                     showModal: true,

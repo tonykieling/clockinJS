@@ -8,8 +8,6 @@ import Col    from "react-bootstrap/Col";
 import Table  from "react-bootstrap/Table";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
-// import moment from "moment";
-
 import { getClockins } from "./aux/getClockins.js";
 import GetClients from "./aux/GetClients.js";
 import PunchInModal from "./PunchInModal.js";
@@ -38,7 +36,9 @@ class PunchInsList extends Component {
 
       showModal         : false,
       clockinToModal    : {},
-      company           : ""
+      // company           : "",
+
+      disableButton     : false
     };
 }
 
@@ -67,14 +67,22 @@ class PunchInsList extends Component {
           message   : "Check your dates",
           classNameMessage  : "messageFailure"
         });
-      else
+      else {
+        this.setState({
+          disableButton     : true,
+          classNameMessage  : "messageSuccess",
+          message           : "Processing..."
+        });
+
         try {
-          const pastClockins  = this.state.company
-            ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, this.state.company._id)
-            : await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId)
+          // const pastClockins  = this.state.company
+          //   ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, this.state.company._id)
+          //   : await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId)
+          const pastClockins = await getClockins(this.props.storeToken, "normal", dateStart, dateEnd, clientId);
 
           if (!pastClockins || pastClockins.error)
-            throw((!pastClockins && "No invoices at all.") || pastClockins.error);
+            // throw((!pastClockins && "No invoices at all.") || pastClockins.error);
+            throw((!pastClockins && "No clockins at all.") || pastClockins.error);
 
           this.setState({
             clockinList       : pastClockins,
@@ -90,7 +98,11 @@ class PunchInsList extends Component {
             classNameMessage  : "messageFailure",
             tableVisibility   : false
           });
-        
+        }
+
+        this.setState({
+          disableButton: false
+        });
       }
     } else
       this.messageValidationMethod();
@@ -123,16 +135,16 @@ class PunchInsList extends Component {
       totalCad  += Number(clockinsToSend.totalCad);
       if (thinScreen) {   // small devices
         return (
-          this.state.company
-          ?
-            <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-            </tr>
-          :
+          // this.state.company
+          // ?
+          //   <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+          //   </tr>
+          // :
             <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
               <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
               <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
@@ -144,18 +156,18 @@ class PunchInsList extends Component {
 
       } else {
         return (
-          this.state.company
-          ?
-            <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
-              <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-            </tr>
-          :
+          // this.state.company
+          // ?
+          //   <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
+          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+          //   </tr>
+          // :
             <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
               <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
               <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
@@ -185,7 +197,8 @@ class PunchInsList extends Component {
           :
             <React.Fragment>
               <td></td>
-              <td colSpan={this.state.company ? 3 : 2} style={{verticalAlign: "middle"}}><b>Total of</b></td>
+              {/* <td colSpan={this.state.company ? 3 : 2} style={{verticalAlign: "middle"}}><b>Total of</b></td> */}
+              <td colSpan={ 2 } style={{verticalAlign: "middle"}}><b>Total of</b></td>
               <td 
                 style={{verticalAlign: "middle"}}
               >
@@ -227,8 +240,9 @@ class PunchInsList extends Component {
 
   getClientInfo = client => {
     this.setState({
-      company         : !!client.isCompany && client,
-      client          : !client.isCompany && client,
+      // company         : !!client.isCompany && client,
+      // client          : !client.isCompany && client,
+      client,
       clientId        : client._id,
       tableVisibility : false,
       message         : ""
@@ -260,7 +274,7 @@ class PunchInsList extends Component {
           { /* mount the Dropbox Button with all clients for the user */ }
           <div className="gridClientBtContainer">
             <GetClients
-              client        = { this.state.client || this.state.company }
+              client        = { this.state.client }
               getClientInfo = { this.getClientInfo }
             />
 
@@ -308,18 +322,25 @@ class PunchInsList extends Component {
                   ? 
                     <ButtonGroup className="mt-3">
                       <Button 
-                        variant="primary" 
-                        onClick = { this.handleSubmit } >
+                        variant   ="primary" 
+                        onClick   = { this.handleSubmit } 
+                        disabled  = { this.state.disableButton }
+                      >
                         Get List
                       </Button>
-                      <Button variant="info" onClick = { this.clearForm }>
+                      <Button 
+                        variant="info" 
+                        onClick = { this.clearForm }
+                      >
                         Clean
                       </Button>
                     </ButtonGroup>
                   :
                     <Button 
-                      variant="primary" 
-                      onClick = { this.handleSubmit } >
+                      variant   = "primary" 
+                      onClick   = { this.handleSubmit } 
+                      disabled  = { this.state.disableButton }
+                    >
                       Get List
                     </Button>
                 }
@@ -333,30 +354,32 @@ class PunchInsList extends Component {
           ?
             <Card className="cardInvoiceGenListofClockins card">
               <Card.Header style={{textAlign: "center"}}>
-                Client: <b>{ this.state.company.name || this.state.client.nickname || this.state.client.name}</b>, {" "}
+                {/* Client: <b>{ this.state.company.name || this.state.client.nickname || this.state.client.name}</b>, {" "} */}
+                Client: <b>{ this.state.client.nickname || this.state.client.name}</b>, {" "}
                 <b>{this.state.clockinList.length}</b> {this.state.clockinList.length > 1 ? "Clockins" : "Clockin"}
               </Card.Header>
 
               {(this.state.clockinList.length > 0)
                 ? thinScreen 
-                  ? this.state.company
-                    ?
-                      <Table striped bordered hover size="sm" responsive>
-                        <thead style={{textAlign: "center"}}>
-                          <tr>
-                            <th style={{verticalAlign: "middle"}}>#</th>
-                            <th style={{verticalAlign: "middle"}}>Date</th>
-                            <th style={{verticalAlign: "middle"}}>Kid</th>
-                            <th style={{verticalAlign: "middle"}}>Duration</th>
-                            {/* <th style={{verticalAlign: "middle"}}>CAD$</th> */}
-                            <th style={{verticalAlign: "middle"}}>Invoice</th>
-                          </tr>
-                        </thead>
-                        <tbody style={{textAlign: "center"}}>
-                          {this.state.clockInListTable}
-                        </tbody>
-                      </Table>
-                    :
+                  ? 
+                    // this.state.company
+                    // ?
+                    //   <Table striped bordered hover size="sm" responsive>
+                    //     <thead style={{textAlign: "center"}}>
+                    //       <tr>
+                    //         <th style={{verticalAlign: "middle"}}>#</th>
+                    //         <th style={{verticalAlign: "middle"}}>Date</th>
+                    //         <th style={{verticalAlign: "middle"}}>Kid</th>
+                    //         <th style={{verticalAlign: "middle"}}>Duration</th>
+                    //         {/* <th style={{verticalAlign: "middle"}}>CAD$</th> */}
+                    //         <th style={{verticalAlign: "middle"}}>Invoice</th>
+                    //       </tr>
+                    //     </thead>
+                    //     <tbody style={{textAlign: "center"}}>
+                    //       {this.state.clockInListTable}
+                    //     </tbody>
+                    //   </Table>
+                    // :
                       <Table striped bordered hover size="sm" responsive>
                         <thead style={{textAlign: "center"}}>
                           <tr>
@@ -372,24 +395,24 @@ class PunchInsList extends Component {
                           {this.state.clockInListTable}
                         </tbody>
                       </Table>
-                  : this.state.company
-                    ?
-                      <Table striped bordered hover size="sm" responsive>
-                        <thead style={{textAlign: "center"}}>
-                          <tr>
-                            <th style={{verticalAlign: "middle"}}>#</th>
-                            <th style={{verticalAlign: "middle"}}>Date</th>
-                            <th style={{verticalAlign: "middle"}}>Kid</th>
-                            <th style={{verticalAlign: "middle"}}>Time Start</th>
-                            <th style={{verticalAlign: "middle"}}>Total Time</th>
-                            <th style={{verticalAlign: "middle"}}>CAD$</th>
-                            <th style={{verticalAlign: "middle"}}>Invoice</th>
-                          </tr>
-                        </thead>
-                        <tbody style={{textAlign: "center"}}>
-                          {this.state.clockInListTable}
-                        </tbody>
-                      </Table>
+                  // : this.state.company
+                  //   ?
+                  //     <Table striped bordered hover size="sm" responsive>
+                  //       <thead style={{textAlign: "center"}}>
+                  //         <tr>
+                  //           <th style={{verticalAlign: "middle"}}>#</th>
+                  //           <th style={{verticalAlign: "middle"}}>Date</th>
+                  //           <th style={{verticalAlign: "middle"}}>Kid</th>
+                  //           <th style={{verticalAlign: "middle"}}>Time Start</th>
+                  //           <th style={{verticalAlign: "middle"}}>Total Time</th>
+                  //           <th style={{verticalAlign: "middle"}}>CAD$</th>
+                  //           <th style={{verticalAlign: "middle"}}>Invoice</th>
+                  //         </tr>
+                  //       </thead>
+                  //       <tbody style={{textAlign: "center"}}>
+                  //         {this.state.clockInListTable}
+                  //       </tbody>
+                  //     </Table>
                     :
                       <Table striped bordered hover size="sm" responsive>
                         <thead style={{textAlign: "center"}}>
@@ -414,7 +437,8 @@ class PunchInsList extends Component {
           <PunchInModal 
             showModal     = { this.state.showModal}
             clockinData   = { this.state.clockinToModal}
-            client        = { this.state.company ? this.state.clockinToModal.client : this.state.client.nickname || this.state.client.name }
+            // client        = { this.state.company ? this.state.clockinToModal.client : this.state.client.nickname || this.state.client.name }
+            client        = { this.state.client.nickname || this.state.client.name }
             deleteClockin = { (clockinId) => this.updateClockins(clockinId)}
             closeModal    = { this.closeClockinModal}
             thinScreen    = { thinScreen}

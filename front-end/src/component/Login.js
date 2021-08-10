@@ -2,21 +2,24 @@ import React, { Component } from 'react';
 import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import ForgetPasswordModal from "./LoginForgetPasswordModal.js";
-
+import axios from "axios";
 
 class Login extends Component {
 
     state = {
-      email         : "",
-      password      : "",
-      errorMsg      : "",
+      email     : "",
+      password  : "",
+      errorMsg  : "",
+      disable   : false,
+      classNameMessage: "",
 
       forgetPasswordModal: false
     }
 
   handleChange = e => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
+      errorMsg: ""
     });
     
     if (e.key === "Enter" && e.target.name === "email") {
@@ -26,56 +29,67 @@ class Login extends Component {
   }
 
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
       event.preventDefault();
 
-      if (this.state.email !== "" && this.state.password !== "") {
-        const url = "/user/login";
-        fetch( url, {  
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-                email     : this.state.email,
-                password  : this.state.password
-              })
-        })
-        .then(response => response.json())
-        .then((resJSON) => {
-          if ('message' in resJSON){
-            const user = resJSON.user;
-            user.id    = user._id;
-            user.token = resJSON.token;
-            this.props.dispatchLogin({ user });
-          }
-          else if ( 'error' in resJSON){
-            this.setState({
-              errorMsg  : resJSON.error,
-              email     : "",
-              password  : ""
-            });
+      if (!this.state.email || !this.state.password) {
+        this.setState({
+          errorMsg: "Please, type email and passowrd."
+        });
 
-            //it clears the error message after 3.5s
-            this.clearMsg();
+        this.textInput1.focus();
+      } else {
+
+        this.setState({
+          disable: true
+        });
+
+        this.setState({
+          disable   : true,
+          errorMsg  : "Processing...",
+          classNameMessage: "messageSuccess",
+        });
+
+        const url = "/api/user";
+        // const url = "https://clockinjs.herokuapp.com/user/login";
+
+        try {
+          const login = await axios.post(
+            url,
+            {
+              whatToDo  : "login",
+              email     : this.state.email,
+              password  : this.state.password,
+            }
+          );
+
+          const answer = login.data;
+
+          if (answer.message) {
+            const user = answer.user;
+            user.id = user._id;
+            user.token = login.data.token;
+
+            await this.props.dispatchLogin( { user });
+          } else {
+            this.setState({
+              errorMsg  : answer.error,
+              email     : "",
+              password  : "",
+              disable   : false,
+              classNameMessage: "messageFailure"
+            });
           }
-        })
-        .catch((error) => {
-          console.error(error);
-          this.setState({errorMsg: error.message});
-          this.clearMsg();
-        })
+        } catch(error) {
+          this.setState({
+            disable   : false,
+            errorMsg  : error.message,
+            classNameMessage: "messageFailure"
+          });
+        }
       }
   }
-
-  clearMsg = () => {
-    setTimeout(() => {
-      this.setState({
-        errorMsg: ""
-      });
-
-      this.textInput1.focus();
-    }, 3500);
-  }
-
+  
 
   openModal = event => {
     event.preventDefault();
@@ -152,19 +166,22 @@ class Login extends Component {
                   closeModal  = { this.closeModal }
                   email       = { this.state.email }
                 >
-
                 </ForgetPasswordModal>
               : ""
             }
             
-            <Card.Footer className= "messageFailure">
+            <Card.Footer className= { this.state.classNameMessage }>
               { this.state.errorMsg
                 ? this.state.errorMsg
                 : <br /> }
             </Card.Footer>
 
             <div className="d-flex flex-column">
-              <Button variant="primary" type="submit">
+              <Button 
+                variant   ="primary" 
+                type      ="submit"
+                disabled  = { this.state.disable }
+              >
                 Submit
               </Button>
             </div>

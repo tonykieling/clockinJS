@@ -87,17 +87,19 @@ class ForgetPasswordModal extends Component {
       this.resetPasswordEmail.focus();
       this.clearMessage();
     } else {
-      const url = `/user/forgetPassword`;
+      // const url = `https://clockinjs.herokuapp.com/user/forgetPassword`;
+      
+      const url = `/api/user`;
 
       try {
         const forgetPassword = await axios.post( 
           url,
           {
-            data: {
-              email: this.state.emailFP
-            }
-        });
-console.log("@@@ forgetPassword", forgetPassword);
+            whatToDo: "forget-password",
+            email: this.state.emailFP
+          }
+        );
+
         if (forgetPassword.data.message){
           this.setState({
             message           : `If <${this.state.emailFP}> is a valid email, you are about to receive an email with instructions to reset the password.`,
@@ -112,7 +114,7 @@ console.log("@@@ forgetPassword", forgetPassword);
             classNameMessage  : "messageFailure",
           });
 
-          this.clearMessage();
+          // this.clearMessage();
         }
 
 
@@ -120,7 +122,7 @@ console.log("@@@ forgetPassword", forgetPassword);
         this.setState({
           message: err.message });
         
-        this.clearMessage();
+        // this.clearMessage();
       }
     }
   }

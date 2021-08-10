@@ -1,7 +1,7 @@
 {
   "name": "webapp",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "@types/react": "^16.9.35",
     "axios": "^0.21.1",
@@ -17,7 +17,7 @@
     "react-modal": "^3.11.2",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.1",
+    "react-scripts": "^4.0.3",
     "react-text-mask": "^5.4.3",
     "redux": "^4.0.5",
     "text-mask-addons": "^3.8.0"
@@ -44,5 +44,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:3333"
+  "proxy": "http://localhost:3000"
 }

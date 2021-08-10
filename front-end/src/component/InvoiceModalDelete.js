@@ -26,7 +26,9 @@ function InvoiceModalDelete(props) {
 
 
   const handleDelete = async () => {
-    const url = `/invoice/${props.invoiceId}`;
+    // const url = `/invoice/${props.invoiceId}`;
+    const url = `/api/invoice/?invoiceId=${props.invoiceId}`;
+
 
     try {
       const deleteInvoice = await axios.delete( 
@@ -41,11 +43,9 @@ function InvoiceModalDelete(props) {
         setMessage(`Invoice ${props.invoiceCode} has been deleted`);
         setDeleted(true);
       } else {
-        console.log("ERROR is present")
         setMessage(deleteInvoice.data.error + "!!!");
       }
     } catch(err) {
-      console.log(err.message);
       setMessage(err.message);
     }
     setDone(true);

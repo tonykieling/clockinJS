@@ -54,9 +54,16 @@ class InvoicesList extends Component {
       });
       // this.clearMessage();
     } else {
-      const url = `/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+      // const url = `/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+      const url = `/api/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+
 
       try {
+        this.setState({
+          message           : "Processing...",
+          classNameMessage  : "messageSuccess"
+        });
+
         const getInvoices = await axios.get( 
           url,
           {  
@@ -70,7 +77,8 @@ class InvoicesList extends Component {
             invoiceList       : getInvoices.data.allInvoices,
             invoiceListTable  : this.renderDataTable(getInvoices.data.allInvoices),
             tableVisibility   : true,
-            clientId
+            message           : "",
+            clientId,
           });
         } else {
           this.setState({
@@ -79,7 +87,6 @@ class InvoicesList extends Component {
             tableVisibility   : false
           });
         }
-
 
       } catch(err) {
         this.setState({
@@ -284,7 +291,7 @@ renderDataTable = (invoices) => {
             closeModal        = { this.closeModal }
             updateScreen      = { this.updateScreen }
             openInvoiceModal  = { this.state.openInvoiceModal }
-            // changeInvoiceData = { data => this.updateInvoiceData(data)}
+            changeInvoiceData = { data => this.updateInvoiceData(data)}
             storeToken        = { this.props.storeToken}
          />
         : "" }
@@ -296,7 +303,7 @@ renderDataTable = (invoices) => {
               <GetClients 
                 client        = { this.state.client }
                 getClientInfo = { this.getClientInfo }
-                invoiceFlag   = { true }
+                // invoiceFlag   = { true }
               /> { /* mount the Dropbox Button with all clients for the user */ }
             </div>
 

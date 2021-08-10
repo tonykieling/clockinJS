@@ -1,2 +1,78 @@
-This is the last valid version for Heroku environment.
-It uses Express as webserver.
+This is a migration version.
+The system is going to be deployed at vercel, so I need to refactor the backend for a serverless approach.
+The front-end need some adjustments mainly in the url to be reached.
+
+
+1- get rid of
+  /Procfile
+  /server.js
+
+2- edit /package.json
+  remove "start"
+
+3- thinking of a strategy for accomodating the backend routes and how the UI is gonna query it.
+
+4- see routes-strategy.txt
+
+need to confirm which methods are being used: get, post, delete and patch? Yeah!
+
+
+? 
+  --- when trying to reach 'localhost:3000:/login' it does not load the fe, instead it tries the route.
+      after localhost:3000 and the fe is been loaded, it is okay
+      ? how to make it load the fe instead trying a be route???
+
+  --- signUp seems to be working,
+  but it is not sendind email
+    guess it needs a new sender id from gmail
+  => turns out, I changed the place where where the helper is called, checed gmail, got rid of the dotenv requires
+    and it seems to be working.
+    Another thing, the variables from process.env, in "vercel dev" regards from local .env, not variables on vercel
+
+5- migrated
+  
+6- testing, missing:
+  - reports
+
+  - when punchin, the list of clockins for that day must show client, rn is not showing that
+    PunchinNew.js
+    need to send the client name, not just client_id
+  FIXED: clockin query "byDate"
+
+  - "Processing..." to punchin
+    PunchinNew.js
+  DONE
+
+  - "Processing..." to punchinlist
+    PunchinsList.js
+  DONE
+
+  - "Processing..." when deleting punchin
+    PunchInModal.js
+  DONE
+
+  - check clockins get_all
+
+  - what to do in this case???
+  InvoiceIssue.js
+
+  - "Getting clockins..." & disable button & hide table
+    invoiceNew.js
+  DONE
+
+  tests:
+    - signup
+    - change password
+    - forget password
+    - change user data
+    - punchin
+    - list punchins
+    - delete punchin
+    - generate invoice
+    - list invoices
+    - change invoice status
+    - delete invoice
+    - list punchins
+    - edit invoice
+change all references pointing to heroku, such as emails and README.md    
+

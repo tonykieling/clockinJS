@@ -1,0 +1,61 @@
+# USER
+  - login
+    POST /api/user whatToDo = login
+
+  - sign up
+    POST /api/user whatToDo = signUp
+
+  - mofify-user
+    PATCH /api/user/user=<userId>
+
+  - change-password
+    POST /api/user whatToDo = request-change-password
+
+  - get_user_by_id
+    GET /api/user ?code
+
+  - reset-password
+    POST /api/user whatToDo = reset-password
+
+  - forget-password
+    POST /api/user whatToDo = forget-password
+
+
+# CLIENT
+  - get_all
+  GET /api/client header and authentication
+
+  - record new client
+  POST /api/client client data + authentication
+
+  - modify client's data
+  PATCH /api/client new client's data + authentication
+
+
+# CLOCKIN
+  - punchin
+  POST /api/clockin + auth + checking user, client, past clockins, and invoice
+
+  - list clockins
+  GET /api/clockin
+
+  - remove
+  DELETE /api/clockin + auth + clockinId
+
+
+# INVOICE 
+  - retrieve invoices
+  GET /api/invoice
+
+  - add new invoice
+  POST /api/invoice
+
+  - remove an invoice
+  DELETE /api/invoice + auth + invoiceId
+
+  - edit invoice
+  PATCH
+
+  - edit invoice status
+  PATCH
+

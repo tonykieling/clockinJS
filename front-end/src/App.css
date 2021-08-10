@@ -9,12 +9,30 @@
 }
 
 
-.gridClientBtContainer {
+/* .gridClientBtContainer {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto;
+  color: red;
+  font-weight: bold;
+} */
+/* tried to have sub class, but it did not work */
+/* .gridClientBtContainer .red {....}  */
+
+.gcbcred {
   display: grid;
   grid-template-columns: auto auto auto auto auto auto;
   color: red;
   font-weight: bold;
 }
+
+
+.gcbcgreen {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto;
+  color: green;
+  font-weight: bold;
+}
+
 
 .messageSettings {
   margin-left: 20px;

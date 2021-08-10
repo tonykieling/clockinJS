@@ -7,7 +7,6 @@ import ContactFoot from "./ContactFoot.js";
 function Home(props) {
   return (
     <div style={{height: window.innerHeight - 56 - 62}}>
-{/* {console.log("window.innerHeight", window.innerHeight)      } */}
         {/* <Card className="card-settings"> */}
         <Card className="homeBack">
         <Card.Body>

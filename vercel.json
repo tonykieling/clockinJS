@@ -1,0 +1,36 @@
+{
+  "routes": [
+      {
+        "src": "/api/user",
+        "dest": "/api/user"
+      },
+      {
+        "src": "/api/user/(.*)",
+        "dest": "/api/user"
+      },
+      {
+        "src": "/api/client",
+        "dest": "/api/client"
+      },
+      {
+        "src": "/api/clockin",
+        "dest": "/api/clockin"
+      },
+      {
+        "src": "/api/clockin/(.*)",
+        "dest": "/api/clockin"
+      },
+      {
+        "src": "/api/invoice",
+        "dest": "/api/invoice"
+      },
+      {
+        "src": "/api/invoice/(.*)",
+        "dest": "/api/invoice"
+      },
+      { 
+        "src": "/[^.]+", 
+        "dest": "/"
+      }
+  ]
+}

@@ -50,6 +50,7 @@ function SignUp(props) {
     
     if (key === "Enter") {
       event.preventDefault();
+      event.stopPropagation();
       switch (name){
         case "name":
           if (state.name)
@@ -126,6 +127,7 @@ function SignUp(props) {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    e.stopPropagation();
 
     if (state.email !== "" && state.name !== "") {
       if ((state.password !== state.confirmPassword) || (state.password === "")) {
@@ -144,8 +146,11 @@ function SignUp(props) {
         });
       } else {
         setdisableForm(true);
-        const url = "/user/signup";
+        // const url = "/user/signup";
+        const url = `${window.location.origin}/api/user`;
+
         const createUser  = {
+          whatToDo    : "signUp",
           name        : state.name,
           email       : state.email,
           password    : state.password,
@@ -156,38 +161,42 @@ function SignUp(props) {
         }
 
         try {
-          const addUser = await axios.post(url, createUser);
-          if (addUser.data.message) {
+          const addUser = await axios.post(url, createUser);          
+          const answer = addUser.data;
+
+          if (answer.message) {
             const user = {
-              id      : addUser.data.user._id,
-              name    : addUser.data.user.name,
-              email   : addUser.data.user.email,
-              token   : addUser.data.token,
-              address     : addUser.data.user.address,
-              city        : addUser.data.user.city,
-              postalCode  : addUser.data.user.postal_code,
-              phone       : addUser.data.user.phone
+              id      : answer.user._id,
+              name    : answer.user.name,
+              email   : answer.user.email,
+              token   : answer.token,
+              address     : answer.user.address,
+              city        : answer.user.city,
+              postalCode  : answer.user.postal_code,
+              phone       : answer.user.phone
             };
             
-            props.dispatchLogin({ user });
-          } else if (addUser.data.error) {
-            console.log("it THROWS an ERROR")
-            throw(addUser.data.error)
+            await props.dispatchLogin({ user });
+
+          } else if (answer.error) {
+            throw(answer.error)
           }
 
         } catch(err) {
           setmessage({
             content   :  err,
             cssClass  : "messageFailure"
-          });
-          setdisableForm(false);
+          });  
         }
+
+        setdisableForm(false);
       }
     } else {
       setmessage({
         content   :  "Please, entry at least Name, Email, Password and Confirm Password",
         cssClass  : "messageFailure"
       });
+      
       refTop.current.scrollIntoView({ behavior: "smooth" });
       state.name ? refEmail.current.focus() : refName.current.focus();
       setdisableForm(false);

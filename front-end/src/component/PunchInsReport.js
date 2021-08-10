@@ -209,16 +209,17 @@ function PunchInsList(props) {
  * 
  * */}
         <Card className="card-settings">
-          <Card.Header>Reports - Clockins</Card.Header>
+          {/* <Card.Header>Reports - Clockins</Card.Header> */}
+          <Card.Header>Report - Clockins - Coming soon</Card.Header>
           <Card.Body>
             
           { /* mount the Dropbox Button with all clients for the user */ }
           <div className="gridClientBtContainer">
-            <GetClients
+            {/* <GetClients
               client        = { state.client }
               getClientInfo = { getClientInfo }
               report        = { true }
-            />
+            /> */}
 
           </div>
 

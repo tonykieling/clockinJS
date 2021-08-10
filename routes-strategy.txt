@@ -1,0 +1,50 @@
+- afther that, the app will receive a call, by react router, which will open the componente reset_password
+  need to understand how the app routes work on vercel.
+  
+  1- send email and record on db the temp code for changing password
+  2- app receives the order to open the component with temp code on it
+  3- user send new password which is recorded on db
+  4- user enabled to login
+
+Vercel and React routes solution:
+{
+  "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }]
+}
+https://stackoverflow.com/questions/64815012/why-does-react-router-not-works-at-vercel
+
+
+--- The strategy is
+routes will be: "src": "/api/user" "dest": "/api/user", "src": "/api/client" "dest": "/user/client", and so on
+
+a directory for each route and inside each one, a directory called functions with functions
+
+userController = ../controler/user.js
+/api/user
+  /index.js
+    post whatToDo = signup => userController.signUp
+    post whatToDo = login  => userController.login
+  /[code].js // turns out this option is not possible maybe related with routes settings. So, everything goes to /api/user/index.js
+    patch userId = code   => userController.modify_user
+    post  reset_paswword  => userController.reset_password
+    get get_user_by_code  => userController.get_user_by_code
+
+  /signUp.js
+  /login.js
+  /forget_password.js
+  /reset_password.js
+  /get_user_by_code.js
+
+/api/user => /api/user
+
+/api/client
+  /index.js
+    get   returns all clients
+    post  creates a new client
+  /[clienId].js
+    get     returns info about a client
+    patch   modifies a particular client
+    delete  removes a client
+
+/api/clockin
+/api/invoice
+/api/report
