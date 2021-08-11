@@ -92,9 +92,7 @@ class PunchInNew extends Component {
 
   formatClockinsTable = (clockins) => {
     return clockins.map((clockin, index) => {
-console.log("clockin=", clockin);
       const clockinsToSend = renderClockinDataTable(clockin, index);
-console.log("clockinsToSend=", clockinsToSend);
         return (
           <tr key={clockinsToSend.num} >
             <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
@@ -162,7 +160,8 @@ console.log("clockinsToSend=", clockinsToSend);
               "Content-Type": "application/json",
               "Authorization" : `Bearer ${this.props.storeToken}` }
         });
-console.log("===addClockin", addClockin);
+// console.log("===addClockin", addClockin);
+
         if (addClockin.data.message) {
           this.setState({
             message           : `Punched in!`,

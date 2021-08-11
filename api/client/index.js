@@ -1,4 +1,5 @@
 "use strict";
+const { compareSync } = require("bcrypt");
 const mongoose    = require("mongoose");
 
 
@@ -440,14 +441,13 @@ module.exports = async (req, res) => {
               city,
               address,
               province,
-              postal_code   : postalCode,
-              type_of_service : typeOfService,
+              // postal_code   : postalCode,
+              // type_of_service : typeOfService,
+              postal_code,
+              type_of_service,
               inactive,
               showRate,
-              showNotes,
-          
-              // linkedCompany,
-              // rateAsPerCompany
+              showNotes
             } = req.body;
 
             const birthday = req.body.birthday ? new Date(req.body.birthday) : undefined;
@@ -491,73 +491,39 @@ module.exports = async (req, res) => {
                     city            : city && city.trim(),
                     address         : address && address.trim(),
                     province        : province && province.trim(),
-                    postal_code     : postalCode && postalCode.trim(),
-                    type_of_service : typeOfService && typeOfService.trim(),
+                    // postal_code     : postalCode && postalCode.trim(),
+                    // type_of_service : typeOfService && typeOfService.trim(),
+                    postal_code,
+                    type_of_service,
 
                     inactive        : inactive === false ? false : (inactive == true ? true : undefined),
                     showRate        : showRate || false,
-                    showNotes       : showNotes || false,
-          
-                    // linked_company  : linkedCompany && mongoose.Types.ObjectId(linkedCompany),
-                    // rate_as_per_company : rateAsPerCompany
+                    showNotes       : showNotes || false
                   }, 
                   {
                     runValidators: true,
                     ignoreUndefined: true
                   }
                 );
-  
-                // // checks if the client is gonna be linked to a Company Client
-                // if (linkedCompany)  {
-                //   // if setting a kid for a Company Client, it adds a new boolean field (company) to the the Company Client
-                //   try {
-                //     await Client
-                //       .updateOne(
-                //         { 
-                //           _id: linkedCompany 
-                //         },
-                //         { 
-                //           isCompany : true
-                //         },
-                //         { 
-                //           runValidators   : true,
-                //           ignoreUndefined : true
-                //         }
-                //       );
-          
-                //   } catch(error) {
-                //     throw({ localError: "CM05: Something wrong with Client's Company data."});
-                //   }
-                // }
-          
-                // // if the linkedCompany field is not present, it will unset linked_company and rate_as_per_company
-                // const removeCompanyData = !linkedCompany && await Client
-                //   .updateOne(
-                //     { _id: clientId},
-                //     { $unset: {
-                //         linked_company      : 1,
-                //         rate_as_per_company : 1
-                //       }
-                //     }
-                //   );
 
-                if (clientToBeChanged.nModified || removeCompanyData.nModified) {
+                if (clientToBeChanged.nModified) {
                   const clientModified = await Client
                     .findById({ _id: clientId});
   
-                if (typeKid)
-                  clientModified.birthday = Date.parse(clientModified.birthday);
+                  if (typeKid)
+                    clientModified.birthday = Date.parse(clientModified.birthday);
           
-                res.json({
-                  message: `Client <${clientModified.nickname}> has been modified.`,
-                  newData: clientModified
-                });
-              } else
-                res.status(200).json({
-                  message: "Client NOT changed - no new data."
-                });
+                  res.json({
+                    message: `Client <${clientModified.nickname}> has been modified.`,
+                    newData: clientModified
+                  });
+                } else
+                  res.status(200).json({
+                    message: "Client NOT changed - no new data."
+                  });
           
             } catch(error) {
+              console.trace(error.inactive.message);
               throw({ localError: "Error CM04: Somethiong happened, please try again later"});
             }
 

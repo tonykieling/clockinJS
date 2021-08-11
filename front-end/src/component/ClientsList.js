@@ -19,6 +19,7 @@ class ClientsList extends Component {
     this.state = {
       message         : "",
       disableEditForm : true,
+      disableEditBt   : false,
 
       client          : "",
       clientId        : "",
@@ -77,18 +78,6 @@ class ClientsList extends Component {
       showNotes         : true,
       tmp_showRate      : true,
       tmp_showNotes     : true,
-
-      // company             : "",
-      // linkClientToCompany : false,
-      // rateAsPerCompany    : false,
-      // disableRate         : false,
-      // companyRate         : "",
-      // sureCompany         : false,
-
-      // updateDropDown      : false,
-      // tmp_linkClientToCompany : "",
-      // tmp_companyId           : "",
-      // linkedCompany           : ""
     }
   }
 
@@ -145,14 +134,14 @@ class ClientsList extends Component {
     } else {
 
       this.setState({
-        disableEditForm: true
+        disableEditForm : true,
+        disableEditBt   : true
       });
 
       let data = (this.state.typeKid
         ?
           { 
             // clientId      : this.state.clientId || undefined,
-            name,
             default_rate  : defaultRate,
             nickname      : this.state.typeKid ? nickname : undefined,
 
@@ -166,7 +155,7 @@ class ClientsList extends Component {
             consultant    : this.state.consultant || (this.state.tmp_consultant ? "" : undefined),
             cPhone        : this.state.cPhone || (this.state.tmp_cPhone ? "" : undefined),
             cEmail        : this.state.cEmail || (this.state.tmp_cEmail ? "" : undefined),
-            // typeKid       : this.state.typeKid || undefined,
+            typeKid       : this.state.typeKid || undefined,
           }
         : {
             email           : this.state.email || (this.state.tmp_email ? "" : undefined),
@@ -182,6 +171,7 @@ class ClientsList extends Component {
       );
 
       const additionalData = {
+        name,
         clientId  : this.state.clientId,
         inactive  : this.state.inactive,
         showRate  : this.state.showRate,
@@ -251,9 +241,10 @@ class ClientsList extends Component {
         });
       }
 
-      // this.setState({
-      //   disableEditForm : true,
-      // });
+      this.setState({
+        disableEditForm : true,
+        disableEditBt   : false
+      });
 
       // this.clearMessage();
     }
@@ -882,7 +873,8 @@ class ClientsList extends Component {
                   style   = { {width: "100%"}}
                   onClick = { this.editForm } 
                   ref     = { input => this.textInputX = input }
-                  >
+                  disabled= { this.state.disableEditBt }
+                >
                   Edit
                 </Button>
             }

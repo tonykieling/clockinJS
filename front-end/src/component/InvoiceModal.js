@@ -114,9 +114,6 @@ class InvoiceModal extends Component {
       invoiceId       = this.props.invoice._id,
       userToken       = this.props.storeToken,
       typeOfQuestion  = "invoiceClockins";
-
-      // const url = `/clockin?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
-      // const url = `/clockin/clockins?invoiceId=${invoiceId}&type=invoiceClockins`;
       
       try {
         this.setState({

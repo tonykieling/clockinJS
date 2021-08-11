@@ -1,6 +1,12 @@
 import React from 'react';
 import { Modal, ButtonGroup, Button } from "react-bootstrap";
 
+const btnStyle = {
+  width : "50%",
+  paddingLeft: "0px",
+  paddingRight: "0px"
+};
+
 
 export default function InvoicePdfModal(props) {
   return (
@@ -14,25 +20,26 @@ export default function InvoicePdfModal(props) {
         </Modal.Header>
 
         <Modal.Body>
-          This is body.
           Client is: { props.client.name}
         </Modal.Body>
 
         <Modal.Footer>
-          Footer
         </Modal.Footer>
 
         <ButtonGroup>
           <Button
-            variant = { "success"}
-            onClick = { () => console.log("PDF is coming soon")}
-            >
+            variant   = { "success"}
+            onClick   = { () => console.log("PDF is coming soon")}
+            disabled  = { true }
+            style     = { btnStyle }
+          >
             Generate a PDF file
           </Button>
           <Button
             variant = { "danger"}
             onClick = { props.closeModal}
-            >
+            style   = { btnStyle }
+          >
             Close
           </Button>
         </ButtonGroup>

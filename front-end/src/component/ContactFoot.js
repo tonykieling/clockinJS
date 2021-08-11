@@ -23,13 +23,13 @@ export default function ContactFoot(props) {
     // <div style={{all: "unset"}}>
     <React.Fragment>
     
-    
       <Card
         style={{
-          backgroundColor: props.bckColor,
-          position:"sticky",
-          bottom:0
+          backgroundColor : props.bckColor,
+          position        :"sticky",
+          bottom          : 0
         }}
+        
         // ref = { contactFootRef}
       >
           <Card.Body

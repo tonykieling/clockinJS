@@ -50,8 +50,8 @@ class Login extends Component {
           classNameMessage: "messageSuccess",
         });
 
-        const url = "/api/user";
         // const url = "https://clockinjs.herokuapp.com/user/login";
+        const url = "/api/user";
 
         try {
           const login = await axios.post(

@@ -90,7 +90,7 @@ function PunchInsList(props) {
       dateStart = state.period.dateStart,
       dateEnd   = state.period.dateEnd;
 
-    console.log("dates:", dateEnd, dateStart)
+    // console.log("dates:", dateEnd, dateStart)
     if (!dateStart || !dateEnd) {
       setState({
         ...state,
@@ -122,7 +122,7 @@ function PunchInsList(props) {
                 "Content-Type": "application/json",
                 "Authorization" : `Bearer ${props.storeToken}` }
           });
-console.log("getClockinsReport", getClockinsReport)
+// console.log("getClockinsReport", getClockinsReport)
           if ("summary" in getClockinsReport.data){
             if ("message" in getClockinsReport.data.summary) {
               setreport({
@@ -151,7 +151,7 @@ console.log("getClockinsReport", getClockinsReport)
             });
 
           } else {
-            console.log("ERROR:", getClockinsReport.data.error)
+            // console.log("ERROR:", getClockinsReport.data.error)
             setState({
               ...state,
               message: {

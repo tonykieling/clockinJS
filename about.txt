@@ -31,9 +31,7 @@ need to confirm which methods are being used: get, post, delete and patch? Yeah!
 
 5- migrated
   
-6- testing, missing:
-  - reports
-
+6- testing:
   - when punchin, the list of clockins for that day must show client, rn is not showing that
     PunchinNew.js
     need to send the client name, not just client_id
@@ -51,14 +49,33 @@ need to confirm which methods are being used: get, post, delete and patch? Yeah!
     PunchInModal.js
   DONE
 
-  - check clockins get_all
-
-  - what to do in this case???
-  InvoiceIssue.js
-
   - "Getting clockins..." & disable button & hide table
     invoiceNew.js
   DONE
+
+  - "Getting invoice..." & disable button
+    InvoicesList.js
+  DONE
+
+  - what to do in this case???
+    InvoiceIssue.js
+    changed the message and promised a general pdf (which I'm gonna do soon). Also changed the header to "print" instead of "Issue". It is working
+  DONE
+
+  - list/edit client failing because not sending name when not kid + BE postal_code & type_of_service is not right
+    ClientsLis.js
+    /client/index.js
+  FIXED
+
+
+  - footer on the bottom and icons centered
+    Home.js and Land.js
+    (refer to https://radu.link/make-footer-stay-bottom-page-bootstrap/)
+
+  - check clockins get_all
+
+  - missing reports
+
 
   tests:
     - signup
@@ -75,4 +92,6 @@ need to confirm which methods are being used: get, post, delete and patch? Yeah!
     - list punchins
     - edit invoice
 change all references pointing to heroku, such as emails and README.md    
+
+
 

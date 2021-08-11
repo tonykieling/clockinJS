@@ -25,7 +25,7 @@ export default function Land() {
             It is easy to track your worked hours and manage invoices with Clockin.js.
           </h5>
           <br />
-          <p>You just need to Sign Up and enjoy.</p>
+          <p>You just need to Sign Up and enjoy it.</p>
           <p> It is free. ;)</p>
         </div>
         <br />
@@ -49,8 +49,8 @@ export default function Land() {
       {window.innerWidth < 800
         &&
           <ContactFoot
-            bckColor = "gainsboro" 
-            opac="iconSettingsOpacity"
+            bckColor  = "gainsboro" 
+            opac      = "iconSettingsOpacity"
           />
       }
 
