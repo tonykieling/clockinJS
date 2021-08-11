@@ -26,7 +26,8 @@ class InvoicesIssue extends Component {
     message           : "",
 
     invoice           : "",
-    openInvoicePdfModal  : false
+    openInvoicePdfModal  : false,
+    disableGIBt       : false
   }
 
 
@@ -51,7 +52,14 @@ class InvoicesIssue extends Component {
         classNameMessage  : "messageFailure"
       });
     } else {
-      const url = `/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+      this.setState({
+        message           : "Getting invoices...",
+        classNameMessage  : "messageSuccess",
+        disableGIBt       : true
+      });
+
+      // const url = `/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
+      const url = `/api/invoice?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${clientId}`;
 
       try {
         const getInvoices = await axios.get( 
@@ -74,19 +82,22 @@ class InvoicesIssue extends Component {
             classNameMessage  : `${hasInvoiceSample ? "messageSuccess" : "messageFailure"}`,
             message           : `${hasInvoiceSample 
               ? "Click on the invoice to generate a pdf document and check your download folder." 
-              // : "Client does not have invoice sample registered. Please contact tony.kieling@gmail.com and ask for it."}`
-              : "Click in the invoice to a general pdf invoice. Please, contact tony.kieling@gmail.com for any format changes."}`
+              : "Client does not have invoice sample registered. Please contact tony.kieling@gmail.com and ask for it. A general pdf is under construction and will be available soon."}`
+              // : "Click in the invoice to a general pdf invoice. Please, contact tony.kieling@gmail.com for any format changes."}`
           });
         } else {
-          throw(getInvoices.data.message);
+          throw(getInvoices.data.message || getInvoices.data.error);
         }
       } catch(err) {
         this.setState({
           message           : err,
           classNameMessage  : "messageFailure"
         });
-        this.clearMessage();
       }
+      
+      this.setState({
+        disableGIBt: false
+      });
     }
   }
 
@@ -117,15 +128,6 @@ renderDataTable = (invoices) => {
   });
 }  
 
-  clearMessage = () => {
-    setTimeout(() => {
-      this.setState({
-        message     : "",
-        invoiceCode : ""
-      });
-    }, 3500);
-  }
-
 
   getClientInfo = client => {
     this.setState({
@@ -149,7 +151,6 @@ renderDataTable = (invoices) => {
       generatePdf(data);
     } else {
       console.log("NO INVOICESAMPLE!");
-
     }
   }
 
@@ -218,7 +219,9 @@ renderDataTable = (invoices) => {
                   variant   = "primary" 
                   type      = "submit" 
                   onClick   = { this.handleGetInvoices } 
-                  ref       = {input => this.getInvoicesBtn = input }  >
+                  ref       = {input => this.getInvoicesBtn = input }
+                  disabled  = { this.state.disableGIBt }
+                >
                   Get Invoices
                 </Button>
               </div>

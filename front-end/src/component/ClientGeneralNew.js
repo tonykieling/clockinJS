@@ -71,8 +71,8 @@ class ClientGeneralNew extends Component {
     } else {
       this.setState({ disableBtn: true });
 
-      const url = "/api/client";
       // const url = "https://clockinjs.herokuapp.com/client/";
+      const url = "/api/client";
 
 
       const postalCode = this.state.postalCode

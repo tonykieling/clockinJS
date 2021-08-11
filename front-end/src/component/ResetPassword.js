@@ -51,7 +51,6 @@ class ResetPassword extends Component {
       else {
         // const url = `/user${this.state.url}`;
         const url = "/api/user";
-// console.log("going to change password, url::", url);
 
         this.setState({
           message         : "Processing...",
@@ -67,7 +66,6 @@ class ResetPassword extends Component {
               newPassword : this.state.newPassword,
               whatToDo    : "reset-password"
           });
-// console.log("resetPassword=>", resetPassword);
           
           if (resetPassword.data.message){
             const user  = resetPassword.data.user;

@@ -28,7 +28,7 @@ const getClockins = async (userToken, typeOfOperation, ...moreArgs) => {
         break;
       default:
     }
-console.log("url::", url);
+// console.log("url::", url);
     try {
       const clockins = await axios.get( 
         url,
@@ -39,7 +39,7 @@ console.log("url::", url);
           }
         }
       );
-console.log("-=clockins", clockins);
+// console.log("-=clockins", clockins);
 
       if (clockins.data.error)
         throw(clockins.data.error);
