@@ -135,16 +135,6 @@ class PunchInsList extends Component {
       totalCad  += Number(clockinsToSend.totalCad);
       if (thinScreen) {   // small devices
         return (
-          // this.state.company
-          // ?
-          //   <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-          //   </tr>
-          // :
             <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
               <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
               <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
@@ -156,18 +146,6 @@ class PunchInsList extends Component {
 
       } else {
         return (
-          // this.state.company
-          // ?
-          //   <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
-          //     <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-          //   </tr>
-          // :
             <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
               <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
               <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
@@ -239,9 +217,8 @@ class PunchInsList extends Component {
 
 
   getClientInfo = client => {
+    console.log("XXclient", client);
     this.setState({
-      // company         : !!client.isCompany && client,
-      // client          : !client.isCompany && client,
       client,
       clientId        : client._id,
       tableVisibility : false,

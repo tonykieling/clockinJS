@@ -191,25 +191,6 @@ const confirmPasswordChange = async(user) => {
   await generalSender(user.email, "Clockin.js - Password changing success", content);
 }
 
-// const showDate = incomingDate => {
-//   const date = new Date(incomingDate);
-//   const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-//   const day = date.getUTCDate() > 9 ? date.getUTCDate() : `0${date.getUTCDate()}`;
-//   return(`${month[date.getUTCMonth()]} ${day}, ${date.getUTCFullYear()}`);
-// }
-
-
-// const showTime = incomingTime => {
-//   const time = new Date(incomingTime);
-//   return((time.getUTCHours() < 10 
-//           ? ("0" + time.getUTCHours()) 
-//           : time.getUTCHours()) 
-//       + ":" + 
-//       (time.getUTCMinutes() < 10 
-//           ? ("0" + time.getUTCMinutes()) 
-//           : time.getUTCMinutes()));
-// }
-
 
 
 module.exports = async (req, res) => {
@@ -224,50 +205,51 @@ module.exports = async (req, res) => {
       
       switch (method) {
         case "GET":
+          {
           // it is working good
 
-          try {
-            const { code } = req.query;
+            try {
+              const { code } = req.query;
 
-            if (!code)
-              throw({localError: "Error: No user has been found."});
-        
-            const user = await User
-              .find({ code });
-        
-            if (user.length < 1)
-              throw({localError: "Error: EGUBC01 - This code is not valid anymore. Try a new reset password."});
-            
-            if (user.code_expiry_at < new Date().getTime()) {
-              res.send({
-                error : "Code has already expired. Please, generate a new one.",
-                code  : "expired",
-                user
-              });      
-            } else {
-              res.json({
-                message: "success", 
-                user: {
-                  _id         : user._id,
-                  name        : user.name,
-                  email       : user.email,
-                  admin       : user.admin,
-                  address     : user.address,
-                  city        : user.city,
-                  postalCode  : user.postal_code,
-                  phone       : user.phone
-                }
+              if (!code)
+                throw({localError: "Error: No user has been found."});
+          
+              const user = await User
+                .find({ code });
+
+              if (user.length < 1)
+                throw({localError: "Error: EGUBC01 - This code is not valid anymore. Try a new reset password in the Login."});
+              
+              if (user.code_expiry_at < new Date().getTime()) {
+                res.send({
+                  error : "Code has already expired. Please, generate a new one.",
+                  code  : "expired",
+                  user
+                });      
+              } else {
+                res.json({
+                  message: "success", 
+                  user: {
+                    _id         : user[0]._id,
+                    name        : user[0].name,
+                    email       : user[0].email,
+                    admin       : user[0].admin,
+                    address     : user[0].address,
+                    city        : user[0].city,
+                    postalCode  : user[0].postal_code,
+                    phone       : user[0].phone
+                  }
+                });
+              }
+
+            } catch(error) {
+              res.status(200).json({
+                error: (error.localError || "Error: EUGBC02 - Something got wrong.")
               });
             }
 
-          } catch(error) {
-            res.status(200).json({
-              error: (error.localError || "Error: EUGBC02 - Something got wrong.")
-            });
+            break;
           }
-
-          break;
-          
       case "POST":
         if (whatToDo === "login") {
 
@@ -412,7 +394,7 @@ module.exports = async (req, res) => {
               try {
 
                 const code_expiry_at  = new Date().getTime() + 86400000;
-      
+
                 const recordCode = await User
                   .updateOne({
                     _id: userExist[0]._id
@@ -499,7 +481,7 @@ module.exports = async (req, res) => {
             if (hash) {       
               const resetPassword = await User
                 .updateOne({
-                  _id: userExist._id
+                  _id: userExist[0]._id
                 }, {
                   $set: {
                     password        : hash,
@@ -507,7 +489,7 @@ module.exports = async (req, res) => {
                     code_expiry_at  : ""
                   }
                 });
-      
+
               if (!resetPassword.nModified) 
                 throw({localError: "Error URP02: Try again later."});
       
@@ -521,14 +503,14 @@ module.exports = async (req, res) => {
               res.json({
                 message: "success", 
                 user: {
-                  _id         : userExist._id,
-                  name        : userExist.name,
-                  email       : userExist.email,
-                  admin       : userExist.admin,
-                  address     : userExist.address,
-                  city        : userExist.city,
-                  postalCode  : userExist.postal_code,
-                  phone       : userExist.phone
+                  _id         : userExist[0]._id,
+                  name        : userExist[0].name,
+                  email       : userExist[0].email,
+                  admin       : userExist[0].admin,
+                  address     : userExist[0].address,
+                  city        : userExist[0].city,
+                  postalCode  : userExist[0].postal_code,
+                  phone       : userExist[0].phone
                 },
                 token
               });

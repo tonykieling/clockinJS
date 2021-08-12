@@ -74,8 +74,6 @@ class Login extends Component {
           } else {
             this.setState({
               errorMsg  : answer.error,
-              email     : "",
-              password  : "",
               disable   : false,
               classNameMessage: "messageFailure"
             });

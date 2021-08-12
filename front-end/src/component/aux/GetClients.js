@@ -77,18 +77,17 @@ function GetClients(props) {
         // right now, all clients are off
         // do not recall backend method to all clients such ass clockins for all clients
         //
-        //
-
-        const resultedArray = [...sortedArray];
 
         if (props.bringAllClients)
-          setclients(resultedArray);
+          setclients(sortedArray);
         else {
-          const result = resultedArray.filter(e => !e.inactive);
+          const result = sortedArray.filter(e => !e.inactive);
 
-          setclients(result);
+          if (props.reports)
+            setclients([{name: "All Clients"}, ...result]);
+          else
+            setclients(result);
         }
-
       } else if (getClients.data.error) {
         //call message modal to say the user needs to login again and redirect to /land
         setshowModal(true);
@@ -138,7 +137,7 @@ function GetClients(props) {
 
 
   const message = () => {
-    const text = processingMessage || errorMsg || "No clients at all";
+    const text = processingMessage || errorMsg || "No clients at all, please add Clients.";
 
     return (
       <div

@@ -21,21 +21,20 @@ function PunchInsList(props) {
   // general page variables
   const [state, setState] = useState({
     client: {
-      id    : "",
-      name  : ""
     },
     period: {
-      // dateStart : "2020-01-01",
-      // dateEnd   : "2020-12-30",
-      dateStart : "",
-      dateEnd   : "",
+      dateStart : "2020-01-01",
+      dateEnd   : "2022-12-30",
+      // dateStart : "",
+      // dateEnd   : "",
     },
     message: {
       descripition      : "",
       classNameMessage  : ""
     },
     showOutput      : false,
-    checkAllClients : false
+    checkAllClients : false,
+    disableGetBt    : false
   })
 
 
@@ -111,8 +110,18 @@ function PunchInsList(props) {
           }
         });
       } else {
+        setState({
+          ...state,
+          message: {
+            descripition    : "Getting Report clockins...",
+            classNameMessage: "messageSuccess"
+          },
+          disableGetBt: true
+        });
+
         try {
-          const url = `/report/clockins?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${state.client._id}&checkAllClients=${state.checkAllClients}`;
+          // const url = `/report/clockins?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${state.client._id}&checkAllClients=${state.checkAllClients}`;
+          const url = `/api/clockin/?dateStart=${dateStart}&dateEnd=${dateEnd}&clientId=${state.client._id}&checkAllClients=${state.checkAllClients}&reports=${true}`;
 
           const getClockinsReport = await axios.get( 
             url,
@@ -150,14 +159,12 @@ function PunchInsList(props) {
             });
 
           } else {
-            console.log("ERROR:", getClockinsReport.data.error)
+            console.log("==========ERROR:", getClockinsReport.data.error);
             setState({
               ...state,
               message: {
                 classNameMessage  : "messageFailure",
-                descripition      : getClockinsReport.data.error.search("ECA01")
-                                      ? "Token expired - User needs to login again."
-                                      : getClockinsReport.data.error
+                descripition      : getClockinsReport.data.error
               }
             });
           }
@@ -178,7 +185,8 @@ function PunchInsList(props) {
         message: {
           descripition    : "Please, choose a client option.",
           classNameMessage: "messageFailure"
-        }
+        },
+        disableGetBt: false
       });
     }
   }
@@ -203,23 +211,22 @@ function PunchInsList(props) {
       <div className="formPosition">
         <br />
 
+
 {/**
- * 
  * this is the form 
- * 
  * */}
         <Card className="card-settings">
-          {/* <Card.Header>Reports - Clockins</Card.Header> */}
-          <Card.Header>Report - Clockins - Coming soon</Card.Header>
+          <Card.Header>Reports - Clockins</Card.Header>
+          {/* <Card.Header>Report - Clockins - Coming soon</Card.Header> */}
           <Card.Body>
             
           { /* mount the Dropbox Button with all clients for the user */ }
           <div className="gridClientBtContainer">
-            {/* <GetClients
+            <GetClients
               client        = { state.client }
               getClientInfo = { getClientInfo }
-              report        = { true }
-            /> */}
+              reports       = { true }
+            />
 
           </div>
 
@@ -262,10 +269,11 @@ function PunchInsList(props) {
 
               <div className="d-flex flex-column">
                 <Button 
-                  variant="primary" 
-                  onClick = { handleSubmit } 
+                  variant   ="primary" 
+                  onClick   = { handleSubmit }
+                  disabled  = { state.disableGetBt }
                 >
-                  Get List
+                  Get Report
                 </Button>
               </div>
             </Form>

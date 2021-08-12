@@ -79,8 +79,12 @@ need to confirm which methods are being used: get, post, delete and patch? Yeah!
 
   tests:
     - signup
+    - login
+      - keep email and passowrd when they do not match (login error)
+      DONE
     - change password
     - forget password
+      - email message has to point to https://clockin.tkwebdev.ca
     - change user data
     - punchin
     - list punchins
@@ -94,4 +98,8 @@ need to confirm which methods are being used: get, post, delete and patch? Yeah!
 change all references pointing to heroku, such as emails and README.md    
 
 
+  - reset_password
+  FIXED
 
+  - No Client message changed ("No clients at all, please add Clients.")
+  DONE

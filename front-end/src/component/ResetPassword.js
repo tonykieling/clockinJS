@@ -113,11 +113,11 @@ class ResetPassword extends Component {
     });
     const code = match.params.param;
 
-
     try {
       // const url = `/api/user/${code}`;  // req.params  did not work in vercel migration, maybe kz vercel routes
-      // const url = `/api/user/?code=${code}`; // req.query
-      const url = "/api/user";
+
+      // const url = "/api/user";
+      const url = `/api/user/?code=${code}`; // req.query
 
       const getUser = await axios.get( 
         url

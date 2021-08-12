@@ -1,0 +1,3 @@
+The files in this directory are related to 'controlers' functions associated with reports functionalities.
+
+I choose to have it separetelly from 'controllers' in order to be better visualized.
