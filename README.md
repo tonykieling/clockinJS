@@ -1,5 +1,5 @@
 # **Clockin.js**
-More information, please, check at https://clockinjs.herokuapp.com/about  
+More information, please, check at https://clockin.tkwebdev.ca/about  
   
   
 ### **The project**
@@ -9,7 +9,7 @@ This project is aimed to have a system with users, clients, clockins and invoice
  - generate invoices and manage them
 
 ### **Dependencies:**
-  - express
+  - express (for v1, running with server. The current version is a serverless function approach and do not need Express)
   - nodemon
   - body-parser
   - mongoose

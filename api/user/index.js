@@ -103,7 +103,7 @@ const sendResetPassword = async (subject, user, code) => {
     <div>
       <p>Hi <b>${user.name.split(" ")[0]}</b></p>
       <p>Recently you asked to reset your password.</p>
-      <p>Click on <a href="https://clockinjs.herokuapp.com/reset_password/${code}">reset password</a> to proceed.</p>
+      <p>Click on <a href="https://clockin.tkwebdev.ca/reset_password/${code}">reset password</a> to proceed.</p>
       <br>
       <p>Please, disregard this message in case you do not intend to change your password.</p>
       <br>
@@ -128,7 +128,7 @@ const gotNewUser = async (user) => {
       <p><b>${JSON.stringify(user)} - </b></p>
       <br>
       <p>Kind regards from</p>
-      <h4><a href="https://clockinjs.herokuapp.com">Clockin.js</a> Team :)</h4>
+      <h4><a href="https://clockin.tkwebdev.ca">Clockin.js</a> Team :)</h4>
     </div>
   `);
 
@@ -143,13 +143,13 @@ const welcomeEmail = async (user, to) => {
   const content = (`
     <div>
       <p>Hi ${user.split(" ")[0]}.</p>
-      <p>Welcome to <a href="https://clockinjs.herokuapp.com">Clockin.js</a></p>
+      <p>Welcome to <a href="https://clockin.tkwebdev.ca">Clockin.js</a></p>
       <br>
       <p>Feel free to use the system, register your clients, punch your worked times and generated invoices.<p>
       <br>
       
       <p>Kind regards from</p>
-      <h4><a href="https://clockinjs.herokuapp.com">Clockin.js</a> Team :)</h4>
+      <h4><a href="https://clockin.tkwebdev.ca">Clockin.js</a> Team :)</h4>
     </div>
   `);
 

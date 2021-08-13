@@ -74,7 +74,14 @@ need to confirm which methods are being used: get, post, delete and patch? Yeah!
 
   - check clockins get_all
 
-  - missing reports
+  - reset_password
+  FIXED
+
+  - No Client message changed ("No clients at all, please add Clients.")
+  DONE
+
+  - reports
+    clockins is DONE
 
 
   tests:
@@ -97,9 +104,3 @@ need to confirm which methods are being used: get, post, delete and patch? Yeah!
     - edit invoice
 change all references pointing to heroku, such as emails and README.md    
 
-
-  - reset_password
-  FIXED
-
-  - No Client message changed ("No clients at all, please add Clients.")
-  DONE

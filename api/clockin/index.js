@@ -554,7 +554,7 @@ const sendClockinEmail = async (subject, clockin, user, client) => {
     <br>
 
       <p>Kind regards from</p>
-      <h4><a href="https://clockinjs.herokuapp.com">Clockin.js</a> Team :)</h4>
+      <h4><a href="https://clockin.tkwebdev.ca">Clockin.js</a> Team :)</h4>
     </div>
   `);
   
@@ -651,13 +651,12 @@ const checkInvoiceCode = async (userId, clientId) => {
 const allClients = async(userId) => {
   try {
     // checks client info
+    // onlcy active clients
     const clients = await Client
       .find({
         user_id  : userId,
         inactive: { $ne: true }
       });
-
-// console.log("==allClients:", allClients);
 
     return(clients);
   } catch (error) {
@@ -670,7 +669,7 @@ const allClients = async(userId) => {
 
 
 //it queries the dbs the clockins for either a user (all clients) or a client
-const queryClockins = async (userId, dateStart, dateEnd, clientId, clientName) => {
+const queryClockins = async (summary, userId, dateStart, dateEnd, clientId, clientName) => {
   let conditions = {
     user_id: mongoose.Types.ObjectId(userId),
     date: {
@@ -678,40 +677,44 @@ const queryClockins = async (userId, dateStart, dateEnd, clientId, clientName) =
       $lte: dateEnd
     }
   }
-console.log("======clientId", typeof clientId);
 
-  if (typeof clientId === "string")
+  if (!summary) {
+    // it is about only one client
     conditions.client_id = mongoose.Types.ObjectId(clientId);
-  
-  else {
-    console.log("not one, but an array of clientId", typeof clientId, clientId);
-  //   const clients = clientId.map(e => e._id);
-  // console.log("clients", clients);
-    // { $or: [..clientId]}
-   
-   
-    conditions = {
-      user_id: mongoose.Types.ObjectId(userId),
-      date: {
-        $gte: dateStart,
-        $lte: dateEnd
-      },
-      $or : [
-        {client_id: mongoose.Types.ObjectId("5e370d723defb432b11df739")},
-        {client_id: mongoose.Types.ObjectId("5f721157660b20000493fce7")},
-      ]
-    };
   }
-  
-console.log("****=conditions=", conditions);
+  else {
+    // it is about an arryay of clients
+    const clients = clientId.map(e => (
+        { 
+          client_id: mongoose.Types.ObjectId(e._id)
+        }
+      )
+    );
+
+    conditions["$or"] = [...clients];
+   
+   
+    // conditions = {
+    //   user_id: mongoose.Types.ObjectId(userId),
+    //   date: {
+    //     $gte: dateStart,
+    //     $lte: dateEnd
+    //   },
+    //   $or : [
+    //     ...clients
+    //     // {client_id: mongoose.Types.ObjectId("5e370d723defb432b11df739")},
+    //     // {client_id: mongoose.Types.ObjectId("5f721157660b20000493fce7")},
+    //   ]
+    // };
+  }
 
   let allClockins = "";
   try {
+    // it queries clockins for only active clients
     allClockins = await Clockin
       .find(conditions)
       .sort({date: 1})
 
-console.log("==clientName:", clientName, "allClockins", allClockins.length);
   } catch (error) {
     console.log("Error: Clockin Report - 04 ");
     return ({
@@ -804,10 +807,7 @@ module.exports = async (req, res) => {
       switch (method) {
         case "GET":
           {
-            console.log("req.query::", req.query);
             if (req.query.reports) {
-              console.log("YYYYYYYYYYYYYYYYYYYYY");
-              // throw({localError: "YEAHHHHHHHHHHP"});
 
               const 
               clientId        = req.query.clientId,
@@ -819,26 +819,14 @@ module.exports = async (req, res) => {
 
               try {
                 if (checkAllClients === "true") {
-                  // calls the function that proceed for all clients
-
-
-                  ///////
-                  ///////////
-                  ////////////// summary needs to run after getting all clients (which happens to be inactive ne true)
-                  ////////////
-                  //////////
-                  ///////////
-                  ///////////// send an array of clients of all clients
-                  ///////////
-
+                  // calls the function that proceed for all clients (which are active)
                   const clients = await allClients(userId);
-console.log("====ALLLLLLLLL clients::", clients);
 
-                  const summary = await queryClockins(userId, dateStart, dateEnd, clients);
-console.log("===summary::");
+                  // query clockins receives its first param sumarry or not
+                  const summary = await queryClockins(true, userId, dateStart, dateEnd, clients);
 
                   const arrayOfClockinsByClient = await clients.map(e => 
-                      queryClockins(userId, dateStart, dateEnd, e._id, (e.nickname || e.name))  
+                      queryClockins(false, userId, dateStart, dateEnd, e._id, (e.nickname || e.name))  
                     );
 
                   const clockinsByClient = await Promise.all(arrayOfClockinsByClient);
@@ -850,7 +838,7 @@ console.log("===summary::");
               
                 } else {
                   // calls the function for a specific client
-                  const summary = await queryClockins(userId, dateStart, dateEnd, clientId);
+                  const summary = await queryClockins(false, userId, dateStart, dateEnd, clientId);
                   result.summary = summary;
                 }
               
@@ -864,7 +852,6 @@ console.log("===summary::");
               
                 res.json(result);
               } catch (error) {
-                console.log("errorrrrrrrrrrrr", error);
                 throw({ localError: error.message || error});
               }
 
@@ -1137,12 +1124,11 @@ console.log("===summary::");
 
             // it checks whether user is OK and grab info about them which will be used later
             const temp_user   = await checkUserFunction(userId);
-// console.log("temp_user", temp_user);
+
             if (temp_user.error)
               throw({ localError: temp_user.error});
 
             const userExist   = temp_user.checkUser;
-// console.log("userExist", userExist);
           
             // it checks whether client is OK and grab info about them which will be used later
             const client_id     = req.body.clientId;
@@ -1151,7 +1137,6 @@ console.log("===summary::");
             throw({ localError: temp_client.error});
             
             const clientExist   = temp_client.checkClient;
-// console.log("clientExist", clientExist);          
           
             // lets record clockin after User and Client validation
             const {
@@ -1198,7 +1183,7 @@ console.log("===summary::");
                 ignoreUndefined: true
               }
               );
-// console.log("newClockin", newClockin);
+
               await newClockin.save();
 
 
@@ -1250,7 +1235,7 @@ console.log("===summary::");
     } catch (error) {
       // console.log("most upper level - errorrrrrrrrrrrrrrr: ", error);
       res.json({
-        error: (error.localError || error.message || error)
+        error: (error.localError || error.message || error || "General Error. Try again later.")
       });
   } finally {
     // console.log("........disconnecting............");

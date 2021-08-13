@@ -23,10 +23,10 @@ function PunchInsList(props) {
     client: {
     },
     period: {
-      dateStart : "2020-01-01",
-      dateEnd   : "2022-12-30",
-      // dateStart : "",
-      // dateEnd   : "",
+      // dateStart : "2020-01-01",
+      // dateEnd   : "2022-12-30",
+      dateStart : "",
+      dateEnd   : "",
     },
     message: {
       descripition      : "",
@@ -87,9 +87,9 @@ function PunchInsList(props) {
     const 
       client    = state.client,
       dateStart = state.period.dateStart,
-      dateEnd   = state.period.dateEnd;
+      dateEnd   = state.period.dateEnd || new Date();
 
-    if (!dateStart || !dateEnd) {
+    if (!dateStart) {
       setState({
         ...state,
         message: {
@@ -116,7 +116,8 @@ function PunchInsList(props) {
             descripition    : "Getting Report clockins...",
             classNameMessage: "messageSuccess"
           },
-          disableGetBt: true
+          disableGetBt: true,
+          showOutput  : false
         });
 
         try {
@@ -159,21 +160,13 @@ function PunchInsList(props) {
             });
 
           } else {
-            console.log("==========ERROR:", getClockinsReport.data.error);
-            setState({
-              ...state,
-              message: {
-                classNameMessage  : "messageFailure",
-                descripition      : getClockinsReport.data.error
-              }
-            });
+            throw new Error(getClockinsReport.data.error);
           }
-        } catch(err) {
-          console.log("Another ERRRRRRR", err.message || err);
+        } catch(error) {
           setState({
             ...state,
             message: {
-              descripition    : err.message,
+              descripition    : error.message || error,
               classNameMessage: "messageFailure"
             }
           });
