@@ -104,3 +104,8 @@ need to confirm which methods are being used: get, post, delete and patch? Yeah!
     - edit invoice
 change all references pointing to heroku, such as emails and README.md    
 
+
+1- welcome message has a typo in "generated" instead of "generate"
+  FIXED
+2- check click on clockins when generate invoice, it is showing nothing with an empty screen
+  FIXED

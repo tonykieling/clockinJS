@@ -88,13 +88,9 @@ class InvoiceNew extends Component {
       const
         dateStart             = this.state.dateStart,
         dateEnd               = this.state.dateEnd,
-        // clientId              = this.state.clientId || this.state.company._id,
         clientId              = this.state.clientId,
         queryLastInvoiceCode  = true;
 
-        // const pastClockins  = this.state.company
-        //   ? await getClockins(this.props.storeToken, "toCompany", dateStart, dateEnd, clientId, queryLastInvoiceCode)
-        //   : 
 
       this.setState({
         message           : "Getting clockins...",
@@ -219,7 +215,6 @@ class InvoiceNew extends Component {
         notes     : this.state.notes,
         clientId  : this.state.clientId,
         code      : this.state.invoiceCode.toUpperCase(),
-        // company   : this.state.company._id ? true : undefined,
         clockinArray : this.state.clockinList
       }
 
@@ -285,19 +280,6 @@ class InvoiceNew extends Component {
         if (thinScreen) {   // small devices
 
           return (
-            // this.state.company
-            //   ?
-            //     <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-            //       <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-            //       <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-            //       <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
-            //       <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-            //       {clockinsToSend.invoice !== "not yet"
-            //         ? <td style={{verticalAlign: "middle", backgroundColor: "#c94c4c"}}>{clockinsToSend.invoice}</td>
-            //         : <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-            //       }
-            //     </tr>
-            //   :
                 <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
@@ -312,21 +294,6 @@ class InvoiceNew extends Component {
 
         } else {
           return (
-            // this.state.company
-            //   ?
-            //     <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
-            //       <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
-            //       <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
-            //       <td style={{verticalAlign: "middle"}}>{clockinsToSend.client}</td>
-            //       <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
-            //       <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-            //       <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
-            //       {clockinsToSend.invoice !== "not yet"
-            //         ? <td style={{verticalAlign: "middle", backgroundColor: "#c94c4c"}}>{clockinsToSend.invoice}</td>
-            //         : <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
-            //       }
-            //     </tr>
-            //   :
                 <tr key={clockinsToSend.num} onClick={() => this.editClockin(clockinsToSend)}>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.num}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
@@ -377,7 +344,6 @@ class InvoiceNew extends Component {
     this.setState({
       showModal       : true,
       clockinToModal  : data,
-      client          : data.client
     });
   }
 
@@ -401,23 +367,21 @@ class InvoiceNew extends Component {
 
 
 
-  clearMessage = () => {
-    setTimeout(() => {
-      this.setState({
-        message         : "",
-        messageInvoice  : "",
-        invoiceCode     : "",
-        // disableInvGenBtn: false
-      });
-    }, 3500);
-  }
+  // clearMessage = () => {
+  //   setTimeout(() => {
+  //     this.setState({
+  //       message         : "",
+  //       messageInvoice  : "",
+  //       invoiceCode     : "",
+  //       // disableInvGenBtn: false
+  //     });
+  //   }, 3500);
+  // }
 
 
   getClientInfo = client => {
     this.setState({
-      // client          : !client.isCompany && client,
       client,
-      // company         : !!client.isCompany && client,
       clientId        : client._id,
       disabledIPBtn   : false,
       tableVisibility : false,
@@ -448,14 +412,10 @@ class InvoiceNew extends Component {
           <Card.Body>
             <div className="gridClientBtContainer">
               <GetClients 
-                // client        = { this.state.client || this.state.company }
                 client        = { this.state.client }
                 getClientInfo = { this.getClientInfo }
-                // invoiceFlag   = { true }
-              /> { /**
-               * mount the Dropbox Button with all clients for the user
-               * * invoice generation is not available for clients linked to a compnay, only for that company.
-               */ }
+              /> 
+
             </div>
 
             <br></br>
@@ -515,8 +475,6 @@ class InvoiceNew extends Component {
           ?
             <Card className="cardInvoiceGenListofClockins card">
               <Card.Header style={{textAlign: "center"}}>
-                {/* Client: <b>{this.state.company.name || this.state.client.nickname || this.state.client.name}</b>, {" "}
-                  <b>{this.state.clockinList.length}</b> {this.state.clockinList.length > 1 ? "Clockins" : "Clockin"} */}
                   Client: <b>{this.state.client.nickname || this.state.client.name}</b>, {" "}
                   <b>{this.state.clockinList.length}</b> {this.state.clockinList.length > 1 ? "Clockins" : "Clockin"}
               </Card.Header>
@@ -524,55 +482,20 @@ class InvoiceNew extends Component {
               {(this.state.clockinList.length > 0)
                 ? thinScreen 
                   ?
-                  // ? this.state.company
-                  //   ?
-                  //     <Table striped bordered hover size="sm" responsive>
-                  //       <thead style={{textAlign: "center"}}>
-                  //         <tr>
-                  //           <th style={{verticalAlign: "middle"}}>#</th>
-                  //           <th style={{verticalAlign: "middle"}}>Date</th>
-                  //           <th style={{verticalAlign: "middle"}}>Kid</th>
-                  //           <th style={{verticalAlign: "middle"}}>Duration</th>
-                  //           <th style={{verticalAlign: "middle"}}>Invoice</th>
-                  //         </tr>
-                  //       </thead>
-                  //       <tbody style={{textAlign: "center"}}>
-                  //         {this.state.clockInListTable}
-                  //       </tbody>
-                  //     </Table>
-                  //   :
-                      <Table striped bordered hover size="sm" responsive>
-                          <thead style={{textAlign: "center"}}>
-                            <tr>
-                              <th style={{verticalAlign: "middle"}}>#</th>
-                              <th style={{verticalAlign: "middle"}}>Date</th>
-                              <th style={{verticalAlign: "middle"}}>At</th>
-                              <th style={{verticalAlign: "middle"}}>Duration</th>
-                              <th style={{verticalAlign: "middle"}}>Invoice</th>
-                            </tr>
-                          </thead>
-                          <tbody style={{textAlign: "center"}}>
-                            {this.state.clockInListTable}
-                          </tbody>
-                        </Table>
-                  // : this.state.company
-                  //   ?
-                  //     <Table striped bordered hover size="sm" responsive>
-                  //       <thead style={{textAlign: "center"}}>
-                  //         <tr>
-                  //           <th style={{verticalAlign: "middle"}}>#</th>
-                  //           <th style={{verticalAlign: "middle"}}>Date</th>
-                  //           <th style={{verticalAlign: "middle"}}>Kid</th>
-                  //           <th style={{verticalAlign: "middle"}}>Time Start</th>
-                  //           <th style={{verticalAlign: "middle"}}>Total Time</th>
-                  //           <th style={{verticalAlign: "middle"}}>CAD$</th>
-                  //           <th style={{verticalAlign: "middle"}}>Invoice</th>
-                  //         </tr>
-                  //       </thead>
-                  //       <tbody style={{textAlign: "center"}}>
-                  //         {this.state.clockInListTable}
-                  //       </tbody>
-                  //     </Table>
+                    <Table striped bordered hover size="sm" responsive>
+                        <thead style={{textAlign: "center"}}>
+                          <tr>
+                            <th style={{verticalAlign: "middle"}}>#</th>
+                            <th style={{verticalAlign: "middle"}}>Date</th>
+                            <th style={{verticalAlign: "middle"}}>At</th>
+                            <th style={{verticalAlign: "middle"}}>Duration</th>
+                            <th style={{verticalAlign: "middle"}}>Invoice</th>
+                          </tr>
+                        </thead>
+                        <tbody style={{textAlign: "center"}}>
+                          {this.state.clockInListTable}
+                        </tbody>
+                      </Table>
                     :
                       <Table striped bordered hover size="sm" responsive>
                         <thead style={{textAlign: "center"}}>
@@ -676,13 +599,13 @@ class InvoiceNew extends Component {
 
         {this.state.showModal
           ? <PunchInModal 
-              showModal     = { this.state.showModal}
-              clockinData   = { this.state.clockinToModal}
+              showModal     = { this.state.showModal }
+              clockinData   = { this.state.clockinToModal }
               // client        = { this.state.client.nickname}
-              client        = { this.state.client}
-              deleteClockin = { (clockinId) => this.updateClockins(clockinId)}
-              closeModal    = { this.closeClockinModal}
-              thinScreen    = { thinScreen}
+              client        = { this.state.client.nickname || this.state.client.name }
+              deleteClockin = { (clockinId) => this.updateClockins(clockinId) }
+              closeModal    = { this.closeClockinModal }
+              thinScreen    = { thinScreen }
             />
           : ""
         }

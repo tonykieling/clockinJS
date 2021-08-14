@@ -33,4 +33,4 @@ This project is aimed to have a system with users, clients, clockins and invoice
 
   **How to use:**  
   Please, check at https://clockin.tkwebdev.ca/about
-  Please, check at https://clockinjs.herokuapp.com/about
+  

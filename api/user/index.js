@@ -145,7 +145,7 @@ const welcomeEmail = async (user, to) => {
       <p>Hi ${user.split(" ")[0]}.</p>
       <p>Welcome to <a href="https://clockin.tkwebdev.ca">Clockin.js</a></p>
       <br>
-      <p>Feel free to use the system, register your clients, punch your worked times and generated invoices.<p>
+      <p>Feel free to use the system, register your clients, punch in worked times, generate and control invoices.<p>
       <br>
       
       <p>Kind regards from</p>

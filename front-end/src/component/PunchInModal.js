@@ -76,7 +76,6 @@ function PunchInModal(props) {
         <Modal
           show    = { showClockinModal }
           onHide  = { props.closeModal }
-          // style   = {{ backgroundColor: "red"}}
         >
 
           <Modal.Header closeButton={handleClose}>
