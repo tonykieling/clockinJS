@@ -150,7 +150,7 @@ function GetClients(props) {
 
     return (
       <>
-        { goLand && <Redirect to = "/land" /> }
+        { goLand && <Redirect to = "/login" /> }
 
         { showModal
             &&

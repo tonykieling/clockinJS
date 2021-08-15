@@ -29,7 +29,8 @@ This project is aimed to have a system with users, clients, clockins and invoice
  ### **How to install:**  
   `# git clone https://github.com/tonykieling/shop.git .`  
   `# npm i`  
-  `# npm start`    
+  `# npm start` 
+  * the current version is using serverless function, instead of running a server using Express. So, most likely the installation, specially back-end, will not work properly.   
 
   **How to use:**  
   Please, check at https://clockin.tkwebdev.ca/about
