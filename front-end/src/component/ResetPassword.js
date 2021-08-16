@@ -20,7 +20,8 @@ class ResetPassword extends Component {
       message           : "Processing...",
       classNameMessage  : "messageSuccess",
       flag              : "Processing...",
-      disableButton     : true
+      disableButton     : true,
+      flagGoToLogin     : false
     }
 
 
@@ -133,16 +134,13 @@ class ResetPassword extends Component {
           disableButton : false
         });
       } else {
-        const user = {
-          name: "<code_is_invaild>"
-        };
-
         this.setState({
-          user              : getUser.data.code ? getUser.data.user.name : user,
+          user              : { name: "<code_is_invalid>" },
           message           : getUser.data.error,
           classNameMessage  : "messageFailure",
           flag              : "",
-          disableButton     : false
+          disableButton     : false,
+          flagGoToLogin     : true,
         });
       }
 
@@ -150,7 +148,8 @@ class ResetPassword extends Component {
       this.setState({
         message           : err.message,
         classNameMessage  : "messageFailure",
-        flag              : ""
+        flag              : "",
+        flagGoToLogin     : true,
       });
     }
   }
@@ -168,10 +167,12 @@ class ResetPassword extends Component {
                 <br />
                 <h3>Reset Password</h3>
                 <br />
-                <p>Hi <b>{this.state.flag
-                        ? <span className="messageSuccess">{this.state.flag}</span>
-                        : this.state.user ? this.state.user.name.split(" ")[0] : ""}
-                      </b></p>
+                <p>Hi 
+                  <b> {this.state.flag
+                    ? <span className="messageSuccess">{this.state.flag}</span>
+                    : this.state.user ? this.state.user.name.split(" ")[0] : ""}
+                  </b>
+                </p>
                 <br />
                 <Card className="card-settings">
                   <Form onSubmit={this.handleSubmit}>
@@ -213,23 +214,34 @@ class ResetPassword extends Component {
                     <br />
 
                     <div className="d-flex flex-column">
-                      <ButtonGroup className="mt-3">
-                        <Button 
-                          disabled  = { this.state.disableButton }
-                          variant   = "primary" 
-                          type      = "submit" 
-                        >
-                          Submit
-                        </Button>
+                      { this.state.flagGoToLogin
+                        ?
+                          <Button 
+                            disabled  = { false }
+                            variant   = "primary"
+                            onClick   = { this.cancelResetPassword } 
+                          >
+                            Go to Login
+                          </Button>
+                        :
+                          <ButtonGroup className="mt-3">
+                            <Button 
+                              disabled  = { this.state.disableButton }
+                              variant   = "primary" 
+                              type      = "submit" 
+                            >
+                              Submit
+                            </Button>
 
-                        <Button 
-                          disabled  = { this.state.disableButton }
-                          variant   = "danger"
-                          onClick   = { this.cancelResetPassword } 
-                        >
-                          Cancel
-                        </Button>
-                      </ButtonGroup>
+                            <Button 
+                              disabled  = { this.state.disableButton }
+                              variant   = "danger"
+                              onClick   = { this.cancelResetPassword } 
+                            >
+                              Cancel
+                            </Button>
+                          </ButtonGroup>
+                        }
                     </div>
                   </Form>
                   </Card>

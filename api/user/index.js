@@ -67,7 +67,6 @@ const User = mongoose.model("User", mongoose.Schema(
 
 const tokenCreation = async (email, userId, name, admin) => {
   const jwt = require("jsonwebtoken");
-
     try {
       const token = jwt.sign({
           email,
@@ -218,7 +217,7 @@ module.exports = async (req, res) => {
                 .find({ code });
 
               if (user.length < 1)
-                throw({localError: "Error: EGUBC01 - This code is not valid anymore. Try a new reset password in the Login."});
+                throw({localError: "Error EGUBC01: This code is not valid anymore. <br>!Try a new reset password in the Login screen."});
               
               if (user.code_expiry_at < new Date().getTime()) {
                 res.send({
@@ -444,7 +443,6 @@ module.exports = async (req, res) => {
           try {
             userExist = await User
               .find({ _id: userId });
-              // .find({ _id: "610478d25c743e0009825dfb" });
 
               // need to check this question about the userExist being empty
               // also print processing in the FE while the request is being processed.
@@ -493,11 +491,11 @@ module.exports = async (req, res) => {
               if (!resetPassword.nModified) 
                 throw({localError: "Error URP02: Try again later."});
       
-              const token = await tokenCreation(userExist.email, userExist._id, userExist.name, userExist.admin);
+              const token = await tokenCreation(userExist[0].email, userExist[0]._id, userExist[0].name, userExist[0].admin);
       
       
               // send an email to the user confirming the procedure
-              await confirmPasswordChange(userExist);
+              await confirmPasswordChange(userExist[0]);
         
         
               res.json({
@@ -518,8 +516,9 @@ module.exports = async (req, res) => {
             } else throw({localError: "Error URP03: Hash issues"});
 
           } catch(error) {
+            console.trace("==>error", error);
             return res.status(200).json({
-              error: (error.localError || "Error URP04: general error")
+              error: (error.localError || "Error URP04: general error. Please try again later.")
             });
           }
         
