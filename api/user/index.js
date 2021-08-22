@@ -217,7 +217,7 @@ module.exports = async (req, res) => {
                 .find({ code });
 
               if (user.length < 1)
-                throw({localError: "Error EGUBC01: This code is not valid anymore. <br>!Try a new reset password in the Login screen."});
+                throw({localError: "Error EGUBC01: This code is not valid anymore. Try a new reset password in the Login screen."});
               
               if (user.code_expiry_at < new Date().getTime()) {
                 res.send({

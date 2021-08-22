@@ -18,6 +18,10 @@ import { getClockins } from "./aux/getClockins.js";
  * https://www.w3schools.com/howto/howto_css_tooltip.asp
  */
 
+const 
+  colorRedish     = "#c94c4c",
+  colorGreenish   = "limegreen";
+
 const thinScreen = window.innerWidth < 800 ? true : false;
 
 
@@ -126,7 +130,7 @@ class InvoiceNew extends Component {
             clockinList       : tempClockins,
             clockinWithInvoiceCode: this.checkIfThereIsInvoiceCode(tempClockins),
             disableInvGenBtn  : this.checkIfThereIsInvoiceCode(tempClockins),
-            clockInListTable  : this.renderDataTable(tempClockins),
+            clockInListTable  : this.renderDataTable(tempClockins, colorRedish),
             // clockInListTable  : PunchInTableEdit(getClockins.data.allClockins),
             tableVisibility   : true,
             clientId,
@@ -141,7 +145,7 @@ class InvoiceNew extends Component {
           if (this.state.clockinWithInvoiceCode)
             this.setState({
               classNameMessage  : "messageFailure",
-              messageInvoice: "No clockins with invoice, please."
+              messageInvoice    : "No clockins with invoice, please."
             });
 
           this.generatorBtn.scrollIntoView({ behavior: "smooth" });
@@ -241,7 +245,7 @@ class InvoiceNew extends Component {
               lastUsedCode            : "",
               codeMessage             : "",
               clockinList             : newClockinTable,
-              clockInListTable        : this.renderDataTable(newClockinTable)
+              clockInListTable        : this.renderDataTable(newClockinTable, colorGreenish)
             });
 
             // this.clearMessage();
@@ -261,7 +265,7 @@ class InvoiceNew extends Component {
     }  
 
 
-  renderDataTable = clockins => {
+  renderDataTable = (clockins, invoiceCellColor) => {
     let result = [];
     let totalHours  = 0;
 
@@ -285,9 +289,9 @@ class InvoiceNew extends Component {
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.date}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
-                  {clockinsToSend.invoice !== "not yet"
-                    ? <td style={{verticalAlign: "middle", backgroundColor: "#c94c4c"}}>{clockinsToSend.invoice}</td>
-                    : <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                  {clockinsToSend.invoice === "not yet"
+                    ? <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                    : <td style={{verticalAlign: "middle", backgroundColor: invoiceCellColor}}>{clockinsToSend.invoice}</td>
                   }
                 </tr>
           );
@@ -300,9 +304,9 @@ class InvoiceNew extends Component {
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.timeStart}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalTime}</td>
                   <td style={{verticalAlign: "middle"}}>{clockinsToSend.totalCad}</td>
-                  {clockinsToSend.invoice !== "not yet"
-                    ? <td style={{verticalAlign: "middle", backgroundColor: "#c94c4c"}}>{clockinsToSend.invoice}</td>
-                    : <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                  {clockinsToSend.invoice === "not yet"
+                    ? <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td>
+                    : <td style={{verticalAlign: "middle", backgroundColor: invoiceCellColor}}>{clockinsToSend.invoice}</td>
                   }
                   {/* <td style={{verticalAlign: "middle"}}>{clockinsToSend.invoice}</td> */}
                 </tr>
@@ -357,7 +361,7 @@ class InvoiceNew extends Component {
 
   updateClockins = (clockinToRemove) => {
     const tempClockins      = this.state.clockinList.filter( clockin => clockin._id !== clockinToRemove);
-    const tempClockinsTable = this.renderDataTable(tempClockins);
+    const tempClockinsTable = this.renderDataTable(tempClockins, colorRedish);
 
     this.setState({
       clockinList       : tempClockins,
