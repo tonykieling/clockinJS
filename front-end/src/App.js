@@ -42,7 +42,11 @@ class App extends Component {
                 return <Home />
             }} />
 
-        <Route exact path = "/user" 
+          <Route exact path = "/home">
+            <Redirect to="/" />
+          </Route>
+
+          <Route exact path = "/user" 
             render = {() => {
               if(!this.props.storeEmail) {
                 return <Redirect to = "/land" />

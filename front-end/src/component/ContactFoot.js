@@ -47,8 +47,8 @@ export default function ContactFoot(props) {
                   style={{textAlign: "center", padding: "0 5px"}}
                   xs sm="1"
                 >
-                  <a href="mailto:tony.kieling@gmail.com" target="_top" >
-                    <img src={gmailIcon} alt="gmail" className= {props.opac || "iconSettings"} />
+                  <a href="mailto:tony.kieling@gmail.com" target="_blank" rel="noreferrer">
+                    <img src={gmailIcon} alt="gmail" title="Gmail" className= {props.opac || "iconSettings"} />
                   </a>
                 </Col>
                 
@@ -57,8 +57,8 @@ export default function ContactFoot(props) {
                   xs sm="1"
                 >
                   <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank" rel="noopener noreferrer">
-                    <img src={linkedinIcon} className= {props.opac || "iconSettings"} alt="linkedin" />
-                  </a>  
+                    <img src={linkedinIcon} title="LinkedIn" className= {props.opac || "iconSettings"} alt="linkedin" />
+                  </a>
                 </Col>
 
                 <Col 
@@ -66,7 +66,7 @@ export default function ContactFoot(props) {
                   xs sm="1"
                 >
                   <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">
-                    <img src={githubIcon} className= {props.opac || "iconSettings"} alt="linkedin"/>
+                    <img src={githubIcon} title="GitHub" className= {props.opac || "iconSettings"} alt="github"/>
                   </a>
                 </Col>
 
@@ -75,7 +75,7 @@ export default function ContactFoot(props) {
                   xs sm="1"
                 >
                   <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">
-                    <img src={resumeIcon} alt="resume" className= {props.opac || "iconSettings"} />
+                    <img src={resumeIcon} title="Resume" alt="resume" className= {props.opac || "iconSettings"} />
                   </a>
                 </Col>
               </Row>

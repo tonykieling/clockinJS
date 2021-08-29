@@ -37,26 +37,26 @@ export default function Contact() {
             <Container style = {{maxWidth: "250px"}}>
               <Row>
                 <Col style={{textAlign: "center", padding: "0 5px"}}>
-                  <a href="mailto:tony.kieling@gmail.com" target="_top" >
-                    <img src={gmailIcon} alt="gmail" className="iconSettings" />
+                  <a href="mailto:tony.kieling@gmail.com" target="_blank" rel="noreferrer">
+                    <img src={gmailIcon} alt="gmail" title="Gmail" className= "iconSettings" />
                   </a>
                 </Col>
                 
                 <Col style={{textAlign: "center", padding: "0 5px"}}>
                   <a href="https://www.linkedin.com/in/tony-kieling/" target="_blank" rel="noopener noreferrer">
-                    <img src={linkedinIcon} className="iconSettings" alt="linkedin" />
-                  </a>  
+                    <img src={linkedinIcon} title="LinkedIn" className= "iconSettings" alt="linkedin" />
+                  </a>
                 </Col>
 
                 <Col style={{textAlign: "center", padding: "0 5px"}}>
                   <a href="https://github.com/tonykieling" target="_blank" rel="noopener noreferrer">
-                    <img src={githubIcon} className="iconSettings" alt="linkedin"/>
+                    <img src={githubIcon} title="GitHub" className="iconSettings" alt="linkedin" />
                   </a>
                 </Col>
 
                 <Col style={{textAlign: "center", padding: "0 5px"}}>
                   <a href="https://resume.creddle.io/resume/hqaeq2fbnr6" target="_blank" rel="noopener noreferrer">
-                    <img src={resumeIcon} alt="resume" className="iconSettings" />
+                    <img src={resumeIcon} title="Resume" alt="resume" className="iconSettings" />
                   </a>
                 </Col>
               </Row>
