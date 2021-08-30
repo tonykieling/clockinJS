@@ -28,7 +28,6 @@ export default function Land() {
           <p>You just need to Sign Up and enjoy it.</p>
           <p> It is free. ;)</p>
         </div>
-        <br />
 
         <div>
           <img src={Logo} alt="Clockin.js" 

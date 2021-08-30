@@ -86,10 +86,15 @@ function SysHeader(props) {
                 <Nav className="mr-auto">
                   <Link to="/user" className="nav-link">{props.storeEmail}</Link>
                   <NavDropdown title="Clients" id="basic-nav-dropdown1">
-                    <NavDropdown title="Add a New One" id="basic-nav-submenu" drop="right" style={{paddingLeft: "1rem"}}>
-                        <NavDropdown.Item href="/clientNew">Kids</NavDropdown.Item>
-                        <NavDropdown.Divider />
-                        <NavDropdown.Item href="/clientGeneralNew">General / Company</NavDropdown.Item>
+                    <NavDropdown 
+                      title = { <span style={{color: "#212529"}}>Add a new one </span> }
+                      id="basic-nav-submenu" 
+                      drop="right" 
+                      style={{paddingLeft: "1rem"}}
+                    >
+                      <NavDropdown.Item href="/clientNew">Kids</NavDropdown.Item>
+                      <NavDropdown.Divider />
+                      <NavDropdown.Item href="/clientGeneralNew">General / Company</NavDropdown.Item>
                     </NavDropdown>
 
                     <NavDropdown.Divider />
@@ -103,7 +108,7 @@ function SysHeader(props) {
                   </NavDropdown>
 
                   <NavDropdown title="Invoices" id="basic-nav-dropdown3">
-                    <NavDropdown.Item href="/invoiceNew">Generate a brand new one</NavDropdown.Item>
+                    <NavDropdown.Item href="/invoiceNew">Generate a brand new one </NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item href="/invoicesList">List, Check and Edit</NavDropdown.Item>
                     <NavDropdown.Divider />
@@ -142,7 +147,11 @@ function SysHeader(props) {
 
               <NavDropdown title="Clients" id="basic-nav-dropdown1" className="menu-item">
 
-                <NavDropdown title="Add a New One" id="basic-nav-submenu" drop="down">
+                <NavDropdown 
+                  title = { <span style={{color: "#212529", padding: "0 0 0 14px"}}>Add a new one</span> }
+                  id="basic-nav-submenu" 
+                  drop="down" 
+                >
                   <NavDropdown.Item href="/clientNew">Kids</NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item href="/clientGeneralNew">General / Company</NavDropdown.Item>

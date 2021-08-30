@@ -36,112 +36,120 @@ class App extends Component {
           <Route exact path = "/" 
             render = {() => {
               if(!this.props.storeEmail) {
-                return <Redirect to = "/land" />
+                return <Land />;
               }
               else
-                return <Home />
-            }} />
+                return <Home />;
+            }} 
+          />
 
           <Route exact path = "/home">
-            <Redirect to="/" />
+            <Redirect to="/" />;
+          </Route>
+
+          <Route exact path = "/land" >
+            <Redirect to = "/" />;
           </Route>
 
           <Route exact path = "/user" 
             render = {() => {
               if(!this.props.storeEmail) {
-                return <Redirect to = "/land" />
+                return <Redirect to = "/land" />;
               }
               else
-                return <User />
-            }} />
-
-          <Route exact path = "/land" 
-            render = {() => {
-              if (!this.props.storeEmail)
-                return <Land />
-              else
-                return <Redirect to = "/" />
-            }} />
+                return <User />;
+            }} 
+          />
 
           <Route exact path = "/signup" 
             render = {() => {
               if (!this.props.storeEmail)
-                return <SignUp />
+                return <SignUp />;
               else
-                return <Redirect to = "/" />
-            }} />
+                return <Redirect to = "/" />;
+            }} 
+          />
           
           <Route exact path = "/login" 
             render = {() => {
               if (!this.props.storeEmail)
-                return <Login />
+                return <Login />;
               else
-                return <Redirect to = "/" />
-            }} />
+                return <Redirect to = "/" />;
+            }} 
+          />
           
           <Route exact path = "/clientNew" 
             render = {() => {
               if (!this.props.storeEmail)
-                return <Login />
+                return <Login />;
               else
-                return <ClientNew />
-            }} />
+                return <ClientNew />;
+            }}
+          />
 
           <Route exact path = "/clientGeneralNew" 
             render = {() => {
               if (!this.props.storeEmail)
-                return <Login />
+                return <Login />;
               else
-                return <ClientGeneralNew />
-            }} />
+                return <ClientGeneralNew />;
+            }} 
+          />
 
           <Route exact path = "/clientList" 
             render = {() => {
               if (!this.props.storeEmail)
-                return <Login />
+                return <Login />;
               else
-                return <ClientList />
-            }} />
+                return <ClientList />;
+            }} 
+          />
 
           <Route exact path = "/punchInNew" 
             render = {() => {
               if (!this.props.storeEmail)
-                return <Login />
+                return <Login />;
               else
-                return <PunchInNew />
-            }} />
+                return <PunchInNew />;
+            }} 
+          />
 
           <Route exact path = "/punchInsList" 
             render = {() => {
               if (!this.props.storeEmail)
-                return <Login />
+                return <Login />;
               else
-                return <PunchInsList />
-            }} />
+                return <PunchInsList />;
+            }} 
+          />
           
           <Route exact path = "/invoiceNew" 
             render = {() => {
               if (!this.props.storeEmail)
-                return <Login />
+                return <Login />;
               else
-                return <InvoiceNew />
-            }} />
+                return <InvoiceNew />;
+            }} 
+          />
           
           <Route exact path = "/invoicesList" 
             render = {() => {
               if (!this.props.storeEmail)
-                return <Login />
+                return <Login />;
               else
-                return <InvoicesList />
-            }} />
+                return <InvoicesList />;
+            }} 
+          />
 
           <Route exact path = "/invoiceIssue" 
             render = {() => {
               if (!this.props.storeEmail)
-                return <Login />
+                return <Login />;
               else
-                return <InvoiceIssue />
-            }} />
+                return <InvoiceIssue />;
+            }} 
+          />
 
           <Route exact path = "/reset_password/:code" >
             <ResetPassword />
