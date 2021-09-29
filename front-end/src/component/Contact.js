@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 
 // import { Link } from "react-router-dom";
 
+import tkLogo from "../icons/tk-logo192.png";
 import gmailIcon from "../icons/gmail.svg";
 import resumeIcon from "../icons/resume.svg";
 import linkedinIcon from "../icons/linkedin.png";
@@ -36,6 +37,14 @@ export default function Contact() {
 
             <Container style = {{maxWidth: "250px"}}>
               <Row>
+                <Col 
+                  style={{textAlign: "center", padding: "0 5px"}}
+                >
+                  <a href="https://tkwebdev.ca" target="_blank" rel="noreferrer">
+                    <img src={tkLogo} alt="website" title="TK's Website" className= "iconSettings" />
+                  </a>
+                </Col>
+
                 <Col style={{textAlign: "center", padding: "0 5px"}}>
                   <a href="mailto:tony.kieling@gmail.com" target="_blank" rel="noreferrer">
                     <img src={gmailIcon} alt="gmail" title="Gmail" className= "iconSettings" />

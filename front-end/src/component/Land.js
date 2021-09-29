@@ -3,6 +3,7 @@ import React from 'react'
 import Logo from "../img/clockinjs.png";
 import { Link } from "react-router-dom";
 import ContactFoot  from "../component/ContactFoot.js";
+// import TK from "../img/tk.png";
 
 const heightDiv = window.innerHeight - 56 - 62;
 
@@ -28,6 +29,12 @@ export default function Land() {
           <p>You just need to Sign Up and enjoy it.</p>
           <p> It is free. ;)</p>
         </div>
+
+        {/* <img 
+          src={TK} 
+          alt="TK" 
+          style={{borderRadius:"40%", border: "1px solid #424c53", width: "265px", margin: "1rem 2rem"}}
+        /> */}
 
         <div>
           <img src={Logo} alt="Clockin.js" 

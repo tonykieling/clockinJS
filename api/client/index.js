@@ -419,7 +419,7 @@ module.exports = async (req, res) => {
             } = req.body;
 
             const birthday = req.body.birthday ? new Date(req.body.birthday) : undefined;
-          
+console.log("change client's data:", req.body);
             try {
           
               const client = await Client
@@ -473,7 +473,7 @@ module.exports = async (req, res) => {
                     ignoreUndefined: true
                   }
                 );
-
+console.log("======> clientToBeChanged", clientToBeChanged);
                 if (clientToBeChanged.nModified) {
                   const clientModified = await Client
                     .findById({ _id: clientId});
