@@ -1190,7 +1190,7 @@ module.exports = async (req, res) => {
               await sendClockinEmail(`Clockin added - ${clientExist.type_kid ? clientExist.nickname : clientExist.name}: ${showDate(newClockin.date)} - ${showTime(newClockin.time_start)}`, newClockin, userExist, clientExist);
               
               // everything is ok, so lets fe knows it
-              res.json({
+              return res.json({
                 message : "Clockin has been created.",
                 user    : userExist.name,
                 client  : clientExist.name

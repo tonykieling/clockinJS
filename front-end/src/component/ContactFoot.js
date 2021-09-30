@@ -5,7 +5,7 @@ import Container from "react-bootstrap/Container";
 import Col       from "react-bootstrap/Col";
 import Row       from "react-bootstrap/Row";
 
-import tkLogo from "../icons/tk-logo192.png";
+import tkLogo from "../icons/tk.png";
 import gmailIcon from "../icons/gmail.svg";
 import resumeIcon from "../icons/resume.svg";
 import linkedinIcon from "../icons/linkedin.png";
@@ -49,7 +49,7 @@ export default function ContactFoot(props) {
                   xs sm="1"
                 >
                   <a href="https://tkwebdev.ca" target="_blank" rel="noreferrer">
-                    <img src={tkLogo} alt="website" title="TK's Website" className= {props.opac || "iconSettings"} />
+                    <img src={tkLogo} alt="website" title="Tony Kieling's Website" className= {props.opac || "iconSettings"} />
                   </a>
                 </Col>
 

@@ -419,7 +419,7 @@ module.exports = async (req, res) => {
             } = req.body;
 
             const birthday = req.body.birthday ? new Date(req.body.birthday) : undefined;
-console.log("change client's data:", req.body);
+// console.log("change client's data:", req.body);
             try {
           
               const client = await Client
@@ -473,7 +473,7 @@ console.log("change client's data:", req.body);
                     ignoreUndefined: true
                   }
                 );
-console.log("======> clientToBeChanged", clientToBeChanged);
+// console.log("======> clientToBeChanged", clientToBeChanged);
                 if (clientToBeChanged.nModified) {
                   const clientModified = await Client
                     .findById({ _id: clientId});
@@ -481,12 +481,12 @@ console.log("======> clientToBeChanged", clientToBeChanged);
                   if (typeKid)
                     clientModified.birthday = Date.parse(clientModified.birthday);
           
-                  res.json({
+                  return res.json({
                     message: `Client <${clientModified.nickname}> has been modified.`,
                     newData: clientModified
                   });
                 } else
-                  res.status(200).json({
+                  return res.status(200).json({
                     message: "Client NOT changed - no new data."
                   });
           
