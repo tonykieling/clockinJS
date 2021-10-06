@@ -3,6 +3,7 @@ import { Button, Form, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import ForgetPasswordModal from "./LoginForgetPasswordModal.js";
 import axios from "axios";
+import ReCaptchaV2 from "react-google-recaptcha";
 
 class Login extends Component {
 
@@ -13,7 +14,8 @@ class Login extends Component {
       disable   : false,
       classNameMessage: "",
 
-      forgetPasswordModal: false
+      forgetPasswordModal: false,
+      // reCaptchaToken : ""
     }
 
   handleChange = e => {
@@ -50,6 +52,13 @@ class Login extends Component {
           classNameMessage: "messageSuccess",
         });
 
+        const reCaptchaToken = await this.refReCaptcha.executeAsync();
+        console.log("reCaptchaToken:::", reCaptchaToken);
+
+        // console.log("inside handlesubmit, recaptchatoken=", await this.reCaptchaToken);
+        // console.log("inside handlesubmit, recaptchatoken=", this.refReCaptcha.getValue());
+        // console.log("inside handlesubmit, recaptchatoken=", this.refReCaptcha.getValue());
+
         // const url = "https://clockinjs.herokuapp.com/user/login";
         const url = "/api/user";
 
@@ -59,9 +68,12 @@ class Login extends Component {
             {
               whatToDo  : "login",
               email     : this.state.email,
-              password  : this.state.password,
+              password  : this.state.password
             }
           );
+console.log("data being sent:", this.state.email, reCaptchaToken);
+          // this.refReCaptcha.reset();
+
 
           const answer = login.data;
 
@@ -86,7 +98,7 @@ class Login extends Component {
           });
         }
       }
-  }
+  };
   
 
   openModal = event => {
@@ -94,14 +106,21 @@ class Login extends Component {
     this.setState({
       forgetPasswordModal: true
     });
-  }
+  };
 
 
   closeModal = () => {
     this.setState({
       forgetPasswordModal: false
     });
-  }
+  };
+
+  reCaptchaChange = token => {
+    console.log("+++inside reCaptchaChange, token:", token);
+    this.setState({
+      reCaptchaToken: token
+    });
+  };
 
 
   render() {
@@ -109,6 +128,14 @@ class Login extends Component {
       <div className="formPosition">
         <br />
         {/* <h3>Login Page</h3> */}
+
+        <ReCaptchaV2
+          sitekey   = { process.env.REACT_APP_RECAPTCHA_SITE_KEY }
+          // onChange  = { this.reCaptchaChange }
+          size      = "invisible"
+          ref       = { input => this.refReCaptcha = input }
+        />
+
         <Card className="card-settings">
           <Card.Header>
             <h2>Login</h2>
