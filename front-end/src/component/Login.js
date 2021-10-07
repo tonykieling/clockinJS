@@ -15,7 +15,7 @@ class Login extends Component {
       classNameMessage: "",
 
       forgetPasswordModal: false,
-      // reCaptchaToken : ""
+      reCaptchaToken : ""
     }
 
   handleChange = e => {
@@ -52,28 +52,25 @@ class Login extends Component {
           classNameMessage: "messageSuccess",
         });
 
-        const reCaptchaToken = await this.refReCaptcha.executeAsync();
-        console.log("reCaptchaToken:::", reCaptchaToken);
-
-        // console.log("inside handlesubmit, recaptchatoken=", await this.reCaptchaToken);
-        // console.log("inside handlesubmit, recaptchatoken=", this.refReCaptcha.getValue());
-        // console.log("inside handlesubmit, recaptchatoken=", this.refReCaptcha.getValue());
+        await this.refReCaptcha.executeAsync();
 
         // const url = "https://clockinjs.herokuapp.com/user/login";
         const url = "/api/user";
 
+        const data = {
+          whatToDo  : "login",
+          email     : this.state.email,
+          password  : this.state.password,
+          reCaptchaToken  : this.state.reCaptchaToken     
+        }
+
         try {
           const login = await axios.post(
             url,
-            {
-              whatToDo  : "login",
-              email     : this.state.email,
-              password  : this.state.password
-            }
+            data,
           );
-console.log("data being sent:", this.state.email, reCaptchaToken);
-          // this.refReCaptcha.reset();
 
+          this.refReCaptcha.reset();
 
           const answer = login.data;
 
@@ -115,8 +112,8 @@ console.log("data being sent:", this.state.email, reCaptchaToken);
     });
   };
 
-  reCaptchaChange = token => {
-    console.log("+++inside reCaptchaChange, token:", token);
+  reCaptchaChange = async token => {
+    // console.log("+++inside reCaptchaChange, token:", token);
     this.setState({
       reCaptchaToken: token
     });
@@ -131,7 +128,7 @@ console.log("data being sent:", this.state.email, reCaptchaToken);
 
         <ReCaptchaV2
           sitekey   = { process.env.REACT_APP_RECAPTCHA_SITE_KEY }
-          // onChange  = { this.reCaptchaChange }
+          onChange  = { this.reCaptchaChange }
           size      = "invisible"
           ref       = { input => this.refReCaptcha = input }
         />

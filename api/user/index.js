@@ -191,6 +191,29 @@ const confirmPasswordChange = async(user) => {
 }
 
 
+// it checks the token sent by the contact form
+const checkReCaptcha = async (reCaptchaToken) => {
+  if (!reCaptchaToken)
+    return false;
+
+  const secretKey = process.env.reCaptchaSecretKey;
+
+  try {
+    const fetch = require("node-fetch");
+    const check = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${reCaptchaToken}`, 
+      { 
+        method: "POST"
+      }
+    );
+
+    const data = await check.json();
+    return data.success;
+  } catch (error) {
+    return false;
+  }
+};
+
 
 module.exports = async (req, res) => {
   "use strict";
@@ -252,11 +275,22 @@ module.exports = async (req, res) => {
       case "POST":
         if (whatToDo === "login") {
 
-          // login is good
-          const email     = req.body.email;
-          const password  = req.body.password;
+          const { 
+            email,
+            password,
+            reCaptchaToken
+          } = req.body;
 
           try {
+
+            // verify and validate reCaptcha
+            const callCheckReCaptcha = await checkReCaptcha(reCaptchaToken);
+  
+            if (!callCheckReCaptcha)
+              throw({
+                localMessage: "ELR01: Authentication error, please try it again."
+              });
+              
             const user = await User
               .findOne({ email });
 
@@ -294,10 +328,10 @@ module.exports = async (req, res) => {
                 }
 
               } catch(error) {
-                  throw ({localMessage: `ELIN04: ${(error.message || error)}`});
-                }
+                throw ({localMessage: `ELIN04: ${(error.message || error)}`});
+              }
             }
-
+            
           } catch(error) {
             res.status(200).json({ 
               error: (error.localMessage || "ELIN03: Authentication has failed" || error.message || error)

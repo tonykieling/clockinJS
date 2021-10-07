@@ -2,8 +2,7 @@
   "name": "clockinjs",
   "version": "1.0.0",
   "description": "",
-  "scripts": {
-  },
+  "scripts": {},
   "keywords": [],
   "author": "Tony Kieling",
   "license": "ISC",
@@ -11,6 +10,7 @@
     "bcrypt": "^5.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.11",
+    "node-fetch": "2.6.4",
     "nodemailer": "^6.6.1",
     "uuid": "^3.4.0"
   },

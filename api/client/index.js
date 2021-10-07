@@ -1,5 +1,5 @@
 "use strict";
-const { compareSync } = require("bcrypt");
+
 const mongoose    = require("mongoose");
 
 
