@@ -171,7 +171,7 @@ const generalSender = async (to, subject, html) => {
     console.trace(error.message || message);
   }
 }
-  
+
   
 const confirmPasswordChange = async(user) => {
   // it sends an email to the user confirming the procedure
@@ -288,9 +288,9 @@ module.exports = async (req, res) => {
   
             if (!callCheckReCaptcha)
               throw({
-                localMessage: "ELR01: Authentication error, please try it again."
+                localError: "ELR01: Authentication error, please try it again."
               });
-              
+
             const user = await User
               .findOne({ email });
 
@@ -328,19 +328,19 @@ module.exports = async (req, res) => {
                 }
 
               } catch(error) {
-                throw ({localMessage: `ELIN04: ${(error.message || error)}`});
+                throw ({localError: `ELIN04: ${(error.message || error)}`});
               }
             }
             
           } catch(error) {
             res.status(200).json({ 
-              error: (error.localMessage || "ELIN03: Authentication has failed" || error.message || error)
+              error: (error.localError || "ELIN03: Authentication has failed" || error.message || error)
             });
           }
 
         } else if (whatToDo === "signUp") {
           // signup is working good
-
+          
           const {
             name,
             email,
@@ -348,9 +348,17 @@ module.exports = async (req, res) => {
             address,
             city,
             phone,
-            postalCode
+            postalCode,
+            reCaptchaToken
           } = req.body;
+          
+          // verify and validate reCaptcha
+          const callCheckReCaptcha = await checkReCaptcha(reCaptchaToken);
 
+          if (!callCheckReCaptcha)
+            throw({
+              localError: "ELR01: Authentication error, please try it again."
+            });
 
           // it checks whether user exists, if so, it sends the error and breaks the flow
           try {
@@ -550,7 +558,6 @@ module.exports = async (req, res) => {
             } else throw({localError: "Error URP03: Hash issues"});
 
           } catch(error) {
-            console.trace("==>error", error);
             return res.status(200).json({
               error: (error.localError || "Error URP04: general error. Please try again later.")
             });
@@ -579,11 +586,11 @@ module.exports = async (req, res) => {
             .findById(userId);
           
           if (!checkUser) {
-            throw({localMessage: `EMU02: User <${userId}> has NOT been found.`});
+            throw({localError: `EMU02: User <${userId}> has NOT been found.`});
           }
       
           if (!email) {
-            throw({localMessage: `EMU03: Email <${email}> is invalid.`});
+            throw({localError: `EMU03: Email <${email}> is invalid.`});
           }
           
           const changeUser = await User
@@ -617,12 +624,12 @@ module.exports = async (req, res) => {
             });
 
           } else {
-            throw({localMessage: `User <${email}> not changed- no new data`});
+            throw({localError: `User <${email}> not changed- no new data`});
           }
       
         } catch(error) {
           res.status(200).json({
-            error: (error.localMessage || "EMU05: Something bad happened. Try again.")
+            error: (error.localError || "EMU05: Something bad happened. Try again.")
           });
         }
         
@@ -635,8 +642,8 @@ module.exports = async (req, res) => {
 
     // console.log("........disconnecting............");
     await mongoose.disconnect();
-  } catch (err) {
-    // console.log(err.message);
+  } catch (error) {
+    // console.log("err general", error);
     res.json({
       error: (error.localError || error.message || error)
     });

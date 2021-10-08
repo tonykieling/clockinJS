@@ -36,7 +36,7 @@ class Login extends Component {
 
       if (!this.state.email || !this.state.password) {
         this.setState({
-          errorMsg: "Please, type email and passowrd."
+          errorMsg: "Please, type email and password."
         });
 
         this.textInput1.focus();
@@ -113,7 +113,7 @@ class Login extends Component {
   };
 
   reCaptchaChange = async token => {
-    // console.log("+++inside reCaptchaChange, token:", token);
+    console.log("+++inside reCaptchaChange, token:", token);
     this.setState({
       reCaptchaToken: token
     });

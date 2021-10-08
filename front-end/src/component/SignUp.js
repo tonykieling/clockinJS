@@ -8,6 +8,7 @@ import MaskedInput from 'react-text-mask';
 import { findDOMNode } from "react-dom";
 import Overlay from 'react-bootstrap/Overlay';
 import Tooltip from 'react-bootstrap/Tooltip';
+import ReCaptchaV2 from "react-google-recaptcha";
 
 function SignUp(props) {
 
@@ -19,8 +20,10 @@ function SignUp(props) {
     phone   : "",
     postalCode      : "",
     password        : "",
-    confirmPassword : ""
+    confirmPassword : "",
+    reCaptchaToken  : ""
   });
+
   const refTop              = useRef(null);
   const refName             = useRef(null);
   const refEmail            = useRef(null);
@@ -32,6 +35,7 @@ function SignUp(props) {
   const refPassword         = useRef(null);
   const refConfirmPassword  = useRef(null);
   const refButtonSubmit     = useRef(null);
+  const refReCaptcha        = useRef(null);
 
   const [disableForm, setdisableForm] = useState(false);
   const [pcOutsideCanada, setpcOutsideCanada] = useState(false);
@@ -146,8 +150,17 @@ function SignUp(props) {
         });
       } else {
         setdisableForm(true);
+        setmessage({
+          content: "Processing...",
+          cssClass: "messageSuccess"
+        });
+
         // const url = "/user/signup";
         const url = `${window.location.origin}/api/user`;
+
+        // it gets the reCaptchaV2 token to be sent to eh server validate it
+        const reCaptchaToken = await refReCaptcha.current.executeAsync();
+
 
         const createUser  = {
           whatToDo    : "signUp",
@@ -157,9 +170,10 @@ function SignUp(props) {
           address     : state.address,
           city        : state.city,
           postalCode  : state.postalCode,
-          phone       : state.phone
+          phone       : state.phone,
+          reCaptchaToken
         }
-
+        
         try {
           const addUser = await axios.post(url, createUser);          
           const answer = addUser.data;
@@ -214,6 +228,13 @@ function SignUp(props) {
           >
             <h2>Sign Up</h2>
           </Card.Header>
+
+          <ReCaptchaV2
+            sitekey   = { process.env.REACT_APP_RECAPTCHA_SITE_KEY }
+            size      = "invisible"
+            ref       = { refReCaptcha }
+          />
+
           <Form 
             onSubmit  = { handleSubmit} 
             style     = {{ width: window.innerWidth < 800 || "70%", marginLeft: window.innerWidth < 800 || "15%"}}
