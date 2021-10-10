@@ -192,13 +192,16 @@ function SignUp(props) {
             
             await props.dispatchLogin({ user });
 
-          } else if (answer.error) {
-            throw(answer.error)
-          }
+          } else if (answer.error)
+            throw(answer.error);
 
-        } catch(err) {
+        } catch(error) {
+          //resets reCaptcha and messages the user
+
+          refReCaptcha.current.reset();
+
           setmessage({
-            content   :  err,
+            content   :  error,
             cssClass  : "messageFailure"
           });  
         }

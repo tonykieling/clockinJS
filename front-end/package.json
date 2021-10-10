@@ -25,8 +25,8 @@
   },
   "scripts": {
     "dev": "node /home/tonyk/dev/PATH/cleanport.js 3000 && react-scripts start",
-    "start": "REACT_APP_RECAPTCHA_SITE_KEY=6LfzerIcAAAAAPmprwz6IhRAiQ_b0YG-onsOuS5h react-scripts start",
-    "build": "REACT_APP_RECAPTCHA_SITE_KEY=6LfzerIcAAAAAPmprwz6IhRAiQ_b0YG-onsOuS5h react-scripts build",
+    "start": "REACT_APP_RECAPTCHA_SITE_KEY=6LdKbLIcAAAAAPAzQoWPRaTQ3fbOH4DoQsdOetvc react-scripts start",
+    "build": "REACT_APP_RECAPTCHA_SITE_KEY=6LdKbLIcAAAAAPAzQoWPRaTQ3fbOH4DoQsdOetvc react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -70,27 +70,26 @@ class Login extends Component {
             data,
           );
 
-          this.refReCaptcha.reset();
-
+          
           const answer = login.data;
-
+          
           if (answer.message) {
             const user = answer.user;
             user.id = user._id;
             user.token = login.data.token;
 
             await this.props.dispatchLogin( { user });
-          } else {
-            this.setState({
-              errorMsg  : answer.error,
-              disable   : false,
-              classNameMessage: "messageFailure"
-            });
-          }
+          } else
+            throw(answer.error);
+          
         } catch(error) {
+          // resets reCaptcha and messages the user
+
+          this.refReCaptcha.reset();
+
           this.setState({
             disable   : false,
-            errorMsg  : error.message,
+            errorMsg  : error.message || error,
             classNameMessage: "messageFailure"
           });
         }
@@ -113,7 +112,7 @@ class Login extends Component {
   };
 
   reCaptchaChange = async token => {
-    console.log("+++inside reCaptchaChange, token:", token);
+    // console.log("+++inside reCaptchaChange, token:", token);
     this.setState({
       reCaptchaToken: token
     });
