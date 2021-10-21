@@ -28,6 +28,24 @@ object-assign
  * http://api.jqueryui.com/category/ui-core/
  */
 
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */
+
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <http://feross.org>
+ * @license  MIT
+ */
+
+/*! https://mths.be/punycode v1.4.1 by @mathias */
+
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
+
 /**
  * @license
   Copyright (c) 2008, Adobe Systems Incorporated

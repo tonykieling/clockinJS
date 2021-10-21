@@ -9,6 +9,7 @@ import MaskedInput from 'react-text-mask';
 import "react-datepicker/dist/react-datepicker.css";
 import GetClients from "./aux/GetClients.js";
 import * as handlingDate from "./aux/handlingDT.js";
+import SendmailTransport from 'nodemailer/lib/sendmail-transport';
 
 
 class ClientsList extends Component {
@@ -141,8 +142,6 @@ class ClientsList extends Component {
       let data = (this.state.typeKid
         ?
           { 
-            // clientId      : this.state.clientId || undefined,
-            default_rate  : defaultRate,
             nickname      : this.state.typeKid ? nickname : undefined,
 
             birthday      : this.state.birthday || undefined,
@@ -172,6 +171,7 @@ class ClientsList extends Component {
 
       const additionalData = {
         name,
+        default_rate  : defaultRate,
         clientId  : this.state.clientId,
         inactive  : this.state.inactive,
         showRate  : this.state.showRate,
@@ -182,7 +182,7 @@ class ClientsList extends Component {
 
       // const url = `https://clockinjs.herokuapp.com/client/${data.clientId}`;
       const url = "/api/client";
-
+// console.log("data to be sent:::", data);
       try {
         const newClientData = await axios.patch( 
           url,

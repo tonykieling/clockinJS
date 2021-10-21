@@ -123,7 +123,6 @@ class Login extends Component {
     return (
       <div className="formPosition">
         <br />
-        {/* <h3>Login Page</h3> */}
 
         <ReCaptchaV2
           sitekey   = { process.env.REACT_APP_RECAPTCHA_SITE_KEY }
