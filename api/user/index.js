@@ -285,6 +285,7 @@ module.exports = async (req, res) => {
 
             // verify and validate reCaptcha
             const callCheckReCaptcha = await checkReCaptcha(reCaptchaToken);
+
             if (!callCheckReCaptcha)
               throw({
                 localError: "ELR01: Authentication error, please try it again."

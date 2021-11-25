@@ -111,25 +111,29 @@ class InvoicesList extends Component {
     let totalCadReceived  = 0;
     let totalCadDelivered = 0;
     let totalCadGenerated = 0;
-    let totalCad          = 0;
-
+    let totalCad          = 0;  // gross
+    // let netCad            = 0;
 
     const result = invoices.map((invoice, index) => {
       const invoiceToSend = {
         num         : index + 1,
         date        : formatDate.show(invoice.date),
-        totalCad    : Number(invoice.cad_adjustment) || Number(invoice.total_cad),
+        totalCad    : Number(invoice.total_cad),
+        net         : Number(invoice.cad_adjustment) || 0,
         code        : invoice.code,
         status      : invoice.status
       }
 
       totalCad += invoiceToSend.totalCad;
+
       if (invoiceToSend.status === "Generated")
         totalCadGenerated += invoiceToSend.totalCad;
       else if (invoiceToSend.status === "Delivered")
         totalCadDelivered += invoiceToSend.totalCad;
       else if (invoiceToSend.status === "Received")
-        totalCadReceived += invoiceToSend.totalCad;
+        totalCadReceived += invoiceToSend.net;
+        // netCad += invoiceToSend.cad_adjustment;
+
 
       return (
         <tr key={invoiceToSend.num} onClick={() => this.invoiceEdit(invoice)}>
@@ -153,6 +157,7 @@ class InvoicesList extends Component {
       // but, I realized that for PunchinList, the key prop does not complain.. 
       // maybe it is because here, the trs are under the fragment, and so the fragment need the key
       <React.Fragment key = {totalCad}>
+        {/* empty line */}
         <tr key = {totalCad + 1} style={{background: "gainsboro"}}>
           <td colSpan="5"></td>
         </tr>
@@ -182,24 +187,29 @@ class InvoicesList extends Component {
 
         {/*received total*/}
         <tr key = {totalCad + 3}>
-          <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>Received</b></td>
+          <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>Received (Net)</b></td>
           <td 
             colSpan="3" 
             style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
           >
-            <b>{totalCadReceived.toFixed(2)}</b>
+            <b>CAD {totalCadReceived.toFixed(2)}</b>
           </td>
         </tr>
 
-        {/*raw total*/}
-        <tr key = {totalCad + 2}>
-          <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>Total</b></td>
+        {/* Gross */}
+        <tr key = {totalCad + 2} >
+          <td colSpan="2" style={{textAlign: "left", paddingLeft: "2rem"}}><b>Gross</b></td>
           <td 
             colSpan="3" 
             style={{verticalAlign: "middle", textAlign: "right", paddingRight: "2rem"}}
           >
             <b>CAD {totalCad.toFixed(2)}</b>
           </td>
+        </tr>
+
+        {/* empty line */}
+        <tr key = {totalCad + 0} style={{background: "gainsboro"}}>
+          <td colSpan="5"></td>
         </tr>
 
       </React.Fragment>
@@ -367,7 +377,14 @@ class InvoicesList extends Component {
               {(this.state.invoiceList.length > 0) 
                 ? 
                   <div>
-                    <Table striped bordered hover size="sm" responsive>
+                    <Table 
+                      striped 
+                      bordered 
+                      hover 
+                      size="sm" 
+                      responsive 
+                      style = {{ marginBottom: 0}}
+                    >
                       <thead>
                         <tr style={{textAlign: "center", verticalAlign: "middle"}}>
                           <th>#</th>

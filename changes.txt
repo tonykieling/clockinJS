@@ -1,0 +1,19 @@
+./index.html
+  changed metadata description plus tweaks on contact foot and route home pointing to /
+  commit to mig-vercel and merge to master
+
+  navdropdown menu got the style fixed to be the same as the item ones plus changed /lan route to point to /
+
+  was using land only to see TK logo
+  change on index.html - tk-32.ico
+  added tk logo and icons
+  push to deploy client change - it is already working
+   need to retest
+
+  reCaptcha on class component.. :/
+    FE <Login> seems to be working but there is a error message
+    BE and integration with FE is working
+      error still happining
+      maybe it is a dev env issue
+  
+  missing <SignUp> component
